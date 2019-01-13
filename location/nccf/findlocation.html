@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Where are you?</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--<link rel="stylesheet" type="text/css" media="screen" href="main.css" />-->
+    <script src="jquery-3.3.1.min.js"></script>
+</head>
+<body>
+    <button id="findme">find me!</button>
+    <button id="trackme">track me!</button>
+    <button id="stoptrack">stop track me!</button>
+    <div id="nudge" style="display:none;">pls tell us where you are!</div>
+
+    <div id="startLat"></div>
+
+    <div id="startLon"></div>
+
+    <div id="acc"></div>
+
+    <br>
+
+    <div id="msg"></div>
+
+    <div id="errormsg"></div>
+
+    <div id=""></div>
+
+    <script>
+        //geo-tag almost everything and work with it. analyse it. geo-tag search requests, uploads, etc.j
+        // how to permenently make your site collect data every time wiit out permission. like make the broswer
+        //  ask the user to continously allow the site permission.
+        /**
+        * 
+            Set up a timer that triggers after a short period; 5 seconds is a good value.
+            If you get an error message, show a message to the user.
+            If you get a positive response, disable the timer and process the results.
+            If, after the timeout, you haven't gotten a positive response, show a notification to the user.
+            If the response comes in later and the notification is still present, remove it from the screen.
+
+        */
+
+
+    // check for Geolocation support
+    if (navigator.geolocation) {
+        console.log('Geolocation is supported!');
+
+        var conn = new WebSocket('ws://localhost:8080');
+
+        conn.onopen = function(e) {
+          console.log(e);
+          console.log('Connection to server established!'); 
+        }; 
+
+        var position;
+
+        var options = {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0
+        };
+
+        var geoOptionsAge = {
+          maximumAge: 5 * 60 * 1000,
+        }
+
+        var geoOptionsTime = {
+          timeout: 5 * 1000
+        }
+
+        var geoOptionsTimeAndAge = {
+          maximumAge: 5 * 60 * 1000,
+          timeout: 1000
+        }
+
+        var geoOptionsLongTime = {
+          timeout: 10 * 1000
+        }
+
+        var geoOptionsLongAge = {
+          maximumAge: 10 * 60 * 1000,
+        }
+
+        var nudge = document.getElementById("nudge");
+      
+        var showNudgeBanner = function() {
+          nudge.style.display = "block";
+        };
+      
+        var hideNudgeBanner = function() {
+          nudge.style.display = "none";
+        };
+        
+        var watchID;
+
+        var nudgeTimeoutId = setTimeout(showNudgeBanner, 5000);
+      
+        var saveAll = {
+          "type": "FeatureCollection",
+          "features": [
+            
+          ]
+        }
+        
+        var savePoints = {
+          "type": "Feature",
+          "properties": {},
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              
+            ]
+          }
+        }
+
+        var savePoint = {
+          "type": "Feature",
+          "properties": {},
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              
+            ]
+          }
+        }
+
+        var cordsForPoints = [];
+
+        var geoPoint = function(position) {
+          hideNudgeBanner();
+          // We have the location, don't display banner
+          clearTimeout(nudgeTimeoutId);
+          
+          // Do magic with location
+          document.getElementById('startLat').innerHTML = position.coords.latitude;
+          document.getElementById('startLon').innerHTML = position.coords.longitude;
+          document.getElementById('acc').innerHTML = position.coords.accuracy;
+          console.log(position);
+          /*
+          saveAll.features.push({
+            "type": "Feature",
+            "properties": {},
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                position.coords.longitude,
+                position.coords.latitude
+              ]
+            }
+          });
+          */
+          savePoint.geometry.coordinates.push(position.coords.longitude);
+          savePoint.geometry.coordinates.push(position.coords.latitude);
+          savePoint.properties.accuracy = position.coords.accuracy;
+          var yes = JSON.stringify(savePoint);
+          console.log(yes, 'yes, we\'ve got data');
+          var msg = {
+            type: "placeData",
+            placeData: yes
+          };
+          conn.send(JSON.stringify(msg));
+          /*
+              request= new XMLHttpRequest()
+              request.open("POST", "test.php", true)
+              request.send(yes)*/
+              /*
+              var fd = new FormData();
+              fd.append("data", savePoint);
+              fetch('test.php?q='+yes, {
+                method: 'POST',
+                body: fd,
+              });
+              */
+              /*
+              xmlhttp = new XMLHttpRequest();
+              xmlhttp.onreadystatechange = function() {
+                  if (this.readyState == 4 && this.status == 200) {
+                      myObj = JSON.parse(this.responseText);
+                      for (x in myObj) {
+                          txt += myObj[x].name + "<br>";
+                      }
+                      //document.getElementById("demo").innerHTML = txt;
+                      //console.log(txt);
+                  }
+              };
+              xmlhttp.open("POST", "test.1.php", true);
+              xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+              xmlhttp.send("x=" + yes);
+                */
+                //var oOutput = document.querySelector("div")
+                /*
+                oData1 = new FormData();
+
+                oData1.append("d", yes);
+
+                var oReq1 = new XMLHttpRequest();
+                oReq1.open("POST", "test.php", true);
+                oReq1.onload = function(oEvent) {
+                if (oReq1.status == 200) {
+                  //oOutput.innerHTML = "Uploaded!";
+                  alert("Done!");
+                } else {
+                  //oOutput.innerHTML = "Error " + oReq.status + " occurred when trying to upload your file.<br \/>";
+                  alert("Error " + oReq1.status + " occurred. \n\nPlease Try It Again");
+                }
+                };
+                oReq1.setRequestHeader("Content-type", "application/json" );
+                oReq1.send(oData1);
+                ev.preventDefault();
+                
+                */
+                /*
+                var data = {
+                  test: $( "#test" ).val()
+                };
+                var options = {
+                  url: "test.php",
+                  dataType: "text",
+                  type: "POST",
+                  data: { test: JSON.stringify( data ) }, // Our valid JSON string
+                  success: function( data, status, xhr ) {
+                    //...
+                  },
+                  error: function( xhr, status, error ) {
+                      //...
+                  }
+                };
+                $.ajax( options );
+            */
+          //empty the value after saving in case they get location again so as not to have multiple values.
+          savePoint.geometry.coordinates.pop();
+          savePoint.geometry.coordinates.pop();
+        };
+
+        var geoTrack = function(position) {
+          hideNudgeBanner();
+          // We have the location, don't display banner
+          clearTimeout(nudgeTimeoutId);
+      
+          // Do magic with location
+          document.getElementById('startLat').innerHTML = position.coords.latitude;
+          document.getElementById('startLon').innerHTML = position.coords.longitude;
+
+          //do_something(position.coords.latitude, position.coords.longitude);
+          cordsForPoints.push([position.coords.longitude, position.coords.latitude])
+        };
+
+        var geoPointError = function(error) {
+          
+          console.log(error);
+          switch(error.code) {
+            case error.TIMEOUT:
+              //try again with a longer timeout
+              navigator.geolocation.getCurrentPosition(geoPoint, geoPointError, geoOptionsLongTime );
+              break;
+            case error.PERMISSION_DENIED:
+              // The user didn't accept the callout
+              showNudgeBanner();
+              //(put loc fun in showNudgeBanner() callback) ?, so when user click ok\close for the banner, we get loc
+              navigator.geolocation.getCurrentPosition(geoPoint, geoPointError, options);
+              break;
+            case error.POSITION_UNAVAILABLE:
+              //say there's no network n try again when there is ?!!!?
+              //window.addEventListener('online',  navigator.geolocation.getCurrentPosition(geoPoint, geoPointError));
+              navigator.geolocation.getCurrentPosition(geoPoint, geoPointError)
+              break;
+            case 0://unknown error
+              //just try again
+              navigator.geolocation.getCurrentPosition(geoPoint, geoPointError)
+              break;
+          }
+        };
+
+        var geoTrackError = function(error){
+          console.log(error);
+          navigator.geolocation.watchPosition(geoTrack, geoTrackError);
+        }
+
+        document.getElementById('findme').onclick = function() {
+          document.getElementById('msg').innerHTML = 'finding you...'; 
+          navigator.geolocation.getCurrentPosition(geoPoint, geoPointError, options);
+        };
+
+        document.getElementById('trackme').onclick = function() {
+            document.getElementById('msg').innerHTML = 'tracking you...';
+            watchID = navigator.geolocation.watchPosition(geoTrack, geoTrackError, options);
+        };
+
+        document.getElementById('stoptrack').onclick = function() {
+          //save all tracked coordinates.
+          savePoints.geometry.coordinates = cordsForPoints ;
+          //input in db
+
+          fetch('savePlace.php', {
+            method: 'POST',
+            body: saveTrack,
+          });
+
+          navigator.geolocation.clearWatch(watchID);
+          document.getElementById('msg').innerHTML = 'stopped tracking you...';
+      };
+    }
+    else {
+        console.log('Geolocation is not supported for this Browser/OS.');
+    }
+  
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document 1</title>
+</head>
+<body>
+    <button onclick="sendSubscriptionToBackEnd()"> cluyv </button>
+
+    <script>
+        function urlBase64ToUint8Array(base64String) {
+          const padding = '='.repeat((4 - base64String.length % 4) % 4);
+          const base64 = (base64String + padding)
+            .replace(/\-/g, '+')
+            .replace(/_/g, '/')
+          ;
+          const rawData = window.atob(base64);
+          return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)));
+        }
+        
+        function sendSubscriptionToBackEnd(subscription) {
+            return fetch('i.php?foo=bar&lorem=ipsum', {
+              method: 'POST',
+              body: 'foo1=bar&lorem1=ipsum'
+            })
+            .then(function(response) {
+              if (!response.ok) {
+                throw new Error('Bad status code from server.');
+              }
+              
+              console.log(response);
+              console.log(response.text());
+              return JSON.stringify(response);
+              
+            })
+            .then(function(responseData) {
+              if (!(responseData.data && responseData.data.success)) {
+                throw new Error('Bad response from server.');
+              }
+            });
+          }
+    </script>
+</body>
+</html>

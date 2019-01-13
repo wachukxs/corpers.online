@@ -1,0 +1,24 @@
+{
+  "name": "map",
+  "version": "1.0.0",
+  "description": "mapping everywhere in nigeria so we know every nook and cranny",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "bson-ext": "^2.0.1",
+    "express": "^4.16.3",
+    "mongodb": "^3.1.6",
+    "mongoose": "^5.2.15"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "map",
+    "nigeria",
+    "nccf"
+  ],
+  "author": "placeholder",
+  "license": "ISC"
+}

@@ -1,0 +1,1 @@
+mongod --dbpath=C:/xampp/htdocs/ajuwaya/location/nccfhq/data

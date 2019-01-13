@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <!-- //for-mobile-apps -->    
+    <link rel="stylesheet" type="text/css" media="screen" href="/bootstrap.css"/>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <script src="/jquery-3.3.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js" integrity="sha384-pjaaA8dDz/5BgdFUPX6M/9SUZv4d12SUPF0axWc+VRZkx5xU3daN+lYb49+Ax+Tl" crossorigin="anonymous"></script>
+
+    <script src="/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+    <script src="/holder.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.4/holder.js" integrity="sha256-crfkMD0BL2TtiwpbIlXF/SVmGSvOtgbMM8GBkibVKyc=" crossorigin="anonymous"></script>
+
+    
+    <title>About You</title>
+
+    <style>
+        body{
+        }
+    </style>
+
+    
+</head>
+<body>
+        <nav class="navbar navbar-expand-md navbar-light bg-light">
+          <a class="navbar-brand" href="#">Corpers Online <span class="sr-only">(current)</span></a>
+          <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+    
+          <div class="navbar-collapse collapse" id="navbarsExample04" style="">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="login.html">Log In</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="register.html">Sign up</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="about.html">About</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link" href="#">Contact</a>
+              </li>
+            </ul>
+            <form class="form-inline my-2 my-md-0">
+              <input class="form-control" type="text" placeholder="Search">
+            </form>
+          </div>
+        </nav>
+    <main class="container pt-2">
+
+        <h6>
+          Information provided will be kept confidential and used to provide assistance for other Corpers.
+        </h6>
+        <p>
+          <a href="" id="gb">Go back</a>
+        </p>
+
+        <form role="form" name="profile" method="POST" id="pf" action="/profile" enctype="application/x-www-form-urlencoded">
+          <div class="form-group">
+            <label for="servingstate">Where are you serving?</label>
+            <!-- <input type="text" name="servicestate" list="states" id="ss" class="form-control mb-2" id="email" placeholder="State"> -->
+            <select id="states" class="custom-select mb-2">
+              <option value="Abia">Abia</option>
+              <option value="Adamawa">Adamawa</option>
+              <option value="Akwa Ibom">Akwa Ibom</option>
+              <option value="Anambra">Anambra</option>
+              <option value="Bauchi">Bauchi</option>
+              <option value="Bayelsa">Bayelsa</option>
+              <option value="Benue">Benue</option>
+              <option value="Borno">Borno</option>
+              <option value="Cross River">Cross River</option>
+              <option value="Delta">Delta</option>
+              <option value="Ebonyi">Ebonyi</option>
+              <option value="Enugu">Enugu</option>
+              <option value="Edo">Edo</option>
+              <option value="Ekiti">Ekiti</option>
+              <option value="Gombe">Gombe</option>
+              <option value="Imo">Imo</option>
+              <option value="Jigawa">Jigawa</option>
+              <option value="Kaduna">Kaduna</option>
+              <option value="Kano">Kano</option>
+              <option value="Kastina">Kastina</option>
+              <option value="Kebbi">Kebbi</option>
+              <option value="Kogi">Kogi</option>
+              <option value="Kwara">Kwara</option>
+              <option value="Lagos">Lagos</option>
+              <option value="Nasarawa">Nasarawa</option>
+              <option value="Niger">Niger</option>
+              <option value="Ogun">Ogun</option>
+              <option value="Ondo">Ondo</option>
+              <option value="Osun">Osun</option>
+              <option value="Oyo">Oyo</option>
+              <option value="Plateau">Plateau</option>
+              <option value="Rivers">Rivers</option>
+              <option value="Sokoto">Sokoto</option>
+              <option value="Taraba">Taraba</option>
+              <option value="Yobe">Yobe</option>
+              <option value="Zamfara">Zamfara</option>
+            </select>
+            <input type="text" class="form-control mb-2" id="" name="lga" placeholder="LGA">
+            <small class="text-muted">Optional.</small>
+            <input type="text" class="form-control mb-2" id="" name="city_town" placeholder="City or Town">
+            <small class="text-muted">Optional.</small>
+            <input type="text" class="form-control mb-2" id="" name="region_street" placeholder="Region or Street">
+          </div>
+          <div class="form-group">
+            <label for="pwd">Your batch stream?</label>
+            <div class="">
+              <input type="number" list="stream" class="form-control" name="stream" id="" placeholder="Stream 1, 2 or 3?">
+              <datalist id="stream">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </datalist>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="pwd">Where did you find accomodation?</label>
+            <div class="form-check">
+              <input class="form-check-input" name="houseornot" type="checkbox" value="" id="defaultCheck1">
+              <label class="form-check-label" for="defaultCheck1">
+                <small class="text-muted">I haven't gotten a place yet</small>
+              </label>
+            </div>
+            <input type="text" name="accomodation_location" class="form-control mb-2" id="house" placeholder="What part of town is it">
+          </div>
+          <div class="form-group">
+            <label for="pwd">Name of your PPA ?</label>
+            <input type="text" name="name_of_ppa" class="form-control mb-2" id="">
+            <input type="text" name="type_of_ppa" class="form-control" id="" placeholder="Type of Institution? A School? ">
+          </div>
+          <div class="form-group">
+            <label for="pwd">Your PPA address?</label>
+            <input type="text" name="ppa_address" class="form-control" id="">
+          </div>
+          <div class="form-group">
+            <label for="pwd">Where did you travel from for NYSC?</label>
+            <input type="text" name="travel_from_state" class="form-control mb-2" id="" placeholder="State">
+            <input type="text" name="travel_from_city" class="form-control mb-2" id="" placeholder="City">
+          </div>
+          
+          <div class="form-group">
+            <label for="pwd">Want an SPA (side hustle) ?</label>
+            
+            <small class="text-muted">What's this?</small>
+            <br>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="spaornot" id="inlineRadio1" value="yes">
+              <label class="form-check-label" for="inlineRadio1">Yes</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="spaornot" id="inlineRadio2" value="no">
+              <label class="form-check-label" for="inlineRadio2">No</label>
+            </div>
+          </div>
+          <!--hidden part of form-->
+          <div class="form-group" style="display:none;">
+            <label for="pwd">Email ?</label>
+            <br>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="text" name="email" id="inlineRadio2" value="">
+            </div>
+          </div>
+          
+
+          <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+
+            
+    </main>
+    <script src="/socket.io/socket.io.js"></script>
+ 
+    <script>
+      var pathArray = window.location.pathname.split('/');
+      console.log('user = ' + pathArray[2]);
+      document.title = pathArray[2] + " here to edit!";
+
+      document.forms[1].elements['email'].value = pathArray[2];
+      document.getElementById('gb').href = '/user/' + pathArray[2];
+
+      var formData1 = new FormData(document.getElementById('pf')) ;
+      formData1.append('email', pathArray[2]) ;
+      
+
+
+      var checkbox = document.querySelector("input[name=houseornot]");
+      //if they have a house of not
+        checkbox.addEventListener('change', function () {
+          if (this.checked) {
+            // Checkbox is checked..
+            console.log('checked');
+            document.getElementById("house").style.display = "none";
+          } else {
+            // Checkbox is not checked..
+            console.log('not checked');
+            document.getElementById("house").style.display = "block";
+          }
+        });
+
+      var radios = document.forms[1].elements['spaornot'];
+        for (var i = 0, max = radios.length; i < max; i++) {
+          radios[i].onclick = function () {
+            console.log(this.value);
+            if (this.value == 'yes') {
+              
+            } else {
+              
+            }
+          }
+        }
+
+      var socket = io('/profile'); //connect to socket.io on /user but somehow it still connects with\to /
+/**
+ * 
+ *       [AB, AD, AK, AN, BA, BY, BN, BO, CR, DT, EB, ED, EK, EN, FC, GM, IM, JG, KD, KN, KT, KB, KG, KW, LA, NS, NG, OG, OD, OS, OY, PL, RV, SO, TR, YB, ZM]
+      [ABIA, ADAMAWA, AKWA IBOM, ANAMBRA, BAUCHI, BAYELSA, BENUE, BORNO, CROSS RIVER, DELTA, EBONYI, EDO, EKITI, ENUGU, FCT-ABUJA, GOMBE, IMO, JIGAWA, KADUNA, KANO, KASTINA, KEBBI, KOGI, KWARA, LAGOS, NASSARAWA, NIGER, OGUN, ONDO, OSUN, OYO, PLATEAU, RIVERS, SOKOTO, TARABA, YOBE, ZAMFARA]
+*/
+    
+    </script>
+</body>
+</html>

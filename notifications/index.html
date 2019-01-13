@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>trying notification.</title>
+</head>
+<body>
+    <button onclick="registerServiceWorker()">click to registerServiceWorker</button>
+
+    <button onclick="askPermission()">click to askPermission to show notification</button>
+
+    <button onclick="subscribeUserToPush()">click ...</button>
+</body>
+<script>
+
+    function urlBase64ToUint8Array(base64String) {
+      const padding = '='.repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/')
+      ;
+      const rawData = window.atob(base64);
+      return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)));
+    }
+    
+    function registerServiceWorker() {
+        return navigator.serviceWorker.register('../sw.js')
+        .then(function(registration) {
+          console.log('Service worker successfully registered.', registration);
+          return registration;
+        })
+        .catch(function(err) {
+          console.error('Unable to register service worker.', err);
+        });
+      }
+
+      function askPermission() {
+        return new Promise(function(resolve, reject) {
+          const permissionResult = Notification.requestPermission(function(result) {
+            console.log(result);
+            resolve(result);
+          });
+      
+          if (permissionResult) {
+            permissionResult.then(resolve, reject);
+          }
+        })
+        .then(function(permissionResult) {
+          if (permissionResult !== 'granted') {
+            throw new Error('We weren\'t granted permission.');
+          }
+        });
+      }
+
+
+      function subscribeUserToPush() {
+        return navigator.serviceWorker.register('../sw.js')
+        .then(function(registration) {
+          const subscribeOptions = {
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(
+              'AAAAB3NzaC1yc2EAAAABIwAAAQEAr2tBujwYgP40Y9tO8LqlKbMU03ObzXY6pwW6DJdyWBBXrRbIPISQFprTwmLyDEUCf+/cE3W+lgM/hA7bPixFeiev1WEBFPzMlZdNZGcu0YWGzevpi0T+HVB2g0xV5P6HqctUJiHtZhNojyu3bsZBQymYMbhznCzeVl383w8Nlig5OqLeRI6S5l0THRgBBMkogeyFjvsngiKx+CgPcF+42VPQb3nNPJTZ5yvuOo6u5RYSkZQ7XvhQ7/Pm3WfdlL9/IJawKFzG6TC3lbu2Q+9u8B6/g3lo86cP3YfB5DeD1MxAbPqcPiT+LZlDEx3eceBVu4epKEG3VIg7v/ARKYjeCQ=='
+            )
+          };
+      
+          return registration.pushManager.subscribe(subscribeOptions);
+        })
+        .then(function(pushSubscription) {
+          console.log('Received PushSubscription: ', JSON.stringify(pushSubscription));
+          return pushSubscription;
+        });
+      }
+      
+
+      function sendSubscriptionToBackEnd(subscription) {
+        return fetch('/api/save-subscription/', {
+          method: "POST",
+          mode: "same-origin",
+          credentials: "same-origin",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(subscription)
+        })
+        .then(function(response) {
+          if (!response.ok) {
+            throw new Error('Bad status code from server.');
+          }
+      
+          return response.json();
+        })
+        .then(function(responseData) {
+          if (!(responseData.data && responseData.data.success)) {
+            throw new Error('Bad response from server.');
+          }
+        });
+      }
+      
+      
+      
+</script>
+</html>

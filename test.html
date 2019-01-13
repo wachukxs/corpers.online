@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <title> https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API for maps</title>
+
+        <style>
+        
+    </style>
+
+
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous">
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js" integrity="sha384-pjaaA8dDz/5BgdFUPX6M/9SUZv4d12SUPF0axWc+VRZkx5xU3daN+lYb49+Ax+Tl"
+    crossorigin="anonymous"></script>
+
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.4/holder.js" integrity="sha256-crfkMD0BL2TtiwpbIlXF/SVmGSvOtgbMM8GBkibVKyc="
+    crossorigin="anonymous"></script>
+
+
+    <style>
+        body {
+            position: relative;
+        }
+        p{
+            padding-top:150px;
+        }
+    </style>
+    </head>
+
+    <body data-spy="scroll" data-target="#navbar-example2" data-offset="10">
+        <nav id="navbar-example2" class="navbar sticky-top navbar-light bg-light">
+            <a class="navbar-brand" href="#">Navbar</a>
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a class="nav-link" href="#one">@fat</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#two">@mdo</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#three">@fat</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#four">@mdo</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#five">@mdo</a>
+                </li>
+            </ul>
+        </nav>
+
+        <div>
+            <h4 id="one">Item 1</h4>
+            <p>
+                Labore sit culpa commodo elit adipisicing sit aliquip elit proident voluptate minim mollit nostrud aute
+                reprehenderit
+                do. Mollit excepteur eu Lorem ipsum anim commodo sint labore Lorem in exercitation velit incididunt. Occaecat
+                consectetur nisi in occaecat proident minim enim sunt reprehenderit exercitation cupidatat et do officia. Aliquip
+                consequat ad labore labore mollit ut amet. Sit pariatur tempor proident in veniam culpa aliqua excepteur elit magna
+                fugiat eiusmod amet officia.
+            </p>
+            <h4 id="two">Item 2</h4>
+            <p>
+                Labore sit culpa commodo elit adipisicing sit aliquip elit proident voluptate minim mollit nostrud aute
+                reprehenderit
+                do. Mollit excepteur eu Lorem ipsum anim commodo sint labore Lorem in exercitation velit incididunt. Occaecat
+                consectetur nisi in occaecat proident minim enim sunt reprehenderit exercitation cupidatat et do officia. Aliquip
+                consequat ad labore labore mollit ut amet. Sit pariatur tempor proident in veniam culpa aliqua excepteur elit magna
+                fugiat eiusmod amet officia.
+            </p>
+            <h4 id="three">Item 3</h4>
+            <p>
+                Labore sit culpa commodo elit adipisicing sit aliquip elit proident voluptate minim mollit nostrud aute
+                reprehenderit
+                do. Mollit excepteur eu Lorem ipsum anim commodo sint labore Lorem in exercitation velit incididunt. Occaecat
+                consectetur nisi in occaecat proident minim enim sunt reprehenderit exercitation cupidatat et do officia. Aliquip
+                consequat ad labore labore mollit ut amet. Sit pariatur tempor proident in veniam culpa aliqua excepteur elit magna
+                fugiat eiusmod amet officia.
+            </p>
+            <h4 id="four">Item 4</h4>
+            <p>
+                Labore sit culpa commodo elit adipisicing sit aliquip elit proident voluptate minim mollit nostrud aute
+                reprehenderit
+                do. Mollit excepteur eu Lorem ipsum anim commodo sint labore Lorem in exercitation velit incididunt. Occaecat
+                consectetur nisi in occaecat proident minim enim sunt reprehenderit exercitation cupidatat et do officia. Aliquip
+                consequat ad labore labore mollit ut amet. Sit pariatur tempor proident in veniam culpa aliqua excepteur elit magna
+                fugiat eiusmod amet officia.
+            </p>
+            <h4 id="five">Item 5</h4>
+            <p>
+                Labore sit culpa commodo elit adipisicing sit aliquip elit proident voluptate minim mollit nostrud aute
+                reprehenderit
+                do. Mollit excepteur eu Lorem ipsum anim commodo sint labore Lorem in exercitation velit incididunt. Occaecat
+                consectetur nisi in occaecat proident minim enim sunt reprehenderit exercitation cupidatat et do officia. Aliquip
+                consequat ad labore labore mollit ut amet. Sit pariatur tempor proident in veniam culpa aliqua excepteur elit magna
+                fugiat eiusmod amet officia.
+            </p>
+        </div>
+            
+        <hr>
+
+            <div id="map"></div>
+            
+            <p>
+                <button onclick="geoFindMe()">Show my location</button>
+            </p>
+            
+            
+            <hr>
+        <div id="out"></div>
+
+           
+
+        <script>
+
+            $('[data-spy="scroll"]').on('activate.bs.scrollspy', function () {
+                    // do something…
+                    console.log('something');
+            });
+            $('[data-spy="scroll"]').each(function () {
+                    var $spy = $(this).scrollspy('refresh');
+                    console.log('something------', this);
+            });
+            $('[data-spy="scroll"]').scroll('scrollTop', function () {
+                console.log('down------');
+            }) ;
+
+
+            function geoFindMe() {
+                    var output = document.getElementById("out");
+
+                    if (!navigator.geolocation) {
+                        output.innerHTML = "<p>Geolocation is not supported by your browser</p>";
+                        return;
+                    }
+
+                    function success(position) {
+                        var latitude = position.coords.latitude;
+                        var longitude = position.coords.longitude;
+                        console.log( 'lon', position.coords.longitude , 'lat', position.coords.latitude ) ;
+                        output.innerHTML = '<p>Latitude is ' + latitude + '° <br>Longitude is ' + longitude + '°</p>';
+                        
+                        //img.src = "https://maps.googleapis.com/maps/api/staticmap?center=" + latitude + "," + longitude + "&zoom=13&size=300x300&sensor=false";
+                        ////////////////////////////////
+                        var img = new Image();
+                        
+                        // | Retrieve a map at - 122.4241 longitude, 37.78 latitude, zoom 14.24, bearing 0, and pitch 60. The map will be 600 pixels wide and 600 pixels high
+                        img.src = "https://api.mapbox.com/styles/v1/mapbox/streets-v10/static/pin-l(" + longitude + "," + latitude + ")/" + longitude + "," + latitude + ",14.25,0,60/600x600?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg"
+
+                        output.appendChild(img);
+                        /***/
+
+                        var img1 = new Image();
+
+                        // Retrieve a map at 0 longitude, 10 latitude, zoom 3, and bearing 20. Pitch will default to 0.
+                        img1.src = "https://api.mapbox.com/styles/v1/mapbox/streets-v10/static/" + longitude + "," + latitude + ",3,20/600x600?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg"
+
+                        output.appendChild(img1);
+                        /***/
+
+                        var img2 = new Image();
+
+                        // Retrieve a map at 0 longitude, 0 latitude, zoom 2. Bearing and pitch default to 0.
+                        img2.src = "https://api.mapbox.com/styles/v1/mapbox/streets-v10/static/" + longitude + "," + latitude + ",2/600x600?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg"
+
+                        output.appendChild(img2);
+                        /***/
+
+                        var img3 = new Image();
+
+                        // Retrieve a map with a custom marker overlay
+                        img3.src = "https://api.mapbox.com/styles/v1/mapbox/streets-v10/static/url-https%3A%2F%2Fwww.mapbox.com%2Fimg%2Frocket.png(" + longitude + "," + latitude + ")/" + longitude + "," + latitude + ",15/1000x1000?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg"
+
+                        output.appendChild(img3);
+                        var img33 = new Image();
+
+                        // | Retrieve a map with a marker overlay
+                        img33.src = "https://api.mapbox.com/styles/v1/mapbox/streets-v10/static/pin-s(" + longitude + "," + latitude + ")/" + longitude + "," + latitude + ",15/1000x1000?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg"
+
+                        output.appendChild(img33);
+                        /***/
+
+                        var img4 = new Image();
+
+                        // Retrieve a map with a GeoJSON overlay --------------(maybe 40.70 is converted to 40.7 in the 1st use of lon n lat inside those many %%%% --find out)
+                        img4.src = "https://api.mapbox.com/styles/v1/mapbox/streets-v10/static/geojson(%7B%22type%22%3A%22Point%22%2C%22coordinates%22%3A%5B" + longitude + "%2C" + latitude + "%5D%7D)/" + longitude + "," + latitude + ",12/500x300?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg"
+
+                        output.appendChild(img4);
+
+                        var img44 = new Image();
+                        img44.src = "https://api.mapbox.com/styles/v1/mapbox/streets-v10/static/geojson(%7B%22type%22%3A%22Point%22%2C%22coordinates%22%3A%5B-73.99%2C40.7%5D%7D)/-73.99,40.70,12/500x300?=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg" ;
+                        output.appendChild(img44);
+                        /***/
+
+                        var img5 = new Image();
+
+                        // Retrieve a map with 2 points and a polyline overlay, with its center point automatically determined with 'auto'
+                        img5.src = "https://api.mapbox.com/styles/v1/mapbox/streets-v10/static/pin-s-a+9ed4bd(" + longitude + "," + latitude + "),pin-s-b+000(" + 3.7542783 + "," + 6.5221459 + "),path-5+f44-0.5(%7DrpeFxbnjVsFwdAvr@cHgFor@jEmAlFmEMwM_FuItCkOi@wc@bg@wBSgM)/auto/500x300?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg" ;
+
+                        output.appendChild(img5);
+
+                        // Latitude is 6.5243793°
+                        // Longitude is 3.3792057°
+                    }
+
+                    function error() {
+                        output.innerHTML = "Unable to retrieve your location";
+                        console.log(error);
+                    }
+
+                    output.innerHTML = "<p>Locating…</p>";
+
+                    navigator.geolocation.getCurrentPosition(success, error);
+                }
+            </script>
+    </body>
+
+</html>

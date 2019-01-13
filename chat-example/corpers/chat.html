@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Chat</title>
+</head>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+        var chat = io.connect('http://localhost/chat')
+        , news = io.connect('http://localhost/news');
+      
+      chat.on('connect', function () {
+        chat.emit('hi!', 'hiiiiiiiiiii from chat');
+      });
+      
+      news.on('news', function () {
+        news.emit('woot', 'wooooot from news');
+      });
+      //-----
+      chat.on('a message', function (data) {//when we receive 'a message'
+      console.log(data);
+      chat.emit('my other event', { my: 'data-chat' });// send 'my other event' to everyone
+  });
+
+
+</script>
+<body>
+    
+</body>
+</html>

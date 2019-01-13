@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Be a Corper Online</title>
+	<!-- for-mobile-apps -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="Register on Ajuwaya Market and get to safely Buy from Corpers, Sell to Corpers" />
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<!-- //for-mobile-apps -->
+	<link rel="stylesheet" type="text/css" media="screen" href="bootstrap.css" />
+	<script src="jquery-slim.min.js"></script>
+	<script src="bootstrap.min.js"></script>
+	<script src="holder.min.js"></script>
+	<style>
+
+			.footer {
+				bottom: 0;
+				width: 100%;
+				line-height: 30px;
+				background-color: #f5f5f5;
+			}
+			input#statecode{
+				text-transform: uppercase;
+			}
+	</style>
+</head>
+<body>
+	<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 bg-white border-bottom box-shadow">
+		<h5 class="my-0 mr-md-auto font-weight-normal"><a href="/">Corpers Online</a></h5>
+		<nav class="my-2 my-md-0 mr-md-3">
+			<a class="p-2 text-dark" href="/login">Log In</a>
+			<a class="p-2 text-dark" href="#">Sign up</a>
+			<a class="p-2 text-dark" href="#">Contact</a>
+			<a class="p-2 text-dark" href="#">About</a>
+		</nav>
+	</div>
+	<main role="main">
+		
+				<div>
+						<div class="jumbotron" style="border-radius:0rem;background-color:#fff;">
+								<h1 class="display-4">Hey there, Corper!</h1>
+								<p class="lead">Make your #ServiceYear<!-- link our twitter account with this a tag. it'll be an a tag, that'll open up a twitter page and also try to connect twitter with it, show relevant tweets about corpers by picking certain hashtags and keywords and display them in a sidebar --> easy. Be part of a network of corpers all over Nigeria actively sharing information. Timely accurate information is powerful, but you already know.</p>
+								<hr class="my-4">
+								<p>Be legit. This is the first part of the process, let's know real things about you. This is just like Twitter, but for Corpers. <a href="/login">Or wanna login?</a> </p>
+								
+								
+								<form class="container" method="POST" action="/signup" enctype="application/x-www-form-urlencoded">
+
+										<div class="form-row">
+												<div class="col-md-4 mb-3">
+												  <label for="firstname">Full name</label>
+												  <div class="input-group">
+														<input type="text" name="lastname" pattern="[A-Z-'a-z]+" autocomplete="cc-family-name" class="form-control" id="lastname" placeholder="Last name" autofocus required>
+														<input type="text" name="middlename" pattern="[A-Z-'a-z]+" autocomplete="cc-given-name" class="form-control" id="middlename" placeholder="Middle name" value="">
+														<input type="text" name="firstname" pattern="[A-Z-a'-z]+" autocomplete="cc-name" class="form-control" id="firstname" placeholder="First name" value="" required>
+												  </div>
+												  <small data-reason="help text" class="text-muted">Middle name is optional.</small>
+												</div>
+												<div class="col-md-4 mb-3">
+												  <label for="email">Email</label>
+												  <div class="input-group">
+													<div class="input-group-prepend">
+													  <span class="input-group-text" id="inputGroupPrepend">@</span>
+													</div>
+													<input type="email" class="form-control" autocomplete="email" name="email" id="email" placeholder="Your email" aria-describedby="inputGroupPrepend" required>
+												  </div>
+												</div>
+												<div class="col-md-4 mb-3">
+												  <label for="password">Password</label>
+													<input name="password" autocomplete="current-password" type="password" class="form-control" id="validationPassword" placeholder="Password" required>
+												</div>
+										</div>
+
+
+										<div class="form-row">
+											<div class="col-md-4 mb-3">
+											  	<label for="statecode">State Code</label>
+												<input id="scinput" type="text" pattern="[A-Z]{2}[/][0-9]{2}[ABC][/][0-9]{4}" class="form-control text-uppercase" id="statecode" name="statecode" placeholder="e.g. AB/17A/4567" required>
+												<!-- add distinct state codes.-->
+												<small class="text-muted">This will help verify corpers.</small>
+											<div class="valid-feedback">
+												Looks good!
+											</div>
+											</div>
+
+										</div>
+		
+											  
+										<div class="form-group form-check">
+												<input type="checkbox" class="form-check-input" id="knowme">
+												<label class="form-check-label" for="knowme">Remember me</label>
+												<!--once the "remember me" button is checked, the text will turn to we won't forget.-->
+											  </div>
+											  <input type="submit" class="btn btn-primary" value="Submit">
+											  <!--<button type="submit" class="btn btn-primary">Submit</button>-->
+									</form>
+						</div>
+
+
+
+
+				</div>
+
+
+	</main>
+
+	<script>
+		//(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM)[/](17|18)[ABC][/][0-9]{4}
+		var years = parseInt(new Date(Date.now()).getFullYear().toFixed().slice(2, 4)) ;
+		document.forms[0].elements[5].pattern.replace('()', '(' + (years-1).toString() + '|' + years.toString() + ')' );
+		document.getElementById('scinput').oninvalid = function (event) {
+				event.target.setCustomValidity("State code should start with a valid state abbrevation, have forward slashes, appropraite batch number and four trailing digits. Thank you.");
+			}
+	</script>
+
+	<footer class="footer fixed-bottom text-center pt-3">
+      <p>Corpers Online built by <a href="#">@Corpers</a> for <a href="#">Corpers</a>.</p>
+      <p>
+        <a href="#">2018</a>
+      </p>
+    </footer>
+</body>
+</html>
+
+
+
+
+<!--
+<select id="basic2" class="show-tick form-control" multiple>
+												<optgroup label="Popular Cities">
+													<option selected style="display:none;color:#eee;">Select City</option>
+													<option>Birmingham</option>
+													<option>Anchorage</option>
+													<option>Phoenix</option>
+												</optgroup>
+												<optgroup label="More Cities">
+													<optgroup label="Alabama">
+														<option>Birmingham</option>
+														<option>Montgomery</option>
+													</optgroup>
+													<optgroup label="Alaska">
+														<option>Anchorage</option>
+													</optgroup>l="Connecticut">
+														<option>Bridgeport</option>
+														<option>New Haven</option>
+														<option>Hartford</option>
+													</optgroup>
+													<optgroup label="Delaware">
+														<option>Wilmington</option>
+														<option>Dover</option>
+														<option>Newark</option>
+													</optgroup>
+													<optgroup label="Florida">
+														<option>Jacksonville</option>
+														<option>Miami</option>
+													</optgroup>
+													<optgroup label="Georgia">
+														<option>Atlanta</option>
+														<option>Augusta</option>
+													</optgroup>
+													<optgroup label="Hawaii">
+														<option>Honolulu</option>
+														<option>Pearl City</option>
+														<option>Hilo</option>
+													</optgroup>
+													<optgroup label="Idaho">
+														<option>Boise</option>
+														<option>Nampa</option>
+													</optgroup>
+													<optgroup label="Illinois">
+														<option>Chicago</option>
+														<option>Aurora</option>
+													</optgroup>
+													<optgroup label="Indiana">
+														<option>Indianapolis</option>
+														<option>Fort Wayne</option>													       
+													</optgroup>
+													<optgroup label="Iowa">
+														<option>Des Moines</option>
+														<option>Cedar Rapids</option>
+														<option>Davenport</option>      													
+													</optgroup>
+													<optgroup label="Kansas">
+														<option>Wichita</option>
+														<option>Overland Park</option>
+														<option>Kansas City</option>        													
+													</optgroup>
+													<optgroup label="Kentucky">
+														<option>Louisville</option>
+														<option>Lexington</option>      														
+													</optgroup>
+													<optgroup label="Louisiana">
+														<option>New Orleans</option>
+														<option>Baton Rouge</option>
+														<option>Shreveport</option>        														
+													</optgroup>
+													<optgroup label="Maine">
+														<option>Portland</option>
+														<option>Lewiston</option>      														
+													</optgroup>
+													<optgroup label="Maryland">
+														<option>Baltimore</option>
+														<option>Frederick</option>
+														<option>Rockville</option>
+														<option>Gaithersburg</option>
+														<option>Bowie</option>         														
+													</optgroup>
+													<optgroup label="Massachusetts">
+														<option>Boston</option>
+														<option>Worcester</option>  
+													</optgroup>
+													<optgroup label="Michigan">
+														<option>Detroit</option>
+													</optgroup>
+													<optgroup label="Minnesota">
+														<option>Duluth</option>
+														<option>Bloomington</option>      														
+													</optgroup>
+													<optgroup label="Mississippi">
+														<option>Jackson</option>
+														<option>Gulfport</option>
+														<option>Biloxi</option>         														
+													</optgroup>
+													<optgroup label="Missouri">
+														<option>Kansas City</option>
+														<option>St. Louis</option>
+														<option>Columbia</option>            														
+													</optgroup>
+													<optgroup label="Montana">
+														<option>Billings</option>        														
+													</optgroup>
+													<optgroup label="Nebraska">
+														<option>Omaha</option>
+														<option>Kearney</option>        													
+													</optgroup>
+													<optgroup label="Nevada">
+														<option>Las Vegas</option>
+														<option>Henderson</option>         													
+													</optgroup>
+													<optgroup label="New Hampshire">
+														<option>Manchesters</option>
+														<option>Nashua</option>           													
+													</optgroup>
+													<optgroup label="New Jersey">
+														<option>Newark</option>
+														<option>Jersey City</option>
+														<option>Paterson</option>
+													</optgroup>
+													<optgroup label="New Mexico">
+														<option>Albuquerque</option>
+														<option>Las Cruces</option>  
+													</optgroup>
+													<optgroup label="New York">
+														<option>New York</option>
+														<option>Buffalo</option>      														
+													</optgroup>
+													<optgroup label="North Carolina">
+														<option>Charlotte</option>
+														<option>Raleigh</option>  														
+													</optgroup>
+													<optgroup label="North Dakota">
+														<option>Fargo</option>
+														<option>Bismarck</option>
+													</optgroup>
+													<optgroup label="Ohio">
+														<option>Columbus</option>
+													</optgroup>
+													<optgroup label="Wisconsin">
+														<option>Milwaukee</option>
+														<option>Madison</option>
+													</optgroup>
+													<optgroup label="Wyoming">
+														<option>Cheyenne</option>
+														<option>Casper</option>
+													</optgroup>			
+												</optgroup>
+											</select>
+-->

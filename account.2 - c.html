@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<head lang="en">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+
+    <title></title>
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/bootstrap.css"/>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <script src="/jquery-3.3.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js" integrity="sha384-pjaaA8dDz/5BgdFUPX6M/9SUZv4d12SUPF0axWc+VRZkx5xU3daN+lYb49+Ax+Tl" crossorigin="anonymous"></script>
+
+    <script src="/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+    <script src="/holder.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.4/holder.js" integrity="sha256-crfkMD0BL2TtiwpbIlXF/SVmGSvOtgbMM8GBkibVKyc=" crossorigin="anonymous"></script>
+
+    <style>
+        .round{
+          border-radius: 100%;
+        }
+        .add{/*to make the edges of buttons to be rounded*/
+          border-radius: 1rem;
+        }
+        small{
+          font-size: 70%;
+        }
+        .maincontent {
+          
+        }
+        .fileUpload {
+          position: relative;
+          overflow: hidden;
+          margin: 10px;
+        }
+        .fileUpload input.upload {
+          position: absolute;
+          top: 0;
+          right: 0;
+          margin: 0;
+          padding: 0;
+          font-size: 20px;
+          cursor: pointer;
+          opacity: 0;
+          filter: alpha(opacity=0);
+        }
+        /**
+        using design from https://gedd.ski/post/tile-layouts/
+        make the pictures obey fibonacci series
+        */
+        .app {
+          display: grid;
+          grid-gap: 5px;
+          grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+          
+        }
+        ul .list-group-item:hover {
+        background:rgb(236, 236, 236);
+        }
+    </style>
+    <style>
+        @-ms-viewport {
+          width: device-width;
+        }
+
+        /*Extra small devices (portrait phones, less than 576px)
+         No media query for `xs` since this is the default in Bootstrap 
+         
+         https://getbootstrap.com/2.3.2/scaffolding.html
+         */
+
+
+        /* This CSS will be applied only to phones and other small devices. */
+        @media only screen and (max-width: 480px) {
+
+        }
+
+
+         /* Small devices (landscape phones, 576px and up) */
+        @media (min-width: 576px) {
+          /* .container {
+            max-width: 540px;
+          }
+          #profilecard{
+            display: none;
+          } */
+        }
+        
+        @media (min-width: 768px) {
+          .container {
+            max-width: 720px;
+          }
+          /* #profilecard, #statscard{
+            display: none;
+          } */
+        }
+        
+        @media (min-width: 992px) {
+          .container {
+            max-width: 960px;
+          }
+          
+        }
+        
+        @media (min-width: 1200px) {
+          .container {
+            max-width: 1140px;
+          }
+        }
+
+
+        /* Large desktop */
+        @media (min-width: 1200px) { 
+          .container {
+            max-width: 1140px;
+          }
+         }
+        
+        /* Portrait tablet to landscape and desktop */
+        @media (min-width: 768px) and (max-width: 979px) { 
+          /* .col-sm-3{
+            display: none;
+          } */
+         }
+          
+        /* Landscape phone to portrait tablet */
+        @media (max-width: 767px) { 
+          .col-sm-3{
+            display: none;
+          }
+         }
+          
+        /* Landscape phones and down */
+        @media (max-width: 480px) { 
+          .col-sm-3{
+            display: none;
+          }
+         }
+    </style>
+</head>
+  <script src="/socket.io/socket.io.js"></script>
+	<nav class="navbar navbar-expand-sm navbar-light bg-light active">
+		<a class="navbar-brand" href="#">Corpers Online</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarsExample03">
+
+      <!-- Nav tabs for the ACCOMODATION, PPAs, SPAs, SALES -->
+      <!-- <ul class="nav navbar-nav mr-auto" id="theTabs" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="sales-tab" data-toggle="tab" href="#sales" role="tab" aria-controls="sales" aria-selected="true">Sales</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="accomodation-tab" data-toggle="tab" href="#accomodation" role="tab" aria-controls="accomodation" aria-selected="false">Accomodations</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="ppa-tab" data-toggle="tab" href="#ppa" role="tab" aria-controls="ppa" aria-selected="false">PPAs</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="spa-tab" data-toggle="tab" href="#spa" role="tab" aria-controls="spa" aria-selected="false">SPAs</a>
+          </li>
+        </ul> -->
+			<form class="form-inline my-2 my-md-0 pr-2">
+				<input class="form-control" type="text" placeholder="Search">
+      </form>
+      
+      <!-- Button trigger modal for posting-->
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#postModalSale">Post</button>
+		</div>
+  </nav>
+  
+
+              <!-- the Modal for posting (sale)-->
+              <div class="modal fade" id="postModalSale" tabindex="-1" role="dialog" aria-labelledby="postModalLabelSale" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Create post</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+  
+                      <textarea type="text" class="form-control my-3" placeholder="Write a message. Share the location of an accomodation for rent, your PPA, a popular venue, or a route. Get creative." id="TXT"></textarea>
+                          
+                          <div id="previewParent" >
+                            <!--<div id="preview"></div>-->
+                          </div>
+                          
+                          <div class="d-flex align-items-center">
+                            <div class="mr-auto">
+                              <form action="" method="" id="attachments">
+                                
+                                  <div class="fileUpload btn btn-light">
+                                    <span>Img</span>
+                                    <input type="file" accept="images/*" class="upload" multiple id="IMG">
+                                  </div>
+                                  <div class="fileUpload btn btn-light">
+                                    <span>Vid</span>
+                                    <input type="file" accept="video/*" class="upload" id="VID">
+                                  </div>
+  
+                                  <!--the input for giving routes should offer places suggestions as user types. 
+                                  use appropriate ui. form place to place with side notes and advice.-->
+                                  <!--instead of putting like, nooo!!!!! put affrimations, other corpers 
+                                  should affirm other prople posts !!! increases trust. possible give alternative, 
+                                  and even say when something is a lie or fasle or not entirely true.-->
+                                  <button type="button" class="btn btn-light" id="trackme">Share Route</button>
+                                  <button type="button" class="btn btn-light" id="findme">Share Location</button> 
+                                  <!--like malls/shops apartments markets parks/bustops or popular pickup and dropoff 
+                                  points. -->
+  
+  
+                              </form>
+                            </div>
+                          </div>
+  
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Save as draft</button>
+                      <button type="button" class="btn btn-primary" id="SEND">Post</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              
+
+
+
+
+<body class="">
+
+    <main role="main">
+        <div class="pt-3 maincontent container">
+            <div class="row pb-3">
+              <div class="col-sm-3">
+                
+                <!--put the corper's information. let them see their profile (and be able to change it)-->
+                <div class="card" id="profilecard">
+                  <div class="card-body">
+                  <h6 class="">About <small>· <a href="" id="editprofile">Edit</a></small></h6>
+                  <ul class="" id="profile">
+                    <li>
+                      <span class=""></span>Serving at <a href="#">?</a>
+                    </li>
+                    <li>
+                      <span class=""></span>Batch <a href="#">?</a>
+                    </li>
+                    <li>
+                      <span class=""></span>PPA at <a href="#">?</a>
+                    </li>
+                    <li style="display:none;">
+                      <span class=""></span>SPA at <a href="#">San Francisco</a>
+                    </li>
+                  </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+
+                  <!--in this middle part, we'll give various toggle tabs for location of ACCOMODATION, PPAs, SPAs, SALES-->
+
+                    <!-- Nav tabs for the ACCOMODATION, PPAs, SPAs, SALES -->
+                    <!-- <ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
+                        <li class="nav-item">
+                          <a class="nav-link active" id="sales-tab" data-toggle="tab" href="#sales" role="tab" aria-controls="sales" aria-selected="true">Sales</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" id="accomodation-tab" data-toggle="tab" href="#accomodation" role="tab" aria-controls="accomodation" aria-selected="false">Accomodations</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" id="ppa-tab" data-toggle="tab" href="#ppa" role="tab" aria-controls="ppa" aria-selected="false">PPAs</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" id="spa-tab" data-toggle="tab" href="#spa" role="tab" aria-controls="spa" aria-selected="false">SPAs</a>
+                        </li>
+                      </ul> -->
+  
+    <!-- Tab panes for the ACCOMODATION, PPAs, SPAs, SALES-->
+    <!-- <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="sales" role="tabpanel" aria-labelledby="sales-tab"> 
+          organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr, 
+          vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, 
+          sustainable jean shorts beard ut DIY ethical culpa terry richar 
+        </div>
+        <div class="tab-pane fade" id="accomodation" role="tabpanel" aria-labelledby="accomodation-tab"> 
+          Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. 
+          Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan 
+          four loko farm-to-table craft beer twee. Qui photo booth 
+        </div>
+        <div class="tab-pane fade" id="ppa" role="tabpanel" aria-labelledby="ppa-tab"> 
+          hardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint 
+          qui sapiente accusamus tattooed echo park. 
+        </div>
+        <div class="tab-pane fade" id="spa" role="tabpanel" aria-labelledby="spa-tab"> 
+          To help fit your needs, this works with -based markup, as shown above, 
+            or with any arbitrary “roll your own” markup. Note that if you’re using, 
+              you shouldn’t add role="tablist" directly to it. 
+        </div>
+      </div> -->
+
+
+                  <ul class="list-group" id="tl">
+
+<!-- 
+
+                      <li class="list-group-item">
+                        <div class="media mb-4">
+                          <img class="align-self-start mr-2 round" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E45x45%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="user image">
+                          <div class="media-body">
+                            <div class="d-flex w-100 justify-content-between">
+                              <h6 class="mb-1">AB/12F/9478</h6>
+                              <small class="">2 days ago</small>
+                            </div>
+                            <p>f f sad a bbbbbb</p>
+                            <div class="">
+                              <div class="media-content"></div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="align-items-center"></div>
+                      </li>
+
+
+                      <li class="list-group-item">
+                          <div class="media mb-4">
+                              <img class="align-self-start mr-2 round" data-src="holder.js/45x45?theme=thumb" alt="user image">
+                              <div class="media-body">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">List group item heading <br> <small>Umuahia, Abia State</small></h6>
+                                    <small>3 days ago</small>
+                                </div>
+                                <p class="">Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
+                                <p>Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+                                <div class="">
+                                    <div class="media-content">
+                                      <div class="app">
+                                          <img data-action="zoom" src="/5.png" class="img-fluid border" alt="Responsive image">
+                                          <img data-action="zoom" src="/3.png" class="img-fluid border" alt="Responsive image">
+                                          <img data-action="zoom" src="/6.PNG" class="img-fluid border" alt="Responsive image">
+                                      </div>
+                                    </div>
+                                </div>
+                                <div id="comment">
+                                  <hr>
+                                    <div class="media mt-3">
+                                        <a class="pr-2" href="#">
+                                          <img class="round" data-src="holder.js/45x45?theme=thumb" alt="img">
+                                        </a>
+                                        <div class="media-body">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h6 class="mb-1">List group item heading</h6>
+                                                <small>3 days ago</small>
+                                            </div>
+                                            <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
+                                            <div id="media-content">
+                                              <div class="app">
+                                                <img data-action="zoom" src="/4.jpg" class="img-fluid border"  alt="Responsive image">
+                                                <img src="/3.png" class="img-fluid border"  alt="Responsive image">
+                                              </div>
+                                          </div>
+                                          </div>
+                                      </div>
+                                </div>
+                              </div>
+                            </div>
+
+                           
+                      </li> 
+                    
+                    -->
+                      
+                    </ul>
+              </div>
+
+              <div class="col-sm-3">
+                
+                <div class="card" id="statscard">
+                  <div class="card-body text-center">
+                    <h6 class="card-title">Quick<i>ly</i> Report<i>s</i> </h6>
+                    <!-- <p class="card-text">
+                      <ul>
+                       
+                      </ul>
+                    </p>
+                    <a href="#" class="">Go somewhere</a>
+                    <a href="#" class="card-link">Card link</a>
+                    <a href="#" class="card-link">Another link</a> -->
+                    <div> <small id="tco"></small> </div>
+                  </div>
+                </div>
+                <!--they should see news about current events concerning corpers happening around them
+                
+                news like cds meetings happening now, send forth meetings happening now, due dates for PV Signing,
+                polls and results of incoming executives should be shown, congratulate 
+                corper so so n so for becoming the new secretary for ____ CDS, involve 
+                accounts for CDS Inspectors, so they can send messages too and verify 
+                people. Help the variuo CDS in ways we can; e.g. Publicity in gathering 
+                articules, reporting real-time events. (once somebody registers as being 
+                in publicity and editorial CDS, they can report real time events. like 
+                people in ENvironmetal CDS can take pictures of bad places around them 
+                and report to responsible Govt. officials etc. || people in drug and free 
+                cds can audit drugs in Pharmacies and road side sales ... people in law 
+                and legal aid can find SPAs at Law Courts etc. If Law offices need corpers, 
+                they should advertise on Corpers Online and easily find !!!!!!!! -- 
+                use this in other screnerious too (like other Organisation that need 
+                corpers for SPAs work, can put their requirements etc.) )-->
+              </div>
+            </div>
+          </div>
+    </main>
+
+</body>
+
+<script>
+
+/**
+bootstrap scripts
+*/
+$('#myTab a[href="#spa"]').on('click', function (e) {
+  e.preventDefault()
+  $(this).tab('show')
+  console.log('spa tab active');
+})
+
+$('#theTabs a[href="#ppa"]').on('click', function (e) {
+  e.preventDefault()
+  $(this).tab('show')
+  console.log('ppa tab active');
+})
+
+$('#theTabs a[href="#accomodation"]').on('click', function (e) {
+  e.preventDefault()
+  $(this).tab('show')
+  console.log('ppa tab active');
+})
+
+$('#theTabs a[href="#sales"]').on('click', function (e) {
+  e.preventDefault()
+  $(this).tab('show')
+  console.log('ppa tab active');
+})
+
+$('#theTabs a[href="#spa"]').on('click', function (e) {
+  e.preventDefault()
+  $(this).tab('show')
+  console.log('ppa tab active');
+})
+
+
+
+
+
+var pathArray = window.location.pathname.split('/');
+console.log('user = ' + pathArray[2]);
+document.title = pathArray[2] + " Online!" ;
+document.getElementById('editprofile').href = '/profile/' + pathArray[2] ;
+
+var socket = io('/user'); //connect to socket.io on /user but somehow it still connects with\to /
+
+
+
+
+socket.on('connect', function(){
+  console.log('we are connected');
+  
+  socket.emit('came online', { user: pathArray[2] });// send 'came online' to everyone else
+  console.log('the socket object:', socket);
+});
+
+
+socket.on('disconnect', function(){
+  //find a really good way to handle sessions - in server and client -- if user disconnects for too long and session expires, take user to login, if user closes this window, he shouldn't be able to open it unless it's thesame computer  --- just handle sessions effectively
+  console.log('we are disconnected, offline');
+});
+
+userlocation = ''; usersc = '';
+
+socket.on('corper profile', function (data){
+  console.log('got corper\'s profile', data);
+  var tli = document.getElementById("profile");
+
+  //tli.children //the list items
+
+  //set userlocation and usersc variable
+  userlocation = /*data.post.region_street + ", " +*/ (data.post.city_town ? data.post.city_town : '') + ", " + data.post.servicestate ;
+  usersc = data.post.statecode ;
+
+  tli.children[0].children[1].innerText = data.post.region_street + ", " + data.post.city_town + ", " + data.post.servicestate ;
+
+  tli.children[1].children[1].innerText = data.post.batch ;
+
+  tli.children[2].children[1].innerText = (data.post.name_of_ppa ? data.post.name_of_ppa : '?') ;
+  
+  
+  //handle this later
+  if (data.post.spaornot == 'no') {
+    //tli.children[3].style.display = 'none' ;  
+  } else {
+    tli.children[3].children[1].innerText = data.post.name_of_spa ;
+  }
+  //document.getElementById('tco').innerHTML = data.count + ' corper'+ (data.count == 1 ? '' : 's')  + ' online' ;
+});
+
+
+socket.on('corpersCount', function (data){
+  console.log('got corpers count');
+  //(data.count == 1 ? '' : 's') adds 's' to 'corpers' if there are more than one corpers online.
+  document.getElementById('tco').innerHTML = data.count + ' corper'+ (data.count == 1 ? '' : 's')  + ' online' ;
+});
+
+
+//when we receive a boardcast message
+socket.on('boardcast message', function (data) {
+console.log('received boardcast message', data);
+
+var feeds = document.getElementById('tl');
+
+var newFeed = document.createElement("li");
+newFeed.setAttribute('class', 'list-group-item');
+
+//chaining is not good for appendChild()
+
+
+var h = document.createElement('div');
+h.setAttribute('class', '');
+var g = document.createElement('div');
+g.setAttribute('class', 'media-content');
+h.appendChild(g);
+
+var gg = document.createElement('div');
+gg.setAttribute('class', 'app');
+//------------------
+if (data.post.images) {
+
+  for (var i = 0; i < data.post.images.length; i++){
+    //var ii = 'img' + i.toString();
+    ii = document.createElement('img');
+    ii.setAttribute('class', 'img-fluid border');
+    ii.setAttribute('src', data.post.images[i]);
+    ii.setAttribute('alt', 'user\'s posted image');
+    gg.appendChild(ii);
+  }
+  
+  g.appendChild(gg);
+  
+}
+
+
+/*
+var ii = document.createElement('img');
+ii.setAttribute('class', 'col-4');
+ii.setAttribute('data-src','holder.js/64x64?theme=thumb');
+ii.setAttribute('alt', 'user\'s posted image');
+*/
+
+var e = document.createElement('div');
+e.setAttribute('class', 'd-flex w-100 justify-content-between');
+
+var z = document.createElement('h6');
+z.setAttribute('class', 'mb-1');
+//z.appendChild(document.createTextNode(data.post.sender));
+z.innerHTML = data.post.statecode +' <br> <small>' + data.post.location + '</small>' ;
+
+var y = document.createElement('small');
+y.setAttribute('class', '');
+y.appendChild(document.createTextNode(data.post.age));
+
+e.appendChild(z);
+e.appendChild(y);
+
+var k = document.createElement("p");
+var kk = document.createTextNode(data.post.text);
+k.appendChild(kk);
+var d = document.createElement('div');
+d.setAttribute('class', 'media-body');
+d.appendChild(e);
+d.appendChild(k); //the text from sender
+d.appendChild(h);
+
+
+
+var c = document.createElement('img');
+c.setAttribute('class', 'align-self-start mr-2 round');
+//c.setAttribute('data-src','holder.js/64x64');
+
+c.setAttribute('src','data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E45x45%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+c.setAttribute('alt', 'user image');
+
+
+var b = document.createElement('div');
+b.setAttribute('class', 'align-items-center');
+
+
+var a = document.createElement('div');
+a.setAttribute('class', 'media mb-4');
+a.appendChild(c);
+a.appendChild(d);
+
+newFeed.appendChild(a);
+newFeed.appendChild(b);
+
+//right now, we'll append every post together
+feeds.insertBefore(newFeed, feeds.children[0]);
+
+//later we'll break them into tabs
+switch(data.post.type) {
+  case 'sale':
+    break;
+  case 'accomodation':
+    break;
+  case 'LOCATIONorROUTE':
+    break;
+  case 'PPAorSPA':
+    break;
+}
+
+// send 'my other event' to everyone else
+
+//find a way to record the number of people that has seen a particular ad/post. and show the sender.
+socket.emit('seen', { my: 'saw data, because we recieved it' });
+});
+
+</script>
+<script>
+
+
+    
+var txtFld = document.getElementById("TXT");
+/* 
+    var handleKey = function(evt) {
+      console.log('keyup on #TXT field');
+      if (evt.keyCode === 13 || evt.keyCode === 14) {
+        sendMsg();
+        console.log('sent');
+      }
+    }
+
+    txtFld.addEventListener("keyup", handleKey, false );
+*/  
+//----------------------
+
+//some sort of global variables
+var previewParent = document.getElementById('previewParent');
+var msg = {
+  images: [],
+  videos: []
+};
+var sendBtn = document.getElementById("SEND");
+function sendMsg(){
+
+  console.log('sendMsg function running');
+
+    msg.text = txtFld.value,
+    msg.type = "random", 
+    msg.post_time = Date.now(),
+    msg.sender = pathArray[2],
+    msg.location = userlocation,
+    msg.statecode = usersc
+  ;
+  socket.emit('boardcast message', msg);
+  console.log(msg, 'boardcast sent so append to sender\'s timeline');
+
+  //append sent message to sender's timeline (not yet !! maybe when we do we'll make user know it hasn't been done)
+  //conn.send(JSON.stringify(msg));
+  //conn.send(JSON.stringify(savePoint));
+  txtFld.value = "";
+  //close modal
+  $('#postModalSale').modal('hide')
+  //show that post has been made
+
+
+  //after post has been made and modal closed
+  $('#postModalSale').on('hidden.bs.modal', function (e) {
+  // do something...
+  console.log('dsiusussi hideen');
+  
+  //remove the attached image from the div and the input tag, empty the msg object
+  
+  //if there's an attached image, remove it, we don't want errors incase the corper didn't pick any pictures
+  (previewParent.firstElementChild ? previewParent.removeChild(previewParent.firstElementChild) : {} ) ;
+
+  document.getElementById('attachments').reset();
+  if (msg.images.length > 0 ) {
+    msg.images = [];
+  }
+})
+}
+
+sendBtn.addEventListener("click", sendMsg, false);
+
+
+
+  /*Dynamically adding a change listener to the img input button*/
+  var imgBtn = document.getElementById("IMG");
+  imgBtn.addEventListener("change", handleImages, false);
+  function handleImages() {
+    //var preview = document.getElementById('preview'); 
+    var preview = document.createElement('div');
+    preview.setAttribute('id', 'preview');
+    preview.setAttribute('class', 'app');
+    console.log('created!');
+
+    var fileList = this.files; /* now you can work with the file list */
+    console.log('picture(s) picked!');
+
+    for (var i = 0; i < fileList.length; i++) {
+      var file = fileList[i];
+
+      
+      
+      if (file.type.startsWith('image/')){ 
+        var img = document.createElement("img");
+        img.classList.add("img-fluid", "border"); //add classes 'img-fluid' and 'border'
+        
+        preview.appendChild(img);
+        /*Next, we establish the FileReader to handle asynchronously 
+        loading the image and attaching it to the img element. 
+        After creating the new FileReader object, we set up its 
+        onload function and then call readAsDataURL() to start the 
+        read operation in the background. When the entire contents 
+        of the image file are loaded, they are converted into 
+        a data: URL which is passed to the onload callback. 
+        Our implementation of this routine sets the img element's 
+        src attribute to the loaded image which results in the image 
+        appearing in the thumbnail on the user's screen.*/
+        var reader = new FileReader();
+        reader.onload = (
+          function(aImg) { 
+            return function(e) { 
+              aImg.src = e.target.result;
+              //e.targer.result is the base64 of the image
+              //msg.images[i] = aImg.src ;
+              //either of the two , but wharever method, be able to remove from array when user cancels.
+              msg.images.push(e.target.result);
+              console.log(msg);
+            }; 
+          })(img);
+        reader.readAsDataURL(file);
+      }
+      
+
+    }
+
+
+    //append the div tag with id=preview
+    previewParent.appendChild(preview);
+  }
+
+/*Dynamically adding a change listener to the video input button ---- still tryna get here to work*/
+  var vidBtn = document.getElementById("VID");
+  vidBtn.addEventListener("change", handleVideos, false);
+  function handleVideos() {
+    var fileList = this.files; /* now you can work with the file list */
+    console.log('video(s) picked!');
+
+    for (var i = 0; i < fileList.length; i++) {
+      var file = fileList[i];
+
+      var preview = document.getElementById('preview');
+      
+     //do the same with videos
+      if(file.type.startsWith('video/')){
+        var vid = document.createElement("video");
+        vid.setAttribute('height', '240');
+        vid.setAttribute('width', "320");
+        vid.setAttribute('controls', 'true');
+        var sr = document.createElement("source");
+        
+        //vid.classList.add("", ""); //add classes 'vid-fluid' and 'obj'
+        
+        vid.append(sr);
+        preview.appendChild(vid);
+        var reader = new FileReader();
+        reader.onload = (
+          function(avid) { 
+            return function(e) { 
+              sr.src = e.target.result;
+              sr.setAttribute('type', "video/mp4");
+              console.log(e.target.result);
+              //msg.images[i] = e.target.result ;
+              //either of the two , but wharever method, be able to remove from array when user cancels.
+              msg.videos.push(e.target.result);
+              console.log(msg);
+            }; 
+          })(vid);
+        reader.readAsDataURL(file);
+      }
+      
+
+    }
+    //append the div tag with id=preview
+    previewParent.appendChild(preview);
+  }
+  
+      
+
+
+  //work on this bit alot
+
+  var findBtn = document.getElementById("findme");
+  function locate(){
+    var savePoint = {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          
+        ]
+      }
+    }
+
+    var geoPointError = function(error) {
+          
+      console.log(error);
+      switch(error.code) {
+        case error.TIMEOUT:
+          //try again with a longer timeout
+          navigator.geolocation.getCurrentPosition(geoPoint, geoPointError, geoOptionsLongTime );
+          break;
+        case error.PERMISSION_DENIED:
+          // The user didn't accept the callout
+          showNudgeBanner();
+          //(put loc function in showNudgeBanner() callback) ?, so when corper click ok\close for the banner, we get loc
+          navigator.geolocation.getCurrentPosition(geoPoint, geoPointError, options);
+          break;
+        case error.POSITION_UNAVAILABLE:
+          //say there's no network n try again when there is ?!!!?
+          window.addEventListener('online',  navigator.geolocation.getCurrentPosition(geoPoint, geoPointError));
+          break;
+        case 0://unknown error
+          //just try again
+          locate();
+          break;
+      }
+    };
+
+    var geoPoint = function(position) {      
+
+      // Do magic with location
+      startPos = position;
+      console.log('normal position', position);
+      savePoint.properties = position.coords ;
+      savePoint.geometry.coordinates.push(startPos.coords.longitude);
+      savePoint.geometry.coordinates.push(startPos.coords.latitude);
+      console.log(savePoint) ;
+      
+      //do the image
+      var img = new Image();
+      // | Retrieve a map at gotten longitude and latitude, with zoom 14.24, bearing 0, and pitch 60. The map will be 460 pixels wide and 460 pixels high (for mobile screen, 310px by 290px)
+      img.src = "https://api.mapbox.com/styles/v1/mapbox/streets-v10/static/pin-l(" + startPos.coords.longitude + "," + startPos.coords.latitude + ")/" + startPos.coords.longitude + "," + startPos.coords.latitude + ",14.25,0,60/310x290?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg" ;
+      var preview = document.createElement('div');
+      preview.setAttribute('id', 'preview');
+      preview.setAttribute('class', 'app');
+      preview.appendChild(img);
+      previewParent.appendChild(preview);
+      msg.images.push(img.src);
+      msg.type = 'location';
+      //sendMsg();
+
+      //empty the savePoint variable after success
+      savePoint.geometry.coordinates.pop();
+      savePoint.geometry.coordinates.pop();
+      savePoint.properties = {};
+    };
+    
+    navigator.geolocation.getCurrentPosition(geoPoint, geoPointError);
+  }
+
+  findBtn.addEventListener("click", locate, false);
+</script>
+</html>

@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+
+    <title>
+      
+        @CorperUsername Online!
+      
+    </title>
+    <link rel="stylesheet" type="text/css" media="screen" href="/bootstrap.css" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <script src="jquery-slim.min.js"></script>
+    <script src="bootstrap.bundle.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js" integrity="sha384-pjaaA8dDz/5BgdFUPX6M/9SUZv4d12SUPF0axWc+VRZkx5xU3daN+lYb49+Ax+Tl" crossorigin="anonymous"></script>
+
+    <script src="bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+    <script src="holder.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.4/holder.js" integrity="sha256-crfkMD0BL2TtiwpbIlXF/SVmGSvOtgbMM8GBkibVKyc=" crossorigin="anonymous"></script>
+
+    <style>
+      .round{
+        border-radius: 100%;
+      }
+      .add{/*to make the edges of buttons to be rounded*/
+        border-radius: 1rem;
+      }
+      small{
+        font-size: 70%;
+      }
+      .maincontent {
+        
+      }
+      .fileUpload {
+        position: relative;
+        overflow: hidden;
+        margin: 10px;
+      }
+      .fileUpload input.upload {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0;
+        filter: alpha(opacity=0);
+      }
+    </style>
+    <style>
+      @-ms-viewport {
+        width: device-width;
+      }
+
+      @media (min-width: 576px) {
+        .container {
+          max-width: 540px;
+        }
+      }
+      
+      @media (min-width: 768px) {
+        .container {
+          max-width: 720px;
+        }
+      }
+      
+      @media (min-width: 992px) {
+        .container {
+          max-width: 960px;
+        }
+      }
+      
+      @media (min-width: 1200px) {
+        .container {
+          max-width: 1140px;
+        }
+      }
+    </style>
+  </head>
+  <script src="/socket.io/socket.io.js"></script>
+	<nav class="navbar navbar-expand-sm navbar-light bg-light active">
+		<a class="navbar-brand" href="#">Corpers Online</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarsExample03">
+
+      <!-- Nav tabs for the ACCOMODATION, PPAs, SPAs, SALES -->
+      <ul class="nav navbar-nav mr-auto" id="myTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="sales-tab" data-toggle="tab" href="#sales" role="tab" aria-controls="sales" aria-selected="true">Sales</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="accomodation-tab" data-toggle="tab" href="#accomodation" role="tab" aria-controls="accomodation" aria-selected="false">Accomodations</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="ppa-tab" data-toggle="tab" href="#ppa" role="tab" aria-controls="ppa" aria-selected="false">PPAs</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="spa-tab" data-toggle="tab" href="#spa" role="tab" aria-controls="spa" aria-selected="false">SPAs</a>
+          </li>
+        </ul>
+
+
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="#">About</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#">Contact</a>
+				</li>
+			</ul>
+			<form class="form-inline my-2 my-md-0 pr-2">
+				<input class="form-control" type="text" placeholder="Search">
+      </form>
+      
+      <!-- Button trigger modal for posting-->
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#postModal">Post</button>
+
+		</div>
+  </nav>
+  
+
+              <!-- the Modal for posting -->
+              <div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="postModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Create post</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+  
+                      <textarea type="text" class="form-control my-3" placeholder="Write a message" id="TXT"></textarea>
+                          
+                          <div id="preview" class=" container row"></div>
+                          
+                          <div class="d-flex align-items-center">
+                            <div class="mr-auto">
+                              <form action="" method="">
+                                
+                                  <div class="fileUpload btn btn-light">
+                                    <span>Img</span>
+                                    <input type="file" accept="images/*" class="upload" multiple id="IMG">
+                                  </div>
+                                  <div class="fileUpload btn btn-light">
+                                    <span>Vid</span>
+                                    <input type="file" accept="video/*" class="upload" id="VID">
+                                  </div>
+  
+                                  <!--the input for giving routes should offer places suggestions as user types. 
+                                  use appropriate ui. form place to place with side notes and advice.-->
+                                  <!--instead of putting like, nooo!!!!! put affrimations, other corpers 
+                                  should affirm other prople posts !!! increases trust. possible give alternative, 
+                                  and even say when something is a lie or fasle or not entirely true.-->
+                                  <button type="button" class="btn btn-light" id="trackme">Share Route</button>
+                                  <button type="button" class="btn btn-light" id="findme">Share Location</button> 
+                                  <!--like malls/shops apartments markets parks/bustops or popular pickup and dropoff 
+                                  points. -->
+  
+  
+                              </form>
+                            </div>
+                          </div>
+  
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Save as draft</button>
+                      <button type="button" class="btn btn-primary" id="SEND">Post</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+
+<body class="bob">
+
+    <main role="main">
+        <div class="pt-3 maincontent">
+            <div class="row">
+              <div class="col-sm-3 text-center">
+                One of three columns
+                <!--put the corper's information. let them see their profile (and be able to change it)-->
+              </div>
+
+              <div class="col-sm-6">
+
+                  <!--in this middle part, we'll give various toggle tabs for location of ACCOMODATION, PPAs, SPAs, SALES-->
+
+                    <!-- Nav tabs for the ACCOMODATION, PPAs, SPAs, SALES -->
+                    <ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
+                        <li class="nav-item">
+                          <a class="nav-link active" id="sales-tab" data-toggle="tab" href="#sales" role="tab" aria-controls="sales" aria-selected="true">Sales</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" id="accomodation-tab" data-toggle="tab" href="#accomodation" role="tab" aria-controls="accomodation" aria-selected="false">Accomodations</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" id="ppa-tab" data-toggle="tab" href="#ppa" role="tab" aria-controls="ppa" aria-selected="false">PPAs</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" id="spa-tab" data-toggle="tab" href="#spa" role="tab" aria-controls="spa" aria-selected="false">SPAs</a>
+                        </li>
+                      </ul>
+  
+    <!-- Tab panes for the ACCOMODATION, PPAs, SPAs, SALES-->
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="sales" role="tabpanel" aria-labelledby="sales-tab"> 
+          organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr, 
+          vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, 
+          sustainable jean shorts beard ut DIY ethical culpa terry richar 
+        </div>
+        <div class="tab-pane fade" id="accomodation" role="tabpanel" aria-labelledby="accomodation-tab"> 
+          Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. 
+          Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan 
+          four loko farm-to-table craft beer twee. Qui photo booth 
+        </div>
+        <div class="tab-pane fade" id="ppa" role="tabpanel" aria-labelledby="ppa-tab"> 
+          hardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint 
+          qui sapiente accusamus tattooed echo park. 
+        </div>
+        <div class="tab-pane fade" id="spa" role="tabpanel" aria-labelledby="spa-tab"> 
+          To help fit your needs, this works with -based markup, as shown above, 
+            or with any arbitrary “roll your own” markup. Note that if you’re using, 
+              you shouldn’t add role="tablist" directly to it. 
+        </div>
+      </div>
+
+
+                  <ul class="list-group" id="tl">
+                      <li class="list-group-item">
+                        jisdnundncsdicnisdsuncsdicsdcis fdsiuf uwefi nweninweuwi
+                      </li>
+                      <li class="list-group-item">
+                          <div class="media mb-4">
+                              <img class="align-self-start mr-2 round" src="holder.js/64x64?theme=thumb" alt="img">
+                              <div class="media-body">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">List group item heading</h6>
+                                    <small class="">3 days ago</small>
+                                </div>
+                                <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
+                                <p>Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+                                <div class=""><!--use grid classes [but it's not effective]-->
+                                    <div id="media-content row">
+                                        <img class="col-4" data-action="zoom" src="testimg/4.jpg" class="img-fluid border" alt="Responsive image">
+                                        <img class="col-4" data-action="zoom" src="testimg/3.png" class="img-fluid border" alt="Responsive image">
+                                        <img class="col-4" data-action="zoom" src="/testimg/6.PNG" class="img-fluid border" alt="Responsive image">
+                                    </div>
+                                </div>
+                                <div id="comment">
+                                  <hr>
+                                    <div class="media mt-3">
+                                        <a class="pr-2" href="#">
+                                          <img class="round" src="/holder.js/50x50?theme=thumb" alt="img">
+                                        </a>
+                                        <div class="media-body">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h6 class="mb-1">List group item heading</h6>
+                                                <small>3 days ago</small>
+                                            </div>
+                                            <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
+                                            <div id="media-content">
+                                              <img data-action="zoom" src="testimg/4.jpg" class=" border" style="width:50%; height:100%;" alt="Responsive image">
+                                              <img src="testimg/3.png" class=" border" style="width:50%; height:100%;" alt="Responsive image">
+                                          </div>
+                                          </div>
+                                      </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="align-items-center">
+                                <small class="text-muted">3 days ago</small>
+                                <span class="badge badge-primary badge-pill">1</span>
+                                <div class="badge badge-primary badge-pill">1</div>
+                                <div class="btn badge badge-info">1</div>
+                            </div>
+                      </li>
+                      <div class="list-group-item-flush">how ads show ?? Morbi leo risus</div>
+                      <li class="list-group-item">Porta ac consectetur ac</li>
+                      <li class="list-group-item">
+                        amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. 
+                        Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. 
+                        Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue 
+                        felis in faucibus.
+                      </li>
+                    </ul>
+              </div>
+
+              <div class="col-sm-3 text-center">
+                One of three columns
+                <!--they should see news about current events concerning corpers happening around them
+                
+                news like cds meetings happening now, send forth meeting happening now, 
+                polls and results of incoming executives should be shown, congratulate 
+                corper so so n so for becoming the new secretary for ____ CDS, involve 
+                accounts for CDS Inspectors, so they can send messages too and verify 
+                people. Help the variuo CDS in ways we can; e.g. Publicity in gathering 
+                articules, reporting real-time events. (once somebody registers as being 
+                in publicity and editorial CDS, they can report real time events. like 
+                people in ENvironmetal CDS can take pictures of bad places around them 
+                and report to responsible Govt. officials etc. || people in drug and free 
+                cds can audit drugs in Pharmacies and road side sales ... people in law 
+                and legal aid can find SPAs at Law Courts etc. If Law offices need corpers, 
+                they should advertise on Corpers Online and easily find !!!!!!!! -- 
+                use this in other screnerious too (like other Organisation that need 
+                corpers for SPAs work, can put their requirements etc.) )-->
+              </div>
+            </div>
+          </div>
+    </main>
+
+</body>
+
+<script>
+var socket = io('/user'); //connect to socket.io on /user but somehow it still connects with\to /
+
+socket.on('connect', function(){
+  console.log('we are connected');
+  socket.emit('cameOnline', { nowOnline: 'what did i miss?', page: '/user' });// send 'cameOnline' to everyone else
+});
+
+//when we receive a boardcast message
+socket.on('boardcast message', function (data) {
+console.log('received boardcast message', data);
+
+var feeds = document.getElementById('tl');
+
+var newFeed = document.createElement("li").setAttribute('class', 'list-group-item');
+
+//chaining is not good for appendChild()
+
+
+//next two (i.e. e and f) inside d
+var ee = document.createTextNode("who."); 
+var e = document.createElement('h6');
+e.setAttribute('class', 'mb-1');
+e.appendChild(ee);//has text node of who posted
+
+var ff = document.createTextNode("Time"); 
+var f = document.createElement('small');
+f.appendChild(ff); //has text node of time range of post
+
+var gg = document.createTextNode("This is a paragraph."); 
+var g = document.createElement('p');
+g.appendChild(gg); //has text node of the posted text
+
+var d = document.createElement('div');
+d.setAttribute('class', 'd-flex w-100 justify-content-between');
+d.appendChild(e);
+var c = document.createElement('div');
+c.setAttribute('class', 'media-body');
+c.appendChild(d);
+var b = document.createElement('img');
+b.setAttribute('class', 'align-self-start mr-2 round');
+b.appendChild(c);
+var a = document.createElement('div');
+a.setAttribute('class', 'media mb-4');
+a.appendChild(b);
+
+
+//var newFeed = document.createElement("li").setAttribute('class', 'list-group-item').appendChild( 'dddddddddddddddd' );
+//document.createElement('div').setAttribute('class', 'media').appendChild(document.createElement('img').setAttribute('class', 'align-self-start mr-2 round').appendChild(document.createElement('div').setAttribute('class', 'media-body').appendChild(data.date))  )
+var node = document.createElement("LI");                 // Create a <li> node
+var textnode = document.createTextNode("Water");         // Create a text node
+node.appendChild(textnode);                              // Append the text to <li>
+
+
+feeds.insertBefore(a ,feeds.children[0]) ;
+
+switch(data.type) {
+  case 'sale':
+    feeds.insertBefore(node ,feeds.children[0]) ;
+    break;
+  case 'accomodation':
+    break;
+  case 'LOCATIONorROUTE':
+    break;
+  case 'PPAorSPA':
+    break;
+}
+
+// send 'my other event' to everyone else
+
+//find a way to record the number of people that has seen a particular ad/post. and show the sender.
+socket.emit('seen', { my: 'saw data, because we recieved it' });
+});
+      </script>
+<script>
+
+
+    
+var txtFld = document.getElementById("TXT");
+/* 
+    var handleKey = function(evt) {
+      console.log('keyup on #TXT field');
+      if (evt.keyCode === 13 || evt.keyCode === 14) {
+        sendMsg();
+        console.log('sent');
+      }
+    }
+
+    txtFld.addEventListener("keyup", handleKey, false );
+*/  
+//----------------------
+
+
+var sendBtn = document.getElementById("SEND");
+function sendMsg(){
+
+  console.log('sendMsg function running');
+  var msg = {
+    text: txtFld.value,
+    type: "post",
+    images: [],
+    videos:[],
+    date: new Date(Date.now()).toString()
+  };
+  socket.emit('boardcast message', msg);
+  console.log('boardcast sent so append to sender\'s timeline');
+
+  //append sent message to sender's timeline
+  //conn.send(JSON.stringify(msg));
+  //conn.send(JSON.stringify(savePoint));
+  txtFld.value = "";
+  //close modal
+  $('#postModal').modal('hide')
+  //show that post has been made
+}
+
+sendBtn.addEventListener("click", sendMsg, false);
+
+
+
+  /*Dynamically adding a change listener to the img input button*/
+  var imgBtn = document.getElementById("IMG");
+  imgBtn.addEventListener("change", handleImages, false);
+  function handleImages() {
+    var fileList = this.files; /* now you can work with the file list */
+    console.log('picture(s) picked!');
+
+    for (var i = 0; i < fileList.length; i++) {
+      var file = fileList[i];
+
+      var preview = document.getElementById('preview');
+      
+      if (file.type.startsWith('image/')){ 
+        var img = document.createElement("img");
+        img.classList.add("img-fluid", "obj"); //add classes 'img-fluid' and 'obj'
+        img.file = file;
+        preview.appendChild(img);
+        /*Next, we establish the FileReader to handle asynchronously 
+        loading the image and attaching it to the img element. 
+        After creating the new FileReader object, we set up its 
+        onload function and then call readAsDataURL() to start the 
+        read operation in the background. When the entire contents 
+        of the image file are loaded, they are converted into 
+        a data: URL which is passed to the onload callback. 
+        Our implementation of this routine sets the img element's 
+        src attribute to the loaded image which results in the image 
+        appearing in the thumbnail on the user's screen.*/
+        var reader = new FileReader();
+        reader.onload = (
+          function(aImg) { 
+            return function(e) { 
+              aImg.src = e.target.result;
+              console.log(e.target.result);
+              //msg.images[i] = aImg.src ;
+              //either of the two , but wharever method, be able to remove from array when user cancels.
+              msg.images.push(aImg.src);
+              console.log(msg);
+            }; 
+          })(img);
+        reader.readAsDataURL(file);
+      }
+
+      //do the same with videos
+      if(file.type.startsWith('video/')){
+        var img = document.createElement("img");
+        img.classList.add("img-fluid", "obj"); //add classes 'img-fluid' and 'obj'
+        img.file = file;
+        preview.appendChild(img);
+        var reader = new FileReader();
+        reader.onload = (
+          function(aImg) { 
+            return function(e) { 
+              aImg.src = e.target.result;
+              console.log(e.target.result);
+              //msg.images[i] = aImg.src ;
+              //either of the two , but wharever method, be able to remove from array when user cancels.
+              msg.images.push(aImg.src);
+              console.log(msg);
+            }; 
+          })(img);
+        reader.readAsDataURL(file);
+      }
+      
+
+    }
+
+  }
+
+
+  
+
+
+  function locate(){
+    var savePoint = {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          
+        ]
+      }
+    }
+
+    var geoPointError = function(error) {
+          
+      console.log(error);
+      switch(error.code) {
+        case error.TIMEOUT:
+          //try again with a longer timeout
+          navigator.geolocation.getCurrentPosition(geoPoint, geoPointError, geoOptionsLongTime );
+          break;
+        case error.PERMISSION_DENIED:
+          // The user didn't accept the callout
+          showNudgeBanner();
+          //(put loc fun in showNudgeBanner() callback) ?, so when user click ok\close for the banner, we get loc
+          navigator.geolocation.getCurrentPosition(geoPoint, geoPointError, options);
+          break;
+        case error.POSITION_UNAVAILABLE:
+          //say there's no network n try again when there is ?!!!?
+          window.addEventListener('online',  navigator.geolocation.getCurrentPosition(geoPoint, geoPointError));
+          break;
+        case 0://unknown error
+          //just try again
+          break;
+      }
+    };
+
+    var geoPoint = function(position) {
+      
+
+      // Do magic with location
+      startPos = position;
+      console.log(position);
+      savePoint.geometry.coordinates.push(startPos.coords.longitude);
+      savePoint.geometry.coordinates.push(startPos.coords.latitude);
+      
+    };
+    
+    navigator.geolocation.getCurrentPosition(geoPoint, geoPointError);
+    
+    savePoint.geometry.coordinates.pop();
+    savePoint.geometry.coordinates.pop();
+  }
+</script>
+</html>
