@@ -1,0 +1,409 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>Corpers Online, Log In.</title>
+		
+		<link rel="shortcut icon" type="image/png" href="logo/new/logo32x32.png"/>
+    <!-- for-mobile-apps -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="Register on Corper Online and get to safely Buy, Sell, get accomodation and location/route info from Corpers" />
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+		<!-- //for-mobile-apps -->
+		
+		<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet"
+			integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+		
+		<!-- <script src="/jquery-3.3.1.min.js"></script> -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+			integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+		<!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+		    crossorigin="anonymous"></script> -->
+		
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"
+			integrity="sha384-pjaaA8dDz/5BgdFUPX6M/9SUZv4d12SUPF0axWc+VRZkx5xU3daN+lYb49+Ax+Tl" crossorigin="anonymous"></script>
+		
+		
+		<!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+		    crossorigin="anonymous"></script> -->
+		<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+			integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+		
+		<!-- <script src="/font-awesome.min.css"></script> -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.4/holder.js"
+			integrity="sha256-crfkMD0BL2TtiwpbIlXF/SVmGSvOtgbMM8GBkibVKyc=" crossorigin="anonymous"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		
+    <!-- <link rel="stylesheet" type="text/css" media="screen" href="/bootstrap.css" />
+    <script src="/jquery-slim.min.js"></script>
+    <script src="/bootstrap.min.js"></script>
+    <script src="/holder.min.js"></script> -->
+
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        
+    </style>
+</head>
+
+
+
+<body>
+	    	<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 bg-white border-bottom box-shadow">
+				<h5 class="my-0 mr-md-auto font-weight-normal"><a href="/">Corpers Online</a></h5>
+				<nav class="my-2 my-md-0 mr-md-3">
+					<a class="p-2 text-dark" href="#">Contact</a>
+					<a class="p-2 text-dark" href="#">About</a>
+					<a class="p-2 text-dark" href="#">Log In</a>
+					<a class="p-2 text-dark" href="/signup">Sign up</a>
+				</nav>
+				
+			  </div>
+	<main role="main">
+		
+				<div>
+						<div class="jumbotron container bg-white">
+								<h1 class="display-4">Welcome back, Corper!</h1>
+								<p class="lead">We can't wait for you to login in.</p>
+								<hr class="my-4">
+								<p>Ever thought of inviting a fellow corper? <a href="/signup">Or wanna be a Corper Online?</a> </p>
+								
+								<!--  --> 
+								<form id="loginform" class="container" action="/login" method="POST" enctype="application/x-www-form-urlencoded">
+										<div class="form-row">
+												<div class="col-md-4 mb-3">
+												  <label for="email">State code</label>
+												  <input name="statecode" type="text" class="form-control text-uppercase" autocomplete="" autofocus id="statecode" placeholder="AB/16A/2639" required>
+													<div class="invalid-feedback">
+														Wrong state code
+													</div>
+												</div>
+												<div class="col-md-4 mb-3">
+												  <label for="password">Password</label>
+												  <input name="password" type="password" class="form-control" autocomplete="current-password" id="password" placeholder="Password" required>
+													<div class="invalid-feedback">
+														or password.
+													</div>
+												</div>
+											  </div>
+										<!-- 
+											<div class="form-group form-check">
+												<input type="checkbox" class="form-check-input" id="knowme">
+												<label class="form-check-label" for="knowme">Remember me</label>
+											</div> 
+										-->
+											<input type="submit" class="btn btn-primary" value="Submit">
+									</form>
+						</div>
+
+
+
+
+				</div>
+
+
+	</main>
+
+
+	<footer class="position-sticky text-center pt-3"> <!-- fixed-bottom only on big screens | position-sticky on small screens -->
+      <p>Corpers Online built by <a href="#">Corpers</a> for <a href="#">Corpers</a>.</p>
+      <p>
+        <a href="#"> &copy; <script>document.write(new Date().getFullYear())</script></a>
+      </p>
+	</footer>
+
+
+	<script>
+
+		/* 	function logit() {
+				var jjk = new FormData(document.getElementById("loginform"));
+				console.log('the form', jjk);
+				// JSON.stringify({ statecode: document.forms['login'].elements[0].value, password: document.forms['login'].elements[1].value })
+				fetch('/login', {
+					method: 'POST',
+					headers: {
+						"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+					},
+					body: 'statecode='+ document.forms['login'].elements[0].value+'&password=' + document.forms['login'].elements[1].value
+				})
+					.then(response => {
+						console.log(response);
+						if (response.status == 406) {
+							document.getElementsByClassName('invalid-feedback')[0].style.display = 'block';
+							document.getElementsByClassName('invalid-feedback')[1].style.display = 'block';
+						}
+					})
+					.catch(error => console.error('Error:', error))
+					.then(response => console.log('Success:', JSON.stringify(response)));
+			}
+			// ...and take over its submit event.
+		
+
+			document.forms['login'].addEventListener("submit", function (event) {
+				event.preventDefault(); // the default behaviour is refreshing the page and adding search params to the url
+
+				logit();
+			}, false, true);
+ */
+			
+	</script>
+	<script>
+		if ( 'URLSearchParams' in window ) {
+			var urlParams = new URLSearchParams(window.location.search);
+			// URLSearchParams also provides familiar Object methods like keys(), values(), and entries():
+			if (urlParams.has('l')) {
+				document.getElementsByClassName('invalid-feedback')[0].style.display = 'block';
+				document.getElementsByClassName('invalid-feedback')[1].style.display = 'block';
+			}
+		} else{
+
+			// While URLSearchParams is ideal, not all browsers support that API.
+			function getUrlParameter(name) {
+				name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+				var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+				var results = regex.exec(location.search);
+				return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+			};
+			if (getUrlParameter('l') && ( getUrlParameter('l') == 'n' )) {
+				document.getElementsByClassName('invalid-feedback')[0].style.display = 'block';
+				document.getElementsByClassName('invalid-feedback')[1].style.display = 'block';
+			}
+		}
+		
+	</script>
+</body>
+
+</html>
+
+<!--
+	https://www.regextester.com
+	Top Regular Expressions
+	Cheat Sheet
+	Character classes
+
+
+	.							any character except newline
+	\w \d \s			word, digit, whitespace
+	\W \D \S			not word, digit, whitespace
+	[abc]					any of a, b, or c
+	[^abc]				not a, b, or c
+	[a-g]					character between a & g
+
+	Anchors
+
+
+	^abc$					start / end of the string
+	\b						word boundary
+
+	Escaped characters
+
+
+	\. \* \\			escaped special characters
+	\t \n \r			tab, linefeed, carriage return
+	\u00A9				unicode escaped ©
+
+	Groups & Lookaround
+
+
+	(abc)					capture group
+	\1						backreference to group #1
+	(?:abc)				non-capturing group
+	(?=abc)				positive lookahead
+	(?!abc)				negative lookahead
+
+	Quantifiers & Alternation
+
+
+	a* a+ a?			0 or more, 1 or more, 0 or 1
+	a{5} a{2,}		exactly five, two or more
+	a{1,3}				between one & three
+	a+? a{2,}?		match as few as possible
+	ab|cd	match 	ab or cd
+
+-->
+<!--
+<select id="basic2" class="show-tick form-control" multiple>
+												<optgroup label="Popular Cities">
+													<option selected style="display:none;color:#eee;">Select City</option>
+													<option>Birmingham</option>
+													<option>Anchorage</option>
+													<option>Phoenix</option>
+												</optgroup>
+												<optgroup label="More Cities">
+													<optgroup label="Alabama">
+														<option>Birmingham</option>
+														<option>Montgomery</option>
+													</optgroup>
+													<optgroup label="Alaska">
+														<option>Anchorage</option>
+													</optgroup>l="Connecticut">
+														<option>Bridgeport</option>
+														<option>New Haven</option>
+														<option>Hartford</option>
+													</optgroup>
+													<optgroup label="Delaware">
+														<option>Wilmington</option>
+														<option>Dover</option>
+														<option>Newark</option>
+													</optgroup>
+													<optgroup label="Florida">
+														<option>Jacksonville</option>
+														<option>Miami</option>
+													</optgroup>
+													<optgroup label="Georgia">
+														<option>Atlanta</option>
+														<option>Augusta</option>
+													</optgroup>
+													<optgroup label="Hawaii">
+														<option>Honolulu</option>
+														<option>Pearl City</option>
+														<option>Hilo</option>
+													</optgroup>
+													<optgroup label="Idaho">
+														<option>Boise</option>
+														<option>Nampa</option>
+													</optgroup>
+													<optgroup label="Illinois">
+														<option>Chicago</option>
+														<option>Aurora</option>
+													</optgroup>
+													<optgroup label="Indiana">
+														<option>Indianapolis</option>
+														<option>Fort Wayne</option>													       
+													</optgroup>
+													<optgroup label="Iowa">
+														<option>Des Moines</option>
+														<option>Cedar Rapids</option>
+														<option>Davenport</option>      													
+													</optgroup>
+													<optgroup label="Kansas">
+														<option>Wichita</option>
+														<option>Overland Park</option>
+														<option>Kansas City</option>        													
+													</optgroup>
+													<optgroup label="Kentucky">
+														<option>Louisville</option>
+														<option>Lexington</option>      														
+													</optgroup>
+													<optgroup label="Louisiana">
+														<option>New Orleans</option>
+														<option>Baton Rouge</option>
+														<option>Shreveport</option>        														
+													</optgroup>
+													<optgroup label="Maine">
+														<option>Portland</option>
+														<option>Lewiston</option>      														
+													</optgroup>
+													<optgroup label="Maryland">
+														<option>Baltimore</option>
+														<option>Frederick</option>
+														<option>Rockville</option>
+														<option>Gaithersburg</option>
+														<option>Bowie</option>         														
+													</optgroup>
+													<optgroup label="Massachusetts">
+														<option>Boston</option>
+														<option>Worcester</option>  
+													</optgroup>
+													<optgroup label="Michigan">
+														<option>Detroit</option>
+													</optgroup>
+													<optgroup label="Minnesota">
+														<option>Duluth</option>
+														<option>Bloomington</option>      														
+													</optgroup>
+													<optgroup label="Mississippi">
+														<option>Jackson</option>
+														<option>Gulfport</option>
+														<option>Biloxi</option>         														
+													</optgroup>
+													<optgroup label="Missouri">
+														<option>Kansas City</option>
+														<option>St. Louis</option>
+														<option>Columbia</option>            														
+													</optgroup>
+													<optgroup label="Montana">
+														<option>Billings</option>        														
+													</optgroup>
+													<optgroup label="Nebraska">
+														<option>Omaha</option>
+														<option>Kearney</option>        													
+													</optgroup>
+													<optgroup label="Nevada">
+														<option>Las Vegas</option>
+														<option>Henderson</option>         													
+													</optgroup>
+													<optgroup label="New Hampshire">
+														<option>Manchesters</option>
+														<option>Nashua</option>           													
+													</optgroup>
+													<optgroup label="New Jersey">
+														<option>Newark</option>
+														<option>Jersey City</option>
+														<option>Paterson</option>
+													</optgroup>
+													<optgroup label="New Mexico">
+														<option>Albuquerque</option>
+														<option>Las Cruces</option>  
+													</optgroup>
+													<optgroup label="New York">
+														<option>New York</option>
+														<option>Buffalo</option>      														
+													</optgroup>
+													<optgroup label="North Carolina">
+														<option>Charlotte</option>
+														<option>Raleigh</option>  														
+													</optgroup>
+													<optgroup label="North Dakota">
+														<option>Fargo</option>
+														<option>Bismarck</option>
+													</optgroup>
+													<optgroup label="Ohio">
+														<option>Columbus</option>
+													</optgroup>
+													<optgroup label="Wisconsin">
+														<option>Milwaukee</option>
+														<option>Madison</option>
+													</optgroup>
+													<optgroup label="Wyoming">
+														<option>Cheyenne</option>
+														<option>Casper</option>
+													</optgroup>			
+												</optgroup>
+											</select>
+
+
+
+
+
+
+
+
+												<script>
+					var form1 = document.forms.namedItem("login-form");
+					form1.addEventListener('submit', function(ev) {
+
+						//var oOutput = document.querySelector("div")
+						oData1 = new FormData(form1);
+
+						//oData.append("CustomField", "This is some extra data");
+
+						var oReq1 = new XMLHttpRequest();
+						oReq1.open("POST", "phps/login.php", true);
+						oReq1.onload = function(oEvent) {
+						if (oReq1.status == 200) {
+							//oOutput.innerHTML = "Uploaded!";
+							alert("Done!");
+						} else {
+							//oOutput.innerHTML = "Error " + oReq.status + " occurred when trying to upload your file.<br \/>";
+							alert("Error " + oReq1.status + " occurred. \n\nPlease Try It Again");
+						}
+						};
+
+						oReq1.send(oData1);
+						ev.preventDefault();
+					}, false);
+	</script>
+-->
+

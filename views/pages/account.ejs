@@ -1,0 +1,1862 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Get connected with other corpers.">
+  <meta name="keywords" content="Corpers. Information. PPAs. accommodation.">
+  <meta name="author" content="corpers">
+
+  <title>
+    <%= statecode %> Online
+  </title>
+  <link rel="shortcut icon" type="image/png" href="/logo/new/logo32x32.png"/>
+
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous">
+
+    <!-- <script src="/jquery-3.3.1.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script> -->
+
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js" integrity="sha384-pjaaA8dDz/5BgdFUPX6M/9SUZv4d12SUPF0axWc+VRZkx5xU3daN+lYb49+Ax+Tl"
+    crossorigin="anonymous"></script>
+
+
+  <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script> -->
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+      integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+<!-- <script src="/font-awesome.min.css"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.4/holder.js" integrity="sha256-crfkMD0BL2TtiwpbIlXF/SVmGSvOtgbMM8GBkibVKyc="
+    crossorigin="anonymous"></script>
+
+
+    <!-- jQuery's typeahead -->
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.10.6/jquery.typeahead.min.js" integrity="sha256-W+Cxk9exgjON2p73M4RcoKvCpQUZ+IjXhEzZk6rlg9M=" crossorigin="anonymous"></script>
+  
+  
+    <link rel="stylesheet"   href="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.10.6/jquery.typeahead.min.css" integrity="sha256-CU0/rbxVB3Eixd3bbIuJxHJLDnXriJS9cwp/BfcgpLw=" crossorigin="anonymous" />
+  
+
+   <!--- twitter's typeahead --->
+   <!-- <script src="/typeahead.bundle.js"></script> -->
+
+  <!--forThatInput-->
+  <link rel="stylesheet" href="/cssForThatInput/component.css">
+  <!--//forThatInput-->
+   
+   <style type="text/css">
+    
+    .typeahead {
+      background-color: #FFFFFF;
+    }
+    .tt-query {
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    }
+    .tt-hint {
+      color: #999999;
+    }
+    .tt-menu {
+      background-color: #FFFFFF;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+      margin-top: 12px;
+    }
+    .tt-suggestion:hover {
+      cursor: pointer;
+      background-color: #0097CF;
+      color: #FFFFFF;
+    }
+    .tt-suggestion p {
+      margin: 0;
+    }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+  <style>
+        #loader {
+          border: 5px solid #f3f3f3;
+          -webkit-animation: spin 1s linear infinite;
+          animation: spin 1s linear infinite;
+          border-top: 5px solid #555;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          margin: auto;
+          margin-top: 50px;
+        }
+
+
+        @-webkit-keyframes spin {
+          0% { 
+            -webkit-transform: rotate(0deg);
+            -ms-transform: rotate(0deg);
+            transform: rotate(0deg);
+          }
+
+          100% {
+            -webkit-transform: rotate(360deg);
+            -ms-transform: rotate(360deg);
+            transform: rotate(360deg);
+          }
+        }
+
+        @keyframes spin {
+          0% { 
+            -webkit-transform: rotate(0deg);
+            -ms-transform: rotate(0deg);
+            transform: rotate(0deg);
+          }
+
+          100% {
+            -webkit-transform: rotate(360deg);
+            -ms-transform: rotate(360deg);
+            transform: rotate(360deg);
+          }
+        }
+
+
+
+
+
+
+
+        .add{/*to make the edges of buttons to be rounded*/
+          border-radius: 1rem;
+        }
+        small{
+          font-size: 70%;
+        }
+        .fileUpload {
+          position: relative;
+          overflow: hidden;
+          margin: 5px;
+        }
+        .fileUpload input.upload {
+          position: absolute;
+          top: 0;
+          right: 0;
+          margin: 0;
+          padding: 0;
+          font-size: 20px;
+          cursor: pointer;
+          opacity: 0;
+          filter: alpha(opacity=0);
+        }
+        /**
+        using design from https://gedd.ski/post/tile-layouts/
+        make the pictures obey fibonacci series
+        */
+        .app {
+          display: grid;
+          grid-gap: 5px;
+          grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+          
+        }
+        ul .list-group-item:hover {
+        background:rgb(236, 236, 236);
+        }
+    </style>
+  <style>
+              /* fab https://codepen.io/androidcss/pen/yOopGp s*/
+          .float {
+            position:fixed;
+            width:60px;
+            height:60px;
+            bottom:40px;
+            right:20px;
+            background-color:rgb(44, 167, 27);
+            color:#FFF;
+            border-radius:50px;
+            text-align:center;
+            box-shadow: 2px 2px 3px #999;
+            z-index: 3;
+          }
+
+          .my-float {
+            margin-top:22px;
+          }
+
+          .edit-solid.icon {
+            color: #000;
+            position: absolute;
+            margin-left: -9px;
+            margin-top: 26px;
+            width: 24px;
+            height: 4px;
+            border-radius: 1px;
+            border: solid 1px currentColor;
+            background-color: currentColor;
+            -webkit-transform: rotate(-45deg);
+                    transform: rotate(-45deg);
+          }
+
+          .edit-solid.icon:before {
+            content: '';
+            position: absolute;
+            left: -12px;
+            top: -1px;
+            width: 0px;
+            height: 0px;
+            border-left: solid 5px transparent;
+            border-right: solid 5px currentColor;
+            border-top: solid 2px transparent;
+            border-bottom: solid 2px transparent;
+          }
+
+
+        @-ms-viewport {
+          width: device-width;
+        }
+
+        /*Extra small devices (portrait phones, less than 576px)
+         No media query for `xs` since this is the default in Bootstrap 
+         
+         https://getbootstrap.com/2.3.2/scaffolding.html
+         */
+
+
+        /* This CSS will be applied only to phones and other small devices. */
+        @media only screen and (max-width: 480px) {
+          #TXT {
+            height: 85px;
+          }
+        }
+
+
+         /* Small devices (landscape phones, 576px and up) */
+        @media (min-width: 576px) {
+          
+        }
+        
+        @media (min-width: 768px) {
+        
+        }
+        
+        @media (min-width: 992px) {
+     
+          
+        }
+        
+        @media (min-width: 1200px) {
+      
+        }
+
+
+        /* Large desktop */
+        @media (min-width: 1200px) { 
+          
+         }
+        
+        /* Portrait tablet to landscape and desktop */
+        @media (min-width: 768px) and (max-width: 979px) { 
+          
+         }
+          
+        /* Landscape phone to portrait tablet */
+        @media (max-width: 767px) { 
+        
+         }
+          
+        /* Landscape phones and down */
+        @media (max-width: 480px) { 
+          
+        }
+
+   
+        
+    </style>
+
+    <style>
+      /* Top right text */
+      .image-wrapper .top-right{
+        position: relative;
+        top: -95px;
+        right: -3px;
+      }
+      /* testing the post modal with picture arrangment */
+      .image-wrapper{
+          width: auto; /*was 100px*/
+          height: 100px;
+          border: 1px solid #ddd;
+      }
+      .image-wrapper img {
+          object-fit: cover;
+          min-width: 100%;
+          min-height: 100%;
+          width: auto;
+          height: auto;
+          max-width: 100%;
+          max-height: 100%;
+      }
+    </style>
+
+    <style>
+      /*center anything within a div (or other element maybe)*/
+      .cnt{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+
+    <style>
+        /*styling the scroll bar for the text area for posting, https://css-tricks.com/custom-scrollbars-in-webkit/ and http://www.tagindex.net/css/form/scrollbar_color.html */
+        /* width */
+        textarea.shadow-sm::-webkit-scrollbar {
+          width: 5px;
+          
+        }
+
+        /* Track */
+        textarea.shadow-sm::-webkit-scrollbar-track {
+          background: #f1f1f1; 
+        }
+        
+        /* Handle */
+        textarea.shadow-sm::-webkit-scrollbar-thumb {
+          background: #888; 
+          -webkit-border-radius: 10px;
+        }
+
+        /* Handle on hover */
+        textarea.shadow-sm::-webkit-scrollbar-thumb:hover {
+          background: #555;
+        }
+
+        /* Handle scroll bar edge/corner */
+        textarea.shadow-sm::-webkit-scrollbar-corner {
+          background: rgb(255, 255, 255);
+        }
+    </style>
+    <style>
+      p.maintext {
+        /* didn't work */
+        /* word-wrap: break-word; */ /* or overflow-wrap */
+        
+        word-break: break-word;
+
+        /* -webkit-hyphens: auto;
+        -ms-hyphens: auto;
+        hyphens: auto; */
+      }
+    </style>
+</head>
+
+
+<body class="">
+    <nav class="navbar navbar-expand-sm navbar-light bg-light active">
+        <a class="navbar-brand" href="/">Corpers Online</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample03" aria-controls="navbarsExample03"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarsExample03">
+
+            <!-- Nav tabs for the accommodation, PPAs, SPAs, SALES -->
+            <ul class="nav navbar-nav mr-auto" id="theTabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link" href="/map" aria-selected="true">Maps</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout" aria-selected="true">Logout</a>
+                </li>
+                <!-- <li class="nav-item">
+                      <a class="nav-link active" id="sales-tab" data-toggle="tab" href="#sales" role="tab" aria-controls="sales" aria-selected="true">Sales</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="accommodation-tab" data-toggle="tab" href="#accommodation" role="tab" aria-controls="accommodation" aria-selected="false">accommodations</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="ppa-tab" data-toggle="tab" href="#ppa" role="tab" aria-controls="ppa" aria-selected="false">PPAs</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="spa-tab" data-toggle="tab" href="#spa" role="tab" aria-controls="spa" aria-selected="false">SPAs</a>
+                    </li> -->
+            </ul>
+            <!-- <form class="form-inline my-2 pr-2">
+              <div id="bloodhound">
+                  <input class="form-control js-typeahead-country_v1 typeahead" type="text" placeholder="Search accommodations, places, PPAs, SPAs">
+              </div>
+            </form> -->
+            
+            <form id="form-country_v1" name="form-country_v1" class="mr-3">
+							<div class="typeahead__container">
+									<div class="typeahead__field">
+											<div class="typeahead__query">
+													<input class="js-typeahead-country_v1" name="country_v1[query]" type="search" placeholder="Search" autocomplete="off">
+											</div>
+											<div class="typeahead__button">
+													<button type="submit">
+															<i class="typeahead__search-icon"></i>
+													</button>
+											</div>
+									</div>
+							</div>
+					</form>
+            
+
+            <!-- Button trigger modal for posting-->
+            <!--Hidden only on xs | Hidden only on sm -->
+            <button id="bfp" class="btn btn-primary d-sm-none d-md-block d-none d-sm-block" data-toggle="modal" data-target="#postModalSale">Post</button>
+        </div>
+    </nav>
+
+
+    <!-- accommodation modal -->
+    <div id="accommodationModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="accommodationModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="">Put up an accommodation</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+
+            <div class="modal-body">
+              <form id="accommodationform" enctype="multipart/form-data">
+                <div class="pl-1 pr-5">
+
+                    <!-- https://getbootstrap.com/docs/4.1/components/carousel/ -->
+                    <div id="accommodationFormCarousel" class="carousel slide" data-interval="false">
+                      <div class="carousel-inner">
+                        <div class="carousel-item active" style="height: 400px;">
+                          <div class="progress mb-2" style="height: 1px;">
+                            <div class="progress-bar" role="progressbar" style="width: 20%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                          <div class="progress" style="height: 5px;">
+                            <div class="progress-bar" role="progressbar" style="width: 20%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+
+                          <h2>Accommodation size</h2>
+                          <!-- // form for accommodation -->
+                          
+                            <div class="form-group">
+                              <label for="accommodationtype">Accommodation type</label>
+                              <label class="sr-only" for="accommodationtype">Accommodation type</label>
+                              <select class="custom-select pointer" name="accommodationtype"id="accommodationtype" required>
+                                <option selected>Choose...</option>
+                                <option value="Self contain">Self contain</option>
+                                <option value="Flat">Flat</option>
+                                <option value="1 bedroom flat">1 bedroom flat</option>
+                              </select>
+                              <small id="" class="form-text text-muted">Choose the category that best describes it.</small>
+                            </div>
+
+                            <!-- //test -->
+                            <div class="custom-control custom-checkbox">
+                              <input name="rooms" type="checkbox" class="custom-control-input" id="rooms1" value="Sitting room" checked disabled>
+                              <label class="custom-control-label" for="rooms1">Sitting room ?</label>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                              <input name="rooms" type="checkbox" class="custom-control-input" id="rooms2" value="kitchen">
+                              <label class="custom-control-label" for="rooms2">Kitchen ?</label>
+                              <!-- Maybe later seperate the two, with radio buttons, kitchen in the apartment or a general one tenant shares -->
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                              <input name="rooms" type="checkbox" class="custom-control-input" id="rooms3" value="Bedroom">
+                              <label class="custom-control-label" for="rooms3">Bedroom ?</label>
+                              <!-- if it comes with a bedroom, then how many -->
+                            </div>
+                            <!-- input tag check box id attribute connects with the for attribute of label tag -->
+                            <div class="custom-control custom-checkbox">
+                              <input name="rooms" type="checkbox" class="custom-control-input" id="rooms4" value="Toilet&Bathroom">
+                              <label class="custom-control-label" for="rooms4">Toilet & Bathroom ?</label>
+                            </div>
+                            <small id="" class="form-text text-muted mb-4">What rooms does the accommodation contain?</small>
+                            <!-- // // test -->
+                            <!-- the check box should change based on the accommodation type choosen -->
+                          
+              
+                              <!-- no need for previous slide since it's a series of squential questions -->
+                              <!-- <a class="" href="#accommodationFormCarousel" data-slide="prev">
+                                Previous
+                              </a> -->
+                              <a class="btn btn-primary" href="#accommodationFormCarousel" data-slide="next">
+                                Next
+                              </a>
+                         
+                          <!-- //end form for accommodation -->
+                        </div>
+                        <div class="carousel-item" style="height: 400px;">
+                          <div class="progress mb-2" style="height: 1px;">
+                            <div class="progress-bar" role="progressbar" style="width: 40%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                          <div class="progress" style="height: 5px;">
+                            <div class="progress-bar" role="progressbar" style="width: 40%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+
+                          <h2>Metrics about the rent</h2>                            
+                          <!-- //form for accommodation -->
+                          
+
+                            <!--//testing-->
+                            <div class="d-block my-3">
+                              <div class="custom-control custom-radio">
+                                <input id="monthly" name="rentrange" type="radio" class="custom-control-input" value="monthly" checked required>
+                                <label class="custom-control-label" for="monthly">Monthly</label>
+                              </div>
+                              <div class="custom-control custom-radio">
+                                <input id="quarterly" name="rentrange" type="radio" class="custom-control-input" value="quarterly" required>
+                                <label class="custom-control-label" for="quarterly">Quarterly</label>
+                              </div>
+                              <div class="custom-control custom-radio">
+                                <input id="yearly" name="rentrange" type="radio" class="custom-control-input" value="yearly" required>
+                                <label class="custom-control-label" for="yearly">Yearly</label>
+                              </div>
+                            </div>
+                            <!-- / // / testing -->
+
+
+                            <!-- this should be disabled until the person chooses either per month or quarter or year then we say price per whatever the person chose -->
+                            <div class="form-group">
+                              <label for="rentamount">Price per month/quater/year</label>
+
+                              <div class="input-group">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">&#8358;</span>
+                                </div>
+                                <input name="rentamount" type="number" class="form-control" id="rentamount" placeholder="Recurring price" required>
+                                <div class="invalid-feedback" style="width: 100%;">
+                                  Your username is required.
+                                </div>
+                              </div>
+
+                            </div>
+                          
+                          
+                          <!-- //end form for accommodation -->
+                          <div class="btn-group" role="group" aria-label="Basic example">
+                              <a class="btn btn-outline-primary" href="#accommodationFormCarousel" data-slide="prev">
+                                Previous
+                              </a>
+                              <a class="btn btn-primary" href="#accommodationFormCarousel" data-slide="next">
+                                Next
+                              </a>
+                          </div>
+                        </div>
+                        <div class="carousel-item" style="height: 400px;">
+                          <div class="progress mb-2" style="height: 1px;">
+                            <div class="progress-bar" role="progressbar" style="width: 60%;" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                          <div class="progress" style="height: 5px;">
+                            <div class="progress-bar" role="progressbar" style="width: 60%;" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+
+                          <h2>Precise location</h2>
+                          <small>Use map to location the accommodation in next carousel, the corper can skip</small>
+                          <!-- // form for accommodation -->
+
+                          <!--
+                            metrics we can generate from location are the prices of homes based on the location and size of these homes...
+
+                            we should also try to find other corrolation too. 
+                            create metrics and advise on prices and offer insights to rent seekers ...like asking for their budget before showing them houses within their budget.
+                          -->
+                          
+                          
+                            <div class="form-group">
+                              <label for="streetname">Street name</label>
+                              <input type="text" name="streetname" class="form-control" id="streetname" placeholder="No. 17B, Room 5.">
+                            </div>
+                            <div class="form-group">
+                              <label for="address">Address</label>
+                              <input type="text" name="address" class="form-control" id="address" placeholder="Adeleke Street">
+                            </div>
+                            <div class="form-group">
+                              <label for="directions">Directions</label>
+                              <textarea class="form-control" name="directions" id="directions" placeholder="Give directions to the accommodation from a popular nearby junction or how-to-miss building"></textarea>
+                            </div>
+                            <!-- 
+                              maybe a little map area to pin the location of the place if they're currently there
+
+                              we can even try to show a route in the map based on what address is and information in the directions textarea, we can even auto route.
+                            -->
+                            
+                          
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <a class="btn btn-outline-primary" href="#accommodationFormCarousel" data-slide="prev">
+                                  Previous
+                                </a>
+                                <a class="btn btn-primary" href="#accommodationFormCarousel" data-slide="next">
+                                  Next
+                                </a>
+                            </div>
+                          
+                          <!-- //end form for accommodation -->
+                        </div>
+                        <div class="carousel-item" style="height: 400px;">
+                          <div class="progress mb-2" style="height: 1px;">
+                            <div class="progress-bar" role="progressbar" style="width: 80%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                          <div class="progress" style="height: 5px;">
+                            <div class="progress-bar" role="progressbar" style="width: 80%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+
+                          <h2>Let's see it</h2>
+                          <!-- //form for accommodation -->
+                          
+                            <!-- <div class="form-group custom-file">
+                              <input type="file" class="custom-file-input" id="customFileLang" lang="es">
+                              <label class="custom-file-label" for="customFileLang">Images and/or Videos</label>
+                            </div> -->
+
+                            <!-- thatInput -->
+                            <div class="box">
+                              <input type="file" name="roomsmedia" id="roomsmedia" accept="image/*,video/*" class="inputfile inputfile-2"
+                                data-multiple-caption="{count} files selected" multiple/>
+                              <label for="roomsmedia"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
+                                  <path
+                                    d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
+                                  </svg> <span>Choose a file&hellip;</span></label>
+                            </div>
+
+                            <!-- this script must come after the input -->
+                            <script src="/jsForThatInput/custom-file-input.js"></script>
+                            <!-- //thatInput -->
+                        
+                            <!-- 
+                              the images and/or videos they'll put up will be based on the checked box under accommodation type
+                              so there would be as many input tag for the places in the accommodation
+                              ( doing this might be stressful, we show a bit of their gallary as a nudge when we do our app)
+                              or they can just do a short 15 seconds video of everywhere
+                            -->
+                        
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <a class="btn btn-outline-primary" href="#accommodationFormCarousel" data-slide="prev">
+                                  Previous
+                                </a>
+                                <a class="btn btn-primary" href="#accommodationFormCarousel" data-slide="next">
+                                  Next
+                                </a>
+                            </div>
+                         
+                          <!-- //end form for accommodation -->
+                        </div>
+                        <div class="carousel-item" style="height: 400px;">
+                          <div class="progress mb-2" style="height: 1px;">
+                            <div class="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                          <div class="progress" style="height: 5px;">
+                            <div class="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+
+                          <h2>Current Status</h2>
+                          <small id="" class="form-text text-muted">Are you leasing out your active rent tenure or is this a new rent?</small>
+                          <!-- //form for accommodation -->
+                          
+                            <!-- 
+                              we already have price per month or quater or year, we just need to know when it'll expire
+                              &
+                              we'd compute how much the corper is expecting from whoever will take over from the rent.
+                             -->
+                          <div class="d-block my-3">
+                            <div class="custom-control custom-radio">
+                              <input id="newrent" name="tenure" type="radio" class="custom-control-input" value="New rent" required>
+                              <label class="custom-control-label" for="newrent">New rent (No present occupant)</label>
+                            </div>
+                            <div class="custom-control custom-radio">
+                              <input id="oldrent" name="tenure" type="radio" class="custom-control-input" value="Old rent" checked required>
+                              <label class="custom-control-label" for="oldrent">Leasing out an active rent</label>
+                            </div>
+                          </div>
+
+                          <div id="expirediv" class="mb-4">
+                            <label for="bday">When does your rent expires:</label>
+                            <input type="date" id="expire" min="" max="" name="expiredate">
+                          </div>
+
+                          <script>
+                            var minmax = new Date();
+                            document.getElementById('expire').min = minmax.toISOString().substr(0, 10); // Minimum date is today!
+                            // Max date is two years from now.
+                            document.getElementById('expire').max = new Date(minmax.getFullYear() + 2, minmax.getMonth() ).toISOString().substr(0, 10) ; // The argument monthIndex is 0-based. This means that January = 0 and December = 11.
+
+                              var radios = document.forms["accommodationform"].elements['tenure'];
+                                for (var i = 0, max = radios.length; i < max; i++) {
+                                  radios[i].onclick = function () {
+                                    // console.log(this.value);
+                                    if (this.value == 'Old rent') {
+                                      console.log('old rent');
+                                      document.getElementById('expirediv').style.display = 'block';
+                                    } else {
+                                      console.log('new rent');
+                                      document.getElementById('expirediv').style.display = 'none';
+                                    }
+                                  }
+                                }
+                          </script>
+                        
+                            <a class="btn btn-outline-primary mr-auto" href="#accommodationFormCarousel" data-slide="prev">
+                              Previous
+                            </a>
+                            <!-- <a class="" href="#accommodationFormCarousel" data-slide="next">
+                              Next
+                            </a> -->
+                            <!-- no need for next since it's last slide, only submit button is necessary -->
+                            
+                            <!-- button without anything takes the carousel to the first slide, but should close the modal and submit the form -->
+                            <input type="submit" class="btn float-right" value="Put up for rent">
+                          
+                          <!-- //end form for accommodation -->
+                        </div>
+                      </div>
+                      
+                      <!-- 
+                        <a class="carousel-control-prev" href="#accommodationFormCarousel" role="button" data-slide="prev">
+                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                          <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#accommodationFormCarousel" role="button" data-slide="next">
+                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                          <span class="sr-only">Next</span>
+                        </a> 
+                      -->
+                    </div>
+                    
+              </div>
+              </form>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    <!-- the Modal for posting (sale)-->
+    <div class="modal fade" id="postModalSale" tabindex="-1" role="dialog" aria-labelledby="postModalLabelSale" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <form id="postform" name="postform">
+                <!-- a very good form -->
+              
+                <div class="modal-header">
+                    <h5 class="modal-title" id="">Create post</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <textarea 
+                      autofocus 
+                      required 
+                      name="text" 
+                      type="text" 
+                      class="form-control mb-3 shadow-sm" 
+                      placeholder="Write a message. Share the location of an accommodation for rent, your PPA, a popular venue, or a route. Get creative."
+                      id="TXT"></textarea> <!--make sure there's no space between opening and closing textarea tag-->
+
+                    <small id="locinfo"></small>
+
+                    <div id="previewParent">
+                        <!--<div id="preview"></div>-->
+                    </div>
+
+                    <div class="d-flex align-items-center">
+                      <div class="mr-auto">
+
+
+                      <div class="fileUpload btn btn-outline-dark">
+                        <span>Image</span>
+                        <input type="file" accept="image/*" name="see" class="upload" multiple id="IMG">
+                      </div>
+
+
+
+                            <!--<div class="fileUpload btn btn-light">
+                                                  <span>Vid</span>
+                                                  <input type="file" accept="video/*" class="upload" id="VID">
+                                                </div>-->
+                            <!--the input for giving routes should offer places suggestions as user types.
+                                                use appropriate ui. form place to place with side notes and advice.-->
+                            <!--instead of putting like, nooo!!!!! put affrimations, other corpers
+                                                should affirm other prople posts !!! increases trust. possible give alternative,
+                                                and even say when something is a lie or fasle or not entirely true.-->
+                            <!--<button type="button" class="btn btn-light" id="trackme">Share Route</button>-->
+
+                            
+                            <div class="btn-group" role="group" aria-label="Sharing places and locations">
+                              <div class="btn btn-outline-dark" id="findme">Share location</div>
+                              <!-- <button class="btn btn-outline-dark" id="findme">Share location</button> -->
+
+                              <div class="btn btn-outline-dark" id="place">or accommodation</div>
+                              <!-- <button class="btn btn-outline-dark" id="place">or accommodation</button> -->
+                            </div>
+                            <!-- way less than 245418.50 -->
+                            <!--
+                              like malls/shops apartments markets parks/bustops or popular pickup and dropoff points. 
+                            -->
+
+
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Save as draft</button>
+                    <button type="button" class="btn btn-primary" id="SEND" disabled>Post</button>
+
+                    <input type="submit" class="btn btn-primary" id="postsubmit" value="Post it" disabled>
+                </div>
+                
+              </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+      /**
+       * 
+       * TODO
+       * For compulsory fields, disable the next button until users fills in valid texts for that section https://getbootstrap.com/docs/4.1/components/carousel/
+      */
+      document.getElementById('place').addEventListener('click', function (event) {
+        // close post modal and open accommodation modal
+        $('#postModalSale').modal('hide');
+        $('#accommodationModal').modal('show');
+      })
+    </script>
+
+    <script>
+      // script for submitting posts (not accommodation).
+      function sendPost() {
+
+        // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
+          var XHR = new XMLHttpRequest();
+
+          // Bind the FormData object and the form element
+          var FD = new FormData(form);
+
+          // append post_time
+          FD.append('post_time', Date.now()); // data type number
+
+          // Define what happens on successful data submission
+          XHR.addEventListener("load", function (event) {
+            // alert(event.target.responseText);
+            console.log(event.target.responseText);
+            // close the modal and reset the form
+            $('#postModalSale').modal('hide');
+            document.forms['postform'].reset();
+
+            $("#tl").before('<div class="alert alert-success mt-3 fade show" id="postposted" role="alert">Post created successfully.</div>');
+
+            setTimeout(function () {
+              $('#postposted').alert('close'); // Closes an alert by removing it from the DOM
+            }, 2000);
+          });
+
+          // Define what happens in case of error
+          XHR.addEventListener("error", function (event) {
+            alert('Oops! Something went wrong.');
+          });
+
+          // Set up our request
+          XHR.open('POST', '/posts', true); // true makes it async request
+
+          // The data sent is what the user provided in the form
+          XHR.send(FD);
+        }
+
+        // Access the form element...
+        var form = document.getElementById("postform");
+
+        // ...and take over its submit event.
+        form.addEventListener("submit", function (event) {
+          event.preventDefault(); // the default behaviour is refreshing the page and adding search params to the url
+
+          sendPost();
+        }, false, true); // https://developer.mozilla.org/en-US/docs/Web/Events/submit
+    </script>
+
+    <script>
+      // script for submitting posts (not accommodation).
+      function sendAccommodation() {
+
+        // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
+        var XHR1 = new XMLHttpRequest();
+
+        // Bind the FormData object and the form element
+        var FD1 = new FormData(form1);
+
+        // Define what happens on successful data submission
+        XHR1.addEventListener("load", function (event) {
+          // alert(event.target.responseText);
+          console.log(event.target.responseText);
+          // close the modal and reset the form
+          $('#accommodationModal').modal('hide');
+          document.forms["accommodationform"].reset();
+
+          // rest the carousel too
+          $('#accommodationFormCarousel').carousel(0);
+
+          $("#tl").before('<div class="alert alert-success mt-3 fade show" id="accommodationposted" role="alert">Accommodation space was posted successfully.</div>');
+
+          setTimeout(function () {
+            $('#accommodationposted').alert('close'); // Closes an alert by removing it from the DOM
+          } , 2000);
+        });
+
+        // Define what happens in case of error
+        XHR1.addEventListener("error", function (event) {
+          alert('Oops! Something went wrong.');
+        });
+
+        // Set up our request
+        XHR1.open('POST', '/accommodations', true); // true makes it async request
+
+        // XHR1.setRequestHeader('Content-Type', 'multipart/form-data'); // this causes error [Multipart, boundary not found], it should stay commented
+
+        // The data sent is what the user provided in the form
+        XHR1.send(FD1);
+      }
+
+      // Access the form element...
+      var form1 = document.getElementById("accommodationform");
+
+      // ...and take over its submit event.
+      form1.addEventListener("submit", function (event) {
+        event.preventDefault(); // the default behaviour is refreshing the page and adding search params to the url
+
+        sendAccommodation();
+      }, false, true); // https://developer.mozilla.org/en-US/docs/Web/Events/submit
+    </script>
+
+    <!--make alerts appear only in relevant screens. like the alert in the middle (col-sm-9) appear only on small screens. then the one on the right, col-sm-3 appear only on large screens.-->
+
+    <main role="main">
+        <div class="pt-3 maincontent p-md-4 container">
+            <div class="row pb-3">
+                <!--Hidden only on xs | Hidden only on sm -->
+                <div class="col-sm-3 d-sm-none d-md-block d-none d-sm-block">
+                    <!-- put the corper's information. let them see their profile (and be able to change it) -->
+                    <div class="card shadow" id="profilecard">
+                        <div class="card-body">
+                            <h6 class="">About <small> · <a href="/profile" id="editprofile">Edit</a></small> · <a href="/newprofile" id="">New edit</a></small></h6>
+                            <ul class="" id="profile">
+                                <li>
+                                    <span class=""></span>Serving at <a href="#"> <%= servicestate %> </a>
+                                </li>
+                                <li>
+                                    <span class=""></span>Batch <a href="#"> <%= batch %> </a>
+                                </li>
+                                <li>
+                                    <span class=""></span>PPA at <a href="<%= ( name_of_ppa ? '/search?place=name_of_ppa' : '/profile' ) %>"> <%= ( name_of_ppa ? name_of_ppa : '?' ) %> </a>
+                                </li>
+                                <li style="display:none;">
+                                    <span class=""></span>SPA at <a href="#">San Francisco</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- test-->
+                    <!--//-->
+                </div>
+
+                <div class="col-sm-6" data-spy="scroll" data-offset="0">
+
+                    <div id="loader" class='pb-3'></div>
+                    <!--in this middle part, we'll give various toggle tabs for location of accommodation, PPAs, SPAs, SALES-->
+                    <!-- Nav tabs for the accommodation, PPAs, SPAs, SALES -->
+                    <!-- <ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
+                                  <li class="nav-item">
+                                    <a class="nav-link active" id="sales-tab" data-toggle="tab" href="#sales" role="tab" aria-controls="sales" aria-selected="true">Sales</a>
+                                  </li>
+                                  <li class="nav-item">
+                                    <a class="nav-link" id="accommodation-tab" data-toggle="tab" href="#accommodation" role="tab" aria-controls="accommodation" aria-selected="false">accommodations</a>
+                                  </li>
+                                  <li class="nav-item">
+                                    <a class="nav-link" id="ppa-tab" data-toggle="tab" href="#ppa" role="tab" aria-controls="ppa" aria-selected="false">PPAs</a>
+                                  </li>
+                                  <li class="nav-item">
+                                    <a class="nav-link" id="spa-tab" data-toggle="tab" href="#spa" role="tab" aria-controls="spa" aria-selected="false">SPAs</a>
+                                  </li>
+                                </ul> -->
+                    <!-- Tab panes for the accommodation, PPAs, SPAs, SALES-->
+                    <!-- <div class="tab-content" id="myTabContent">
+                      <div class="tab-pane fade show active" id="sales" role="tabpanel" aria-labelledby="sales-tab">
+                        organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr,
+                        vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit,
+                        sustainable jean shorts beard ut DIY ethical culpa terry richar
+                      </div>
+                      <div class="tab-pane fade" id="accommodation" role="tabpanel" aria-labelledby="accommodation-tab">
+                        Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.
+                        Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan
+                        four loko farm-to-table craft beer twee. Qui photo booth
+                      </div>
+                      <div class="tab-pane fade" id="ppa" role="tabpanel" aria-labelledby="ppa-tab">
+                        hardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint
+                        qui sapiente accusamus tattooed echo park.
+                      </div>
+                      <div class="tab-pane fade" id="spa" role="tabpanel" aria-labelledby="spa-tab">
+                        To help fit your needs, this works with -based markup, as shown above,
+                          or with any arbitrary “roll your own” markup. Note that if you’re using,
+                            you shouldn’t add role="tablist" directly to it.
+                      </div>
+                    </div> -->
+
+
+                    <ul class="list-group" id="tl">
+
+                      <!--
+                          <li class="list-group-item">
+                            <div class="media mb-4">
+                              <img class="align-self-start mr-2 rounded-circle" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E45x45%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="user image">
+                              <div class="media-body">
+                                <div class="d-flex w-100 justify-content-between">
+                                  <h6 class="mb-1">AB/12F/9478</h6>
+                                  <small class="">2 days ago</small>
+                                </div>
+                                <p>f f sad a bbbbbb</p>
+                                <div class="">
+                                  <div class="media-content"></div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="align-items-center"></div>
+                          </li>
+
+
+                          <li class="list-group-item">
+                              <div class="media mb-4">
+                                  <img class="align-self-start mr-2 rounded-circle" data-src="holder.js/45x45?theme=thumb" alt="user image">
+                                  <div class="media-body">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">List group item heading <br> <small>Umuahia, Abia State</small></h6>
+                                        <small>3 days ago</small>
+                                    </div>
+                                    <p class="">Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
+                                    <p>Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+                                    <div class="">
+                                        <div class="media-content">
+                                          <div class="app">
+                                              <img data-action="zoom" src="/5.png" class="img-fluid border" alt="Responsive image">
+                                              <img data-action="zoom" src="/3.png" class="img-fluid border" alt="Responsive image">
+                                              <img data-action="zoom" src="/6.PNG" class="img-fluid border" alt="Responsive image">
+                                          </div>
+                                        </div>
+                                    </div>
+                                    <div id="comment">
+                                      <hr>
+                                        <div class="media mt-3">
+                                            <a class="pr-2" href="#">
+                                              <img class="rounded-circle" data-src="holder.js/45x45?theme=thumb" alt="img">
+                                            </a>
+                                            <div class="media-body">
+                                                <div class="d-flex w-100 justify-content-between">
+                                                    <h6 class="mb-1">List group item heading</h6>
+                                                    <small>3 days ago</small>
+                                                </div>
+                                                <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
+                                                <div id="media-content">
+                                                  <div class="app">
+                                                    <img data-action="zoom" src="/4.jpg" class="img-fluid border"  alt="Responsive image">
+                                                    <img src="/3.png" class="img-fluid border"  alt="Responsive image">
+                                                  </div>
+                                              </div>
+                                              </div>
+                                          </div>
+                                    </div>
+                                  </div>
+                                </div>
+                          </li>
+
+                      -->
+
+                    </ul>
+                </div>
+                <!--Hidden only on xs | Hidden only on sm -->
+                <div class="col-sm-3 d-sm-none d-md-block d-none d-sm-block">
+
+                    <div class="card shadow" id="statscard">
+                        <div class="card-body text-center">
+                            <h6 class="card-title">Quick<i>ly</i> Report<i>s</i> </h6>
+                            <!-- <p class="card-text">
+                                    <ul>
+
+                                    </ul>
+                                  </p>
+                                  <a href="#" class="">Go somewhere</a>
+                                  <a href="#" class="card-link">Card link</a>
+                                  <a href="#" class="card-link">Another link</a> -->
+                            <div> <small id="tco"></small>  </div>
+                        </div>
+                    </div>
+
+                    <!--testing forms uploads-->
+                    <!--// testing forms uploads-->
+                    <!--strick through the message 1 corper online when user is offline-->
+                    <!--
+                          they should see news about current events concerning corpers happening around them
+
+                          news like cds meetings happening now, send forth meetings happening now, due dates for PV Signing,
+                          polls and results of incoming executives should be shown, congratulate
+                          corper so so n so for becoming the new secretary for ____ CDS, involve
+                          accounts for CDS Inspectors, so they can send messages too and verify
+                          people. Help the variuo CDS in ways we can; e.g. Publicity in gathering
+                          articules, reporting real-time events. (once somebody registers as being
+                          in publicity and editorial CDS, they can report real time events. like
+                          people in ENvironmetal CDS can take pictures of bad places around them
+                          and report to responsible Govt. officials etc. || people in drug and free
+                          cds can audit drugs in Pharmacies and road side sales ... people in law
+                          and legal aid can find SPAs at Law Courts etc. If Law offices need corpers,
+                          they should advertise on Corpers Online and easily find !!!!!!!! --
+                          use this in other screnerious too (like other Organisation that need
+                          corpers for SPAs work, can put their requirements etc.) )
+                    -->
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- fab Code begins here -->
+        <!-- Visible only on xs | Visible only on sm -->
+        <div class="float d-block d-sm-none d-none d-sm-block d-md-none" data-toggle="modal" data-target="#postModalSale">
+            <i class="edit-solid icon my-float"></i>
+        </div>
+    </main>
+
+
+    <script>
+        // if someone refreshes the page, a big maybe cache the present posts [keep the variable bm array intacted] and fetch newer posts from db and change the time on the older posts!!!
+
+        // for loader
+        window.onload = function () {
+            // document.getElementById('loader').style.display = 'none' ;
+        }
+        // we'll be doing loader alot ...for when socket.io is still fetching data... and the timeline is empty... for when user drags page down too like android app maybe
+
+
+
+
+        /**
+        bootstrap scripts
+
+        DON'T DELETE NEXT COMMENTED CODE, FOR USE LATER.
+        */
+        /*
+
+          $('#myTab a[href="#spa"]').on('click', function (e) {
+            e.preventDefault()
+            $(this).tab('show')
+            console.log('spa tab active');
+          })
+
+          $('#theTabs a[href="#ppa"]').on('click', function (e) {
+            e.preventDefault()
+            $(this).tab('show')
+            console.log('ppa tab active');
+          })
+
+          $('#theTabs a[href="#accommodation"]').on('click', function (e) {
+            e.preventDefault()
+            $(this).tab('show')
+            console.log('ppa tab active');
+          })
+
+          $('#theTabs a[href="#sales"]').on('click', function (e) {
+            e.preventDefault()
+            $(this).tab('show')
+            console.log('ppa tab active');
+          })
+
+          $('#theTabs a[href="#spa"]').on('click', function (e) {
+            e.preventDefault()
+            $(this).tab('show')
+            console.log('ppa tab active');
+          })
+
+        */
+
+
+
+        var pathArray = window.location.pathname.split('/');
+        console.log('user = ' + pathArray[2]);
+
+        // start: bm[0], //oldest post in user's timeline
+        // end: bm[bm.length - 1] //newest post in user's timeline
+        // bm[] = boardcast messages currently in the user's time line
+        var bm = [];
+
+        //connect to socket.io on /user but somehow it still connects with\to /
+
+        /*
+        By default, a long-polling connection is established first, then
+        upgraded to "better" transports (like WebSocket {transports: ['websocket'],}). If you like to
+        live dangerously, this part can be skipped:
+        */
+        var socket = io('/user', {
+            transports: ['websocket'],
+            query: { user: pathArray[2], utl: bm, test: 'ertrerer' }
+        });
+
+        socket.on('connect', function () {
+
+            console.log('connected', new Date(Date.now()).toLocaleString(), Date.now());
+
+            console.log('the socket object:', socket);
+            // trying sth --{first_post: bm[0], last_post: bm[bm.length - 1]}
+
+        });
+        socket.on('reconnect', (attemptNumber) => {
+            // ...
+            console.log(attemptNumber, 'reconnection, re-connected :', new Date(Date.now()).toLocaleString(), Date.now());
+
+            $('div.alert.alert-danger').alert('close'); // Closes an alert by removing it from the DOM
+            
+            // this unstrikes the number of corpers div, // there's a story on this with $('').removeAttr('style');
+            $('#tco').css('text-decoration', '');
+        });
+
+        // on reconnection, reset the transports option, as the Websocket
+        // connection may have failed (caused by proxy, firewall, browser, ...)
+        socket.on('reconnect_attempt', () => {
+            socket.io.opts.transports = ['polling', 'websocket'];
+        });
+
+
+
+        //reason (String) either 'io server disconnect' or 'io client disconnect'
+        socket.on('disconnect', (reason) => {
+            //find a really good way to handle sessions - in server and client -- if user disconnects for too long and session expires, take user to login, if user closes this window, he shouldn't be able to open it unless it's thesame computer  --- just handle sessions effectively
+            console.log('disconnected!', reason);
+
+            // show only in small screens.
+            $("#tl").before('<div class="alert alert-danger mt-3" role="alert">Seems you\'re offline!</div>');
+
+            // incase their tl is empty and hasn't connected
+            // remove the loader --this is a not so awesom logic
+            document.getElementById('loader').style.display = 'none';
+
+
+            //apply text-decoration: line-through;
+            $('#tco').css('text-decoration', 'line-through');
+
+            //track users across multiple session id because when sockets disconnects and then reconnects they are assigned a new session id without knowing the new id that sockets had, but socket.io has a way of knowing with the 'reconnect' event listner...
+
+
+            //very important !!!!!!!!!!!!
+            //also we need to message the user when there was an error in sending messages/ posts.
+            //alert them when they are offline and handle other events they might want to perform. Like save their draft messages in a cookie.
+
+
+            if (reason === 'io server disconnect') {
+                // the disconnection was initiated by the server, you need to reconnect manually
+                socket.connect();
+            }
+            // else the socket will automatically try to reconnect
+        });
+
+
+        socket.on('corpersCount', function (data) {
+            console.log('got corpers count');
+            // (data.count == 1 ? '' : 's') adds 's' to 'corpers' if there are more than one corpers online.
+            document.getElementById('tco').innerHTML = data.count + ' corper' + (data.count == 1 ? '' : 's') + ' online';
+        });
+
+        socket.emit('ferret', 'aeee', 'tobi', (data) => {
+            // this funtion will run here to show the server has gotten our message.
+            console.log(data); // data will be 'woot ...'
+        });
+
+        var cb = function (params) {
+            console.log('the callback', params);
+        };
+        socket.on('callback', cb);
+
+
+        //when we receive a boardcast message --save them (in var bm --an array somewhere up).
+        //so that thing where we can confirm a message has gotten to the server.
+        var bc = function (data) {
+            // remove the loader --this is not a very awesom logic, but it works well
+            document.getElementById('loader').style.display = 'none';
+
+            bm.push(data.post.post_time);
+            // console.log('received boardcast message', data); // uncomment if we wanna see what we got
+
+            var feeds = document.getElementById('tl');
+
+            var newFeed = document.createElement("li");
+            newFeed.setAttribute('class', 'list-group-item');
+            newFeed.setAttribute('id', data.post.post_time); // each post has a unique id, we'll later add state code to make it more unique
+
+            // chaining is not good for appendChild()
+
+            var h = document.createElement('div');
+            h.setAttribute('class', '');
+            var g = document.createElement('div');
+            g.setAttribute('class', 'media-content');
+            h.appendChild(g);
+
+            var gg = document.createElement('div');
+            gg.setAttribute('class', 'app');
+            
+            //------------------ previously on how we handled images
+            /* if (data.post.images) {
+
+                for (var i = 0; i < data.post.images.length; i++) {
+                    // var ii = 'img' + i.toString();
+                    ii = document.createElement('img');
+                    ii.setAttribute('class', 'img-fluid border');
+                    ii.setAttribute('src', data.post.images[i]);
+                    ii.setAttribute('alt', 'user\'s posted image ' + i);
+                    gg.appendChild(ii);
+                }
+
+                g.appendChild(gg);
+
+            } */
+
+            if (data.post.media) {
+              var jk = data.post.media.length;
+              for (var i = 0; i < jk; i++) {
+                // var ii = 'img' + i.toString();
+                ii = document.createElement('img');
+                ii.setAttribute('class', 'img-fluid border');
+                
+                // if what's coming is already a url (like our mapbox pictures) // change later maybe...
+                try {
+                  var a = new URL(data.post.media[i]).toString();
+                } catch (error) { // if it's not already a url
+                  // console.log(error);
+
+                  try {
+                    // if localhost
+                    if (window.location.hostname == "localhost") {
+                      var a = new URL('/' + data.post.media[i], "http://localhost:8081").toString(); // important: the trailing slash
+
+                    } else { // if not localhost then get media from elsewhere
+                      // getting media from elsewhere
+                      var a = new URL('/corpersonline/images/' + data.post.media[i], "https://connarts.com.ng").toString(); // upload images to this url when ever users upload images
+                    }
+                  }
+                  catch (error) {
+                    // console.error(error);
+                    
+                    // expected output: TypeError: Failed to construct 'URL': Invalid URL
+                    // Note - error messages will vary depending on browser
+
+                    // then use a place holder image
+                    // initialise var a to a placeholder image
+                  }     
+
+                }
+
+                ii.setAttribute('src', a); // add the trailing slash for normal images that was uploaded.
+                ii.setAttribute('alt', 'user\'s posted image'); // do better
+                gg.appendChild(ii);
+              }
+
+              g.appendChild(gg);
+
+            }
+
+
+            /*
+            var ii = document.createElement('img');
+            ii.setAttribute('class', 'col-4');
+            ii.setAttribute('data-src','holder.js/64x64?theme=thumb');
+            ii.setAttribute('alt', 'user\'s posted image');
+            */
+
+            var e = document.createElement('div');
+            e.setAttribute('class', 'd-flex w-100 justify-content-between');
+
+            var z = document.createElement('h6');
+            z.setAttribute('class', 'mb-1');
+            z.innerHTML = data.post.statecode + ' <br> <small>' + data.post.location + '</small>';
+
+            var y = document.createElement('small');
+            y.setAttribute('class', '');
+            y.innerText = data.post.age;
+            e.appendChild(z);
+            e.appendChild(y);
+
+            var k = document.createElement("p");
+            // k.classList(["maintext"]);
+            k.setAttribute('class', 'maintext');
+            k.innerText = data.post.text;
+            var d = document.createElement('div');
+            d.setAttribute('class', 'media-body');
+            d.appendChild(e);
+            d.appendChild(k); //the text from sender
+            d.appendChild(h);
+
+            var c = document.createElement('img');
+            c.setAttribute('class', 'align-self-start mr-2 rounded-circle');
+            //c.setAttribute('data-src','holder.js/64x64');
+
+            c.setAttribute('src', 'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E45x45%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+            //c.setAttribute('src', 'holder.js/45x45');
+            c.setAttribute('alt', data.post.statecode);
+            c.setAttribute('style', 'font-size: 8px;');
+
+
+            var b = document.createElement('div');
+            b.setAttribute('class', 'align-items-center');
+
+            var a = document.createElement('div');
+            a.setAttribute('class', 'media mb-4');
+            a.appendChild(c);
+            a.appendChild(d);
+
+            newFeed.appendChild(a);
+            newFeed.appendChild(b);
+
+            //right now, we'll append every post together
+            feeds.insertBefore(newFeed, feeds.children[0]);
+
+            //later we'll break them into tabs
+            switch (data.post.type) {
+                case 'sale':
+                    break;
+                case 'accommodation':
+                    break;
+                case 'LOCATIONorROUTE':
+                    break;
+                case 'PPAorSPA':
+                    break;
+            }
+
+            // send 'my other event' to everyone else
+
+            //find a way to record the number of people that has seen a particular ad/post. and show the sender.
+
+            //socket.emit('seen', { my: 'saw data, because we recieved it' });
+        };
+
+        socket.on('boardcast message', bc);
+
+    </script>
+    <script>
+
+        var txtFld = document.getElementById("TXT");
+
+        noNull = function () {
+            console.log('typed');
+            if (txtFld.value == "") {
+                document.getElementById('SEND').disabled = true;
+                document.getElementById('postsubmit').disabled = true;
+            } else {
+                document.getElementById('SEND').disabled = false;
+                document.getElementById('postsubmit').disabled = false;
+            }
+        }
+
+        txtFld.addEventListener('input', noNull, false);
+        
+        /*
+            var handleKey = function(evt) {
+              console.log('keyup on #TXT field');
+              if (evt.keyCode === 13 || evt.keyCode === 14) {
+                sendMsg();
+                console.log('sent');
+              }
+            }
+
+            txtFld.addEventListener("keyup", handleKey, false );
+        */
+        //----------------------
+
+        //some sort of global variables
+        var previewParent = document.getElementById('previewParent');
+        var msg = {
+            images: [],
+            videos: []
+        };
+        var sendBtn = document.getElementById("SEND");
+        function sendMsg() {
+
+            console.log('sendMsg function running');
+
+            msg.text = txtFld.value,
+            msg.type = "random",
+            msg.post_time = Date.now(),
+            msg.sender = pathArray[2],
+            msg.location = userlocation,
+            msg.statecode = usersc
+            ;
+            socket.emit('boardcast message', msg, (delivered_value) => {
+                // this funtion will run here to show the server has gotten our message.
+                console.log('server got our message ? ', delivered_value); // data will be 'true'
+            }); // use post time to know the particular message.
+
+            console.log(msg, 'append boardcast message to corper tl then use sth to make them know their stuff be delivered.');
+
+            //append sent message to sender's timeline (not yet !! maybe when we do we'll make user know it hasn't been done)
+
+            //close modal
+            $('#postModalSale').modal('hide');
+            //show that post has been made
+
+        }
+
+
+        // after post has been made and/or modal closed
+        $('#postModalSale').on('hidden.bs.modal', function (e) {
+            // do something...
+            console.log('post modal hideen');
+            txtFld.value = "";
+            document.getElementById('SEND').disabled = true;
+            //remove the attached image from the div and the input tag, empty the msg object
+
+            //if there's an attached image, remove it, we don't want errors incase the corper didn't pick any pictures
+            //remove all
+
+            while (previewParent.firstChild) {
+              previewParent.removeChild(previewParent.firstChild);
+            }
+
+            if (msg.images.length > 0) {
+                msg.images = [];
+            }
+        });
+
+        $('#postModalSale').on('shown.bs.modal', function (e) {
+          txtFld.focus();
+        });
+
+        sendBtn.addEventListener("click", sendMsg, false);
+
+        /*
+          WE'LL LAZY LOAD ALL CONTENT, FIND A WAY TO COMPRESS IMAGES, TRY TO FIND WHATSAPP COMPRESSION ALGORITHM (CAUSE THEY'RE REALLY GOOD) - ONCE WE DO THIS, MAYBE WE CAN DO VIDEO TOO
+        */
+
+        /* Dynamically adding a change listener to the img input button */
+        var imgBtn = document.getElementById("IMG");
+        imgBtn.addEventListener("change", handleImages, false);
+        function handleImages() {
+            //var preview = document.getElementById('preview');
+            var preview = document.createElement('div');
+            preview.setAttribute('id', 'preview');
+            preview.setAttribute('class', 'app');
+            console.log('created!');
+
+            var fileList = this.files; /* now you can work with the file list */
+            console.log('picture(s) picked!');
+
+            
+            for (var i = 0; i < fileList.length; i++) {
+                var file = fileList[i];
+
+
+
+                if (file.type.startsWith('image/')) {
+                    var contain = document.createElement('div');
+                    contain.setAttribute('class', 'image-wrapper');
+                    contain.setAttribute('id', 'image-to-post' + i);
+                    var b = document.createElement('button');
+                    b.classList.add('top-right', 'btn', 'btn-sm');
+                    b.innerHTML = 'Remove';
+                    var ico = document.createElement('i');
+                    ico.classList.add('top-right', 'fa-remove');
+                    b.onclick = function remove(e) {
+                      console.log(e);
+                      console.log('tryna remove');
+                      preview.removeChild(e.target.parentNode);
+                      // remove them from images attribute in msg obj & if possible from the file input tag
+                      // msg.images.splice(0, 1);
+                      msg.images.splice(msg.images.indexOf(e.target.parentNode.firstChild.currentSrc), 1);
+                      // why is 1 increased by 1
+                      console.log(msg.images);
+                    }
+
+                    var img = document.createElement("img");
+
+                    contain.appendChild(img);
+                    contain.appendChild(b); // or ico
+                    // contain.appendChild(ico); // we'd add icon later
+                    // img.classList.add("img-fluid", "border"); //add classes 'img-fluid' and 'border' // let's not add it 1stly
+
+                    preview.appendChild(contain);
+                    /*Next, we establish the FileReader to handle asynchronously
+                    loading the image and attaching it to the img element.
+                    After creating the new FileReader object, we set up its
+                    onload function and then call readAsDataURL() to start the
+                    read operation in the background. When the entire contents
+                    of the image file are loaded, they are converted into
+                    a data: URL which is passed to the onload callback.
+                    Our implementation of this routine sets the img element's
+                    src attribute to the loaded image which results in the image
+                    appearing in the thumbnail on the user's screen.*/
+                    var reader = new FileReader();
+                    reader.onload = (
+                        function (aImg) {
+                            return function (e) {
+                                aImg.src = e.target.result;
+                                //e.targer.result is the base64 of the image
+                                //msg.images[i] = aImg.src ;
+                                //either of the two , but wharever method, be able to remove from array when user cancels.
+                                msg.images.push(e.target.result);
+                                console.log(msg);
+                            };
+                        })(img);
+                    reader.readAsDataURL(file);
+                }
+
+
+            }
+
+
+            // append the div tag with id=preview
+            previewParent.appendChild(preview);
+        }
+
+        // to do recording of video https://ourcodeworld.com/articles/read/671/how-to-record-a-video-with-audio-in-the-browser-with-javascript-webrtc
+
+        //maybe later ? https://ourcodeworld.com/articles/read/518/how-to-create-a-360-video-player-with-javascript-using-clappr
+
+        //https://ourcodeworld.com/articles/read/127/how-to-implement-a-pull-to-update-effect-android-refresh-style-with-javascript
+
+        //https://ourcodeworld.com/articles/read/460/how-to-create-a-live-barcode-scanner-using-the-webcam-in-javascript
+
+        //https://ourcodeworld.com/articles/read/457/how-to-display-images-in-the-javascript-console-of-the-browser (tell them (or rather show 'em): what you looking for ? give us a reach out !)
+
+        // https://ourcodeworld.com/articles/read/167/how-to-prevent-modification-of-an-object-in-javascript-and-prevent-them-from-being-accesible-in-the-console
+
+        $('[data-spy="scroll"]').on('activate.bs.scrollspy', function () {
+            // do something…
+            console.log('passed');
+        });
+
+
+    </script>
+    <script>
+      // https://developer.mozilla.org/en-US/docs/Web/API/Node/replaceChild
+      var placeBtn = document.getElementById("place");
+      function placeMe() {
+        
+      }
+      placeBtn.addEventListener("click", placeMe, false);
+    </script>
+    <script>
+        // work on this bit alot
+
+        var findBtn = document.getElementById("findme");
+        function locate() {
+
+            console.log('Retriving location...');
+            var savePoint = {
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+
+                    ]
+                }
+            };
+
+            //empty the savePoint variable before use not after success anymore
+            savePoint.geometry.coordinates.pop();
+            savePoint.geometry.coordinates.pop();
+            savePoint.properties = {};
+
+            var geo_options = {
+                enableHighAccuracy: true,
+                maximumAge: 30000,
+                timeout: 27000
+            };
+
+            var geo_options_to = {
+                enableHighAccuracy: true,
+                maximumAge: 30000,
+                timeout: 33000
+            };
+            var one = 0;
+            var geoPointError = function (error) {
+
+                console.log(error);
+                switch (error.code) {
+                    case error.TIMEOUT:
+                        //try again with a longer timeout
+
+                        document.getElementById('locinfo').innerText = 'TIMEOUT Error. We\'re trying again...'; //add or 'never mind?' option in the sentence so corper can quit
+                        if (one <= 1) {
+                            one++;
+                            console.log('timeout ' + one + ' times');
+                            navigator.geolocation.getCurrentPosition(geoPoint, geoPointError, geo_options_to);
+                        }
+
+                        break;
+                    case error.PERMISSION_DENIED: // it could be the user denied permission by not accpting location prompt and that the browser denied because of http and not https
+                        // The user didn't accept the callout //showNudgeBanner();
+                        document.getElementById('locinfo').innerText = 'Please you\'d need to allow location on your broswer. Let\'s do this again';
+                        // (put loc function in showNudgeBanner() callback) ?, so when corper click ok\close for the banner, we get loc
+                        // navigator.geolocation.getCurrentPosition(geoPoint, geoPointError, geo_options);
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        //say there's no network n try again when there is ?!!!?
+                        document.getElementById('locinfo').innerText = 'You seem to be offline. Try again when you\'re online.'; //maybe find how we can auto get the user's location after telling them they're offline
+                        //google said : [Violation] Only request geolocation information in response to a user gesture.
+                        //window.addEventListener('online',  navigator.geolocation.getCurrentPosition(geoPoint, geoPointError));
+                        break;
+                    case 0://unknown error
+                        //just try again
+                        document.getElementById('locinfo').innerText = 'Something went wrong and we don\'t know what. We\'ll just try again.';
+                        locate();
+                        break;
+                }
+            };
+
+            var geoPoint = function (position) {
+
+                // Do magic with location
+                console.log('normal position', position);
+                savePoint.properties.geo = position;
+
+                // cordinates don't save unless you turn them to strings
+                savePoint.geometry.coordinates.push(position.coords.longitude);
+                savePoint.geometry.coordinates.push(position.coords.latitude);
+
+                //savePoint.geometry.coordinates[0] = position.coords.longitude.toString() ;
+                //savePoint.geometry.coordinates[1] = position.coords.latitude.toString() ;
+                console.log('savePoint', savePoint);
+                // how can I know if and when the fetch api was aborted https://developers.google.com/web/updates/2017/09/abortable-fetch
+                const controller = new AbortController();
+                const signal = controller.signal;
+
+                setTimeout(() => controller.abort(), 5000);
+
+                //once we get the geo coordinates, first we get the name of the place., nominatium isn't perfect yet, will just be saving data from it to compare the accuracy we get
+                fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + position.coords.latitude + '&lon=' + position.coords.longitude, { signal })
+                    .then(
+                        function (response) {
+                            if (response.status !== 200) {
+                                console.log('Looks like there was a problem. Status Code: ' +
+                                    response.status);
+                                return;
+                            }
+
+                            // Examine the text in the response AND WHY IS CORDINATES NOT SAVING TO savePoint variable
+                            response.json().then(function (data) {
+                                console.log(data);
+                                savePoint.properties.nominatim = data;
+                                console.log('savePoint2', savePoint);
+                            });
+                        }
+                    )
+                    .catch(function (err) {
+                        //console.log('Fetch Error :-S', err);
+                        if (err.name === 'AbortError') {
+                            console.log('Fetch aborted');
+                        } else {
+                            console.error('Uh oh, an error! Fetch Error :-S', err);
+                        }
+                    });
+                //save to db
+
+                //do the image
+                var img = new Image();
+                // get map if location is accurate enough, but if it isn't then ask user where they are. | Retrieve a map at gotten longitude and latitude, with zoom 14.24, bearing 0, and pitch 60. The map will be 460 pixels wide and 460 pixels high (for mobile screen, 310px by 290px)
+                img.src = "https://api.mapbox.com/styles/v1/mapbox/streets-v10/static/pin-l(" + position.coords.longitude + "," + position.coords.latitude + ")/" + position.coords.longitude + "," + position.coords.latitude + ",14.25,0,60/310x290?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg";
+                var preview = document.createElement('div');
+                preview.setAttribute('id', 'preview');
+                preview.setAttribute('class', 'cnt mb-2'); // TODO, align item in middle
+                // preview.setAttribute('class', 'app');
+                document.getElementById('locinfo').innerText = '';
+                preview.appendChild(img);
+                //previewParent.firstChild = preview ;
+                previewParent.appendChild(preview);
+                msg.images.push(img.src);
+                msg.type = 'location';
+                msg.geo = savePoint;
+                //sendMsg();
+                /*
+
+                      //to convert to dataURI // https://davidwalsh.name/convert-image-data-uri-javascript https://ourcodeworld.com/articles/read/182/the-canvas-has-been-tainted-by-cross-origin-data-and-tainted-canvases-may-not-be-exported
+                      img.crossOrigin = "anonymous" ;
+                      img.onload = function () {
+                        var canvas = document.createElement('canvas');
+                        canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
+                        canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
+
+                        canvas.getContext('2d').drawImage(this, 0, 0);
+
+                        // Get raw image data
+                        //callback(canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, ''));
+
+                        // ... or get as Data URI
+                        canvas.toDataURL('image/png');
+                        //console.log(canvas.toDataURL('image/png')); //almosts crashes the browser, for some reasons, it keeps on logging
+                        img.src = canvas.toDataURL('image/png');
+                        preview.appendChild(img);
+                        previewParent.appendChild(preview);
+                      };
+
+                        https://stackoverflow.com/questions/27526281/websockets-and-apache-proxy-how-to-configure-mod-proxy-wstunnel/27534443#27534443
+                       */
+
+
+            };
+
+            navigator.geolocation.getCurrentPosition(geoPoint, geoPointError, geo_options);
+            document.getElementById('locinfo').innerText = 'Retrieving location...';
+        };
+
+        findBtn.addEventListener("click", locate, false);
+    </script>
+
+<script>
+    // http://www.runningcoder.org/jquerytypeahead/demo/ User v1
+    $.typeahead({
+      input: '.js-typeahead-country_v1',
+      order: "desc",
+      minLength: 1, // Accepts 0 to search on focus, minimum character length to perform a search
+      offset: false, // Set to true to match items starting from their first character
+      cache: sessionStorage,
+      hint: true,
+      ttl: 3600000, // Cache time to live in ms
+      maxItem: 7,
+      template: "{{display}} <small class='text-muted text-capitalize'>{{group}}</small>",
+      href: "/search?title={{display}}",
+      source: { // group cannot be 'data'
+        general: {
+          ajax: {
+            url: "/posts",
+            data: { // set url query parameter if we want to do backend/query search
+              q: '{{query}}'
+            },
+            path: 'data'
+          }
+        }
+      },
+      // please put elipses in very long texts, group or add posts type (eg. accommodation, on sale, ppa, etc.)
+      callback: {
+          onInit: function (node) {
+              console.log('Typeahead Initiated on ' + node.selector);
+          },
+          onReceiveRequest: function (node, searchtext) {
+              console.log('gonna search ', node, searchtext);
+              // save seacrhtext in db for corper's preference and other good functionalities
+              // if they searched for an accommodation, alert them when one is avalible.
+              // even give the option of them putting on alert when a particulart item or property is up for sale or rent respectively
+          },
+          onResult: function (node, searchtext, results, l) { // When the result container is displayed
+            console.log('search result', node, searchtext, results, l);
+            // let's see what the user is seeing
+          }
+      },
+  debug: true
+  });
+  </script>
+
+
+<!--on PoP day or the corper's birthday, pick one of these demos from https://tympanus.net/codrops/2019/01/08/animated-mesh-lines/ and display or use as the background.-->
+</body>
+
+</html>

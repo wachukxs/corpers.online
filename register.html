@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8" />
@@ -7,20 +7,44 @@
 	<!-- for-mobile-apps -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="keywords" content="Register on Ajuwaya Market and get to safely Buy from Corpers, Sell to Corpers" />
+<meta name="keywords" content="Register on Corper Online and get to safely Buy from Corpers, Sell to Corpers" />
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
 <!-- //for-mobile-apps -->
-	<link rel="stylesheet" type="text/css" media="screen" href="bootstrap.css" />
+
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet"
+	integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+<!-- <script src="/jquery-3.3.1.min.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+	integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script> -->
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"
+	integrity="sha384-pjaaA8dDz/5BgdFUPX6M/9SUZv4d12SUPF0axWc+VRZkx5xU3daN+lYb49+Ax+Tl" crossorigin="anonymous"></script>
+
+
+<!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script> -->
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+	integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+<!-- <script src="/font-awesome.min.css"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.4/holder.js"
+	integrity="sha256-crfkMD0BL2TtiwpbIlXF/SVmGSvOtgbMM8GBkibVKyc=" crossorigin="anonymous"></script>
+<script src="/socket.io/socket.io.js"></script>
+
+	<!-- <link rel="stylesheet" type="text/css" media="screen" href="bootstrap.css" />
 	<script src="jquery-slim.min.js"></script>
 	<script src="bootstrap.min.js"></script>
-	<script src="holder.min.js"></script>
+	<script src="holder.min.js"></script> -->
 	<style>
 
 			.footer {
+				right: 0;
 				bottom: 0;
-				width: 100%;
-				line-height: 30px;
-				background-color: #f5f5f5;
+				left: 0;
+				z-index: 1030;
 			}
 			input#statecode{
 				text-transform: uppercase;
@@ -108,7 +132,7 @@
 	</main>
 
 	<script>
-		//(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM)[/](17|18)[ABC][/][0-9]{4}
+		// (AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM)[/](17|18)[ABC][/][0-9]{4}
 		var years = parseInt(new Date(Date.now()).getFullYear().toFixed().slice(2, 4)) ;
 		document.forms[0].elements[5].pattern.replace('()', '(' + (years-1).toString() + '|' + years.toString() + ')' );
 		document.getElementById('scinput').oninvalid = function (event) {
@@ -116,7 +140,7 @@
 			}
 	</script>
 
-	<footer class="footer fixed-bottom text-center pt-3">
+	<footer class="footer text-center pt-3">
       <p>Corpers Online built by <a href="#">@Corpers</a> for <a href="#">Corpers</a>.</p>
       <p>
         <a href="#">2018</a>

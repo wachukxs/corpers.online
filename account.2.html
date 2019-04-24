@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-
+﻿<!DOCTYPE html>
+<html>
 <head lang="en">
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta charset="utf-8">
@@ -15,7 +15,7 @@
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
     crossorigin="anonymous">
 
-    <script src="/jquery-3.3.1.min.js"></script>
+    <!-- <script src="/jquery-3.3.1.min.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
   <!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
     crossorigin="anonymous"></script> -->
@@ -24,12 +24,55 @@
     crossorigin="anonymous"></script>
 
 
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-    crossorigin="anonymous"></script>
+  <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script> -->
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+      integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 
+<!-- <script src="/font-awesome.min.css"></script> -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.4/holder.js" integrity="sha256-crfkMD0BL2TtiwpbIlXF/SVmGSvOtgbMM8GBkibVKyc="
     crossorigin="anonymous"></script>
-  <script src="/socket.io/socket.io.js"></script>
+
+
+    <!-- jQuery's typeahead -->
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.10.6/jquery.typeahead.min.js" integrity="sha256-W+Cxk9exgjON2p73M4RcoKvCpQUZ+IjXhEzZk6rlg9M=" crossorigin="anonymous"></script>
+  
+  
+    <link rel="stylesheet"   href="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.10.6/jquery.typeahead.min.css" integrity="sha256-CU0/rbxVB3Eixd3bbIuJxHJLDnXriJS9cwp/BfcgpLw=" crossorigin="anonymous" />
+  
+
+   <!--- twitter's typeahead --->
+   <!-- <script src="/typeahead.bundle.js"></script> -->
+   
+   <style type="text/css">
+    
+    .typeahead {
+      background-color: #FFFFFF;
+    }
+    .tt-query {
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    }
+    .tt-hint {
+      color: #999999;
+    }
+    .tt-menu {
+      background-color: #FFFFFF;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+      margin-top: 12px;
+    }
+    .tt-suggestion:hover {
+      cursor: pointer;
+      background-color: #0097CF;
+      color: #FFFFFF;
+    }
+    .tt-suggestion p {
+      margin: 0;
+    }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
   <style>
         #loader {
           border: 5px solid #f3f3f3;
@@ -223,956 +266,1132 @@
    
         
     </style>
-</head>
-<nav class="navbar navbar-expand-sm navbar-light bg-light active">
-  <a class="navbar-brand" href="/">Corpers Online</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample03" aria-controls="navbarsExample03"
-    aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
 
-  <div class="collapse navbar-collapse" id="navbarsExample03">
+    <style>
+      /* Top right text */
+      .image-wrapper .top-right{
+        position: relative;
+        top: -95px;
+        right: -3px;
+      }
+      /* testing the post modal with picture arrangment */
+      .image-wrapper{
+          width: auto; /*was 100px*/
+          height: 100px;
+          border: 1px solid #ddd;
+      }
+      .image-wrapper img {
+          object-fit: cover;
+          min-width: 100%;
+          min-height: 100%;
+          width: auto;
+          height: auto;
+          max-width: 100%;
+          max-height: 100%;
+      }
+    </style>
 
-    <!-- Nav tabs for the ACCOMODATION, PPAs, SPAs, SALES -->
-    <ul class="nav navbar-nav mr-auto" id="theTabs" role="tablist">
-      <li class="nav-item">
-        <a class="nav-link active" href="/logout" aria-selected="true">Logout</a>
-      </li>
-      <!-- <li class="nav-item">
-            <a class="nav-link active" id="sales-tab" data-toggle="tab" href="#sales" role="tab" aria-controls="sales" aria-selected="true">Sales</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" id="accomodation-tab" data-toggle="tab" href="#accomodation" role="tab" aria-controls="accomodation" aria-selected="false">Accomodations</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" id="ppa-tab" data-toggle="tab" href="#ppa" role="tab" aria-controls="ppa" aria-selected="false">PPAs</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" id="spa-tab" data-toggle="tab" href="#spa" role="tab" aria-controls="spa" aria-selected="false">SPAs</a>
-          </li> -->
-    </ul>
-    <form class="form-inline my-2 my-md-0 pr-2">
-      <input class="form-control" type="text" placeholder="Search">
-    </form>
+    <style>
+      /*center anything within a div (or other element maybe)*/
+      .cnt{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
 
-    <!-- Button trigger modal for posting-->
-    <!--Hidden only on xs | Hidden only on sm -->
-    <button id="bfp" class="btn btn-primary d-sm-none d-md-block d-none d-sm-block" data-toggle="modal" data-target="#postModalSale">Post</button>
-  </div>
-</nav>
-
-
-<!-- the Modal for posting (sale)-->
-<div class="modal fade" id="postModalSale" tabindex="-1" role="dialog" aria-labelledby="postModalLabelSale" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Create post</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        
-        <textarea autofocus type="text" class="form-control mb-3 shadow-sm" placeholder="Write a message. Share the location of an accomodation for rent, your PPA, a popular venue, or a route. Get creative."
-          id="TXT"></textarea>
-          <small id="locinfo"></small>
-
-        <div id="previewParent">
-          <!--<div id="preview"></div>-->
-        </div>
-
-        <div class="d-flex align-items-center">
-          <div class="mr-auto">
-            
+    <style>
+        /*styling the scroll bar for the text area for posting, https://css-tricks.com/custom-scrollbars-in-webkit/ and http://www.tagindex.net/css/form/scrollbar_color.html */
+        /* width */
+        textarea.shadow-sm::-webkit-scrollbar {
+          width: 5px;
           
-              <div class="fileUpload btn btn-light">
-                <span>Image</span>
-                <input type="file" accept="images/*" class="upload" multiple id="IMG">
-              </div>
-            
-            
+        }
 
-              <!--<div class="fileUpload btn btn-light">
-                                    <span>Vid</span>
-                                    <input type="file" accept="video/*" class="upload" id="VID">
-                                  </div>-->
-
-              <!--the input for giving routes should offer places suggestions as user types. 
-                                  use appropriate ui. form place to place with side notes and advice.-->
-              <!--instead of putting like, nooo!!!!! put affrimations, other corpers 
-                                  should affirm other prople posts !!! increases trust. possible give alternative, 
-                                  and even say when something is a lie or fasle or not entirely true.-->
-
-              <!--<button type="button" class="btn btn-light" id="trackme">Share Route</button>-->
-
-
-              <button class="btn btn-light" id="findme">Share Location</button>
-              <!--like malls/shops apartments markets parks/bustops or popular pickup and dropoff 
-                                  points. -->
-
-
-           
-          </div>
-        </div>
+        /* Track */
+        textarea.shadow-sm::-webkit-scrollbar-track {
+          background: #f1f1f1; 
+        }
         
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Save as draft</button>
-        <button type="button" class="btn btn-primary" id="SEND" disabled>Post</button>
-      </div>
-    </div>
-  </div>
-</div>
+        /* Handle */
+        textarea.shadow-sm::-webkit-scrollbar-thumb {
+          background: #888; 
+          -webkit-border-radius: 10px;
+        }
 
+        /* Handle on hover */
+        textarea.shadow-sm::-webkit-scrollbar-thumb:hover {
+          background: #555;
+        }
 
+        /* Handle scroll bar edge/corner */
+        textarea.shadow-sm::-webkit-scrollbar-corner {
+          background: rgb(255, 255, 255);
+        }
+    </style>
+    <style>
+      p.maintext {
+        /* didn't work */
+        /* word-wrap: break-word; */ /* or overflow-wrap */
+        
+        word-break: break-word;
 
-<!--make alerts appear only in relevant screens. like the alert in the middle (col-sm-9) appear only on small screens. then the one on the right, col-sm-3 appear only on large screens.-->
+        /* -webkit-hyphens: auto;
+        -ms-hyphens: auto;
+        hyphens: auto; */
+      }
+    </style>
+</head>
 
 
 <body class="">
+    <nav class="navbar navbar-expand-sm navbar-light bg-light active">
+        <a class="navbar-brand" href="/">Corpers Online</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample03" aria-controls="navbarsExample03"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-  <main role="main">
-    <div class="pt-3 maincontent container">
-      <div class="row pb-3">
-        <!--Hidden only on xs | Hidden only on sm -->
-        <div class="col-sm-3 d-sm-none d-md-block d-none d-sm-block">
+        <div class="collapse navbar-collapse" id="navbarsExample03">
 
-          <!--put the corper's information. let them see their profile (and be able to change it)-->
-          <div class="card" id="profilecard">
-            <div class="card-body">
-              <h6 class="">About <small>· <a href="" id="editprofile">Edit</a></small></h6>
-              <ul class="" id="profile">
-                <li>
-                  <span class=""></span>Serving at <a href="#">?</a>
+            <!-- Nav tabs for the ACCOMODATION, PPAs, SPAs, SALES -->
+            <ul class="nav navbar-nav mr-auto" id="theTabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link" href="/map" aria-selected="true">Maps</a>
                 </li>
-                <li>
-                  <span class=""></span>Batch <a href="#">?</a>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout" aria-selected="true">Logout</a>
                 </li>
-                <li>
-                  <span class=""></span>PPA at <a href="#">?</a>
-                </li>
-                <li style="display:none;">
-                  <span class=""></span>SPA at <a href="#">San Francisco</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <!-- test-->
+                <!-- <li class="nav-item">
+                      <a class="nav-link active" id="sales-tab" data-toggle="tab" href="#sales" role="tab" aria-controls="sales" aria-selected="true">Sales</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="accomodation-tab" data-toggle="tab" href="#accomodation" role="tab" aria-controls="accomodation" aria-selected="false">Accomodations</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="ppa-tab" data-toggle="tab" href="#ppa" role="tab" aria-controls="ppa" aria-selected="false">PPAs</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="spa-tab" data-toggle="tab" href="#spa" role="tab" aria-controls="spa" aria-selected="false">SPAs</a>
+                    </li> -->
+            </ul>
+            <!-- <form class="form-inline my-2 pr-2">
+              <div id="bloodhound">
+                  <input class="form-control js-typeahead-country_v1 typeahead" type="text" placeholder="Search accomodations, places, PPAs, SPAs">
+              </div>
+            </form> -->
+            
+            <form id="form-country_v1" name="form-country_v1" class="mr-3">
+							<div class="typeahead__container">
+									<div class="typeahead__field">
+											<div class="typeahead__query">
+													<input class="js-typeahead-country_v1" name="country_v1[query]" type="search" placeholder="Search" autocomplete="off">
+											</div>
+											<div class="typeahead__button">
+													<button type="submit">
+															<i class="typeahead__search-icon"></i>
+													</button>
+											</div>
+									</div>
+							</div>
+					</form>
+            
 
-
-          <!--//-->
+            <!-- Button trigger modal for posting-->
+            <!--Hidden only on xs | Hidden only on sm -->
+            <button id="bfp" class="btn btn-primary d-sm-none d-md-block d-none d-sm-block" data-toggle="modal" data-target="#postModalSale">Post</button>
         </div>
+    </nav>
 
-        <div class="col-sm-6"  data-spy="scroll" data-offset="0">
 
-          <div id="loader"></div>
-          <!--in this middle part, we'll give various toggle tabs for location of ACCOMODATION, PPAs, SPAs, SALES-->
+    <!-- the Modal for posting (sale)-->
+    <div class="modal fade" id="postModalSale" tabindex="-1" role="dialog" aria-labelledby="postModalLabelSale" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Create post</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                      
 
-          <!-- Nav tabs for the ACCOMODATION, PPAs, SPAs, SALES -->
-          <!-- <ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
-                        <li class="nav-item">
-                          <a class="nav-link active" id="sales-tab" data-toggle="tab" href="#sales" role="tab" aria-controls="sales" aria-selected="true">Sales</a>
-                        </li>
-                        <li class="nav-item">
-                          <a class="nav-link" id="accomodation-tab" data-toggle="tab" href="#accomodation" role="tab" aria-controls="accomodation" aria-selected="false">Accomodations</a>
-                        </li>
-                        <li class="nav-item">
-                          <a class="nav-link" id="ppa-tab" data-toggle="tab" href="#ppa" role="tab" aria-controls="ppa" aria-selected="false">PPAs</a>
-                        </li>
-                        <li class="nav-item">
-                          <a class="nav-link" id="spa-tab" data-toggle="tab" href="#spa" role="tab" aria-controls="spa" aria-selected="false">SPAs</a>
-                        </li>
-                      </ul> -->
+                    <textarea autofocus type="text" class="form-control mb-3 shadow-sm" placeholder="Write a message. Share the location of an accomodation for rent, your PPA, a popular venue, or a route. Get creative."
+                              id="TXT"></textarea>
+                    <small id="locinfo"></small>
 
-          <!-- Tab panes for the ACCOMODATION, PPAs, SPAs, SALES-->
-          <!-- <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="sales" role="tabpanel" aria-labelledby="sales-tab"> 
-          organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr, 
-          vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, 
-          sustainable jean shorts beard ut DIY ethical culpa terry richar 
-        </div>
-        <div class="tab-pane fade" id="accomodation" role="tabpanel" aria-labelledby="accomodation-tab"> 
-          Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. 
-          Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan 
-          four loko farm-to-table craft beer twee. Qui photo booth 
-        </div>
-        <div class="tab-pane fade" id="ppa" role="tabpanel" aria-labelledby="ppa-tab"> 
-          hardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint 
-          qui sapiente accusamus tattooed echo park. 
-        </div>
-        <div class="tab-pane fade" id="spa" role="tabpanel" aria-labelledby="spa-tab"> 
-          To help fit your needs, this works with -based markup, as shown above, 
-            or with any arbitrary “roll your own” markup. Note that if you’re using, 
-              you shouldn’t add role="tablist" directly to it. 
-        </div>
-      </div> -->
-          
+                    <div id="previewParent">
+                        <!--<div id="preview"></div>-->
+                    </div>
 
-          <ul class="list-group" id="tl">
+                    <div class="d-flex align-items-center">
+                        <div class="mr-auto">
 
-            <!-- 
 
-                      <li class="list-group-item">
-                        <div class="media mb-4">
-                          <img class="align-self-start mr-2 rounded-circle" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E45x45%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="user image">
-                          <div class="media-body">
-                            <div class="d-flex w-100 justify-content-between">
-                              <h6 class="mb-1">AB/12F/9478</h6>
-                              <small class="">2 days ago</small>
+                            <div class="fileUpload btn btn-outline-dark">
+                                <span>Image</span>
+                                <input type="file" accept="image/*" class="upload" multiple id="IMG">
                             </div>
-                            <p>f f sad a bbbbbb</p>
-                            <div class="">
-                              <div class="media-content"></div>
+
+
+
+                            <!--<div class="fileUpload btn btn-light">
+                                                  <span>Vid</span>
+                                                  <input type="file" accept="video/*" class="upload" id="VID">
+                                                </div>-->
+                            <!--the input for giving routes should offer places suggestions as user types.
+                                                use appropriate ui. form place to place with side notes and advice.-->
+                            <!--instead of putting like, nooo!!!!! put affrimations, other corpers
+                                                should affirm other prople posts !!! increases trust. possible give alternative,
+                                                and even say when something is a lie or fasle or not entirely true.-->
+                            <!--<button type="button" class="btn btn-light" id="trackme">Share Route</button>-->
+
+
+                            
+                            <div class="btn-group" role="group" aria-label="Sharing places and locations">
+                              <button class="btn btn-outline-dark" id="findme">Share location</button>
+                              <button class="btn btn-outline-dark" id="place">or accomodation</button>
                             </div>
-                          </div>
+                            <!-- way less than 245418.50 -->
+                            <!--like malls/shops apartments markets parks/bustops or popular pickup and dropoff
+                                                points. -->
+
+
+
                         </div>
-                        <div class="align-items-center"></div>
-                      </li>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Save as draft</button>
+                    <button type="button" class="btn btn-primary" id="SEND" disabled>Post</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
-                      <li class="list-group-item">
-                          <div class="media mb-4">
-                              <img class="align-self-start mr-2 rounded-circle" data-src="holder.js/45x45?theme=thumb" alt="user image">
-                              <div class="media-body">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-1">List group item heading <br> <small>Umuahia, Abia State</small></h6>
-                                    <small>3 days ago</small>
-                                </div>
-                                <p class="">Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
-                                <p>Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
-                                <div class="">
-                                    <div class="media-content">
-                                      <div class="app">
-                                          <img data-action="zoom" src="/5.png" class="img-fluid border" alt="Responsive image">
-                                          <img data-action="zoom" src="/3.png" class="img-fluid border" alt="Responsive image">
-                                          <img data-action="zoom" src="/6.PNG" class="img-fluid border" alt="Responsive image">
+
+    <!--make alerts appear only in relevant screens. like the alert in the middle (col-sm-9) appear only on small screens. then the one on the right, col-sm-3 appear only on large screens.-->
+
+    <main role="main">
+        <div class="pt-3 maincontent container">
+            <div class="row pb-3">
+                <!--Hidden only on xs | Hidden only on sm -->
+                <div class="col-sm-3 d-sm-none d-md-block d-none d-sm-block">
+
+                    <!-- put the corper's information. let them see their profile (and be able to change it) -->
+                    <div class="card shadow" id="profilecard">
+                        <div class="card-body">
+                            <h6 class="">About <small> · <a href="" id="editprofile">Edit</a></small></h6>
+                            <ul class="" id="profile">
+                                <li>
+                                    <span class=""></span>Serving at <a href="#">?</a>
+                                </li>
+                                <li>
+                                    <span class=""></span>Batch <a href="#">?</a>
+                                </li>
+                                <li>
+                                    <span class=""></span>PPA at <a href="#">?</a>
+                                </li>
+                                <li style="display:none;">
+                                    <span class=""></span>SPA at <a href="#">San Francisco</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- test-->
+                    <!--//-->
+                </div>
+
+                <div class="col-sm-6" data-spy="scroll" data-offset="0">
+
+                    <div id="loader" class='pb-3'></div>
+                    <!--in this middle part, we'll give various toggle tabs for location of ACCOMODATION, PPAs, SPAs, SALES-->
+                    <!-- Nav tabs for the ACCOMODATION, PPAs, SPAs, SALES -->
+                    <!-- <ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
+                                  <li class="nav-item">
+                                    <a class="nav-link active" id="sales-tab" data-toggle="tab" href="#sales" role="tab" aria-controls="sales" aria-selected="true">Sales</a>
+                                  </li>
+                                  <li class="nav-item">
+                                    <a class="nav-link" id="accomodation-tab" data-toggle="tab" href="#accomodation" role="tab" aria-controls="accomodation" aria-selected="false">Accomodations</a>
+                                  </li>
+                                  <li class="nav-item">
+                                    <a class="nav-link" id="ppa-tab" data-toggle="tab" href="#ppa" role="tab" aria-controls="ppa" aria-selected="false">PPAs</a>
+                                  </li>
+                                  <li class="nav-item">
+                                    <a class="nav-link" id="spa-tab" data-toggle="tab" href="#spa" role="tab" aria-controls="spa" aria-selected="false">SPAs</a>
+                                  </li>
+                                </ul> -->
+                    <!-- Tab panes for the ACCOMODATION, PPAs, SPAs, SALES-->
+                    <!-- <div class="tab-content" id="myTabContent">
+                      <div class="tab-pane fade show active" id="sales" role="tabpanel" aria-labelledby="sales-tab">
+                        organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr,
+                        vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit,
+                        sustainable jean shorts beard ut DIY ethical culpa terry richar
+                      </div>
+                      <div class="tab-pane fade" id="accomodation" role="tabpanel" aria-labelledby="accomodation-tab">
+                        Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.
+                        Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan
+                        four loko farm-to-table craft beer twee. Qui photo booth
+                      </div>
+                      <div class="tab-pane fade" id="ppa" role="tabpanel" aria-labelledby="ppa-tab">
+                        hardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint
+                        qui sapiente accusamus tattooed echo park.
+                      </div>
+                      <div class="tab-pane fade" id="spa" role="tabpanel" aria-labelledby="spa-tab">
+                        To help fit your needs, this works with -based markup, as shown above,
+                          or with any arbitrary “roll your own” markup. Note that if you’re using,
+                            you shouldn’t add role="tablist" directly to it.
+                      </div>
+                    </div> -->
+
+
+                    <ul class="list-group" id="tl">
+
+                        <!--
+
+                                  <li class="list-group-item">
+                                    <div class="media mb-4">
+                                      <img class="align-self-start mr-2 rounded-circle" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E45x45%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="user image">
+                                      <div class="media-body">
+                                        <div class="d-flex w-100 justify-content-between">
+                                          <h6 class="mb-1">AB/12F/9478</h6>
+                                          <small class="">2 days ago</small>
+                                        </div>
+                                        <p>f f sad a bbbbbb</p>
+                                        <div class="">
+                                          <div class="media-content"></div>
+                                        </div>
                                       </div>
                                     </div>
-                                </div>
-                                <div id="comment">
-                                  <hr>
-                                    <div class="media mt-3">
-                                        <a class="pr-2" href="#">
-                                          <img class="rounded-circle" data-src="holder.js/45x45?theme=thumb" alt="img">
-                                        </a>
-                                        <div class="media-body">
+                                    <div class="align-items-center"></div>
+                                  </li>
+
+
+                                  <li class="list-group-item">
+                                      <div class="media mb-4">
+                                          <img class="align-self-start mr-2 rounded-circle" data-src="holder.js/45x45?theme=thumb" alt="user image">
+                                          <div class="media-body">
                                             <div class="d-flex w-100 justify-content-between">
-                                                <h6 class="mb-1">List group item heading</h6>
+                                                <h6 class="mb-1">List group item heading <br> <small>Umuahia, Abia State</small></h6>
                                                 <small>3 days ago</small>
                                             </div>
-                                            <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
-                                            <div id="media-content">
-                                              <div class="app">
-                                                <img data-action="zoom" src="/4.jpg" class="img-fluid border"  alt="Responsive image">
-                                                <img src="/3.png" class="img-fluid border"  alt="Responsive image">
-                                              </div>
+                                            <p class="">Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
+                                            <p>Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+                                            <div class="">
+                                                <div class="media-content">
+                                                  <div class="app">
+                                                      <img data-action="zoom" src="/5.png" class="img-fluid border" alt="Responsive image">
+                                                      <img data-action="zoom" src="/3.png" class="img-fluid border" alt="Responsive image">
+                                                      <img data-action="zoom" src="/6.PNG" class="img-fluid border" alt="Responsive image">
+                                                  </div>
+                                                </div>
+                                            </div>
+                                            <div id="comment">
+                                              <hr>
+                                                <div class="media mt-3">
+                                                    <a class="pr-2" href="#">
+                                                      <img class="rounded-circle" data-src="holder.js/45x45?theme=thumb" alt="img">
+                                                    </a>
+                                                    <div class="media-body">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <h6 class="mb-1">List group item heading</h6>
+                                                            <small>3 days ago</small>
+                                                        </div>
+                                                        <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
+                                                        <div id="media-content">
+                                                          <div class="app">
+                                                            <img data-action="zoom" src="/4.jpg" class="img-fluid border"  alt="Responsive image">
+                                                            <img src="/3.png" class="img-fluid border"  alt="Responsive image">
+                                                          </div>
+                                                      </div>
+                                                      </div>
+                                                  </div>
+                                            </div>
                                           </div>
-                                          </div>
-                                      </div>
-                                </div>
-                              </div>
-                            </div>
+                                        </div>
 
-                           
-                      </li> 
-                    
-                    -->
 
-          </ul>
-        </div>
-        <!--Hidden only on xs | Hidden only on sm -->
-        <div class="col-sm-3 d-sm-none d-md-block d-none d-sm-block">
+                                  </li>
 
-          <div class="card" id="statscard">
-            <div class="card-body text-center">
-              <h6 class="card-title">Quick<i>ly</i> Report<i>s</i> </h6>
-              <!-- <p class="card-text">
-                      <ul>
-                       
-                      </ul>
-                    </p>
-                    <a href="#" class="">Go somewhere</a>
-                    <a href="#" class="card-link">Card link</a>
-                    <a href="#" class="card-link">Another link</a> -->
-              <div> <small id="tco"></small>  </div>
+                                -->
+
+                    </ul>
+                </div>
+                <!--Hidden only on xs | Hidden only on sm -->
+                <div class="col-sm-3 d-sm-none d-md-block d-none d-sm-block">
+
+                    <div class="card shadow" id="statscard">
+                        <div class="card-body text-center">
+                            <h6 class="card-title">Quick<i>ly</i> Report<i>s</i> </h6>
+                            <!-- <p class="card-text">
+                                    <ul>
+
+                                    </ul>
+                                  </p>
+                                  <a href="#" class="">Go somewhere</a>
+                                  <a href="#" class="card-link">Card link</a>
+                                  <a href="#" class="card-link">Another link</a> -->
+                            <div> <small id="tco"></small>  </div>
+                        </div>
+                    </div>
+
+                    <!--testing forms uploads-->
+                    <!--// testing forms uploads-->
+                    <!--strick through the message 1 corper online when user is offline-->
+                    <!--they should see news about current events concerning corpers happening around them
+
+                          news like cds meetings happening now, send forth meetings happening now, due dates for PV Signing,
+                          polls and results of incoming executives should be shown, congratulate
+                          corper so so n so for becoming the new secretary for ____ CDS, involve
+                          accounts for CDS Inspectors, so they can send messages too and verify
+                          people. Help the variuo CDS in ways we can; e.g. Publicity in gathering
+                          articules, reporting real-time events. (once somebody registers as being
+                          in publicity and editorial CDS, they can report real time events. like
+                          people in ENvironmetal CDS can take pictures of bad places around them
+                          and report to responsible Govt. officials etc. || people in drug and free
+                          cds can audit drugs in Pharmacies and road side sales ... people in law
+                          and legal aid can find SPAs at Law Courts etc. If Law offices need corpers,
+                          they should advertise on Corpers Online and easily find !!!!!!!! --
+                          use this in other screnerious too (like other Organisation that need
+                          corpers for SPAs work, can put their requirements etc.) )-->
+                </div>
             </div>
-          </div>
-
-          
-          <!--strick through the message 1 corper online when user is offline-->
-          <!--they should see news about current events concerning corpers happening around them
-                
-                news like cds meetings happening now, send forth meetings happening now, due dates for PV Signing,
-                polls and results of incoming executives should be shown, congratulate 
-                corper so so n so for becoming the new secretary for ____ CDS, involve 
-                accounts for CDS Inspectors, so they can send messages too and verify 
-                people. Help the variuo CDS in ways we can; e.g. Publicity in gathering 
-                articules, reporting real-time events. (once somebody registers as being 
-                in publicity and editorial CDS, they can report real time events. like 
-                people in ENvironmetal CDS can take pictures of bad places around them 
-                and report to responsible Govt. officials etc. || people in drug and free 
-                cds can audit drugs in Pharmacies and road side sales ... people in law 
-                and legal aid can find SPAs at Law Courts etc. If Law offices need corpers, 
-                they should advertise on Corpers Online and easily find !!!!!!!! -- 
-                use this in other screnerious too (like other Organisation that need 
-                corpers for SPAs work, can put their requirements etc.) )-->
         </div>
-      </div>
-    </div>
 
 
 
-    <!-- fab Code begins here -->
-    <!-- Visible only on xs | Visible only on sm -->
-    <div class="float d-block d-sm-none d-none d-sm-block d-md-none" data-toggle="modal" data-target="#postModalSale">
-      <i class="edit-solid icon my-float"></i>
-    </div>
-  </main>
+        <!-- fab Code begins here -->
+        <!-- Visible only on xs | Visible only on sm -->
+        <div class="float d-block d-sm-none d-none d-sm-block d-md-none" data-toggle="modal" data-target="#postModalSale">
+            <i class="edit-solid icon my-float"></i>
+        </div>
+    </main>
 
 
+    <script>
+        // if someone refreshes the page, a big maybe cache the present posts [keep the variable bm array intacted] and fetch newer posts from db and change the time on the older posts!!!
 
-
-
-
-
-
-  <script>
-
-    //for loader
-    window.onload = function () {
-      document.getElementById('loader').style.display = 'none' ;
-    }
-    //we'll be doing loader alot ...for when socket.io is still fetching data... and the timeline is empty... for when user drags page down too like android app maybe
-
-
-
-
-    /**
-    bootstrap scripts 
-
-    DON'T DELETE NEXT COMMENTED CODE, FOR USE LATER.
-    */
-  /*   
-  
-    $('#myTab a[href="#spa"]').on('click', function (e) {
-      e.preventDefault()
-      $(this).tab('show')
-      console.log('spa tab active');
-    })
-
-    $('#theTabs a[href="#ppa"]').on('click', function (e) {
-      e.preventDefault()
-      $(this).tab('show')
-      console.log('ppa tab active');
-    })
-
-    $('#theTabs a[href="#accomodation"]').on('click', function (e) {
-      e.preventDefault()
-      $(this).tab('show')
-      console.log('ppa tab active');
-    })
-
-    $('#theTabs a[href="#sales"]').on('click', function (e) {
-      e.preventDefault()
-      $(this).tab('show')
-      console.log('ppa tab active');
-    })
-
-    $('#theTabs a[href="#spa"]').on('click', function (e) {
-      e.preventDefault()
-      $(this).tab('show')
-      console.log('ppa tab active');
-    }) 
-    
-  */
-
-
-
-    var pathArray = window.location.pathname.split('/');
-    console.log('user = ' + pathArray[2]);
-    document.title = pathArray[2] + " Online!";
-    document.getElementById('editprofile').href = '/profile/' + pathArray[2];
-
-    // start: bm[0], //oldest post in user's timeline
-    // end: bm[bm.length - 1] //newest post in user's timeline
-    // bm[] = boardcast messages currently in the user's time line
-    var bm = [];
- 
-    //connect to socket.io on /user but somehow it still connects with\to /
-
-    /* 
-    By default, a long-polling connection is established first, then 
-    upgraded to "better" transports (like WebSocket {transports: ['websocket'],}). If you like to 
-    live dangerously, this part can be skipped: 
-    */
-    var socket = io('/user',{
-      transports: ['websocket'],
-      query: {user: pathArray[2], utl: bm, test:'ertrerer'}
-    }) ;
-    
-    socket.on('connect', function () {
-      
-      console.log('connected', new Date(Date.now()).toLocaleString(), Date.now());
-      
-      console.log('the socket object:', socket);
-      //trying sth --{first_post: bm[0], last_post: bm[bm.length - 1]}
-   
-    });
-    socket.on('reconnect', (attemptNumber) => {
-      // ...
-      console.log('re-connected ', new Date(Date.now()).toLocaleString(), Date.now());
-
-      $('div.alert.alert-danger').alert(); //Enable dismissal of an alert via JavaScript:
-      $('div.alert.alert-danger').alert('close'); //Closes an alert by removing it from the DOM
-
-
-      //this unstrikes the number of corpers div, //there's a story on this with $('').removeAttr('style');
-      $('#tco').css('text-decoration', '');
-    });
-    
-    // on reconnection, reset the transports option, as the Websocket
-    // connection may have failed (caused by proxy, firewall, browser, ...)
-    socket.on('reconnect_attempt', () => {
-      socket.io.opts.transports = ['polling', 'websocket'];
-    });
-
-    
-
-    //reason (String) either 'io server disconnect' or 'io client disconnect'
-    socket.on('disconnect', (reason) => {
-      //find a really good way to handle sessions - in server and client -- if user disconnects for too long and session expires, take user to login, if user closes this window, he shouldn't be able to open it unless it's thesame computer  --- just handle sessions effectively
-      console.log('disconnected!', reason);
-      
-      // show only in small screens.
-      $("#tl").before('<div class="alert alert-danger mt-3" role="alert">Seems you\'re offline!</div>');
-
-
-      //apply text-decoration: line-through;
-      $('#tco').css('text-decoration', 'line-through');
-      
-      //track users across multiple session id because when sockets disconnects and then reconnects they are assigned a new session id without knowing the new id that sockets had, but socket.io has a way of knowing with the 'reconnect' event listner... 
-
-
-      //very important !!!!!!!!!!!!
-      //also we need to message the user when there was an error in sending messages/ posts.
-      //alert them when they are offline and handle other events they might want to perform. Like save their draft messages in a cookie.
-
-
-
-
-
-
-      if (reason === 'io server disconnect') {
-        // the disconnection was initiated by the server, you need to reconnect manually
-        socket.connect();
-      }
-      // else the socket will automatically try to reconnect
-    });
-
-    userlocation = ''; usersc = '';
-
-    socket.on('corper profile', function (data) {
-      console.log('got corper\'s profile', data);
-      var tli = document.getElementById("profile");
-
-      //tli.children //the list items
-
-      //set userlocation and usersc variable
-      userlocation = /*data.post.region_street + ", " +*/ (data.post.city_town ? data.post.city_town + ", " : '') + data.post.servicestate;
-      usersc = data.post.statecode;
-      //set "serving at"
-      tli.children[0].children[1].innerText = (data.post.region_street ? data.post.region_street + ", " : '') + (data.post.city_town ? data.post.city_town + ", " : '') + data.post.servicestate;
-      //set batch
-      tli.children[1].children[1].innerText = data.post.batch;
-      //set ppa
-      tli.children[2].children[1].innerText = (data.post.name_of_ppa ? data.post.name_of_ppa : '?');
-
-
-      //handle this later
-      if (data.post.spaornot == 'no') {
-        //tli.children[3].style.display = 'none' ;  
-      } else {
-        tli.children[3].children[1].innerText = data.post.name_of_spa;
-      }
-      //document.getElementById('tco').innerHTML = data.count + ' corper'+ (data.count == 1 ? '' : 's')  + ' online' ;
-    });
-
-
-    socket.on('corpersCount', function (data) {
-      console.log('got corpers count');
-      //(data.count == 1 ? '' : 's') adds 's' to 'corpers' if there are more than one corpers online.
-      document.getElementById('tco').innerHTML = data.count + ' corper' + (data.count == 1 ? '' : 's') + ' online';
-    });
-
-    socket.emit('ferret', 'aeee', 'tobi', (data) => {
-        //this funtion will run here to show the server has gotten our message.
-        console.log(data); // data will be 'woot'
-    });
-
-    var cb = function (params) {
-        console.log('the callback', params);
-    };
-    socket.on('callback',cb );
-
-
-    //when we receive a boardcast message --save them (in var bm --an array somewhere up).
-    //so that thing where we can confirm a message has gotten to the server.
-    var bc = function (data) {
-        bm.push(data.post.post_time);
-        console.log('received boardcast message', data);
-
-        var feeds = document.getElementById('tl');
-
-        var newFeed = document.createElement("li");
-        newFeed.setAttribute('class', 'list-group-item');
-
-        //chaining is not good for appendChild()
-
-
-        var h = document.createElement('div');
-        h.setAttribute('class', '');
-        var g = document.createElement('div');
-        g.setAttribute('class', 'media-content');
-        h.appendChild(g);
-
-        var gg = document.createElement('div');
-        gg.setAttribute('class', 'app');
-        //------------------
-        if (data.post.images) {
-
-          for (var i = 0; i < data.post.images.length; i++) {
-            //var ii = 'img' + i.toString();
-            ii = document.createElement('img');
-            ii.setAttribute('class', 'img-fluid border');
-            ii.setAttribute('src', data.post.images[i]);
-            ii.setAttribute('alt', 'user\'s posted image');
-            gg.appendChild(ii);
-          }
-
-          g.appendChild(gg);
-
+        // for loader
+        window.onload = function () {
+            // document.getElementById('loader').style.display = 'none' ;
         }
+        // we'll be doing loader alot ...for when socket.io is still fetching data... and the timeline is empty... for when user drags page down too like android app maybe
 
 
+
+
+        /**
+        bootstrap scripts
+
+        DON'T DELETE NEXT COMMENTED CODE, FOR USE LATER.
+        */
         /*
-        var ii = document.createElement('img');
-        ii.setAttribute('class', 'col-4');
-        ii.setAttribute('data-src','holder.js/64x64?theme=thumb');
-        ii.setAttribute('alt', 'user\'s posted image');
+
+          $('#myTab a[href="#spa"]').on('click', function (e) {
+            e.preventDefault()
+            $(this).tab('show')
+            console.log('spa tab active');
+          })
+
+          $('#theTabs a[href="#ppa"]').on('click', function (e) {
+            e.preventDefault()
+            $(this).tab('show')
+            console.log('ppa tab active');
+          })
+
+          $('#theTabs a[href="#accomodation"]').on('click', function (e) {
+            e.preventDefault()
+            $(this).tab('show')
+            console.log('ppa tab active');
+          })
+
+          $('#theTabs a[href="#sales"]').on('click', function (e) {
+            e.preventDefault()
+            $(this).tab('show')
+            console.log('ppa tab active');
+          })
+
+          $('#theTabs a[href="#spa"]').on('click', function (e) {
+            e.preventDefault()
+            $(this).tab('show')
+            console.log('ppa tab active');
+          })
+
         */
 
-        var e = document.createElement('div');
-        e.setAttribute('class', 'd-flex w-100 justify-content-between');
-
-        var z = document.createElement('h6');
-        z.setAttribute('class', 'mb-1');
-        z.innerHTML = data.post.statecode + ' <br> <small>' + data.post.location + '</small>';
-
-        var y = document.createElement('small');
-        y.setAttribute('class', '');
-        y.innerText = data.post.age;
-        e.appendChild(z);
-        e.appendChild(y);
-
-        var k = document.createElement("p");
-        k.innerText = data.post.text;
-        var d = document.createElement('div');
-        d.setAttribute('class', 'media-body');
-        d.appendChild(e);
-        d.appendChild(k); //the text from sender
-        d.appendChild(h);
 
 
+        var pathArray = window.location.pathname.split('/');
+        console.log('user = ' + pathArray[2]);
+        document.title = pathArray[2] + " Online!";
+        document.getElementById('editprofile').href = '/profile/' + pathArray[2];
 
-        var c = document.createElement('img');
-        c.setAttribute('class', 'align-self-start mr-2 rounded-circle');
-        //c.setAttribute('data-src','holder.js/64x64');
+        // start: bm[0], //oldest post in user's timeline
+        // end: bm[bm.length - 1] //newest post in user's timeline
+        // bm[] = boardcast messages currently in the user's time line
+        var bm = [];
 
-        c.setAttribute('src', 'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E45x45%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E');
-        //c.setAttribute('src', 'holder.js/45x45');
-        c.setAttribute('alt', data.post.statecode);
-        c.setAttribute('style', 'font-size: 8px;');
+        //connect to socket.io on /user but somehow it still connects with\to /
+
+        /*
+        By default, a long-polling connection is established first, then
+        upgraded to "better" transports (like WebSocket {transports: ['websocket'],}). If you like to
+        live dangerously, this part can be skipped:
+        */
+        var socket = io('/user', {
+            transports: ['websocket'],
+            query: { user: pathArray[2], utl: bm, test: 'ertrerer' }
+        });
+
+        socket.on('connect', function () {
+
+            console.log('connected', new Date(Date.now()).toLocaleString(), Date.now());
+
+            console.log('the socket object:', socket);
+            // trying sth --{first_post: bm[0], last_post: bm[bm.length - 1]}
+
+        });
+        socket.on('reconnect', (attemptNumber) => {
+            // ...
+            console.log(attemptNumber, 'reconnection, re-connected :', new Date(Date.now()).toLocaleString(), Date.now());
+
+            $('div.alert.alert-danger').alert(); // Enable dismissal of an alert via JavaScript:
+            $('div.alert.alert-danger').alert('close'); // Closes an alert by removing it from the DOM
 
 
-        var b = document.createElement('div');
-        b.setAttribute('class', 'align-items-center');
+            // this unstrikes the number of corpers div, // there's a story on this with $('').removeAttr('style');
+            $('#tco').css('text-decoration', '');
+        });
+
+        // on reconnection, reset the transports option, as the Websocket
+        // connection may have failed (caused by proxy, firewall, browser, ...)
+        socket.on('reconnect_attempt', () => {
+            socket.io.opts.transports = ['polling', 'websocket'];
+        });
 
 
-        var a = document.createElement('div');
-        a.setAttribute('class', 'media mb-4');
-        a.appendChild(c);
-        a.appendChild(d);
 
-        newFeed.appendChild(a);
-        newFeed.appendChild(b);
+        //reason (String) either 'io server disconnect' or 'io client disconnect'
+        socket.on('disconnect', (reason) => {
+            //find a really good way to handle sessions - in server and client -- if user disconnects for too long and session expires, take user to login, if user closes this window, he shouldn't be able to open it unless it's thesame computer  --- just handle sessions effectively
+            console.log('disconnected!', reason);
 
-        //right now, we'll append every post together
-        feeds.insertBefore(newFeed, feeds.children[0]);
+            // show only in small screens.
+            $("#tl").before('<div class="alert alert-danger mt-3" role="alert">Seems you\'re offline!</div>');
 
-        //later we'll break them into tabs
-        switch (data.post.type) {
-          case 'sale':
-            break;
-          case 'accomodation':
-            break;
-          case 'LOCATIONorROUTE':
-            break;
-          case 'PPAorSPA':
-            break;
+            // incase their tl is empty and hasn't connected
+            // remove the loader --this is a not so awesom logic
+            document.getElementById('loader').style.display = 'none';
+
+
+            //apply text-decoration: line-through;
+            $('#tco').css('text-decoration', 'line-through');
+
+            //track users across multiple session id because when sockets disconnects and then reconnects they are assigned a new session id without knowing the new id that sockets had, but socket.io has a way of knowing with the 'reconnect' event listner...
+
+
+            //very important !!!!!!!!!!!!
+            //also we need to message the user when there was an error in sending messages/ posts.
+            //alert them when they are offline and handle other events they might want to perform. Like save their draft messages in a cookie.
+
+
+
+
+
+
+            if (reason === 'io server disconnect') {
+                // the disconnection was initiated by the server, you need to reconnect manually
+                socket.connect();
+            }
+            // else the socket will automatically try to reconnect
+        });
+
+        userlocation = ''; usersc = '';
+
+        socket.on('corper profile', function (data) {
+            console.log('got corper\'s profile', data);
+            var tli = document.getElementById("profile");
+
+            //tli.children //the list items
+
+            //set userlocation and usersc variable
+            userlocation = /*data.post.region_street + ", " +*/ (data.post.city_town ? data.post.city_town + ", " : '') + data.post.servicestate;
+            usersc = data.post.statecode;
+            //set "serving at"
+            tli.children[0].children[1].innerText = (data.post.region_street ? data.post.region_street + ", " : '') + (data.post.city_town ? data.post.city_town + ", " : '') + data.post.servicestate;
+            //set batch
+            tli.children[1].children[1].innerText = data.post.batch;
+            //set ppa
+            tli.children[2].children[1].innerText = (data.post.name_of_ppa ? data.post.name_of_ppa : '?');
+
+
+            //handle this later
+            if (data.post.spaornot == 'no') {
+                //tli.children[3].style.display = 'none' ;
+            } else {
+                tli.children[3].children[1].innerText = data.post.name_of_spa;
+            }
+            //document.getElementById('tco').innerHTML = data.count + ' corper'+ (data.count == 1 ? '' : 's')  + ' online' ;
+        });
+
+
+        socket.on('corpersCount', function (data) {
+            console.log('got corpers count');
+            //(data.count == 1 ? '' : 's') adds 's' to 'corpers' if there are more than one corpers online.
+            document.getElementById('tco').innerHTML = data.count + ' corper' + (data.count == 1 ? '' : 's') + ' online';
+        });
+
+        socket.emit('ferret', 'aeee', 'tobi', (data) => {
+            //this funtion will run here to show the server has gotten our message.
+            console.log(data); // data will be 'woot'
+        });
+
+        var cb = function (params) {
+            console.log('the callback', params);
+        };
+        socket.on('callback', cb);
+
+
+        //when we receive a boardcast message --save them (in var bm --an array somewhere up).
+        //so that thing where we can confirm a message has gotten to the server.
+        var bc = function (data) {
+            // remove the loader --this is not a very awesom logic, but it works well
+            document.getElementById('loader').style.display = 'none';
+
+            bm.push(data.post.post_time);
+            console.log('received boardcast message', data);
+
+            var feeds = document.getElementById('tl');
+
+            var newFeed = document.createElement("li");
+            newFeed.setAttribute('class', 'list-group-item');
+            newFeed.setAttribute('id', data.post.post_time); // each post has a unique id, we'll later add state code to make it more unique
+
+            //chaining is not good for appendChild()
+
+
+            var h = document.createElement('div');
+            h.setAttribute('class', '');
+            var g = document.createElement('div');
+            g.setAttribute('class', 'media-content');
+            h.appendChild(g);
+
+            var gg = document.createElement('div');
+            gg.setAttribute('class', 'app');
+            //------------------
+            if (data.post.images) {
+
+                for (var i = 0; i < data.post.images.length; i++) {
+                    // var ii = 'img' + i.toString();
+                    ii = document.createElement('img');
+                    ii.setAttribute('class', 'img-fluid border');
+                    ii.setAttribute('src', data.post.images[i]);
+                    ii.setAttribute('alt', 'user\'s posted image ' + i);
+                    gg.appendChild(ii);
+                }
+
+                g.appendChild(gg);
+
+            }
+
+
+            /*
+            var ii = document.createElement('img');
+            ii.setAttribute('class', 'col-4');
+            ii.setAttribute('data-src','holder.js/64x64?theme=thumb');
+            ii.setAttribute('alt', 'user\'s posted image');
+            */
+
+            var e = document.createElement('div');
+            e.setAttribute('class', 'd-flex w-100 justify-content-between');
+
+            var z = document.createElement('h6');
+            z.setAttribute('class', 'mb-1');
+            z.innerHTML = data.post.statecode + ' <br> <small>' + data.post.location + '</small>';
+
+            var y = document.createElement('small');
+            y.setAttribute('class', '');
+            y.innerText = data.post.age;
+            e.appendChild(z);
+            e.appendChild(y);
+
+            var k = document.createElement("p");
+            // k.classList(["maintext"]);
+            k.setAttribute('class', 'maintext');
+            k.innerText = data.post.text;
+            var d = document.createElement('div');
+            d.setAttribute('class', 'media-body');
+            d.appendChild(e);
+            d.appendChild(k); //the text from sender
+            d.appendChild(h);
+
+
+
+            var c = document.createElement('img');
+            c.setAttribute('class', 'align-self-start mr-2 rounded-circle');
+            //c.setAttribute('data-src','holder.js/64x64');
+
+            c.setAttribute('src', 'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E45x45%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+            //c.setAttribute('src', 'holder.js/45x45');
+            c.setAttribute('alt', data.post.statecode);
+            c.setAttribute('style', 'font-size: 8px;');
+
+
+            var b = document.createElement('div');
+            b.setAttribute('class', 'align-items-center');
+
+
+            var a = document.createElement('div');
+            a.setAttribute('class', 'media mb-4');
+            a.appendChild(c);
+            a.appendChild(d);
+
+            newFeed.appendChild(a);
+            newFeed.appendChild(b);
+
+            //right now, we'll append every post together
+            feeds.insertBefore(newFeed, feeds.children[0]);
+
+            //later we'll break them into tabs
+            switch (data.post.type) {
+                case 'sale':
+                    break;
+                case 'accomodation':
+                    break;
+                case 'LOCATIONorROUTE':
+                    break;
+                case 'PPAorSPA':
+                    break;
+            }
+
+            // send 'my other event' to everyone else
+
+            //find a way to record the number of people that has seen a particular ad/post. and show the sender.
+
+            //socket.emit('seen', { my: 'saw data, because we recieved it' });
+        };
+
+        socket.on('boardcast message', bc);
+
+
+    </script>
+    <script>
+
+
+
+        var txtFld = document.getElementById("TXT");
+
+        noNull = function () {
+            console.log('typed');
+            if (txtFld.value == '') {
+                document.getElementById('SEND').disabled = true;
+            } else {
+                document.getElementById('SEND').disabled = false;
+            }
         }
 
-        // send 'my other event' to everyone else
+        txtFld.addEventListener('input', noNull, false);
+        /*
+            var handleKey = function(evt) {
+              console.log('keyup on #TXT field');
+              if (evt.keyCode === 13 || evt.keyCode === 14) {
+                sendMsg();
+                console.log('sent');
+              }
+            }
 
-        //find a way to record the number of people that has seen a particular ad/post. and show the sender.
+            txtFld.addEventListener("keyup", handleKey, false );
+        */
+        //----------------------
 
-        //socket.emit('seen', { my: 'saw data, because we recieved it' });
-      };
-    
-    socket.on('boardcast message', bc);
-    
+        //some sort of global variables
+        var previewParent = document.getElementById('previewParent');
+        var msg = {
+            images: [],
+            videos: []
+        };
+        var sendBtn = document.getElementById("SEND");
+        function sendMsg() {
 
-  </script>
-  <script>
+            console.log('sendMsg function running');
 
+            msg.text = txtFld.value,
+                msg.type = "random",
+                msg.post_time = Date.now(),
+                msg.sender = pathArray[2],
+                msg.location = userlocation,
+                msg.statecode = usersc
+                ;
+            socket.emit('boardcast message', msg, (delivered_value) => {
+                //this funtion will run here to show the server has gotten our message.
+                console.log('server got our message ?', delivered_value); // data will be 'woot'
+            }); //use post time to know the particular message.
+            console.log(msg, 'append boardcast message to corper tl then use sth to make them know their stuff be delivered.');
 
+            //append sent message to sender's timeline (not yet !! maybe when we do we'll make user know it hasn't been done)
 
-    var txtFld = document.getElementById("TXT");
+            //close modal
+            $('#postModalSale').modal('hide');
+            //show that post has been made
 
-    noNull = function () {
-      console.log('typed');
-      if (txtFld.value == ''){
-        document.getElementById('SEND').disabled = true ;
-      } else {
-        document.getElementById('SEND').disabled = false ;
-      }
-    }
-
-    txtFld.addEventListener('input', noNull, false);
-    /* 
-        var handleKey = function(evt) {
-          console.log('keyup on #TXT field');
-          if (evt.keyCode === 13 || evt.keyCode === 14) {
-            sendMsg();
-            console.log('sent');
-          }
-        }
-    
-        txtFld.addEventListener("keyup", handleKey, false );
-    */
-    //----------------------
-
-    //some sort of global variables
-    var previewParent = document.getElementById('previewParent');
-    var msg = {
-      images: [],
-      videos: []
-    };
-    var sendBtn = document.getElementById("SEND");
-    function sendMsg() {
-
-      console.log('sendMsg function running');
-
-      msg.text = txtFld.value,
-        msg.type = "random",
-        msg.post_time = Date.now(),
-        msg.sender = pathArray[2],
-        msg.location = userlocation,
-        msg.statecode = usersc
-      ;
-      socket.emit('boardcast message', msg, (delivered_value) => {
-        //this funtion will run here to show the server has gotten our message.
-        console.log('server got our message ?', delivered_value); // data will be 'woot'
-      }); //use post time to know the particular message.
-      console.log(msg, 'append bm to corper tl then use sth to make them know their stuff be delivered.');
-
-      //append sent message to sender's timeline (not yet !! maybe when we do we'll make user know it hasn't been done)
-
-      //close modal
-      $('#postModalSale').modal('hide');
-      //show that post has been made
-
-    }
-
-
-    //after post has been made and/or modal closed
-    $('#postModalSale').on('hidden.bs.modal', function (e) {
-      // do something...
-      console.log('dsiusussi hideen');
-      txtFld.value = "";
-      document.getElementById('SEND').disabled = true ;
-      //remove the attached image from the div and the input tag, empty the msg object
-
-      //if there's an attached image, remove it, we don't want errors incase the corper didn't pick any pictures
-      //remove all
-      
-      while (previewParent.firstChild) {
-        previewParent.removeChild(previewParent.firstChild);
-      }
-      
-      if (msg.images.length > 0) {
-        msg.images = [];
-      }
-    }) ;
-
-    $('#postModalSale').on('shown.bs.modal', function(e){
-      txtFld.focus();
-    });
-
-
-
-    sendBtn.addEventListener("click", sendMsg, false);
-
-    /*WE'LL LAZY LOAD ALL CONTENT, FIND A WAY TO COMPRESS IMAGES, TRY TO FIND WHATSAPP COMPRESSION ALGORITHM (CAUSE THEY'RE REALLY GOOD) - ONCE WE DO THIS, MAYBE WE CAN DO VIDEO TOO*/
-
-    /*Dynamically adding a change listener to the img input button*/
-    var imgBtn = document.getElementById("IMG");
-    imgBtn.addEventListener("change", handleImages, false);
-    function handleImages() {
-      //var preview = document.getElementById('preview'); 
-      var preview = document.createElement('div');
-      preview.setAttribute('id', 'preview');
-      preview.setAttribute('class', 'app');
-      console.log('created!');
-
-      var fileList = this.files; /* now you can work with the file list */
-      console.log('picture(s) picked!');
-
-      for (var i = 0; i < fileList.length; i++) {
-        var file = fileList[i];
-
-
-
-        if (file.type.startsWith('image/')) {
-          var img = document.createElement("img");
-          img.classList.add("img-fluid", "border"); //add classes 'img-fluid' and 'border'
-
-          preview.appendChild(img);
-          /*Next, we establish the FileReader to handle asynchronously 
-          loading the image and attaching it to the img element. 
-          After creating the new FileReader object, we set up its 
-          onload function and then call readAsDataURL() to start the 
-          read operation in the background. When the entire contents 
-          of the image file are loaded, they are converted into 
-          a data: URL which is passed to the onload callback. 
-          Our implementation of this routine sets the img element's 
-          src attribute to the loaded image which results in the image 
-          appearing in the thumbnail on the user's screen.*/
-          var reader = new FileReader();
-          reader.onload = (
-            function (aImg) {
-              return function (e) {
-                aImg.src = e.target.result;
-                //e.targer.result is the base64 of the image
-                //msg.images[i] = aImg.src ;
-                //either of the two , but wharever method, be able to remove from array when user cancels.
-                msg.images.push(e.target.result);
-                console.log(msg);
-              };
-            })(img);
-          reader.readAsDataURL(file);
         }
 
 
-      }
+        // after post has been made and/or modal closed
+        $('#postModalSale').on('hidden.bs.modal', function (e) {
+            // do something...
+            console.log('post modal hideen');
+            txtFld.value = "";
+            document.getElementById('SEND').disabled = true;
+            //remove the attached image from the div and the input tag, empty the msg object
+
+            //if there's an attached image, remove it, we don't want errors incase the corper didn't pick any pictures
+            //remove all
+
+            while (previewParent.firstChild) {
+                previewParent.removeChild(previewParent.firstChild);
+            }
+
+            if (msg.images.length > 0) {
+                msg.images = [];
+            }
+        });
+
+        $('#postModalSale').on('shown.bs.modal', function (e) {
+            txtFld.focus();
+        });
 
 
-      //append the div tag with id=preview
-      previewParent.appendChild(preview);
-    }
 
+        sendBtn.addEventListener("click", sendMsg, false);
 
+        /*WE'LL LAZY LOAD ALL CONTENT, FIND A WAY TO COMPRESS IMAGES, TRY TO FIND WHATSAPP COMPRESSION ALGORITHM (CAUSE THEY'RE REALLY GOOD) - ONCE WE DO THIS, MAYBE WE CAN DO VIDEO TOO*/
 
-  // to do recording of video https://ourcodeworld.com/articles/read/671/how-to-record-a-video-with-audio-in-the-browser-with-javascript-webrtc
+        /*Dynamically adding a change listener to the img input button*/
+        var imgBtn = document.getElementById("IMG");
+        imgBtn.addEventListener("change", handleImages, false);
+        function handleImages() {
+            //var preview = document.getElementById('preview');
+            var preview = document.createElement('div');
+            preview.setAttribute('id', 'preview');
+            preview.setAttribute('class', 'app');
+            console.log('created!');
 
+            var fileList = this.files; /* now you can work with the file list */
+            console.log('picture(s) picked!');
 
-  //maybe later ? https://ourcodeworld.com/articles/read/518/how-to-create-a-360-video-player-with-javascript-using-clappr
-
-  //https://ourcodeworld.com/articles/read/127/how-to-implement-a-pull-to-update-effect-android-refresh-style-with-javascript
-  //https://ourcodeworld.com/articles/read/460/how-to-create-a-live-barcode-scanner-using-the-webcam-in-javascript
-
-  //https://ourcodeworld.com/articles/read/457/how-to-display-images-in-the-javascript-console-of-the-browser (tell them (or rather show 'em): what you looking for ? give us a reach out !)
-
-  // https://ourcodeworld.com/articles/read/167/how-to-prevent-modification-of-an-object-in-javascript-and-prevent-them-from-being-accesible-in-the-console
-
-  $('[data-spy="scroll"]').on('activate.bs.scrollspy', function () {
-      // do something…
-      console.log('passed');
-  }) ;
-
-
-  </script>
-  <script>
-        //work on this bit alot
-
-          var findBtn = document.getElementById("findme");
-          function locate() {
             
+            for (var i = 0; i < fileList.length; i++) {
+                var file = fileList[i];
+
+
+
+                if (file.type.startsWith('image/')) {
+                    var contain = document.createElement('div');
+                    contain.setAttribute('class', 'image-wrapper');
+                    contain.setAttribute('id', 'image-to-post' + i);
+                    var b = document.createElement('button');
+                    b.classList.add('top-right', 'btn', 'btn-sm');
+                    b.innerHTML = 'Remove';
+                    var ico = document.createElement('i');
+                    ico.classList.add('top-right', 'fa-remove');
+                    b.onclick = function remove(e) {
+                      console.log(e);
+                      console.log('tryna remove');
+                      preview.removeChild(e.target.parentNode);
+                      // remove them from images attribute in msg obj & if possible from the file input tag
+                      // msg.images.splice(0, 1);
+                      msg.images.splice(msg.images.indexOf(e.target.parentNode.firstChild.currentSrc), 1);
+                      // why is 1 increased by 1
+                      console.log(msg.images);
+                    }
+
+                    var img = document.createElement("img");
+
+                    contain.appendChild(img);
+                    contain.appendChild(b); // or ico
+                    // contain.appendChild(ico); // we'd add icon later
+                    // img.classList.add("img-fluid", "border"); //add classes 'img-fluid' and 'border' // let's not add it 1stly
+
+                    preview.appendChild(contain);
+                    /*Next, we establish the FileReader to handle asynchronously
+                    loading the image and attaching it to the img element.
+                    After creating the new FileReader object, we set up its
+                    onload function and then call readAsDataURL() to start the
+                    read operation in the background. When the entire contents
+                    of the image file are loaded, they are converted into
+                    a data: URL which is passed to the onload callback.
+                    Our implementation of this routine sets the img element's
+                    src attribute to the loaded image which results in the image
+                    appearing in the thumbnail on the user's screen.*/
+                    var reader = new FileReader();
+                    reader.onload = (
+                        function (aImg) {
+                            return function (e) {
+                                aImg.src = e.target.result;
+                                //e.targer.result is the base64 of the image
+                                //msg.images[i] = aImg.src ;
+                                //either of the two , but wharever method, be able to remove from array when user cancels.
+                                msg.images.push(e.target.result);
+                                console.log(msg);
+                            };
+                        })(img);
+                    reader.readAsDataURL(file);
+                }
+
+
+            }
+
+
+            // append the div tag with id=preview
+            previewParent.appendChild(preview);
+        }
+
+        // to do recording of video https://ourcodeworld.com/articles/read/671/how-to-record-a-video-with-audio-in-the-browser-with-javascript-webrtc
+
+        //maybe later ? https://ourcodeworld.com/articles/read/518/how-to-create-a-360-video-player-with-javascript-using-clappr
+
+        //https://ourcodeworld.com/articles/read/127/how-to-implement-a-pull-to-update-effect-android-refresh-style-with-javascript
+
+        //https://ourcodeworld.com/articles/read/460/how-to-create-a-live-barcode-scanner-using-the-webcam-in-javascript
+
+        //https://ourcodeworld.com/articles/read/457/how-to-display-images-in-the-javascript-console-of-the-browser (tell them (or rather show 'em): what you looking for ? give us a reach out !)
+
+        // https://ourcodeworld.com/articles/read/167/how-to-prevent-modification-of-an-object-in-javascript-and-prevent-them-from-being-accesible-in-the-console
+
+        $('[data-spy="scroll"]').on('activate.bs.scrollspy', function () {
+            // do something…
+            console.log('passed');
+        });
+
+
+    </script>
+    <script>
+      // https://developer.mozilla.org/en-US/docs/Web/API/Node/replaceChild
+      var placeBtn = document.getElementById("place");
+      function placeMe() {
+        
+      }
+      placeBtn.addEventListener("click", placeMe, false);
+    </script>
+    <script>
+        // work on this bit alot
+
+        var findBtn = document.getElementById("findme");
+        function locate() {
+
 
 
             console.log('Retriving location...');
             var savePoint = {
-              "type": "Feature",
-              "properties": {},
-              "geometry": {
-                "type": "Point",
-                "coordinates": [
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
 
-                ]
-              }
+                    ]
+                }
             };
-            
+
             //empty the savePoint variable before use not after success anymore
             savePoint.geometry.coordinates.pop();
             savePoint.geometry.coordinates.pop();
             savePoint.properties = {};
 
             var geo_options = {
-              enableHighAccuracy: true, 
-              maximumAge        : 30000, 
-              timeout           : 27000
+                enableHighAccuracy: true,
+                maximumAge: 30000,
+                timeout: 27000
             };
 
             var geo_options_to = {
-              enableHighAccuracy: true, 
-              maximumAge        : 30000, 
-              timeout           : 33000
+                enableHighAccuracy: true,
+                maximumAge: 30000,
+                timeout: 33000
             };
             var one = 0;
             var geoPointError = function (error) {
 
-              console.log(error);
-              switch (error.code) {
-                case error.TIMEOUT:
-                  //try again with a longer timeout
-                  
-                  document.getElementById('locinfo').innerText = 'TIMEOUT Error. We\'re trying again...'; //add or 'never mind?' option in the sentence so corper can quit
-                  if (one <= 1) {
-                    one++;
-                    console.log('timeout '+ one +' times');
-                    navigator.geolocation.getCurrentPosition(geoPoint, geoPointError, geo_options_to);    
-                  }
-                  
-                  break;
-                case error.PERMISSION_DENIED:
-                  // The user didn't accept the callout //showNudgeBanner();
-                  document.getElementById('locinfo').innerText = 'Please you\'d need to allow location on your broswer.';
-                  //(put loc function in showNudgeBanner() callback) ?, so when corper click ok\close for the banner, we get loc
-                  navigator.geolocation.getCurrentPosition(geoPoint, geoPointError, geo_options);
-                  break;
-                case error.POSITION_UNAVAILABLE:
-                  //say there's no network n try again when there is ?!!!?
-                  document.getElementById('locinfo').innerText = 'You seem to be offline. Try again when you\'re online.' ; //maybe find how we can auto get the user's location after telling them they're offline
-                  //google said : [Violation] Only request geolocation information in response to a user gesture.
-                  //window.addEventListener('online',  navigator.geolocation.getCurrentPosition(geoPoint, geoPointError));
-                  break;
-                case 0://unknown error
-                  //just try again
-                  document.getElementById('locinfo').innerText = 'Something went wrong and we don\'t know what. We\'ll just try again.' ;
-                  locate();
-                  break;
-              }
+                console.log(error);
+                switch (error.code) {
+                    case error.TIMEOUT:
+                        //try again with a longer timeout
+
+                        document.getElementById('locinfo').innerText = 'TIMEOUT Error. We\'re trying again...'; //add or 'never mind?' option in the sentence so corper can quit
+                        if (one <= 1) {
+                            one++;
+                            console.log('timeout ' + one + ' times');
+                            navigator.geolocation.getCurrentPosition(geoPoint, geoPointError, geo_options_to);
+                        }
+
+                        break;
+                    case error.PERMISSION_DENIED: // it could be the user denied permission by not accpting location prompt and that the browser denied because of http and not https
+                        // The user didn't accept the callout //showNudgeBanner();
+                        document.getElementById('locinfo').innerText = 'Please you\'d need to allow location on your broswer. Let\'s do this again';
+                        // (put loc function in showNudgeBanner() callback) ?, so when corper click ok\close for the banner, we get loc
+                        // navigator.geolocation.getCurrentPosition(geoPoint, geoPointError, geo_options);
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        //say there's no network n try again when there is ?!!!?
+                        document.getElementById('locinfo').innerText = 'You seem to be offline. Try again when you\'re online.'; //maybe find how we can auto get the user's location after telling them they're offline
+                        //google said : [Violation] Only request geolocation information in response to a user gesture.
+                        //window.addEventListener('online',  navigator.geolocation.getCurrentPosition(geoPoint, geoPointError));
+                        break;
+                    case 0://unknown error
+                        //just try again
+                        document.getElementById('locinfo').innerText = 'Something went wrong and we don\'t know what. We\'ll just try again.';
+                        locate();
+                        break;
+                }
             };
 
             var geoPoint = function (position) {
 
-              // Do magic with location
-              console.log('normal position', position);
-              savePoint.properties.geo = position;
-              
-              // cordinates don't save unless you turn them to strings
-              savePoint.geometry.coordinates.push(position.coords.longitude);
-              savePoint.geometry.coordinates.push(position.coords.latitude);
+                // Do magic with location
+                console.log('normal position', position);
+                savePoint.properties.geo = position;
 
-              //savePoint.geometry.coordinates[0] = position.coords.longitude.toString() ;
-              //savePoint.geometry.coordinates[1] = position.coords.latitude.toString() ;
-              console.log('savePoint', savePoint);
-              // how can I know if and when the fetch api was aborted https://developers.google.com/web/updates/2017/09/abortable-fetch
-              const controller = new AbortController();
-              const signal = controller.signal;
+                // cordinates don't save unless you turn them to strings
+                savePoint.geometry.coordinates.push(position.coords.longitude);
+                savePoint.geometry.coordinates.push(position.coords.latitude);
 
-              setTimeout(() => controller.abort(), 5000);
+                //savePoint.geometry.coordinates[0] = position.coords.longitude.toString() ;
+                //savePoint.geometry.coordinates[1] = position.coords.latitude.toString() ;
+                console.log('savePoint', savePoint);
+                // how can I know if and when the fetch api was aborted https://developers.google.com/web/updates/2017/09/abortable-fetch
+                const controller = new AbortController();
+                const signal = controller.signal;
 
-              //once we get the geo coordinates, first we get the name of the place., nominatium isn't perfect yet, will just be saving data from it to compare the accuracy we get
-              fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat='+position.coords.latitude+'&lon='+position.coords.longitude, { signal })
-              .then(
-                function(response) {
-                  if (response.status !== 200) {
-                    console.log('Looks like there was a problem. Status Code: ' +
-                      response.status);
-                    return;
-                  }
+                setTimeout(() => controller.abort(), 5000);
 
-                  // Examine the text in the response AND WHY IS CORDINATES NOT SAVING TO savePoint variable
-                  response.json().then(function(data) {
-                    console.log(data);
-                    savePoint.properties.nominatim = data ;
-                    console.log('savePoint2' ,savePoint);
-                  });
-                }
-              )
-              .catch(function(err) {
-                //console.log('Fetch Error :-S', err);
-                if (err.name === 'AbortError') {
-                  console.log('Fetch aborted');
-                } else {
-                  console.error('Uh oh, an error! Fetch Error :-S', err);
-                }
-              });
-              //save to db
+                //once we get the geo coordinates, first we get the name of the place., nominatium isn't perfect yet, will just be saving data from it to compare the accuracy we get
+                fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + position.coords.latitude + '&lon=' + position.coords.longitude, { signal })
+                    .then(
+                        function (response) {
+                            if (response.status !== 200) {
+                                console.log('Looks like there was a problem. Status Code: ' +
+                                    response.status);
+                                return;
+                            }
 
-              //do the image
-              var img = new Image();
-              // | Retrieve a map at gotten longitude and latitude, with zoom 14.24, bearing 0, and pitch 60. The map will be 460 pixels wide and 460 pixels high (for mobile screen, 310px by 290px)
-              img.src = "https://api.mapbox.com/styles/v1/mapbox/streets-v10/static/pin-l(" + position.coords.longitude + "," + position.coords.latitude + ")/" + position.coords.longitude + "," + position.coords.latitude + ",14.25,0,60/310x290?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg";
-              var preview = document.createElement('div');
-              preview.setAttribute('id', 'preview');
-              preview.setAttribute('class', 'app');
-              document.getElementById('locinfo').innerText = '';
-              preview.appendChild(img);
-              //previewParent.firstChild = preview ;
-              previewParent.appendChild(preview);
-              msg.images.push(img.src);
-              msg.type = 'location';
-              msg.geo = savePoint ;
-              //sendMsg();
-              /* 
-              
-                    //to convert to dataURI // https://davidwalsh.name/convert-image-data-uri-javascript https://ourcodeworld.com/articles/read/182/the-canvas-has-been-tainted-by-cross-origin-data-and-tainted-canvases-may-not-be-exported
-                    img.crossOrigin = "anonymous" ;
-                    img.onload = function () {
-                      var canvas = document.createElement('canvas');
-                      canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
-                      canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
-              
-                      canvas.getContext('2d').drawImage(this, 0, 0);
-              
-                      // Get raw image data
-                      //callback(canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, ''));
-              
-                      // ... or get as Data URI
-                      canvas.toDataURL('image/png');
-                      //console.log(canvas.toDataURL('image/png')); //almosts crashes the browser, for some reasons, it keeps on logging
-                      img.src = canvas.toDataURL('image/png');
-                      preview.appendChild(img);
-                      previewParent.appendChild(preview);
-                    };
-              
+                            // Examine the text in the response AND WHY IS CORDINATES NOT SAVING TO savePoint variable
+                            response.json().then(function (data) {
+                                console.log(data);
+                                savePoint.properties.nominatim = data;
+                                console.log('savePoint2', savePoint);
+                            });
+                        }
+                    )
+                    .catch(function (err) {
+                        //console.log('Fetch Error :-S', err);
+                        if (err.name === 'AbortError') {
+                            console.log('Fetch aborted');
+                        } else {
+                            console.error('Uh oh, an error! Fetch Error :-S', err);
+                        }
+                    });
+                //save to db
+
+                //do the image
+                var img = new Image();
+                // get map if location is accurate enough, but if it isn't then ask user where they are. | Retrieve a map at gotten longitude and latitude, with zoom 14.24, bearing 0, and pitch 60. The map will be 460 pixels wide and 460 pixels high (for mobile screen, 310px by 290px)
+                img.src = "https://api.mapbox.com/styles/v1/mapbox/streets-v10/static/pin-l(" + position.coords.longitude + "," + position.coords.latitude + ")/" + position.coords.longitude + "," + position.coords.latitude + ",14.25,0,60/310x290?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg";
+                var preview = document.createElement('div');
+                preview.setAttribute('id', 'preview');
+                preview.setAttribute('class', 'cnt mb-2'); // TODO, align item in middle
+                // preview.setAttribute('class', 'app');
+                document.getElementById('locinfo').innerText = '';
+                preview.appendChild(img);
+                //previewParent.firstChild = preview ;
+                previewParent.appendChild(preview);
+                msg.images.push(img.src);
+                msg.type = 'location';
+                msg.geo = savePoint;
+                //sendMsg();
+                /*
+
+                      //to convert to dataURI // https://davidwalsh.name/convert-image-data-uri-javascript https://ourcodeworld.com/articles/read/182/the-canvas-has-been-tainted-by-cross-origin-data-and-tainted-canvases-may-not-be-exported
+                      img.crossOrigin = "anonymous" ;
+                      img.onload = function () {
+                        var canvas = document.createElement('canvas');
+                        canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
+                        canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
+
+                        canvas.getContext('2d').drawImage(this, 0, 0);
+
+                        // Get raw image data
+                        //callback(canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, ''));
+
+                        // ... or get as Data URI
+                        canvas.toDataURL('image/png');
+                        //console.log(canvas.toDataURL('image/png')); //almosts crashes the browser, for some reasons, it keeps on logging
+                        img.src = canvas.toDataURL('image/png');
+                        preview.appendChild(img);
+                        previewParent.appendChild(preview);
+                      };
 
 
-                      https://stackoverflow.com/questions/27526281/websockets-and-apache-proxy-how-to-configure-mod-proxy-wstunnel/27534443#27534443
-                     */
+
+                        https://stackoverflow.com/questions/27526281/websockets-and-apache-proxy-how-to-configure-mod-proxy-wstunnel/27534443#27534443
+                       */
 
 
             };
 
             navigator.geolocation.getCurrentPosition(geoPoint, geoPointError, geo_options);
-            document.getElementById('locinfo').innerText = 'Retrieving location...' ;
-          };
+            document.getElementById('locinfo').innerText = 'Retrieving location...';
+        };
 
-          findBtn.addEventListener("click", locate, false);
+        findBtn.addEventListener("click", locate, false);
+    </script>
+
+<script>
+    // http://www.runningcoder.org/jquerytypeahead/demo/ User v1
+    $.typeahead({
+      input: '.js-typeahead-country_v1',
+      order: "desc",
+      minLength: 1, // Accepts 0 to search on focus, minimum character length to perform a search
+      offset: false, // Set to true to match items starting from their first character
+      cache: sessionStorage,
+      hint: true,
+      ttl: 3600000, // Cache time to live in ms
+      maxItem: 7,
+      template: "{{display}} <small class='text-muted text-capitalize'>{{group}}</small>",
+      href: "https://corpers.online/search?title={{display}}",
+      source: { // group cannot be 'data'
+        general: {
+          ajax: {
+            url: "/posts",
+            data: { // set url query parameter if we want to do backend/query search
+              q: '{{query}}'
+            },
+            path: 'data'
+          }
+        }
+      },
+      // please put elipses in very long texts, group or add posts type (eg. accomodation, on sale, ppa, etc.)
+      callback: {
+          onInit: function (node) {
+              console.log('Typeahead Initiated on ' + node.selector);
+          },
+          onReceiveRequest: function (node, searchtext) {
+              console.log('gonna search ', node, searchtext);
+              // save seacrhtext in db for corper's preference and other good functionalities
+              // if they searched for an accomodation, alert them when one is avalible.
+              // even give the option of them putting on alert when a particulart item or property is up for sale or rent respectively
+          },
+          onResult: function (node, searchtext, results, l) { // When the result container is displayed
+            console.log('search result', node, searchtext, results, l);
+            // let's see what the user is seeing
+          }
+      },
+  debug: true
+  });
   </script>
-
 
 </body>
 

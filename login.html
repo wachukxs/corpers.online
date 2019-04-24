@@ -1,32 +1,55 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Corpers Online, Log In.</title>
-	<!-- for-mobile-apps -->
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="keywords" content="Register on Ajuwaya Market and get to safely Buy from Corpers, Sell to Corpers" />
-<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
-<!-- //for-mobile-apps -->
-	<link rel="stylesheet" type="text/css" media="screen" href="/bootstrap.css" />
-	<script src="/jquery-slim.min.js"></script>
-	<script src="/bootstrap.min.js"></script>
-	<script src="/holder.min.js"></script>
-	<style>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Corpers Online, Log In.</title>
+    <!-- for-mobile-apps -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="Register on Corper Online and get to safely Buy, Sell, get accomodation and location/route info from Corpers" />
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+		<!-- //for-mobile-apps -->
+		
+		<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet"
+			integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+		
+		<!-- <script src="/jquery-3.3.1.min.js"></script> -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+			integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+		<!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+		    crossorigin="anonymous"></script> -->
+		
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"
+			integrity="sha384-pjaaA8dDz/5BgdFUPX6M/9SUZv4d12SUPF0axWc+VRZkx5xU3daN+lYb49+Ax+Tl" crossorigin="anonymous"></script>
+		
+		
+		<!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+		    crossorigin="anonymous"></script> -->
+		<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+			integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+		
+		<!-- <script src="/font-awesome.min.css"></script> -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.4/holder.js"
+			integrity="sha256-crfkMD0BL2TtiwpbIlXF/SVmGSvOtgbMM8GBkibVKyc=" crossorigin="anonymous"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		
+    <!-- <link rel="stylesheet" type="text/css" media="screen" href="/bootstrap.css" />
+    <script src="/jquery-slim.min.js"></script>
+    <script src="/bootstrap.min.js"></script>
+    <script src="/holder.min.js"></script> -->
 
-			
-			.footer {
-				bottom: 0;
-				width: 100%;
-				line-height: 30px;
-				background-color: #f5f5f5;
-			}
-	
-	</style>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        .footer {
+					right: 0;
+					bottom: 0;
+					left: 0;
+					z-index: 1030;
+				}
+    </style>
 </head>
-<script src="/socket.io/socket.io.js"></script>
+
 
 
 <body>
@@ -52,11 +75,18 @@
 								<!--  --> 
 								<form class="container" method="POST" action="/login" enctype="application/x-www-form-urlencoded">
 										<div class="form-row">
-												<div class="col-md-4 mb-3">
+												<!-- <div class="col-md-4 mb-3">
 												  <label for="email">Email</label>
-												  <input name="email" type="email" class="form-control" autocomplete="email" autofocus id="email" placeholder="Email" required>
+												  <input name="email" type="email" class="form-control" autocomplete="current-email" autofocus id="email" placeholder="Email" required>
 													<div class="invalid-feedback">
 														Wrong email
+													</div>
+												</div> -->
+												<div class="col-md-4 mb-3">
+												  <label for="email">State code</label>
+												  <input name="statecode" type="text" class="form-control text-uppercase" autocomplete="" autofocus id="statecode" placeholder="eg. AB/16A/2639" required>
+													<div class="invalid-feedback">
+														Wrong state code
 													</div>
 												</div>
 												<div class="col-md-4 mb-3">
@@ -69,10 +99,10 @@
 											  </div>
 		
 											  
-										<div class="form-group form-check">
+										<!-- <div class="form-group form-check">
 												<input type="checkbox" class="form-check-input" id="knowme">
 												<label class="form-check-label" for="knowme">Remember me</label>
-											  </div>
+										</div> -->
 											  <input type="submit" class="btn btn-primary" value="Submit">
 									</form>
 						</div>
@@ -87,7 +117,7 @@
 
 	<div class="loadingBar"></div>
 
-	<footer class="footer text-center pt-3">
+	<footer class="footer text-center pt-3 ">
       <p>Corpers Online built by <a href="#">Corpers</a> for <a href="#">Corpers</a>.</p>
       <p>
         <a href="#"> &copy; 2018</a>
@@ -96,14 +126,14 @@
 	<script>
 		if ( 'URLSearchParams' in window ) {
 			var urlParams = new URLSearchParams(window.location.search);
-			//URLSearchParams also provides familiar Object methods like keys(), values(), and entries():
+			// URLSearchParams also provides familiar Object methods like keys(), values(), and entries():
 			if (urlParams.has('l')) {
 				document.getElementsByClassName('invalid-feedback')[0].style.display = 'block';
 				document.getElementsByClassName('invalid-feedback')[1].style.display = 'block';
 			}
 		} else{
 
-			//While URLSearchParams is ideal, not all browsers support that API.
+			// While URLSearchParams is ideal, not all browsers support that API.
 			function getUrlParameter(name) {
 				name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
 				var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');

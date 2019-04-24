@@ -1,0 +1,115 @@
+{
+    "states": [
+        {
+            "ABIA": ["Aba North" , "Aba South" , "Arochukwu" , "Bende" , "Ikwuano" , "Isiala Ngwa North" , "Isiala Ngwa South" , "Isuikwuato" , "Obi Ngwa" , "Ohafia" , "Osisioma Ngwa" , "Ugwunagbo" , "Ukwa East" , "Ukwa West" , "Umuahia North" , "Umuahia South" , "Umu Nneochi"]
+        }, 
+        {
+            "ADAMAWA": ["Demsa" , "Fufore" , "Ganye" , "Grie" , "Gombi" , "Gayuk" , "Hong" , "Jada" , "Lamurde" , "Madagali" , "Maiha" , "Mayo Belwa" , "Michika" , "Mubi North" , "Mubi South" , "Numan" , "Shelleng" , "Song" , "Toungo" , "Yola North" , "Yola South" ]
+        }, 
+        {
+            "AKWA IBOM": ["Abak" , "Eastern Obolo" , "Eket" , "Esit Eket" , "Essien Udim" , "Etim-Ekpo" , "Etinan" , "Ibeno" , "Ibesikpo-Asutan" , "Ibiono-Ibom" , "Ika" , "Ikono" , "Ikot Abasi" , "Ikot Ekpene" , "Ini" , "Itu" , "Mbo" , "Mkpat-Enin" , "Nsit-Atai" , "Nsit-Ibom" , "Nsit-Ubium" , "Obot-Akara" , "Okobo" , "Onna" , "Oron" , "Oruk Anam" , "Ukanafun" , "Udung-Uko" , "Uruan" , "Urue-Offong/Oruko" , "Uyo" ]
+        }, 
+        {
+            "ANAMBRA": ["Aguata" , "Awka North" , "Awka South" , "Anambra East" , "Anambra West" , "Anaocha" , "Ayamelum" , "Dunukofia" , "Ekwusigo" , "Idemili North" , "Idemili South" , "Ihiala" , "Njikoka" , "Nnewi North" , "Nnewi South" , "Ogbaru" , "Onitsha North" , "Onitsha South" , "Orumba North" , "Orumba South" , "Oyi" ]
+        }, 
+        {
+            "BAUCHI":["Bauchi" , "Tafawa Balewa" , "Dass" , "Toro" , "Bogoro" , "Ningi" , "Warji" , "Ganjuwa" , "Kirfi" , "Alkaleri" , "Darazo" , "Misau" , "Giade" , "Shira" , "Jama'are" , "Katagum" , "Itas/Gadau" , "Zaki" , "Gamawa" , "Damban" ]
+        }, 
+        {
+            "BAYELSA": ["Brass" , "Ekeremor" , "Kolokuma/Opokuma" , "Nembe" , "Ogbia" , "Sagbama" , "Southern Ijaw" , "Yenagoa" ]
+        }, 
+        {
+            "BENUE": ["Ado" , "Agatu" , "Apa" , "Buruku" , "Gboko" , "Guma" , "Gwer East" , "Gwer West" , "Katsina-Ala" , "Konshisha" , "Kwande" , "Logo" , "Makurdi" , "Obi" , "Ogbadibo" , "Ohimini" , "Oju" , "Okpokwu" , "Otukpo" , "Tarka" , "Ukum" , "Ushongo" , "Vandeikya" ]
+        }, 
+        {
+            "BORNO": ["Abadam" , "Askira/Uba" , "Bama" , "Bayo" , "Biu" , "Chibok" , "Damboa" , "Dikwagubio" , "Guzamala" , "Gwoza" , "Hawul" , "Jere" , "Kaga" , "Kala/Balge" , "Konduga" , "Kukawa" , "Kwaya Kusar" , "Mafa" , "Magumeri" , "Maiduguri" , "Marte" , "Mobbar" , "Monguno" , "Ngala" , "Nganzai" , "Shani" ]
+        }, 
+        {
+            "CROSS RIVER": ["Abi" , "Akamkpa" , "Akpabuyo" , "Bakassi" , "Bekwarra" , "Biase" , "Boki" , "Calabar Municipal", "Calabar South" , "Etung" , "Ikom" , "Obanliku" , "Obubra" , "Obudu" , "Odukpani" , "Ogoja" , "Yakuur" , "Yala" ]
+        }, 
+        {
+            "DELTA": ["Aniocha North", "Aniocha South" , "Bomadi" , "Burutu" , "Ethiope West" , "Ethiope East" , "Ika South" , "Ika North East" , "Isoko south" , "Isoko North" , "Ndokwa East" , "Ndokwa West" , "Okpe" , "Oshimili North" , "Oshimili south" , "Patani" , "Sapele" , "Udu" , "Ughelli South" , "Ughelli North" , "Ukwuani" , "Uvwie" , "Warri South West" , "Warri North" , "Warri South" ]
+        }, 
+        {
+            "EBONYI": ["Abakaliki" , "Afikpo North" , "Afikpo South (Edda)" , "Ebonyi" , "Ezza North" , "Ezza South" , "Ikwo" , "Ishielu" , "Ivo" , "Izzi" , "Ohaozara" , "Ohaukwu" , "Onicha"]
+        }, 
+        {
+            "EDO": ["Akoko-Edo" , "Egor" , "Esan Central" , "Esan North-East" , "Esan South-East" , "Esan West" , "Etsako Central" , "Etsako East" , "Etsako West" , "Igueben" , "Ikpoba Okha" , "Oredo" , "Orhionmwon" , "Ovia North-East" , "Ovia South-West" , "Owan East" , "Owan West" , "Uhunmwonde" ]
+        }, 
+        {
+            "EKITI": ["Ado Ekiti" , "Ikere" , "Oye" , "Gbonyin" , "Efon" , "Ekiti East" , "Ekiti South-West" , "Ekiti West" , "Emure" , "Ido Osi" , "Ijero" , "Ikole" , "Ilejemeje" , "Irepodun/Ifelodun" , "Ise/Orun" , "Moba" ]
+        }, 
+        {
+            "ENUGU": ["Aninri" , "Awgu" , "Enugu East" , "Enugu North" , "Enugu South" , "Ezeagu" , "Igbo Etiti" , "Igbo Eze North" , "Igbo Eze South" , "Isi Uzo" , "Nkanu East" , "Nkanu West" , "Nsukka" , "Oji River" , "Udenu" , "Udi" , "Uzo-Uwani" ]
+        }, 
+        {
+            "FCT - ABUJA": ["Abaji" , "Municipal (Area Council)", "Gwagwalada" , "Kuje" , "Bwari" , "Kwali"]
+        }, 
+        {
+            "GOMBE": ["Akko" , "Balanga" , "Billiri" , "Dukku" , "Dunakaye" , "Gombe" , "Kaltungo" , "Kwami" , "Nafada" , "Shomgom" , "Yamaltu/Deba" ]
+        }, 
+        {
+            "IMO": ["Aboh Mbaise" , "Ahiazu Mbaise" , "Ehime Mbano" , "Ezinihitte" , "Ideato North" , "Ideato South" , "Ihitte/Uboma" , "Ikeduru" , "Isiala Mbano" , "Isu" , "Mbaitoli" , "Ngor Okpala" , "Njaba" , "Nkwerre" , "Nwangele" , "Obowo" , "Oguta" , "Ohaji/Egbema" , "Okigwe" , "Onuimo" , "Orlu" , "Orsu" , "Oru East" , "Oru West" , "Owerri Municipal", "Owerri North" , "Owerri West"]
+        }, 
+        {
+            "JIGAWA": ["Auyo" , "Babura" , "Biriniwa" , "Birnin Kudu" , "Buji" , "Dutse" , "Gagarawa" , "Garki" , "Gumel" , "Guri" , "Gwaram" , "Gwiwa" , "Hadejia" , "Jahun" , "Kafin Hausa" , "Kaugama" , "Kazaure" , "Kiri Kasama" , "Kiyawa" , "Maigatari" , "Malam Madori" , "Miga" , "Ringim" , "Roni" , "Sule Tankarkar" , "Taura" , "Yankwashi" ]
+        }, 
+        {
+            "KADUNA": ["Birnin Gwari" , "Chikun" , "Giwa" , "Igabi" , "Ikara" , "Jaba" , "Jema'a" , "Kachia" , "Kaduna North" , "Kaduna South" , "Kagarko" , "Kajuru" , "Kaura" , "Kauru" , "Kubau" , "Kudan" , "Lere" , "Makarfi" , "Sabon Gari" , "Sanga" , "Soba" , "Zangon Kataf" , "Zaria" ]
+        }, 
+        {
+            "KANO": ["Ajingi" , "Albasu" , "Bagwai" , "Bebeji" , "Bichi" , "Bunkure" , "Dala" , "Dambatta" , "Dawakin Kudu" , "Dawakin Tofa" , "Doguwa" , "Fagge" , "Gabasawa" , "Garko" , "Garun Mallam" , "Gaya" , "Gezawa" , "Gwale" , "Gwarzo" , "Kabo" , "Kano Municipal", "Karaye" , "Kibiya" , "Kiru" , "Kumbtso" , "Kunchi" , "Kura" , "Madobi" , "Makoda" , "Minjibir" , "Nassarawa" , "Rano" , "Rimin Gado" , "Rogo" , "Shanono" , "Sumaila" , "Takai" , "Tarauni" , "Tofa" , "Tsanyawa" , "Tudun Wada" , "Ungogo" , "Warawa" , "Wudil" ]
+        }, 
+        {
+            "KASTINA": ["Bakori" , "Batagarawa" , "Batsari" , "Baure" , "Bindawa" , "Charanchi" , "Dan Musa" , "Dandume" , "Danja" , "Daura" , "Dutsi" , "Dutsin Ma" , "Faskari" , "Funtua" , "Ingawa" , "Jibia" , "Kafur" , "Kaita" , "Kankara" , "Kankia" , "Katsina" , "Kurfi" , "Kusada" , "Mai'Adua" , "Malumfashi" , "Mani" , "Mashi" , "Matazu" , "Musawa" , "Rimi" , "Sabuwa" , "Safana" , "Sandamu" , "Zango" ]
+        }, 
+        {
+            "KEBBI": ["Aleiro" , "Arewa Dandi" , "Argungu" , "Augie" , "Bagudo" , "Birnin Kebbi" , "Bunza" , "Dandi" , "Fakai" , "Gwandu" , "Jega" , "Kalgo" , "Koko/Besse" , "Maiyama" , "Ngaski" , "Sakaba" , "Shanga" , "Suru" , "Wasagu/Danko" , "Yauri" , "Zuru" ]
+        }, 
+        {
+            "KOGI": ["Adavi" , "Ajaokuta" , "Ankpa" , "Bassa" , "Dekina" , "Ibaji" , "Idah" , "Igalamela Odolu" , "Ijumu" , "Kabba/Bunu" , "Koton Karfe" , "Lokoja" , "Mopa-Muro" , "Ofu" , "Ogori/Magongo" , "Okehi" , "Okene" , "Olamaboro" , "Omala" , "Yagba East" , "Yagba West" ]
+        }, 
+        {
+            "KWARA": ["Asa" , "Baruten" , "Edu" , "Ekiti" , "Ifelodun" , "Ilorin East" , "Ilorin South" , "Ilorin West" , "Irepodun" , "Isin" , "Kaiama" , "Moro" , "Offa" , "Oke Ero" , "Oyun" , "Pategi"]
+        }, 
+        {
+            "LAGOS": ["Agege" , "Ajeromi-Ifelodun" , "Alimosho" , "Amuwo-Odofin" , "Apapa" , "Badagry" , "Epe" , "Eti Osa" , "Ibeju-Lekki" , "Ifako-Ijaye" , "Ikeja" , "Ikorodu" , "Kosofe" , "Lagos Island" , "Lagos Mainland" , "Mushin" , "Ojo" , "Oshodi-Isolo" , "Shomolu" , "Surulere"]
+        }, 
+        {
+            "NASARAWA": ["Akwanga" , "Awe" , "Doma" , "Karu" , "Keana" , "Keffi" , "Kokona" , "Lafia" , "Nassarawa" , "Nassarawa Eggon" , "Obi" , "Toto" , "Wamba" ]
+        }, 
+        {
+            "NIGER": ["Agaie" , "Agwara" , "Bida" , "Borgu" , "Bosso" , "Chanchaga" , "Edati" , "Gbako" , "Gurara" , "Katcha" , "Kontagora" , "Lapai" , "Lavun" , "Magama" , "Mariga" , "Mashegu" , "Mokwa" , "Munya" , "Paikoro" , "Rafi" , "Rijau" , "Shiroro" , "Suleja" , "Tafa" , "Wushishi" ]
+        }, 
+        {
+            "OGUN": ["Abeokuta North" , "Abeokuta South" , "Ado-Odo/Ota" , "Ewekoro" , "Ifo" , "Ijebu East" , "Ijebu North" , "Ijebu North East" , "Ijebu Ode" , "Ikenne" , "Imeko Afon" , "Ipokia" , "Obafemi Owode" , "Odogbolu" , "Odeda" , "Ogun Waterside" , "Remo North" , "Sagamu" , "Yewa North" , "Yewa South" ]
+        }, 
+        {
+            "ONDO": ["Akoko North-West" , "Akoko North-East" , "Akoko South-East" , "Akoko South-West" , "Akure North" , "Akure South" , "Idanre" , "Ifedore" , "Ese Odo" , "Ilaje" , "Ile Oluji/Okeigbo" , "Irele" , "Odigbo" , "Okitipupa" , "Ondo" , "Ondo East" , "Ose" , "Owo" ]
+        }, 
+        {
+            "OSUN": ["Atakunmosa West" , "Atakunmosa East" , "Aiyedaade" , "Aiyedire" , "Bolawaduro" , "Boripe", "Ede" , "Ede North" , "Egbedore" , "Ejigbo" , "Ife North" , "Ife central" , "Ife south" , "Ife East" , "Ifedayo", "Ifelodun" , "Ilesa West" , "Ila" , "Ilesa East" , "Irepodun" , "Irewole" , "Isokan" , "Iwo" , "Obokun" , "Odo Otin" , "Ola Oluwa" , "olorunda" , "Oriade" , "Orolu" , "Osogbo" ]
+        }, 
+        {
+            "OYO": ["Akinyele Moniya" , "Afijio" , "Egbeda" , "Ibadan North" , "Ibadan North-East" , "Ibadan North-West" , "Ibadan South-West" , "Ibadan South-East" , "Ibarapa Central" , "Ibarapa East" , "Ido" , "Irepo" , "Iseyin" , "Kajola" , "Lagelu" , "Ogbomosho North" , "Ogbomosho South" , "Oyo West" , "Atiba" , "Atisbo" , "Saki West" , "Saki East" , "Itesiwaju" , "Iwajowa" , "Ibarapa North" , "Olorunsogo" , "Oluyole" , "Ogo Oluwa" , "Surulere" , "Orelope" , "Ori Ire" , "Oyo East" , "Ona Ara" ]
+        }, 
+        {
+            "PLATEAU": ["Barkin Ladi" , "Bassa" , "Bokkos" , "Jos East" , "Jos North" , "Jos South" , "Kanam" , "Kanke" , "Langtang North" , "Langtang South" , "Mangu" , "Mikang" , "Pankshin" , "Qua'an Pan" , "Riyom" , "Shendam" , "Wase" ]
+        }, 
+        {
+            "RIVERS": ["Abua/Odual" , "Ahoada East" , "Ahoada West" , "Akuku-Toru" , "Andoni" , "Asari-Toru" , "Bonny" , "Degema" , "Eleme" , "Emohua" , "Etche" , "Gokana" , "Ikwerre" , "Oyigbo" , "Khana" , "Obio-Akpor" , "Ogba/Egbema/Ndoni" , "Ogu/Bolo" , "Okrika" , "Omumma" , "Opobo/Nkoro" , "Port Harcourt" , "Tai" ]
+        }, 
+        {
+            "SOKOTO": ["Binji" , "Bodinga" , "Dange Shuni" , "Gada" , "Goronyo" , "Gudu" , "Gwadabawa" , "Illela" , "Isa" , "Kebbe" , "Kware" , "Rabah" , "Sabon Birni" , "Shagari" , "Silame" , "Sokoto North" , "Sokoto South" , "Tambuwal" , "Tangaza" , "Tureta" , "Wamako" , "Wurno" , "Yabo" ]
+        }, 
+        {
+            "TARABA": ["Ardo Kola" , "Bali" , "Donga" , "Gashaka" , "Gassol" , "Ibi" , "Jalingo" , "Karim Lamido" , "Kurmi" , "Lau" , "Sardauna" , "Takum" , "Ussa" , "Wukari" , "Yorro" , "Zing"]
+        }, 
+        {
+            "YOBE": ["Bade" , "Bursari" , "Damaturu" , "Geidam" , "Gujba" , "Gulani" , "Fika" , "Fune" , "Jakusko" , "Karasuwa" , "Machina" , "Nangere" , "Nguru" , "Potiskum" , "Tarmuwa" , "Yunusari" , "Yusufari" ]
+        }, 
+        {
+            "ZAMFARA": ["Anka" , "Bakura" , "Birnin Magaji/Kiyaw" , "Bukkuyum" , "Bungudu" , "Tsafe" , "Gummi" , "Gusau" , "Kaura Namoda" , "Maradun" , "Maru" , "Shinkafi" , "Talata Mafara" , "Zurmi"]
+        }
+    ]
+}

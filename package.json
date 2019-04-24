@@ -1,9 +1,9 @@
 {
-  "name": "corpers",
+  "name": "corpersonline",
   "version": "1.0.0",
   "private": true,
   "description": "for corpers by corpers",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js"
@@ -21,6 +21,7 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "cookieparser": "^0.1.0",
+    "ejs": "^2.6.1",
     "express": "^4.16.4",
     "express-session": "^1.15.6",
     "moment": "^2.23.0",
