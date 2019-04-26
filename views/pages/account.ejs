@@ -387,7 +387,7 @@
               </div>
             </form> -->
             
-            <form id="form-country_v1" name="form-country_v1" class="mr-3">
+            <form id="form-country_v1" name="form-country_v1" class="mr-md-3">
 							<div class="typeahead__container">
 									<div class="typeahead__field">
 											<div class="typeahead__query">
@@ -404,8 +404,8 @@
             
 
             <!-- Button trigger modal for posting-->
-            <!--Hidden only on xs | Hidden only on sm -->
-            <button id="bfp" class="btn btn-primary d-sm-none d-md-block d-none d-sm-block" data-toggle="modal" data-target="#postModalSale">Post</button>
+            <!-- hide on screens smaller than md -->
+            <button id="bfp" class="btn btn-primary   d-none d-md-block" data-toggle="modal" data-target="#postModalSale">Post</button>
         </div>
     </nav>
 
@@ -940,8 +940,8 @@
     <main role="main">
         <div class="pt-3 maincontent p-md-4 container">
             <div class="row pb-3">
-                <!--Hidden only on xs | Hidden only on sm -->
-                <div class="col-sm-3 d-sm-none d-md-block d-none d-sm-block">
+                <!-- hide on screens smaller than md -->
+                <div class="col-md-3 d-none d-md-block">
                     <!-- put the corper's information. let them see their profile (and be able to change it) -->
                     <div class="card shadow" id="profilecard">
                         <div class="card-body">
@@ -966,7 +966,7 @@
                     <!--//-->
                 </div>
 
-                <div class="col-sm-6" data-spy="scroll" data-offset="0">
+                <div class="col-md-6" data-spy="scroll" data-offset="0">
 
                     <div id="loader" class='pb-3'></div>
                     <!--in this middle part, we'll give various toggle tabs for location of accommodation, PPAs, SPAs, SALES-->
@@ -1078,8 +1078,8 @@
 
                     </ul>
                 </div>
-                <!--Hidden only on xs | Hidden only on sm -->
-                <div class="col-sm-3 d-sm-none d-md-block d-none d-sm-block">
+                <!-- hide on screens smaller than md -->
+                <div class="col-md-3 d-none d-md-block">
 
                     <div class="card shadow" id="statscard">
                         <div class="card-body text-center">
@@ -1124,8 +1124,8 @@
 
 
         <!-- fab Code begins here -->
-        <!-- Visible only on xs | Visible only on sm -->
-        <div class="float d-block d-sm-none d-none d-sm-block d-md-none" data-toggle="modal" data-target="#postModalSale">
+        <!-- hide on screens wider than md -->
+        <div class="float d-md-none" data-toggle="modal" data-target="#postModalSale">
             <i class="edit-solid icon my-float"></i>
         </div>
     </main>
