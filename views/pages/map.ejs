@@ -305,6 +305,8 @@ mymap.on('tileloadstart', function (event) {
     console.log('start loading 1 tile');
 });
 
+console.log(<%- mapdata %>); // JSON.parse(JSON.stringify(mapdata))
+
 mymap.on('zoom', function (event) { // based on where people expand in our maps, we'll know what they are intrested in, and we'd ask other corpers to provide info about such places.
     console.log("Map zoom level:", mymap.getZoom(), event);
     // then maybe later, for optimization, just focus on the area the user is seeing, so we won't waste too much js memory
@@ -444,7 +446,7 @@ var myStyleLines2 = {
 
 
 mymap.on('click', function(e) { // do not delete
-console.log(([e.latlng.lat, e.latlng.lng]).toString());
+console.log(([e.latlng.lng, e.latlng.lat]).toString());
     /* 
     L.popup()
         .setLatLng(e.latlng)
@@ -769,12 +771,12 @@ var yes = [{
 // GENERAL RULES: THE popupAnchor for fas fa-[amenity] is [5, -2] for when it's big and [0, 0] (we're gonna try to find a middle ground) for when it's small and for icon.now.sh is [-7, -85]
 var school = L.divIcon({ 
     className: 'custom-icons fas fa-school fa-2x',
-    popupAnchor: [3, 0], // documentation used [-3, -76], it wasn't exactly properly aligned to the icon, maybe it's directly on the latlng point but ...no
+    popupAnchor: [9, 1], // was and [3, 0], documentation used [-3, -76], it wasn't exactly properly aligned to the icon, maybe it's directly on the latlng point but ...no
 });
 
 var hospital = L.divIcon({
     className: 'custom-icons fas fa-hospital fa-2x',
-    popupAnchor: [5, -2], // documentation used [-3, -76], it wasn't exactly properly aligned to the icon, maybe it's directly on the latlng point but ...no
+    popupAnchor: [5, -2], // was [5, -2] for smaller width icons documentation used [-3, -76], it wasn't exactly properly aligned to the icon, maybe it's directly on the latlng point but ...no
 });
 
 // you can set .my-div-icon styles in CSS
@@ -791,8 +793,21 @@ L.geoJSON(yes, {
         }
     }
 }).bindPopup(function (layer) {
-    console.log('layer', layer.defaultOptions.icon.options.className.includes('fa-sm'), layer.defaultOptions.icon.options.className.includes('fa-xs'), layer ); // layer.defaultOptions.icon.options.popupAnchor = [0, 0] if layer.defaultOptions.icon.options.className.has()
+    console.log('layer', layer ); // layer.defaultOptions.icon.options.popupAnchor = [0, 0] if layer.defaultOptions.icon.options.className.has()
     return layer.feature.properties.popupContent;
+}).addTo(mymap);
+
+L.geoJSON(<%- mapdata %>, {
+    pointToLayer: function (feature, latlng) {
+        console.log('from server', feature, latlng);
+        switch (feature.properties.type_of_ppa) {
+            case 'Hospital': return L.marker(latlng, { icon: hospital, title: feature.properties.popupContent });
+            case 'School': return L.marker(latlng, { icon: school, title: feature.properties.ppa_address + ' (' + feature.properties.type_of_ppa + ')' });
+        }
+    }
+}).bindPopup(function (layer) {
+    console.log('layer', layer.defaultOptions.icon.options.className.includes('fa-sm'), layer.defaultOptions.icon.options.className.includes('fa-xs'), layer); // layer.defaultOptions.icon.options.popupAnchor = [0, 0] if layer.defaultOptions.icon.options.className.has()
+    return layer.feature.properties.ppa_address + ' (' + layer.feature.properties.type_of_ppa + ')';
 }).addTo(mymap);
 
 /*

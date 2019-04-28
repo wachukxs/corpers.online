@@ -319,10 +319,63 @@ app.get('/chat', function (req, res) {
 app.get('/map', function (req, res) {
   res.set('Content-Type', 'text/html');
   // res.sendFile(__dirname + '/map.html');
-  res.render('pages/map', {
-    statecode: req.session.statecode,
-    servicestate: req.session.servicestate
+
+  pool.query("SELECT ppa_address, ppa_geodata, type_of_ppa FROM info WHERE ppa_address != '' AND ppa_geodata != '' AND type_of_ppa != ''", function (error, results, fields) { // bring the results in ascending order
+
+    if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
+      console.log(error);
+      throw error;
+    }
+
+    if (!isEmpty(results)) {
+      console.log('geo data for map', results);
+
+      // JSON.parse(JSON.stringify([{ g: 'g', l: 'l' }, { g: 'g', l: 'l' }, { g: 'g', l: { g: 'g', l: { g: 'g', l: 'l' } } }]))
+      
+      // JSON.parse(JSON.stringify(results));
+
+      /* for (let index = 0; index < results.length; index++) {
+        // unstringify the ppa_geodata entry
+        results[index]['ppa_geodata'] = JSON.parse(results[index].ppa_geodata);
+
+      } */
+
+      // format to GeoJSON Format https://tools.ietf.org/html/rfc7946
+      for (let index = 0; index < results.length; index++) {
+        // unstringify the ppa_geodata entry
+        // results[index]['ppa_geodata'] = JSON.parse(results[index].ppa_geodata);
+        
+        // re-arrange to GeoJSON Format
+        results[index].type = "Feature";
+
+        results[index].properties = {};
+        results[index].properties.ppa_geodata = JSON.parse(results[index].ppa_geodata);
+        results[index].properties.ppa_address = results[index].ppa_address;
+        results[index].properties.type_of_ppa = results[index].type_of_ppa;
+
+        results[index].geometry = {};
+        results[index].geometry.type = "Point";
+        results[index].geometry.coordinates = [ JSON.parse(results[index].ppa_geodata).longitude, JSON.parse(results[index].ppa_geodata).latitude ];
+
+        console.log(JSON.parse(results[index].ppa_geodata).latlng, '======++++++++====', results[index]['ppa_geodata'].longitude, results[index]['ppa_geodata'].latitude);
+        
+        delete results[index]['ppa_geodata'];
+        delete results[index]['type_of_ppa'];
+        delete results[index]['ppa_address'];
+
+        // delete redundate data like longitude, latitude, and latlng in ppa_geodata after reassigning values
+      }
+
+    }
+
+    res.render('pages/map', {
+      statecode: req.session.statecode,
+      servicestate: req.session.servicestate,
+      mapdata: JSON.stringify(results)
+    });
   });
+
+  
 });
 
 app.get('/maps', function (req, res) {
@@ -437,7 +490,7 @@ app.get('/newprofile', function (req, res) {
 
 });
 
-app.post('/profile', bodyParser.urlencoded({ extended: false/* , type: 'application/x-www-form-urlencoded' */ }), function (req, res) {
+app.post('/profile', bodyParser.urlencoded({ extended: true/* , type: 'application/x-www-form-urlencoded' */ }), function (req, res) {
   // cater for fields we already have, so that we don't touch them eg. servicestate
   // UPDATE 'info' SET 'firstname'=[value-1],'lastname'=[value-2],'accomodation_location'=[value-3],'servicestate'=[value-4],'batch'=[value-5],'name_of_ppa'=[value-6],'statecode'=[value-7],'email'=[value-8],'middlename'=[value-9],'password'=[value-10],'phone'=[value-11],'dateofreg'=[value-12],'lga'=[value-13],'city_town'=[value-14],'region_street'=[value-15],'stream'=[value-16],'type_of_ppa'=[value-17],'ppa_address'=[value-18],'travel_from_state'=[value-19],'travel_from_city'=[value-20],'spaornot'=[value-21] WHERE email = req.body.email
   // UPDATE info SET 'accomodation_location'=req.body.accomodation_location,'servicestate'=req.body.servicestate,'name_of_ppa'=[value-6],'lga'=req.body.lga,'city_town'=req.body.city_town,'region_street'=req.body.region_street,'stream'=req.body.stream,'type_of_ppa'=req.body.type_of_ppa,'ppa_address'=req.body.ppa_address,'travel_from_state'=req.body.travel_from_state,'travel_from_city'=req.body.travel_from_city,'spaornot'=req.body.spaornot WHERE email = req.body.email
@@ -448,14 +501,15 @@ app.post('/profile', bodyParser.urlencoded({ extended: false/* , type: 'applicat
   /*[req.body.accomodation_location, req.body.servicestate, req.body.name_of_ppa, req.body.lga, req.body.city_town, req.body.region_street, req.body.stream, req.body.type_of_ppa, req.body.ppa_address, req.body.travel_from_state, req.body.travel_from_city, req.body.spaornot, req.body.email],*/
   console.log('\n\nthe req.body for /profile', req.body, '\n\n', req.body.servicestate);
   // console.log('\n\n', req);
-  var sqlquery = "UPDATE info SET accomodation_location = '" + (req.body.accomodation_location ? req.body.accomodation_location : '') +
+  var sqlquery = "UPDATE info SET accommodation_location = '" + (req.body.accommodation_location ? req.body.accommodation_location : '') +
     "', servicestate = '" + req.body.servicestate + "', name_of_ppa = '" + req.body.name_of_ppa +
     "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" +
     req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" +
-    req.body.type_of_ppa + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" +
+    req.body.type_of_ppa + "', ppa_geodata = '" + (req.body.ppa_geodata ? req.body.ppa_geodata : null) + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" +
     req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city +
-    "', accommodationornot = '" + (req.body.accommodationornot ? req.body.accommodationornot : 'yes') + "', wantspaornot = '" +
+    /* "', accommodationornot = '" + (req.body.accommodationornot ? req.body.accommodationornot : 'yes') + */ "', wantspaornot = '" +
     req.body.wantspaornot + "' WHERE statecode = '" + req.session.statecode + "' ";
+    
 
   pool.query(sqlquery, function (error, results, fields) {
     console.log('updated user profile data: ', results);
