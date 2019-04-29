@@ -83,6 +83,13 @@
     .tt-suggestion p {
       margin: 0;
     } */
+
+    /* remove this and the onNavigation after to remove the scroll and up and down arrow navigation feature */
+    .typeahead__list {
+      max-height: 300px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
     </style>
     <script src="/socket.io/socket.io.js"></script>
     <style>
@@ -1856,6 +1863,8 @@
 
     <script>
       // http://www.runningcoder.org/jquerytypeahead/demo/ User v1
+
+      // use grouping from http://www.runningcoder.org/jquerytypeahead/demo/ Advanced demo Beer v1
       $.typeahead({
         input: '.js-typeahead-search',
         // order: "asc", // asc or desc // no need for this, we already arrange it from server
@@ -1863,27 +1872,56 @@
         offset: false, // Set to true to match items starting from their first character
         cache: sessionStorage,
         hint: true,
+        loadingAnimation: true,
+        backdrop: {
+        "background-color": "#fff"
+        },
         ttl: 3600000, // Cache time to live in ms
         maxItem: 30, // highest number of results to show
-        template: "{{display}} <br> <small class='text-muted text-uppercase'>{{group}}</small>",
-        href: "/search?title={{display}}",
-        source: { // group cannot be 'data'
+        /* group: { // use group to maybe group by LGAs and anything relevant
+        template: "{{group}}"
+        }, */
+        // template: "{{streetname}} {{ppa_address}} <br> <small class='text-muted text-uppercase'>{{group}}</small>",
+        // href: "/search?title={{display}}",
+
+        // Typeahead can also search deep inside an object, just separate the keys with "." like display: ['string', 'deeper.key.level']
+        // display: ["streetname", "ppa_address"], // or be specific in the group objects
+        source: { 
+          // group cannot be 'data'
           accommodations: {
+            template: "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}}, &#8358;{{price}} {{rentrange}} by {{statecode}}</small>"
+              +"<br> <small class='text-muted text-uppercase'>{{group}}</small>",
+            display: ['streetname', 'type'],
+            // Be careful as item properties might contain Url-unsafe characters
+            href: function (item) {
+                  // console.log('acc href', item);
+                  return "/search?type=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" + item.statecode; // sn sc it
+            },
             ajax: {
               url: "/posts",
+              
               data: { // set url query parameter if we want to do backend/query search
                 q: '{{query}}'
               },
-              path: 'data.accommodations' // [streetname]
+              
+              path: 'data.accommodations'
             }
           },
           ppa: {
+            template: "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>"
+              +"<br> <small class='text-muted text-uppercase'>{{group}}</small>",
+            display: ["name_of_ppa", "ppa_address"],
+            // Be careful as item properties might contain Url-unsafe characters
+            href: function (item) {
+                  // console.log('ppa href', item);
+                  return "/search?type=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address + "&top=" + item.type_of_ppa; // nop type pa
+            },
             ajax: {
               url: "/posts",
               data: { // set url query parameter if we want to do backend/query search
                 q: '{{query}}'
               },
-              path: 'data.ppas' // [ppa_address]
+              path: 'data.ppas'
             }
           }
         },
@@ -1901,6 +1939,17 @@
           onResult: function (node, searchtext, results, l) { // When the result container is displayed
             console.log('search result', node, searchtext, results, l);
             // let's see what the user is seeing
+          },
+          // The ul.typeahead__list has max-height: 300px; and is scrollable, onNavigateAfter is set to scroll the result container if arrow UP or DOWN are pressed to the .active item.
+          onNavigateAfter: function (node, lis, a, item, query, event) {
+            if (~[38,40].indexOf(event.keyCode)) {
+                var resultList = node.closest("form").find("ul.typeahead__list"),
+                    activeLi = lis.filter("li.active"),
+                    offsetTop = activeLi[0] && activeLi[0].offsetTop - (resultList.height() / 2) || 0;
+ 
+                resultList.scrollTop(offsetTop);
+            }
+ 
           },
           onMouseEnter: function (node, a, item, event) {
             console.log('enter key on search');

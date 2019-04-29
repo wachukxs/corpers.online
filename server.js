@@ -406,7 +406,7 @@ app.get('/posts', function (req, res) {
   // so we're selecting posts newer than the ones currently in the user's timeline. or the server closed the connection error
   
   // SELECT * FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT ppa_address, ppa_geodata, type_of_ppa FROM info WHERE ppa_address != '' AND ppa_geodata != '' AND type_of_ppa != ''
-  pool.query("SELECT streetname FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT ppa_address FROM info WHERE ppa_address != ''", function (error, results, fields) { // bring the results in ascending order
+  pool.query("SELECT streetname, type, input_time, statecode, price, rentrange FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != ''", function (error, results, fields) { // bring the results in ascending order
 
     if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
       console.log(error);
@@ -434,7 +434,9 @@ app.get('/posts', function (req, res) {
 
       // res.json({er: 'er'}); // auto sets content-type header with the correct content-type
       // res.send({ user: 'tobi' });
-      res.status(200).send({ data: {ppas: ppa, accommodations: acc} }); // {a: acc, p: ppa}
+
+      // res.status(200).send({ data: {ppas: ppa, accommodations: acc} }); // {a: acc, p: ppa}
+      res.status(200).send({ data: {ppas: results[1], accommodations: results[0]} }); // {a: acc, p: ppa}
     }
   });
 
