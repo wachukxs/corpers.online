@@ -16,3 +16,6 @@ Aside from your PPA, and other relevant places NYSC hangouts (think NYSC Offices
 ask corpers how much their PPAs pay them, if they do at all, it'll help other corpers know how much to expect from their PPAs and plan and it'll help us too to know how to better target high earning corpers... and make other deductions... like advise them to save and stuff. partner with adron homes to see if they can buy a land and acquire properties while serving... and in turn sell this 'property acquiring service' to the general public. more meaningful partnerships can be made.
 
 in update profile section or page, // ask if they want an accommodation and where would they want it to be
+
+
+always use https://github.com/tj/ejs/tree/0.8.3#features

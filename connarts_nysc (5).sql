@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 06, 2019 at 06:17 AM
+-- Generation Time: Apr 29, 2019 at 12:34 AM
 -- Server version: 10.1.37-MariaDB
 -- PHP Version: 7.2.12
 
@@ -57,7 +57,8 @@ INSERT INTO `accommodations` (`statecode`, `type`, `price`, `rooms`, `rentrange`
 ('undefined', 'Self contain', 9, 'kitchen,Bedroom', 'quarterly', 'No. 1, Ikolaba, Ibad', 'No. 1, Ikolaba, Ibadan', 'obk1.jpg,obk2.jpg', 'New rent', '2019-04-05 15:54:52', '0000-00-00', NULL),
 ('AB/17B/2335', 'Flat', 9, 'kitchen,Toilet&Bathroom', 'yearly', 'No. 1, Ikolaba, Ibadan', 'No. 1, Ikolaba, Ibadan', 'obk3.jpg', 'New rent', '2019-04-05 16:03:03', '0000-00-00', 'dfsa'),
 ('AB/17B/2335', '1 bedroom flat', 3232, 'Bedroom,Toilet&Bathroom', 'yearly', 'No. 1, Ikolaba, Ibadan', 'No. 1, Ikolaba, Ibadan', 'php error.PNG,settings.PNG', 'New rent', '2019-04-05 16:05:21', '0000-00-00', 'fds dsffdsaf asfd fdas\r\ndsjfkldsa fl;sdjaasd;sadf;lsad\r\nijd;safj ;sdafj;dsafljdas\r\n\r\njds;lfj;lsdjlf;sa'),
-('AB/17B/2335', '1 bedroom flat', 4344, 'Bedroom', 'quarterly', 'No. 1, Ikolaba, Ibadan', 'No. 1, Ikolaba, Ibadan', 'waec.jpeg,words matter.PNG', 'New rent', '2019-04-05 16:31:26', '0000-00-00', 'dsf dfs sdf sda');
+('AB/17B/2335', '1 bedroom flat', 4344, 'Bedroom', 'quarterly', 'No. 1, Ikolaba, Ibadan', 'No. 1, Ikolaba, Ibadan', 'waec.jpeg,words matter.PNG', 'New rent', '2019-04-05 16:31:26', '0000-00-00', 'dsf dfs sdf sda'),
+('AB/17B/2335', 'Self contain', 8, 'kitchen,Bedroom', 'yearly', 'No. 1, Ikolaba, Ibadan', 'No. 1, Ikolaba, Ibadan', 'go2.PNG', 'New rent', '2019-04-08 14:22:30', '0000-00-00', 'dsf as');
 
 -- --------------------------------------------------------
 
@@ -80,7 +81,7 @@ CREATE TABLE `endpoints` (
 CREATE TABLE `info` (
   `firstname` varchar(20) CHARACTER SET latin1 NOT NULL,
   `lastname` varchar(20) CHARACTER SET latin1 NOT NULL,
-  `accomodation_location` varchar(40) COLLATE utf8_bin DEFAULT NULL,
+  `accommodation_location` varchar(40) COLLATE utf8_bin DEFAULT NULL,
   `servicestate` varchar(15) COLLATE utf8_bin DEFAULT NULL,
   `batch` varchar(12) COLLATE utf8_bin DEFAULT NULL,
   `name_of_ppa` varchar(50) COLLATE utf8_bin DEFAULT NULL,
@@ -98,19 +99,21 @@ CREATE TABLE `info` (
   `ppa_address` varchar(300) COLLATE utf8_bin NOT NULL,
   `travel_from_state` varchar(20) COLLATE utf8_bin NOT NULL,
   `travel_from_city` varchar(25) COLLATE utf8_bin NOT NULL,
-  `spaornot` varchar(4) COLLATE utf8_bin NOT NULL
+  `wantspaornot` varchar(4) COLLATE utf8_bin NOT NULL,
+  `accommodationornot` varchar(5) COLLATE utf8_bin NOT NULL,
+  `ppa_geodata` varchar(330) COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
 -- Dumping data for table `info`
 --
 
-INSERT INTO `info` (`firstname`, `lastname`, `accomodation_location`, `servicestate`, `batch`, `name_of_ppa`, `statecode`, `email`, `middlename`, `password`, `phone`, `dateofreg`, `lga`, `city_town`, `region_street`, `stream`, `type_of_ppa`, `ppa_address`, `travel_from_state`, `travel_from_city`, `spaornot`) VALUES
-('Omotubora', 'Ibidunni Omowunmi', NULL, NULL, NULL, NULL, 'ab/18b/1039', '', NULL, '', NULL, '2018-11-28 10:42:13', '', '', '', 0, '', '', '', '', ''),
-('Nwachukwu', 'Ossai', NULL, 'ABIA', '17B', NULL, 'AB/17B/1234', 'nwachukwuossai@gmail.com', 'Chuks', 'pass', NULL, '2019-01-01 05:51:09', '', '', '', 0, '', '', '', '', ''),
-('Juliet', 'Mogaba', '', 'undefined', '17B', 'community secondary school, old umuahia', 'AB/17B/2334', 'juliet.mogaba@aiesec.net', 'Ntukpene', 'KILSIPHILIP82', NULL, '2019-02-17 23:25:02', 'umuahia', '', '', 2, 'School', 'old umuahia', 'cross river', 'calabar', 'yes'),
-('Chi', 'Mana', NULL, 'ADAMAWA', '17A', NULL, 'AD/17A/5670', 'email@gmail.com', 'Remi', 'pass', NULL, '2019-02-18 20:20:10', '', '', '', 0, '', '', '', '', ''),
-('Her', 'Tosin', NULL, 'ABIA', '17B', NULL, 'AB/17B/2335', 'doe@nysc.org', 'Hamal', 'pass', NULL, '2019-02-18 20:22:24', '', '', '', 0, '', '', '', '', '');
+INSERT INTO `info` (`firstname`, `lastname`, `accommodation_location`, `servicestate`, `batch`, `name_of_ppa`, `statecode`, `email`, `middlename`, `password`, `phone`, `dateofreg`, `lga`, `city_town`, `region_street`, `stream`, `type_of_ppa`, `ppa_address`, `travel_from_state`, `travel_from_city`, `wantspaornot`, `accommodationornot`, `ppa_geodata`) VALUES
+('Nwachukwu', 'Ossai', NULL, 'ABIA', '17B', NULL, 'AB/17B/1234', 'nwachukwuossai@gmail.com', 'Chuks', 'pass', NULL, '2019-01-01 05:51:09', '', '', '', 0, '', '', '', '', '', '', NULL),
+('Juliet', 'Mogaba', '', 'undefined', '17B', 'community secondary school, old umuahia', 'AB/17B/2334', 'juliet.mogaba@aiesec.net', 'Ntukpene', 'KILSIPHILIP82', NULL, '2019-02-17 23:25:02', 'umuahia', '', '', 2, 'School', 'old umuahia', 'cross river', 'calabar', 'yes', '', NULL),
+('Her', 'Tosin', 'Ibadan fx 6df d3', 'Abia', '17B', 'community secondary school, old umuahia', 'AB/17B/2335', 'doe@nysc.org', 'Hamal', 'pass', NULL, '2019-02-18 20:22:24', 'eweweewwe', 'Ibadan', 'No. 1, Ikolaba, Ibadan', 1, 'School', 'No. 1, Ikolaba, Ibadan', 'Kaduna', 'Ibadan', 'yes', '', '{\"latlng\":{\"lat\":5.51898484387902,\"lng\":7.513961791992188},\"bounds\":{\"_southWest\":{\"lat\":1.9276461283085196,\"lng\":-1.2474918253773986},\"_northEast\":{\"lat\":11.121112471691479,\"lng\":8.005903225377399}},\"timestamp\":1556401434979,\"latitude\":5.51898484387902,\"longitude\":7.513961791992188,\"accuracy\":511706}'),
+('Chi', 'Mana', NULL, 'ADAMAWA', '17A', NULL, 'AD/17A/5670', 'email@gmail.com', 'Remi', 'pass', NULL, '2019-02-18 20:20:10', '', '', '', 0, '', '', '', '', '', '', NULL),
+('Omotubora', 'Ibidunni Omowunmi', NULL, NULL, NULL, NULL, 'ab/18b/1039', '', NULL, '', NULL, '2018-11-28 10:42:13', '', '', '', 0, '', '', '', '', '', '', NULL);
 
 -- --------------------------------------------------------
 
@@ -379,7 +382,16 @@ INSERT INTO `posts` (`sender`, `statecode`, `type`, `text`, `media`, `price`, `l
 (NULL, 'AB/17B/2335', 'random', 'dsafdas', '', 0, 'ABIA', '1554293510549', '2019-04-03 12:11:50'),
 (NULL, 'AB/17B/2335', 'random', 'dsf as', '', 0, 'ABIA', '1554293524708', '2019-04-03 12:12:04'),
 (NULL, 'AB/17B/2335', 'random', 'dfs a', '', 0, 'ABIA', '1554293569797', '2019-04-03 12:12:49'),
-(NULL, 'AB/17B/2335', 'random', 'fjdsa lfjdalkfjasdlk\r\n\r\ndslkfnmslkadfs\r\n\r\nfdfdasfsad\r\n\r\nfdsdjfopijs dof;pdijas;f\r\ndksl', 'aws elastic IP addr.PNG', 0, 'ABIA', '1554294077722', '2019-04-03 12:21:17');
+(NULL, 'AB/17B/2335', 'random', 'fjdsa lfjdalkfjasdlk\r\n\r\ndslkfnmslkadfs\r\n\r\nfdfdasfsad\r\n\r\nfdsdjfopijs dof;pdijas;f\r\ndksl', 'aws elastic IP addr.PNG', 0, 'ABIA', '1554294077722', '2019-04-03 12:21:17'),
+(NULL, 'AB/17B/2335', 'random', 'dsf dswafda', '', 0, 'undefined, undefined', '1554729706117', '2019-04-08 13:21:46'),
+(NULL, 'AB/17B/2335', 'random', 'dsf dsafoijadosi fjosadjf adsfdas fdas', '', 0, 'undefined, undefined', '1554729714197', '2019-04-08 13:21:54'),
+(NULL, 'AB/17B/2335', 'random', 'gfh fd', 'go.PNG', 0, 'undefined, undefined', '1554729726045', '2019-04-08 13:22:06'),
+(NULL, 'AB/17B/2335', 'random', 'Add video capabilities, make use of the picture tag, and lazy loading... c\'mon\r\n\r\nwe still have search and places... jeez', '', 0, 'Abia, Ibadan', '1554912787443', '2019-04-10 16:13:07'),
+(NULL, 'AB/17B/2335', 'random', 'hmm, AI as they type ? then Places suggestions as they type ?!!!!!!!!!?!??????????????????\r\n\r\nHmmmm', '', 0, 'Abia, Ibadan', '1554912865618', '2019-04-10 16:14:25'),
+(NULL, 'AB/17B/2335', 'random', 'use holder.js with statecode or map of the state the person is from or a crazy pic like that for lazy loading before the actual pic/avatar of the person loads', '', 0, 'Abia, Ibadan', '1554912995643', '2019-04-10 16:16:35'),
+(NULL, 'AB/17B/2335', 'random', 'can we make this better... find a way to get swift user feed back...and suggestions... ask them what they want', '', 0, 'Abia, Ibadan', '1554913075283', '2019-04-10 16:17:55'),
+(NULL, 'AB/17B/2335', 'random', 'ok', '', 0, 'Abia, Ibadan', '1554914655717', '2019-04-10 16:44:15'),
+(NULL, 'AB/17B/2335', 'random', 'now', '', 0, 'Abia, Ibadan', '1556458593804', '2019-04-28 13:36:33');
 
 -- --------------------------------------------------------
 
@@ -692,7 +704,69 @@ INSERT INTO `session_usage_details` (`email`, `logout_time`, `login_period`, `br
 (NULL, NULL, NULL, NULL, NULL, NULL, 'AMzAVNjb9PmmBbVrzg-SSG4NkCwVMVvj', '2019-04-05 15:02:41', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
 (NULL, NULL, NULL, NULL, NULL, NULL, 'tNZmEp2ei0HzscWynoQjti_b2lKiu4dY', '2019-04-05 15:04:38', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
 (NULL, NULL, NULL, NULL, NULL, NULL, '7CCz72Cv26pcztx_Z3FwSoXtDWfv9s2W', '2019-04-05 15:30:54', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
-(NULL, NULL, NULL, NULL, NULL, NULL, '5urAOfmYmESc64tKcM_of0X3A12AWfnn', '2019-04-05 16:13:59', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335');
+(NULL, NULL, NULL, NULL, NULL, NULL, '5urAOfmYmESc64tKcM_of0X3A12AWfnn', '2019-04-05 16:13:59', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'ps1Kftbh1MHNhAKG_IfCOzAvQ4JdgbaB', '2019-04-07 22:10:31', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'M--PYxgKVKPV8WJX7U4IvzVmcozwJocx', '2019-04-07 22:16:14', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'z-lUtL_TUTlDZrRocXqXO4_5IQBhoxx3', '2019-04-07 22:31:16', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, '9s0hBGU2Rm-z9d3BHpaUkf5_Ruk13hNF', '2019-04-07 22:34:08', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'mzGWOB8AaEUvSBArLmvMityuhBk_1FFk', '2019-04-07 22:40:52', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'w9kDwWduGWSlVJGSX4pjFrBBk4m7gWFq', '2019-04-07 22:42:50', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'ZLkOeYE2NVhGPdlKWy_fisTnYbjWI1gn', '2019-04-07 22:48:50', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'OBPNanIOC9QC7oVVTvFJgxaiYMvvwMXW', '2019-04-08 10:24:21', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'OBPNanIOC9QC7oVVTvFJgxaiYMvvwMXW', '2019-04-08 11:20:49', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'MdbxG_W4EPjVQZJaHlznAh2LFQbjVCBQ', '2019-04-08 11:27:23', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, '1cVXlOHb-J7OUBNCdJFhulKVb8Qthf0z', '2019-04-08 11:37:57', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'o2dkBt0-lBOLKVSDMiXPLt1HY0DJqMvk', '2019-04-08 12:55:00', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'SZiGhX-dnNnOefbu0cQEPx6duczjAbyj', '2019-04-08 12:56:46', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'JyNziNnB_FU80DFVxwAy44zZuZcD1npF', '2019-04-08 12:57:43', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, '3-t3mcB2WD0ANVNk-Ey6HW7EX1anx_-z', '2019-04-08 12:58:36', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'LrRDrqZrUeF-_Ebg61sOC5iVdFSDYF_e', '2019-04-08 13:02:25', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'rZFwkmpKU5j9cwFxlGmYdFmXS0UZD58O', '2019-04-08 13:03:14', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, '54b3uaFdwB2BiDa_1TJbLXx0kJ1v3aBB', '2019-04-08 13:10:10', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'PN4faciG0a9q3YtkufGu7Eexz35KAi3B', '2019-04-08 13:11:47', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, '3SRSOHSTEOPDi22S67bhEhjcQ3or1I34', '2019-04-08 13:12:29', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'Bd9LLnyZJFfiVWIaT0Hn5f4QSggAk1Td', '2019-04-08 13:13:22', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'HG0oyf3VlGCKgYJvuxCqY6s7tM0RTPFf', '2019-04-08 13:14:52', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'kS4B4OJ98tzepXxn539zYny86OP07o1F', '2019-04-08 13:17:30', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'YXUQCpatroaaTU_z7L6cYqgwGT6EIlZG', '2019-04-08 13:19:21', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'Kf31HSq0XbYzQz-9i6M2-EuHDqlpLFGC', '2019-04-08 13:21:42', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'IWmTeh27HMOVnuoBD_FSWj8t25BZm_Iv', '2019-04-08 13:24:46', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'SjDecdTZ1Zv6_zdqo_2lSs5j8XWo5pW1', '2019-04-08 13:28:39', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'vYPB_XWUhmuhedmqy7LO3A8aGpmipdY0', '2019-04-08 13:29:16', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'i4eaLOwncy4c0ii_Vz7rEJR75Gz16EMK', '2019-04-08 13:30:20', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, '6_m7Bu6BGCjJ0LtYkC13WHZrBTtFW5S-', '2019-04-08 13:30:48', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'jqOuv-ujUs9166G7IOi6DEoMTuSIQN5Y', '2019-04-08 13:32:24', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'Xrf41SmHNP1DMuYbwbO2RicbPihr6itn', '2019-04-08 13:32:56', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'DhXGQ3lviWvOi4KF1mbiA_KVdAL6RhGS', '2019-04-08 13:33:56', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'YbCwfofq-zlzkqGvzBafcjowW3-4PoMy', '2019-04-08 13:34:20', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'FRBFT8hHPIaIFPGr2eMzxPnCwVVK4wXo', '2019-04-10 12:10:12', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'DbEqk_kjJrkzXPzPHW8T6fttvRKqmO5V', '2019-04-10 13:07:10', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'X5ZBpsvA3c2zrBpWp_UeqijxL0h8L_Hz', '2019-04-10 13:08:59', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, '0lfo2BTvSmbOqHusAmBlET9qp1TlXC_Z', '2019-04-10 13:43:33', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, '1PusBDe6EWsJHTKpdB1ixQnEBPe6ZMP4', '2019-04-10 16:08:00', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'RwHcAokdx1T8TQuCJfP4iFoAk-Ro5ZuZ', '2019-04-10 16:09:23', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'Rpw7fFVGDAoaIUpZVn8UWZbTL5ujxYqy', '2019-04-10 16:11:59', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'vc6zUTP-FXUh35PgYJUy8snERT7bs-43', '2019-04-10 16:44:07', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'pFwJQPlqbaG7qqUkqow-mOfS9N5ZqOP-', '2019-04-13 14:45:28', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'd8AqovUmvrSw0ZUEUnZDeMRVlj6dy9lc', '2019-04-19 09:07:03', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'Tbn0oIjx2qMHXdPyaG-9lEGP29auqLlt', '2019-04-19 09:13:21', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'fkqg222TsiKPZpDxIGKDgPD345C35XNN', '2019-04-19 20:37:24', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'wx8PIHpP8hpKpmZCxGGPW5YfXcoe0Xgw', '2019-04-25 12:10:01', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'ektMO1sUYowjcxNyhd8QSpgXgtErnUnF', '2019-04-25 12:10:34', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'kUDjhN6HtgXzOuPmOKB8__Pi87VvhlLD', '2019-04-27 14:07:43', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'cGl97kfCpH3_eWKB78hNufrzKziKTfAx', '2019-04-27 14:07:57', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'l7rG8H4vmKJoVVwLXiX6FU3qE2Mjar1x', '2019-04-27 19:40:37', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'xBPNip1nR3tXInKufqRXYLjXkfK_a3WI', '2019-04-27 21:30:31', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'j8MleZAvFDn8tfYAb7BtysLvPml4fvz0', '2019-04-27 21:40:32', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'q_hxDLOupEr4LKApTcCbzGM80KQfpHNc', '2019-04-27 21:48:42', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, '5UFXFd2k5kbqfrJcnjKntyOZjY0F-umP', '2019-04-28 00:38:27', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'JMp89ILCw7k76xdMAg85keGpPUjcCseY', '2019-04-28 13:14:46', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'x61ZwDjoW1xM9dbsXUtYxBYxQu5J9fkC', '2019-04-28 13:32:48', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, '4lrBcB6ZRJXC_10okp2_Ze1hnYV3MmNq', '2019-04-28 13:37:13', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'saMhC82vmNs-bDc_b3wHWOtHlzz5BD-8', '2019-04-28 15:51:45', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'TyJPrF47F14rQ2UU0kzUP2f36N0EczkJ', '2019-04-28 15:52:30', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'pileX5jcirgJH9og0SrQ1rfqhBalVCcm', '2019-04-28 15:53:26', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335'),
+(NULL, NULL, NULL, NULL, NULL, NULL, 'KJAc2SJEnxzOF72AV9Imv9SZ-yubZhaZ', '2019-04-28 17:40:02', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'AB/17B/2335');
 
 -- --------------------------------------------------------
 
@@ -895,6 +969,12 @@ INSERT INTO `usage_details` (`login_time`, `session_id`, `email`) VALUES
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `info`
+--
+ALTER TABLE `info`
+  ADD PRIMARY KEY (`statecode`);
 
 --
 -- Indexes for table `places`

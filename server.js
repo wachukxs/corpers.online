@@ -404,27 +404,37 @@ app.get('/posts', function (req, res) {
   res.setHeader('Content-Type', 'application/json');
   // get response
   // so we're selecting posts newer than the ones currently in the user's timeline. or the server closed the connection error
-  pool.query("SELECT * FROM posts LIMIT 15", function (error, results, fields) { // bring the results in ascending order
+  
+  // SELECT * FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT ppa_address, ppa_geodata, type_of_ppa FROM info WHERE ppa_address != '' AND ppa_geodata != '' AND type_of_ppa != ''
+  pool.query("SELECT streetname FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT ppa_address FROM info WHERE ppa_address != ''", function (error, results, fields) { // bring the results in ascending order
 
     if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
       console.log(error);
       throw error;
     }
-    var arr = [];
+    var acc = [];
+    var ppa = [];
 
     if (!isEmpty(results)) {
-      // console.log('posts', results);
+      console.log('search results', results);
 
-      Object.entries(results).forEach(
+      Object.entries(results[0]).forEach(
         ([key, value]) => {
-          console.log('post number ' + key, value.text);
-          arr.push(value.text);
+          console.log('post number ' + key, value);
+          acc.push(value.streetname);
+        }
+      );
+
+      Object.entries(results[1]).forEach(
+        ([key, value]) => {
+          console.log('post number ' + key, value);
+          ppa.push(value.ppa_address);
         }
       );
 
       // res.json({er: 'er'}); // auto sets content-type header with the correct content-type
       // res.send({ user: 'tobi' });
-      res.status(200).send({ data: arr });
+      res.status(200).send({ data: {ppas: ppa, accommodations: acc} }); // {a: acc, p: ppa}
     }
   });
 
