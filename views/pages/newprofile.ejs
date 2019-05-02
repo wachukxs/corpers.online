@@ -142,6 +142,7 @@
                 <label for="servicestate">Service state</label>
                 <!-- <input type="text" class="form-control" id="firstName" placeholder="" value="" required> -->
                 <select id="servicestate" name="servicestate" class="custom-select d-block w-100" required>
+                  <!-- use server side to render all this list and choose the one the user is from -->
                   <option value="Abia">Abia</option>
                   <option value="Adamawa">Adamawa</option>
                   <option value="Akwa Ibom">Akwa Ibom</option>
@@ -412,7 +413,7 @@
             </script>
 
 
-            <script> // for mapid and mymap
+            <script> // for mapid and mymap && mapid2 and mymap2 // and the zoom isn't exactly the same when location function runs, we need to set the correct zoom
               // ---geo
               document.getElementById('geo').onclick = function () {
                 console.log('position button clicked');
@@ -476,9 +477,24 @@
                     .openPopup().on({
                       popupopen: onPO
                     });
+
+                    var p2 = L.marker(e.latlng).on({
+                    click: onClk
+                  }).addTo(mymap2)
+                    .bindPopup('<p> You\'re within ' +
+                      radius.toFixed(2) +
+                      ' meters from this point.</p>' +
+                      (radius.toFixed(2) <= 10.50 ?
+                        ' <hr/> <small><button data-toggle="modal" data-target="#AddPlace" id="baptm" class="btn btn-primary btn-sm"> Add location to map</button></small> ' :
+                        ''))
+                    .openPopup().on({
+                      popupopen: onPO
+                    });
                   // after 3.5 sec closePopup()
                   setTimeout(() => {
                     p.closePopup();
+
+                    p2.closePopup();
                   }, 3500);
                   // if we couldn't get a so accurate location but got a resonable accurate info, then user can drag the marker to point. means we have to then make marker draggable
 
@@ -486,8 +502,15 @@
                     radius: radius,
                     stroke: false
                   }).addTo(mymap);
+
+                  var c2 = L.circle(e.latlng, {
+                    radius: radius,
+                    stroke: false
+                  }).addTo(mymap);
                   // after 3.5 sec remove circle
                   setTimeout(() => c.remove(), 3500);
+
+                  setTimeout(() => c2.remove(), 3500);
 
                   // p.on('popupopen', c.addTo(mymap) );
 

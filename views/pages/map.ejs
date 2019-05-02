@@ -376,7 +376,7 @@ mymap.on('zoom', function (event) { // based on where people expand in our maps,
 });
 
 
-var myIcon = L.icon({
+var local_printshopIcon = L.icon({
     iconUrl: 'https://icon.now.sh/local_printshop',
     iconSize: [30, 30],
     iconAnchor: [22, 94],
@@ -386,9 +386,9 @@ var myIcon = L.icon({
     shadowAnchor: [22, 94],
     className: 'custom-icons' // no space
 });
-L.marker([5.521697329407013, 7.514498233795167], { icon: myIcon }).addTo(mymap).bindPopup("A print shop.");
+L.marker([5.521697329407013, 7.514498233795167], { icon: local_printshopIcon }).addTo(mymap).bindPopup("A print shop.");
 
-var myIcon = L.icon({
+var local_pharmacyIcon = L.icon({
     iconUrl: 'https://icon.now.sh/local_pharmacy',
     iconSize: [30, 30],
     iconAnchor: [22, 94],
@@ -398,7 +398,7 @@ var myIcon = L.icon({
     shadowAnchor: [22, 94],
     className: 'custom-icons' // no space between class name
 });
-L.marker([5.521889552319924, 7.512137889862061], { icon: myIcon }).addTo(mymap);
+L.marker([5.521889552319924, 7.512137889862061], { icon: local_pharmacyIcon }).addTo(mymap);
 
 /* mymap.on({zoom: function (event) {
     console.log("Map 6666zoom level:", mymap.getZoom(), event);

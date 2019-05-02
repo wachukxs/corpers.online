@@ -983,7 +983,7 @@
                   </li>
                   <li>
                     <span class=""></span>PPA at <a
-                      href="<%= ( name_of_ppa ? '/search?place=name_of_ppa' : '/profile' ) %>">
+                      href="<%= ( name_of_ppa ? '/search?nop=' + name_of_ppa : '/newprofile' ) %>">
                       <%= ( name_of_ppa ? name_of_ppa : '?' ) %> </a>
                   </li>
                   <li style="display:none;">
@@ -1162,6 +1162,17 @@
 
 
     <script>
+
+      // Replace source
+      // to replace that with a "missing image" graphic that you are sure exists so there is better visual feedback that something is wrong
+      $('img').on("error", function() {
+        $(this).attr('src', '/images/missing.png');
+
+        // you may wish to trigger some kind of Ajax action to send an email to a site admin when this occurs.
+      });
+
+      // to do ;; lazy load images
+
       // if someone refreshes the page, a big maybe cache the present posts [keep the variable bm array intacted] and fetch newer posts from db and change the time on the older posts!!!
 
       // for loader

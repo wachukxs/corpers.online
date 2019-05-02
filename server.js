@@ -282,11 +282,16 @@ app.get(['/AB/:batch', '/AD/:batch', '/AK/:batch', '/AN/:batch', '/BA/:batch', '
 
 app.get(['/AB/:batch/:code', '/AD/:batch/:code', '/AK/:batch/:code', '/AN/:batch/:code', '/BA/:batch/:code', '/BY/:batch/:code', '/BN/:batch/:code', '/BO/:batch/:code', '/CR/:batch/:code', '/DT/:batch/:code', '/EB/:batch/:code', '/ED/:batch/:code', '/EK/:batch/:code', '/EN/:batch/:code', '/FC/:batch/:code', '/GM/:batch/:code', '/IM/:batch/:code', '/JG/:batch/:code', '/KD/:batch/:code', '/KN/:batch/:code', '/KT/:batch/:code', '/KB/:batch/:code', '/KG/:batch/:code', '/KW/:batch/:code', '/LA/:batch/:code', '/NS/:batch/:code', '/NG/:batch/:code', '/OG/:batch/:code', '/OD/:batch/:code', '/OS/:batch/:code', '/OY/:batch/:code', '/PL/:batch/:code', '/RV/:batch/:code', '/SO/:batch/:code', '/TR/:batch/:code', '/YB/:batch/:code', '/ZM/:batch/:code'], function (req, res) {
   console.log('tryna login ', req.session.id, req.session.loggedin);
+  // they should be able to change state code too !!!!!!!!!!!! --later
 
+  // when they update their profile. it should immediately reflect. so set it in the session object after a successfully update
   if (req.session.loggedin) {
     res.set('Content-Type', 'text/html');
     // res.sendFile(__dirname + '/account.html');
     res.render('pages/account', { // having it named account.2 returns error cannot find module '2'
+      statecode: req.session.statecode.toUpperCase(),
+      servicestate: req.session.servicestate,
+      batch: req.session.batch,
       statecode: req.session.statecode.toUpperCase(),
       servicestate: req.session.servicestate,
       batch: req.session.batch,
@@ -299,15 +304,81 @@ app.get(['/AB/:batch/:code', '/AD/:batch/:code', '/AK/:batch/:code', '/AN/:batch
 
 app.get('/search', function (req, res) {
 
+  // maybe make use of [req.originalUrl .baseUrl .path] later. req.params too
+
+  // "/search?type=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address + "&top=" + item.type_of_ppa; // nop type pa
+
+  // "/search?type=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" + item.statecode; // sn sc it
   res.set('Content-Type', 'text/html');
   // res.sendFile(__dirname + '/search and places/index.html');
   console.log('req.query:', req.query);
-  res.render('pages/search', { // having it named account.2 returns error cannot find module '2'
-    /* statecode: req.session.statecode.toUpperCase(),
-    servicestate: req.session.servicestate,
-    batch: req.session.batch,
-    name_of_ppa: req.session.name_of_ppa */
-  });
+
+  // if we know where the ppa is, get the geo data and show it on the map
+  if (req.query.nop) {
+    pool.query("SELECT name_of_ppa, ppa_address, type_of_ppa, ppa_geodata FROM info WHERE name_of_ppa = '" + req.query.nop + "'", function (error, results, fields) { // bring the results in ascending order
+
+      if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
+        console.log(error);
+        throw error;
+      }
+
+      if (!isEmpty(results)) {
+        for (let index = 0; index < results.length; index++) {
+          // unstringify the ppa_geodata entry
+          // results[index]['ppa_geodata'] = JSON.parse(results[index].ppa_geodata);
+
+          // re-arrange to GeoJSON Format
+          results[index].type = "Feature";
+
+          results[index].properties = {};
+          results[index].properties.ppa_geodata = JSON.parse(results[index].ppa_geodata);
+          results[index].properties.ppa_address = results[index].ppa_address;
+          results[index].properties.type_of_ppa = results[index].type_of_ppa;
+
+          results[index].geometry = {};
+          results[index].geometry.type = "Point";
+          results[index].geometry.coordinates = [JSON.parse(results[index].ppa_geodata).longitude, JSON.parse(results[index].ppa_geodata).latitude];
+
+          console.log(JSON.parse(results[index].ppa_geodata).latlng, '======++++++++====', JSON.parse(results[index]['ppa_geodata']).longitude, JSON.parse(results[index]['ppa_geodata']).latitude);
+
+          delete results[index]['ppa_geodata'];
+          delete results[index]['type_of_ppa'];
+          delete results[index]['ppa_address'];
+
+          // delete redundate data like longitude, latitude, and latlng in ppa_geodata after reassigning values
+        }
+      }
+
+      toSend = {};
+
+      if (req.session.statecode) {
+        toSend.statecode = req.session.statecode.toUpperCase();
+      }
+      if (req.session.servicestate) {
+        toSend.statecode = req.session.servicestate;
+      }
+      if (req.session.batch) {
+        toSend.statecode = req.session.batch;
+      }
+      if (req.session.name_of_ppa) {
+        toSend.statecode = req.session.name_of_ppa;
+      }
+      toSend.nop = JSON.stringify(results);
+
+      console.log('let\'s see nop', toSend.nop);
+      // having it named 'pages/account.2' returns error cannot find module '2'
+      res.render('pages/search', toSend /* {
+        statecode: req.session.statecode.toUpperCase(),
+        servicestate: req.session.servicestate,
+        batch: req.session.batch,
+        name_of_ppa: req.session.name_of_ppa,
+        nop: JSON.stringify(results)
+      } */);
+
+    });
+  }
+
+
 
 });
 
@@ -331,7 +402,7 @@ app.get('/map', function (req, res) {
       console.log('geo data for map', results);
 
       // JSON.parse(JSON.stringify([{ g: 'g', l: 'l' }, { g: 'g', l: 'l' }, { g: 'g', l: { g: 'g', l: { g: 'g', l: 'l' } } }]))
-      
+
       // JSON.parse(JSON.stringify(results));
 
       /* for (let index = 0; index < results.length; index++) {
@@ -344,7 +415,7 @@ app.get('/map', function (req, res) {
       for (let index = 0; index < results.length; index++) {
         // unstringify the ppa_geodata entry
         // results[index]['ppa_geodata'] = JSON.parse(results[index].ppa_geodata);
-        
+
         // re-arrange to GeoJSON Format
         results[index].type = "Feature";
 
@@ -355,10 +426,10 @@ app.get('/map', function (req, res) {
 
         results[index].geometry = {};
         results[index].geometry.type = "Point";
-        results[index].geometry.coordinates = [ JSON.parse(results[index].ppa_geodata).longitude, JSON.parse(results[index].ppa_geodata).latitude ];
+        results[index].geometry.coordinates = [JSON.parse(results[index].ppa_geodata).longitude, JSON.parse(results[index].ppa_geodata).latitude];
 
-        console.log(JSON.parse(results[index].ppa_geodata).latlng, '======++++++++====', results[index]['ppa_geodata'].longitude, results[index]['ppa_geodata'].latitude);
-        
+        console.log(JSON.parse(results[index].ppa_geodata).latlng, '======++++++++====', JSON.parse(results[index]['ppa_geodata']).longitude, JSON.parse(results[index]['ppa_geodata']).latitude);
+
         delete results[index]['ppa_geodata'];
         delete results[index]['type_of_ppa'];
         delete results[index]['ppa_address'];
@@ -375,7 +446,7 @@ app.get('/map', function (req, res) {
     });
   });
 
-  
+
 });
 
 app.get('/maps', function (req, res) {
@@ -404,7 +475,7 @@ app.get('/posts', function (req, res) {
   res.setHeader('Content-Type', 'application/json');
   // get response
   // so we're selecting posts newer than the ones currently in the user's timeline. or the server closed the connection error
-  
+
   // SELECT * FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT ppa_address, ppa_geodata, type_of_ppa FROM info WHERE ppa_address != '' AND ppa_geodata != '' AND type_of_ppa != ''
   pool.query("SELECT streetname, type, input_time, statecode, price, rentrange FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != ''", function (error, results, fields) { // bring the results in ascending order
 
@@ -436,7 +507,7 @@ app.get('/posts', function (req, res) {
       // res.send({ user: 'tobi' });
 
       // res.status(200).send({ data: {ppas: ppa, accommodations: acc} }); // {a: acc, p: ppa}
-      res.status(200).send({ data: {ppas: results[1], accommodations: results[0]} }); // {a: acc, p: ppa}
+      res.status(200).send({ data: { ppas: results[1], accommodations: results[0] } }); // {a: acc, p: ppa}
     }
   });
 
@@ -511,7 +582,7 @@ app.post('/profile', bodyParser.urlencoded({ extended: true/* , type: 'applicati
   // var sqlquery = "UPDATE info SET accomodation_location = '" + req.body.accomodation_location + "', servicestate = '" + req.body.servicestate + "', name_of_ppa = '" + req.body.name_of_ppa + "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" + req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" + req.body.type_of_ppa + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" + req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city + "', spaornot = '" + req.body.spaornot + "' WHERE email = '" + req.body.email + "' " ;
 
   /*[req.body.accomodation_location, req.body.servicestate, req.body.name_of_ppa, req.body.lga, req.body.city_town, req.body.region_street, req.body.stream, req.body.type_of_ppa, req.body.ppa_address, req.body.travel_from_state, req.body.travel_from_city, req.body.spaornot, req.body.email],*/
-  console.log('\n\nthe req.body for /profile', req.body, '\n\n', req.body.servicestate);
+  console.log('\n\nthe req.body for /profile', req.body, '\n\n', req.body.statecode);
   // console.log('\n\n', req);
   var sqlquery = "UPDATE info SET accommodation_location = '" + (req.body.accommodation_location ? req.body.accommodation_location : '') +
     "', servicestate = '" + req.body.servicestate + "', name_of_ppa = '" + req.body.name_of_ppa +
@@ -520,14 +591,21 @@ app.post('/profile', bodyParser.urlencoded({ extended: true/* , type: 'applicati
     req.body.type_of_ppa + "', ppa_geodata = '" + (req.body.ppa_geodata ? req.body.ppa_geodata : null) + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" +
     req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city +
     /* "', accommodationornot = '" + (req.body.accommodationornot ? req.body.accommodationornot : 'yes') + */ "', wantspaornot = '" +
-    req.body.wantspaornot + "' WHERE statecode = '" + req.session.statecode + "' ";
-    
+    req.body.wantspaornot + "' WHERE statecode = '" + req.session.statecode.toUpperCase() + "' "; // always change state code to uppercase, that's how it is in the db
+
 
   pool.query(sqlquery, function (error, results, fields) {
     console.log('updated user profile data: ', results);
     if (error) throw error;
     // go back to the user's timeline
     if (results.changedRows === 1 && !isEmpty(req.body)) {
+      /* 
+      // todo later...
+
+      statecode: req.session.statecode.toUpperCase(),
+      servicestate: req.session.servicestate,
+      batch: req.session.batch, */
+      req.session.name_of_ppa = req.body.name_of_ppa;
       res.status(200).redirect(req.session.statecode /* + '?e=y' */); // [e]dit=[y]es|[n]o
       // res.sendStatus(200);
     } else {
