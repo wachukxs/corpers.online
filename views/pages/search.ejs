@@ -171,6 +171,9 @@
             accessToken: 'pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg'
           }).addTo(mymap);
 
+          // A simple scale control that shows the scale of the current center of screen in metric (m/km) and imperial (mi/ft) systems
+          L.control.scale().addTo(mymap);
+
         //---
         
         here = <%- nop %>;
@@ -197,7 +200,7 @@
           
           console.log(here[0], here[0].properties.ppa_geodata.latlng);
           // [here[0].properties.ppa_geodata.longitude, here[0].properties.ppa_geodata.latitude]
-          /* L.marker(here.properties.ppa_geodata.latlng, {
+          /* L.marker(here.properties.ppa_geodata.latlng, { // using image is better, icon changes position on zoom change
             icon: local_pharmacyIcon
           }).addTo(mymap).bindPopup("A print shop."); */
           L.marker(here[0].properties.ppa_geodata.latlng)
@@ -205,6 +208,9 @@
             .bindPopup( here[0].properties.ppa_address + '<br> <i class="text-muted">' + here[0].properties.type_of_ppa + '</i> ')
             .openPopup();
           mymap.setView(here[0].properties.ppa_geodata.latlng);
+
+          // to do show the get direction control when ever a ppa is shown from exteral clicks
+          // if users leave where their marker is, show a control that can go back there
         }
       </script>
 
