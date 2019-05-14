@@ -387,7 +387,7 @@ app.get('/chat', function (req, res) {
   res.sendFile(__dirname + '/chat.html');
 });
 
-app.get('/map', function (req, res) {
+app.get(['/map', '/maps'], function (req, res) {
   res.set('Content-Type', 'text/html');
   // res.sendFile(__dirname + '/map.html');
 
@@ -449,19 +449,22 @@ app.get('/map', function (req, res) {
 
 });
 
-app.get('/maps', function (req, res) {
-  res.set('Content-Type', 'text/html');
-  // res.sendFile(__dirname + '/map.html');
-  res.render('pages/map', {
-    statecode: req.session.statecode,
-    servicestate: req.session.servicestate
-  });
-});
 
 app.get('/login', function (req, res) {
   res.set('Content-Type', 'text/html');
   // res.sendFile(__dirname + '/login.html');
   res.render('pages/login');
+});
+
+app.get('/contact', function (req, res) {
+  res.set('Content-Type', 'text/html');
+  // res.sendFile(__dirname + '/login.html');
+  res.render('pages/contact');
+});
+
+app.post('/contact', function (req, res) {
+  console.log('the message', req.body);
+  res.render('pages/contact');
 });
 
 app.get('/signup', function (req, res) {
@@ -715,6 +718,7 @@ app.post('/posts', upload.array('see', 12), function (req, res, next) {
     );
 
   } else {
+    console.log('null ?', req.session.location);
     var sqlquery = "INSERT INTO posts( media, statecode, type, text, price, location, post_time) VALUES ('" + (arraymedia ? arraymedia : '') + "','" + req.session.statecode + "', '" + (req.body.type ? req.body.type : "random") + "', " + pool.escape(req.body.text) + ", " + pool.escape((req.body.price ? req.body.price : "")) + ", " + pool.escape(req.session.location) + ",'" + req.body.post_time + "')"
     // console.log('the media info\n\n', req.files);
     pool.query(sqlquery, function (error, results, fields) {
@@ -740,7 +744,6 @@ app.post('/posts', upload.array('see', 12), function (req, res, next) {
         });
 
       } else {
-
         // this is really important. for the form to get response
         res.sendStatus(500)
         // === res.status(500).send('Internal Server Error')

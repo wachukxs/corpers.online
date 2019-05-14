@@ -1427,7 +1427,7 @@
 
         var z = document.createElement('h6');
         z.setAttribute('class', 'mb-1');
-        z.innerHTML = data.post.statecode + ' <br> <small>' + data.post.location + '</small>';
+        z.innerHTML = data.post.statecode.toUpperCase() + ' <br> <small>' + data.post.location + '</small>';
 
         var y = document.createElement('small');
         y.setAttribute('class', '');
