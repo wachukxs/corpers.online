@@ -84,12 +84,12 @@
       margin: 0;
     } */
 
-    /* remove this and the onNavigation after to remove the scroll and up and down arrow navigation feature */
-    .typeahead__list {
-      max-height: 300px;
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
+      /* remove this and the onNavigation after to remove the scroll and up and down arrow navigation feature */
+      .typeahead__list {
+        max-height: 300px;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
     </style>
     <script src="/socket.io/socket.io.js"></script>
     <style>
@@ -421,19 +421,15 @@
             </button>
           </div>
 
-          <div class="modal-body">
+          <div class="">
             <form id="accommodationform" enctype="multipart/form-data">
-              <div class="pl-1 pr-5">
+              <div class="modal-body">
 
                 <!-- https://getbootstrap.com/docs/4.1/components/carousel/ -->
                 <div id="accommodationFormCarousel" class="carousel slide" data-interval="false">
                   <div class="carousel-inner">
                     <div class="carousel-item active" style="height: 400px;">
                       <div class="progress mb-2" style="height: 1px;">
-                        <div class="progress-bar" role="progressbar" style="width: 20%;" aria-valuenow="20"
-                          aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <div class="progress" style="height: 5px;">
                         <div class="progress-bar" role="progressbar" style="width: 20%;" aria-valuenow="20"
                           aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
@@ -480,22 +476,10 @@
                       <!-- the check box should change based on the accommodation type choosen -->
 
 
-                      <!-- no need for previous slide since it's a series of squential questions -->
-                      <!-- <a class="" href="#accommodationFormCarousel" data-slide="prev">
-                                Previous
-                              </a> -->
-                      <a class="btn btn-primary" href="#accommodationFormCarousel" data-slide="next">
-                        Next
-                      </a>
-
-                      <!-- //end form for accommodation -->
+                      <!-- // -->
                     </div>
                     <div class="carousel-item" style="height: 400px;">
                       <div class="progress mb-2" style="height: 1px;">
-                        <div class="progress-bar" role="progressbar" style="width: 40%;" aria-valuenow="40"
-                          aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <div class="progress" style="height: 5px;">
                         <div class="progress-bar" role="progressbar" style="width: 40%;" aria-valuenow="40"
                           aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
@@ -543,29 +527,18 @@
                       </div>
 
 
-                      <!-- //end form for accommodation -->
-                      <div class="btn-group" role="group" aria-label="Basic example">
-                        <a class="btn btn-outline-primary" href="#accommodationFormCarousel" data-slide="prev">
-                          Previous
-                        </a>
-                        <a class="btn btn-primary" href="#accommodationFormCarousel" data-slide="next">
-                          Next
-                        </a>
-                      </div>
+                      <!-- // -->
+                      
                     </div>
                     <div class="carousel-item" style="height: 400px;">
                       <div class="progress mb-2" style="height: 1px;">
                         <div class="progress-bar" role="progressbar" style="width: 60%;" aria-valuenow="60"
                           aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
-                      <div class="progress" style="height: 5px;">
-                        <div class="progress-bar" role="progressbar" style="width: 60%;" aria-valuenow="60"
-                          aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
 
                       <h2>Precise location</h2>
-                      <small>Use map to location the accommodation in next carousel, the corper can skip</small>
-                      <!-- // form for accommodation -->
+                      <small>Click geo to locate the accommodation in maps, corpers can use this to compare a number of options.</small>
+                      <!-- //  -->
 
                       <!--
                             metrics we can generate from location are the prices of homes based on the location and size of these homes...
@@ -597,23 +570,11 @@
                             -->
 
 
-                      <div class="btn-group" role="group" aria-label="Basic example">
-                        <a class="btn btn-outline-primary" href="#accommodationFormCarousel" data-slide="prev">
-                          Previous
-                        </a>
-                        <a class="btn btn-primary" href="#accommodationFormCarousel" data-slide="next">
-                          Next
-                        </a>
-                      </div>
 
                       <!-- //end form for accommodation -->
                     </div>
                     <div class="carousel-item" style="height: 400px;">
                       <div class="progress mb-2" style="height: 1px;">
-                        <div class="progress-bar" role="progressbar" style="width: 80%;" aria-valuenow="80"
-                          aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <div class="progress" style="height: 5px;">
                         <div class="progress-bar" role="progressbar" style="width: 80%;" aria-valuenow="80"
                           aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
@@ -648,23 +609,11 @@
                               or they can just do a short 15 seconds video of everywhere
                             -->
 
-                      <div class="btn-group" role="group" aria-label="Basic example">
-                        <a class="btn btn-outline-primary" href="#accommodationFormCarousel" data-slide="prev">
-                          Previous
-                        </a>
-                        <a class="btn btn-primary" href="#accommodationFormCarousel" data-slide="next">
-                          Next
-                        </a>
-                      </div>
 
                       <!-- //end form for accommodation -->
                     </div>
                     <div class="carousel-item" style="height: 400px;">
                       <div class="progress mb-2" style="height: 1px;">
-                        <div class="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="100"
-                          aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <div class="progress" style="height: 5px;">
                         <div class="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="100"
                           aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
@@ -700,11 +649,11 @@
                       <script>
                         var minmax = new Date();
                         document.getElementById('expire').min = minmax.toISOString().substr(0,
-                        10); // Minimum date is today!
+                          10); // Minimum date is today!
                         // Max date is two years from now.
                         document.getElementById('expire').max = new Date(minmax.getFullYear() + 2, minmax.getMonth())
                           .toISOString().substr(0,
-                          10); // The argument monthIndex is 0-based. This means that January = 0 and December = 11.
+                            10); // The argument monthIndex is 0-based. This means that January = 0 and December = 11.
 
                         var radios = document.forms["accommodationform"].elements['tenure'];
                         for (var i = 0, max = radios.length; i < max; i++) {
@@ -721,16 +670,6 @@
                         }
                       </script>
 
-                      <a class="btn btn-outline-primary mr-auto" href="#accommodationFormCarousel" data-slide="prev">
-                        Previous
-                      </a>
-                      <!-- <a class="" href="#accommodationFormCarousel" data-slide="next">
-                              Next
-                            </a> -->
-                      <!-- no need for next since it's last slide, only submit button is necessary -->
-
-                      <!-- button without anything takes the carousel to the first slide, but should close the modal and submit the form -->
-                      <input type="submit" class="btn float-right" value="Put up for rent">
 
                       <!-- //end form for accommodation -->
                     </div>
@@ -749,16 +688,60 @@
                 </div>
 
               </div>
+
+              <div class="modal-footer">
+                  <!--             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary">Save changes</button> -->
+      
+                  <div class="btn-group" role="group" aria-label="Carousel navigation">
+                    <button class="btn btn-outline-primary" id="ap" href="#accommodationFormCarousel" disabled="true" data-slide="prev">
+                      Previous
+                    </button>
+                    <button class="btn btn-primary" id="an" href="#accommodationFormCarousel" data-slide="next">
+                      Next
+                    </button>
+                  </div>
+                </div>
             </form>
           </div>
 
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
-          </div>
+
         </div>
       </div>
     </div>
+
+    <script>
+      $('#accommodationFormCarousel').on('slide.bs.carousel', function (e) {
+        // do something…
+        console.log('e', e);
+        if (e.from == 0 && e.to == 1) {
+          // document.getElementById('ap').setAttribute('disabled', 'false');
+          document.getElementById('ap').disabled = false;
+        } else if (e.from == 1 && e.to == 0) {
+          document.getElementById('ap').disabled = true;
+        } else if (e.from == 3 && e.to == 4) {
+          // change the next button to submit && make sure the form is full before they can submit
+          // make the corper see a preview of how their post would look like too, to make them make changes as much as neccessary
+          console.info('change');
+          $( "#an" ).replaceWith( "<input type='submit' class='btn btn-primary' id='accsub' value='Put up for rent'>" );
+        } else if (e.from == 4 && e.to == 3) {
+          $( "#accsub" ).replaceWith( '<button class="btn btn-primary" id="an" href="#accommodationFormCarousel" data-slide="next">Next</button>' );
+        }
+      });
+
+      $('#accommodationFormCarousel').on('slid.bs.carousel', function (e) {
+        // do something…
+        console.log('2nd e', e);
+
+      });
+
+      $('#accommodationModal').on('shown.bs.modal', function (e) {
+        console.info('acc modal shown');
+        // document.getElementById('ap').disabled = true;
+
+        /// once a user submits accommodation, reset everrything and prevent user from posting twice
+      });
+    </script>
 
 
     <!-- the Modal for posting (sale)-->
@@ -830,8 +813,8 @@
 
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Save as draft</button>
-              <button type="button" class="btn btn-primary" id="SEND" disabled>Post</button>
+<!--               <button type="button" class="btn btn-secondary" data-dismiss="modal">Save as draft</button>
+              <button type="button" class="btn btn-primary" id="SEND" disabled>Post</button> -->
 
               <input type="submit" class="btn btn-primary" id="postsubmit" value="Post it" disabled>
             </div>
@@ -877,7 +860,7 @@
 
           $("#tl").before(
             '<div class="alert alert-success mt-3 fade show" id="postposted" role="alert">Post created successfully.</div>'
-            );
+          );
 
           setTimeout(function () {
             $('#postposted').alert('close'); // Closes an alert by removing it from the DOM
@@ -930,7 +913,7 @@
 
           $("#tl").before(
             '<div class="alert alert-success mt-3 fade show" id="accommodationposted" role="alert">Accommodation space was posted successfully.</div>'
-            );
+          );
 
           setTimeout(function () {
             $('#accommodationposted').alert('close'); // Closes an alert by removing it from the DOM
@@ -972,8 +955,9 @@
             <!-- put the corper's information. let them see their profile (and be able to change it) -->
             <div class="card shadow" id="profilecard">
               <div class="card-body">
-                <h6 class="">About <small> · <a href="/profile" id="editprofile">Edit</a></small> · <a
-                    href="/newprofile" id="">New edit</a></small></h6>
+                <h6 class="">About <small>
+                    <!-- · <a href="/profile" id="editprofile">Edit</a></small> --> · <a href="/newprofile"
+                      id="">Edit</a></small></h6>
                 <ul class="" id="profile">
                   <li>
                     <span class=""></span>Serving at <a href="#"> <%= servicestate %> </a>
@@ -1162,10 +1146,9 @@
 
 
     <script>
-
       // Replace source
       // to replace that with a "missing image" graphic that you are sure exists so there is better visual feedback that something is wrong
-      $('img').on("error", function() {
+      $('img').on("error", function () {
         $(this).attr('src', '/images/missing.png');
 
         // you may wish to trigger some kind of Ajax action to send an email to a site admin when this occurs.
@@ -1231,7 +1214,8 @@
       // start: bm[0], //oldest post in user's timeline
       // end: bm[bm.length - 1] //newest post in user's timeline
       // bm[] = boardcast messages currently in the user's time line
-      var bm = [];
+      var bm = [],
+        bn = [];
 
       //connect to socket.io on /user but somehow it still connects with\to /
 
@@ -1244,7 +1228,8 @@
         transports: ['websocket'],
         query: {
           user: pathArray[2],
-          utl: bm,
+          putl: bm,
+          autl: bn,
           test: 'ertrerer'
         }
       });
@@ -1258,9 +1243,9 @@
 
       });
       socket.on('reconnect', (attemptNumber) => {
-        // ...
+
         console.log(attemptNumber, 'reconnection, re-connected :', new Date(Date.now()).toLocaleString(), Date
-        .now());
+          .now());
 
         $('div.alert.alert-danger').alert('close'); // Closes an alert by removing it from the DOM
 
@@ -1299,7 +1284,6 @@
         //also we need to message the user when there was an error in sending messages/ posts.
         //alert them when they are offline and handle other events they might want to perform. Like save their draft messages in a cookie.
 
-
         if (reason === 'io server disconnect') {
           // the disconnection was initiated by the server, you need to reconnect manually
           socket.connect();
@@ -1312,7 +1296,7 @@
         console.log('got corpers count');
         // (data.count == 1 ? '' : 's') adds 's' to 'corpers' if there are more than one corpers online.
         document.getElementById('tco').innerHTML = data.count + ' corper' + (data.count == 1 ? '' : 's') +
-        ' online';
+          ' online';
       });
 
       socket.emit('ferret', 'aeee', 'tobi', (data) => {
@@ -1332,15 +1316,24 @@
         // remove the loader --this is not a very awesom logic, but it works well
         document.getElementById('loader').style.display = 'none';
 
-        bm.push(data.post.post_time);
+        // sales have post_time while accommodations have input_time [time stamp format]
+
+        if (data.post.post_time) {
+          bm.push(data.post.post_time);
+        } else if (data.post.input_time) {
+          bn.push(data.post.input_time);
+        }
+
         // console.log('received boardcast message', data); // uncomment if we wanna see what we got
 
         var feeds = document.getElementById('tl');
 
         var newFeed = document.createElement("li");
         newFeed.setAttribute('class', 'list-group-item');
-        newFeed.setAttribute('id', data.post
-        .post_time); // each post has a unique id, we'll later add state code to make it more unique
+
+        // each post has a unique id, we'll later add state code to make it more unique
+        newFeed.setAttribute('id', (data.post.post_time || data.post
+          .input_time)); // later convert the input time to js timestamp
 
         // chaining is not good for appendChild()
 
@@ -1350,8 +1343,6 @@
         g.setAttribute('class', 'media-content');
         h.appendChild(g);
 
-        var gg = document.createElement('div');
-        gg.setAttribute('class', 'app');
 
         //------------------ previously on how we handled images
         /* if (data.post.images) {
@@ -1369,7 +1360,11 @@
 
         } */
 
-        if (data.post.media) {
+        if (data.post.media && data.post.type == "sale") {
+
+          var gg = document.createElement('div');
+          gg.setAttribute('class', 'app');
+
           var jk = data.post.media.length;
           for (var i = 0; i < jk; i++) {
             // var ii = 'img' + i.toString();
@@ -1386,12 +1381,12 @@
                 // if localhost
                 if (window.location.hostname == "localhost") {
                   var a = new URL('/' + data.post.media[i], "http://localhost:8081")
-                .toString(); // important: the trailing slash
+                    .toString(); // important: the trailing slash
 
                 } else { // if not localhost then get media from elsewhere
                   // getting media from elsewhere
                   var a = new URL('/corpersonline/images/' + data.post.media[i], "https://connarts.com.ng")
-                .toString(); // upload images to this url when ever users upload images
+                    .toString(); // upload images to this url when ever users upload images
                 }
               } catch (error) {
                 // console.error(error);
@@ -1399,7 +1394,7 @@
                 // expected output: TypeError: Failed to construct 'URL': Invalid URL
                 // Note - error messages will vary depending on browser
 
-                // then use a place holder image
+                // then use a placeholder image
                 // initialise var a to a placeholder image
               }
 
@@ -1412,82 +1407,194 @@
 
           g.appendChild(gg);
 
-        }
 
 
-        /*
+          /*
         var ii = document.createElement('img');
         ii.setAttribute('class', 'col-4');
         ii.setAttribute('data-src','holder.js/64x64?theme=thumb');
         ii.setAttribute('alt', 'user\'s posted image');
         */
 
-        var e = document.createElement('div');
-        e.setAttribute('class', 'd-flex w-100 justify-content-between');
+          var e = document.createElement('div');
+          e.setAttribute('class', 'd-flex w-100 justify-content-between');
 
-        var z = document.createElement('h6');
-        z.setAttribute('class', 'mb-1');
-        z.innerHTML = data.post.statecode.toUpperCase() + ' <br> <small>' + data.post.location + '</small>';
+          var z = document.createElement('h6');
+          z.setAttribute('class', 'mb-1');
+          z.innerHTML = data.post.statecode.toUpperCase() + ' <br> <small>' + data.post.location + '</small>';
 
-        var y = document.createElement('small');
-        y.setAttribute('class', '');
-        y.innerText = data.post.age;
-        e.appendChild(z);
-        e.appendChild(y);
+          var y = document.createElement('small');
+          y.setAttribute('class', '');
+          y.innerText = data.post.age;
+          e.appendChild(z);
+          e.appendChild(y);
 
-        var k = document.createElement("p");
-        // k.classList(["maintext"]);
-        k.setAttribute('class', 'maintext');
-        k.innerText = data.post.text;
-        var d = document.createElement('div');
-        d.setAttribute('class', 'media-body');
-        d.appendChild(e);
-        d.appendChild(k); //the text from sender
-        d.appendChild(h);
+          var k = document.createElement("p");
+          // k.classList(["maintext"]);
+          k.setAttribute('class', 'maintext');
+          k.innerText = data.post.text;
+          var d = document.createElement('div');
+          d.setAttribute('class', 'media-body');
+          d.appendChild(e);
+          d.appendChild(k); //the text from sender
+          d.appendChild(h);
 
-        var c = document.createElement('img');
-        c.setAttribute('class', 'align-self-start mr-2 rounded-circle');
-        //c.setAttribute('data-src','holder.js/64x64');
+          var c = document.createElement('img');
+          c.setAttribute('class', 'align-self-start mr-2 rounded-circle');
+          // c.setAttribute('data-src','holder.js/64x64');
 
-        c.setAttribute('src',
-          'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E45x45%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E'
+          c.setAttribute('src',
+            'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E45x45%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E'
           );
-        //c.setAttribute('src', 'holder.js/45x45');
-        c.setAttribute('alt', data.post.statecode);
-        c.setAttribute('style', 'font-size: 8px;');
+          // c.setAttribute('src', 'holder.js/45x45');
+          c.setAttribute('alt', data.post.statecode);
+          c.setAttribute('style', 'font-size: 8px;');
 
 
-        var b = document.createElement('div');
-        b.setAttribute('class', 'align-items-center');
+          var b = document.createElement('div');
+          b.setAttribute('class', 'align-items-center');
 
-        var a = document.createElement('div');
-        a.setAttribute('class', 'media mb-4');
-        a.appendChild(c);
-        a.appendChild(d);
+          var a = document.createElement('div');
+          a.setAttribute('class', 'media mb-4');
+          a.appendChild(c);
+          a.appendChild(d);
 
-        newFeed.appendChild(a);
-        newFeed.appendChild(b);
+          newFeed.appendChild(a);
+          newFeed.appendChild(b);
 
-        //right now, we'll append every post together
-        feeds.insertBefore(newFeed, feeds.children[0]);
+          //right now, we'll append every post together
+          feeds.insertBefore(newFeed, feeds.children[0]);
+        } else if (data.post.rentrange && data.post.rooms) {
+          console.log('accommodation', data);
 
-        //later we'll break them into tabs
-        switch (data.post.type) {
-          case 'sale':
-            break;
-          case 'accommodation':
-            break;
-          case 'LOCATIONorROUTE':
-            break;
-          case 'PPAorSPA':
-            break;
+          // the carousel  
+          var gg = document.createElement('div');
+          gg.setAttribute('id', 'carousel' + (data.post
+          .input_time)); // each carousel is has unique id with input time maybe new Date(data.post.input_time)
+          gg.setAttribute('class', 'carousel slide carousel-fade');
+          gg.setAttribute('data-ride', 'corousel');
+
+          // the indicators for the corousel
+          var ind = document.createElement('ol');
+          ind.setAttribute('class', 'carousel-indicators');
+
+
+          // the carousel inner
+          var cinn = document.createElement('div');
+          cinn.setAttribute('class', 'carousel-inner');
+
+          var rms = data.post.rooms.split(',')
+
+          var jk = data.post.media.split(',').length;
+          for (var i = 0; i < jk; i++) {
+
+            // the actual indicators
+            var aind = document.createElement('li');
+            aind.setAttribute('data-target', '#carousel' + (data.post.input_time)); // the # is important
+            aind.setAttribute('data-slide-to', i);
+
+            ind.appendChild(aind);
+
+
+            // the carousel items
+            var ci = document.createElement('div');
+            ci.setAttribute('class', 'carousel-item' + (i == 0 ? ' active' :
+            '')); // the first carousel item must be active
+
+            cinn.appendChild(ci);
+
+
+            cimg = document.createElement('img');
+            cimg.setAttribute('class', 'd-block img-fluid mx-auto');
+            cimg.setAttribute('src', jk[i]);
+            cimg.setAttribute('alt',
+            `Might be a picture of a ${rms[i]}`); // this is not exactly correct, needs more work
+
+
+            // for each carousel item, append to it the image and explanatory/description div
+            ci.appendChild(cimg);
+            // the descriptions
+            var thed = document.createElement('div');
+            thed.setAttribute('class', 'carousel-caption d-none d-md-block');
+
+            var hh5 = document.createElement('h3');
+            hh5.innerText = rms[i];
+
+            var ppp = document.createElement('p');
+            ppp.innerText = `Maybe some metric about ${rms[i]}`;
+
+            // append h5 and p to description div
+            thed.appendChild(hh5);
+            thed.appendChild(ppp);
+
+            // then ...
+            ci.appendChild(thed);
+
+          }
+          gg.appendChild(ind);
+          gg.appendChild(cinn);
+
+
+
+          var e = document.createElement('div');
+          e.setAttribute('class', 'd-flex w-100 justify-content-between');
+
+          var z = document.createElement('h6');
+          z.setAttribute('class', 'mb-1');
+          z.innerHTML = data.post.statecode.toUpperCase() + ' <br> <small>' + data.post.location + '</small>';
+
+          var y = document.createElement('small');
+          y.setAttribute('class', '');
+          y.innerText = data.post.age;
+          e.appendChild(z);
+          e.appendChild(y);
+
+          var k = document.createElement("p");
+          // k.classList(["maintext"]);
+          k.setAttribute('class', 'maintext');
+          k.innerHTML =
+            `<p><span class='font-italic text-muted'>Address</span>: <a href="#">${data.post.address} <span class=""></span> </a> </p> <p><span class='font-italic text-muted'>Directions</span>: ${data.post.directions}</p>`;
+          var d = document.createElement('div');
+          d.setAttribute('class', 'media-body');
+          d.appendChild(e);
+          d.appendChild(k); //the text from sender
+          d.appendChild(h);
+
+          var c = document.createElement('img');
+          c.setAttribute('class', 'align-self-start mr-2 rounded-circle');
+          // c.setAttribute('data-src','holder.js/64x64');
+
+          c.setAttribute('src',
+            'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E45x45%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E'
+          );
+          // c.setAttribute('src', 'holder.js/45x45');
+          c.setAttribute('alt', data.post.statecode);
+          c.setAttribute('style', 'font-size: 8px;');
+
+
+          var b = document.createElement('div');
+          b.setAttribute('class', 'align-items-center');
+
+          var a = document.createElement('div');
+          a.setAttribute('class', 'media mb-4');
+          a.appendChild(c);
+          a.appendChild(d);
+
+          newFeed.appendChild(a);
+          newFeed.appendChild(b);
+
+          //right now, we'll append every post together
+          feeds.insertBefore(newFeed, feeds.children[0]);
         }
+
+
+
 
         // send 'my other event' to everyone else
 
-        //find a way to record the number of people that has seen a particular ad/post. and show the sender.
+        // find a way to record the number of people that has seen a particular ad/post. and show the sender.
 
-        //socket.emit('seen', { my: 'saw data, because we recieved it' });
+        // socket.emit('seen', { my: 'saw data, because we recieved it' });
       };
 
       socket.on('boardcast message', bc);
@@ -1534,7 +1641,7 @@
         console.log('sendMsg function running');
 
         msg.text = txtFld.value,
-          msg.type = "random",
+          msg.type = "sale",
           msg.post_time = Date.now(),
           msg.sender = pathArray[2],
           msg.location = userlocation,
@@ -1559,7 +1666,7 @@
       // after post has been made and/or modal closed
       $('#postModalSale').on('hidden.bs.modal', function (e) {
         // do something...
-        console.log('post modal hideen');
+        console.log('post modal hidden');
         txtFld.value = "";
         document.getElementById('SEND').disabled = true;
         //remove the attached image from the div and the input tag, empty the msg object
@@ -1737,7 +1844,7 @@
               //try again with a longer timeout
 
               document.getElementById('locinfo').innerText =
-              'TIMEOUT Error. We\'re trying again...'; //add or 'never mind?' option in the sentence so corper can quit
+                'TIMEOUT Error. We\'re trying again...'; //add or 'never mind?' option in the sentence so corper can quit
               if (one <= 1) {
                 one++;
                 console.log('timeout ' + one + ' times');
@@ -1756,7 +1863,7 @@
             case error.POSITION_UNAVAILABLE:
               //say there's no network n try again when there is ?!!!?
               document.getElementById('locinfo').innerText =
-              'You seem to be offline. Try again when you\'re online.'; //maybe find how we can auto get the user's location after telling them they're offline
+                'You seem to be offline. Try again when you\'re online.'; //maybe find how we can auto get the user's location after telling them they're offline
               //google said : [Violation] Only request geolocation information in response to a user gesture.
               //window.addEventListener('online',  navigator.geolocation.getCurrentPosition(geoPoint, geoPointError));
               break;
@@ -1885,7 +1992,7 @@
         hint: true,
         loadingAnimation: true,
         backdrop: {
-        "background-color": "#fff"
+          "background-color": "#fff"
         },
         ttl: 3600000, // Cache time to live in ms
         maxItem: 30, // highest number of results to show
@@ -1897,35 +2004,37 @@
 
         // Typeahead can also search deep inside an object, just separate the keys with "." like display: ['string', 'deeper.key.level']
         // display: ["streetname", "ppa_address"], // or be specific in the group objects
-        source: { 
+        source: {
           // group cannot be 'data'
           accommodations: {
-            template: "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}}, &#8358;{{price}} {{rentrange}} by {{statecode}}</small>"
-              +"<br> <small class='text-muted text-uppercase'>{{group}}</small>",
+            template: "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}}, &#8358;{{price}} {{rentrange}} by {{statecode}}</small>" +
+              "<br> <small class='text-muted text-uppercase'>{{group}}</small>",
             display: ['streetname', 'type'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                  // console.log('acc href', item);
-                  return "/search?type=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" + item.statecode; // sn sc it
+              // console.log('acc href', item);
+              return "/search?type=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                item.statecode; // sn sc it
             },
             ajax: {
               url: "/posts",
-              
+
               data: { // set url query parameter if we want to do backend/query search
                 q: '{{query}}'
               },
-              
+
               path: 'data.accommodations'
             }
           },
           ppa: {
-            template: "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>"
-              +"<br> <small class='text-muted text-uppercase'>{{group}}</small>",
+            template: "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
+              "<br> <small class='text-muted text-uppercase'>{{group}}</small>",
             display: ["name_of_ppa", "ppa_address"],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                  // console.log('ppa href', item);
-                  return "/search?type=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address + "&top=" + item.type_of_ppa; // nop type pa
+              // console.log('ppa href', item);
+              return "/search?type=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                "&top=" + item.type_of_ppa; // nop type pa
             },
             ajax: {
               url: "/posts",
@@ -1953,14 +2062,14 @@
           },
           // The ul.typeahead__list has max-height: 300px; and is scrollable, onNavigateAfter is set to scroll the result container if arrow UP or DOWN are pressed to the .active item.
           onNavigateAfter: function (node, lis, a, item, query, event) {
-            if (~[38,40].indexOf(event.keyCode)) {
-                var resultList = node.closest("form").find("ul.typeahead__list"),
-                    activeLi = lis.filter("li.active"),
-                    offsetTop = activeLi[0] && activeLi[0].offsetTop - (resultList.height() / 2) || 0;
- 
-                resultList.scrollTop(offsetTop);
+            if (~[38, 40].indexOf(event.keyCode)) {
+              var resultList = node.closest("form").find("ul.typeahead__list"),
+                activeLi = lis.filter("li.active"),
+                offsetTop = activeLi[0] && activeLi[0].offsetTop - (resultList.height() / 2) || 0;
+
+              resultList.scrollTop(offsetTop);
             }
- 
+
           },
           onMouseEnter: function (node, a, item, event) {
             console.log('enter key on search');

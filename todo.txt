@@ -19,3 +19,44 @@ in update profile section or page, // ask if they want an accommodation and wher
 
 
 always use https://github.com/tj/ejs/tree/0.8.3#features
+
+
+
+http://www.inspireux.com/articles/
+http://www.inspireux.com/2014/06/21/methods-to-achieve-user-delight/
+Designers like to talk about achieving the ultimate goal of “user delight.” In fact, it’s one of our primary goals where I work at RelateIQ. It’s not enough to just provide information and functionality anymore. Successful product teams go one step further and aim to delight their users. But, what exactly does that mean? Below are some ways of thinking about user delight and what you can do to create more delightful experiences.
+
+
+-Be Smart
+Anticipate my needs and be one step ahead of me. It’s unexpectedly nice when a product knows what I’m trying to do before even I do.
+Use technology wisely to do things automatically and intelligently. Don’t make me do a lot of manual work to get things done.
+Prevent me from making errors. Don’t blame me for doing something incorrectly. Make resolving problems easy and friction-free.
+Be smart and figure out what you need to know without making me give it to you. Don’t ask me to give you superfluous information about myself.
+-Be Friendly and Helpful
+Give your product a personality through humor and a friendly tone. I don’t want to be using another stale and boring product. Make me smile.
+Speak to me like you would if you were talking to a friend. Humanize your product. Corporate and technical terms are frustrating to read.
+Go above and beyond when I need to contact you for help. Don’t just give me automated responses. I want to feel like you care.
+Find ways of turning negative experiences back into positive experiences. Things can and will go wrong, but leave me feeling positive about your organization by responding in a helpful way.
+-Be Valuable
+Make each step meaningful and purposeful. Don’t make me click through a bunch of extra steps that are just preventing me from getting things done.
+Give me something valuable in return for using your product. This isn’t just a one way street. Reward me in unexpected ways.
+Show me value immediately. Don’t make me sign up or go through a lengthy learning process before I can get anything beneficial out of your product.
+-Be Engaging
+Pay attention to the details. Don’t always go for the “easy” or expected approach when a little something extra could create a better experience. Focus on the little big details.
+Use transitions and animations in a clever and useful way that supports the task I’m trying to complete or augments the information that I’m trying to consume. Static interfaces are boring, but using too many animations can also be annoying and distracting.
+-Be Convenient and Accessible
+Let me do what I’m trying to do on any device. Don’t punish me by hiding content just because I’m using a different type of device than you were expecting me to use.
+Let me focus on the content and doing what I need to do. Don’t make me think about how to use your website or application. Stay out of my way.
+Make your product work well with others. Don’t make me bounce between products just to get something done. Make moving between products seamless.
+Focus on accessibility for all users. Don’t frustrate me by making your content difficult to consume if I have a physical impairment.
+-Be Consistent
+Make your product consistently snappy to load and use. I don’t want to have to wait around to get things done, and any delay will impact my experience.
+Be consistent across the entire product ecosystem. Consistency builds trust, and trust breeds loyalty. Delight can’t be achieved if that trust is broken.
+-Be Aligned Around Delight
+You won’t be able to achieve user delight by cherry picking any of these principles. One isolated element of delight can easily be squashed by negative elements of the experience. In order to be successful, your entire organization has to be ruthlessly focused on achieving delightful user experiences. Be wary of the “oh, we can fix that later” mindset. It’s much harder to make up for a negative experience once it’s been introduced.
+
+Get ideas and insights for achieving delight by watching and responding to your users’ aspirations and behaviors. Have your entire organization get involved in listening to the people who are using your product. You’ll quickly find out where your product has opportunities to improve. Think of your users as people, not just numbers completing transactions. Understanding the context around how someone interacts with your product can help you identify how to be delightful within that context.
+
+Finally, find ways of measuring delight. Quantitatively, you can measure usage and engagement with a product through metrics. However, numbers don’t tell the whole story. Just because people are using a product doesn’t mean it is delightful. Create systems for qualitatively listening to your users and finding out whether your product is meaningful and emotionally impactful.
+
+“I believe that logic + emotion are a winning combination. When useful and useable meet delight—great things happen. It’s about balance.” – David Armano

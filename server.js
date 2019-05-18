@@ -473,6 +473,195 @@ app.get('/signup', function (req, res) {
   res.render('pages/register');
 });
 
+
+
+
+// somehow logout doesn't work because the app/broswer doesn't go through app.get('/user/:who') when the back button is clicked after loggin out socket.io('/user) picks up the request first ...somehow
+
+// find a more authentic way to calculate the numbers of corpers online using io(/user) --so even if they duplicate pages, it won't double count
+
+var iouser = io.of('/user').on('connection', function (socket) { // when a new user is in the TIMELINE
+  console.log('socket.leave', socket.leave);
+  // console.log('how many', users.connected);
+  socket.on('ferret', (asf, name, fn) => {
+    // this funtion will run in the client to show/acknowledge the server has gotten the message.
+    fn('woot ' + name + asf);
+  });
+  socket.emit('callback', { this: 'is the call back' });
+
+  // find a way so if the server restarts (maybe because of updates and changes to this file) and the user happens to be in this URL log the user out of this url
+  // console.log('well', socket.handshake.query.last_post, isEmpty(socket.handshake.query.last_post) );
+
+  console.log('socket.id: ', socket.id, ' connected on', new Date(Date.now()).toGMTString());
+  // console.log('everythin: \n', iouser.connected );
+
+  console.log('how many ?', Object.keys(iouser.connected).length);
+  // it's still not very perfect, count each unique url or something
+  iouser.emit('corpersCount', { count: Object.keys(iouser.connected).length /* new Map(iouser.connected).size || Object.keys(iouser.connected).length */ }); // emit total corpers online https://stackoverflow.com/questions/126100/how-to-efficiently-count-the-number-of-keys-properties-of-an-object-in-javascrip
+
+  // find a way to work with cookies in socket.request.headers object for loggining in users again
+
+
+  // we're implementing this with ejs already
+  /*   pool.query("SELECT * FROM info WHERE email = '" + socket.handshake.query.user + "' ", function (error, results, fields) {
+      console.log('profile for ', socket.handshake.query.user);
+      if (error) {
+        console.log('Database query error', error);
+          throw error;
+      }
+  
+      // fields arg is just info about all the fields from the selected table
+      if (!isEmpty(results)) {
+        // send them bits by bits incase of slow network
+        console.log('Results', results.length);
+        
+        // the results is an array of object with one element of all the results from the db and we need only this 1st element/object.
+        socket.emit('corper profile', { to: 'be received by just this user socket only', post: results[0] });
+      }
+    }); */
+
+  // logot out time SELECT TIMESTAMPDIFF(MINUTE , session_usage_details.login_time , session_usage_details.logout_time) AS time
+
+  //--------------------------------------------------------------------------- optimize by running the two seperate queries (above & below) in parallel later
+
+  // when any user connects, send them (previous) posts in the db before now (that isn't in their timeline)
+  // find a way to handle images and videos
+  /** sender, statecode, type, text, price, location, post_time, input_time */
+
+  // posts currently in user's time line is socket.handshake.query.utl.split(',')
+  
+  var pUTL = socket.handshake.query.putl.split(',');
+  var aUTL = socket.handshake.query.autl.split(',');
+  console.log('socket query parameter(s) [user timeline]\n', 'acc:' + aUTL.length, ' posts:' + pUTL.length);
+  
+  // SELECT * FROM posts WHERE post_time > 1545439085610 ORDER BY posts.post_time ASC (selects posts newer than 1545439085610 | or posts after 1545439085610)
+
+  // right now, this query selects newer posts always | ''.split(',') returns a query with length 1 where the first elemeent is an empty string
+
+  // ordering by ASC starts from oldest, so the first result is the oldest post and the newer ones is the last and that's what corpers see first
+
+  // so we're selecting posts newer than the ones currently in the user's timeline. or the server closed the connection error
+
+
+  //
+  
+  // ways to convert from js format to sql format
+  // var d = new Date(aUTL[aUTL.length - 1]).toISOString().slice(0, 19).replace('T', ' '); // or use moment .js library
+  
+  // moment is better because it makes it exactly as it was, the other just uses string manipulation and it;s always an hour behind original time
+  var e = moment(new Date(aUTL[aUTL.length - 1])).format('YYYY-MM-DD HH:mm:ss');
+  // remember to check if the query to know if the time is actually greater than or less
+  console.log('time causing the ish', aUTL[aUTL.length - 1], e);
+
+  var getpostsquery = "SELECT * FROM posts " + (pUTL.length > 1 ? 'WHERE post_time > ' + pUTL[pUTL.length - 1] + ' ORDER by posts.post_time ASC' : ' ORDER by posts.post_time ASC')
+    + "; SELECT * FROM accommodations " + (aUTL.length > 1 ? 'WHERE input_time > "' + aUTL[aUTL.length - 1] + '" ORDER by accommodations.input_time ASC' :  ' ORDER BY accommodations.input_time ASC');
+  pool.query(getpostsquery, function (error, results, fields) { // bring the results in ascending order
+
+    if (error) { // gracefully handle error e.g. ECONNRESET & ETIMEDOUT, in this case re-execute the query or connect again, act approprately
+      console.log(error);
+      throw error;
+    }
+
+    if (!isEmpty(results)) {
+      // console.log('posts', results);
+
+      // FOR THE POSTS - sales
+      Object.entries(results[0]).forEach(
+        ([key, value]) => {
+          //console.log( 'post number ' + key, value.text);
+
+          //fix the time here too by converting the retrieved post_time colume value to number because SQL converts the value to string when saving (because we are using type varchar to store the data-number value)
+          value.age = moment(Number(value.post_time)).fromNow();
+
+          //if there is image(s) in the post we're sending to user from db then convert it to array. 
+          if (value.media) {
+            // value.media = value.media.split('  '); // previously on how we handled media(images) when we stored them in base64
+
+            // console.log('? ', (value.media.substring(0, 23) === "https://api.mapbox.com/"),(value.media.substring(0, 23) === "https://api.mapbox.com/" ? value.media : value.media.split(',')) );
+
+            value.media = (value.media.substring(0, 23) === "https://api.mapbox.com/" ? [value.media] : value.media.split(',')); // make only the url be in the array && we can't use .split(',') because there's ','s in the url
+
+            // ---this logic is expensive and buggy
+            /* // if what we stored is a map link, ie. a url...
+            try {
+              value.media = new URL(value.media).toString();
+            } catch (error) { // if it isn't
+              value.media = value.media.split(',');
+            } */
+
+          }
+
+          // send the posts little by little, or in batches so it'll be faster.
+
+          iouser.emit('boardcast message', { to: 'be received by everyoneELSE', post: value });
+
+          // console.log('sent BCs'); // commented here out so we don't flood the output with too much data, uncomment when you're doing testing.
+        }
+      );
+
+
+      // FOR THE ACCOMMODATIONS - accommodations
+      Object.entries(results[1]).forEach(
+        ([key, value]) => {
+
+          //fix the time here too by converting the retrieved post_time colume value to number because SQL converts the value to string when saving (because we are using type varchar to store the data-number value)
+          
+          value.age = moment(new Date(value.input_time)).fromNow();
+          // console.log('acc v:', value);
+          iouser.emit('boardcast message', { to: 'be received by everyoneELSE', post: value });
+
+        }
+      );
+
+    }
+  });
+
+
+
+  socket.on('boardcast message', (data, fn) => {
+    console.log(socket.client.id + ' sent boardcast mesage on /user to everyone.');
+
+    data.age = moment(data.post_time).fromNow();
+
+    // if there are images in the post user boardcasted, before we save them to db, convert to string with double spaces ( '  ' ) between each image
+    if (data.images) {
+
+      var q = '';
+      var l = data.images.length;
+      data.images.forEach(function (item, index, array) {
+        //console.log(item, index);
+        q = l === index + 1 ? q.concat(item) : q.concat(item + '  ');
+
+        // save each image
+        console.log('checking', item.slice(item.indexOf(':') + 1, item.indexOf(';'))); // map picture won't save because they aren't in dataURL format
+        pool.query("INSERT INTO media (post_time, media, media_type) VALUES ('" + data.post_time + "', '" + item + "', " + pool.escape(item.slice(item.indexOf(':') + 1, item.indexOf(';'))) + ")");
+      });
+
+    }
+    // save to db --put picture in different columns // increse packet size for media (pixs and vids)                                                                                                                & when using pool.escape(data.text), there's no need for the enclosing from                 incase the user has ' or any funny characters
+    pool.query("INSERT INTO posts( sender, statecode, type, text, media, price, location, post_time) VALUES ('" + data.sender + "', '" + data.statecode + "', '" + (data.type ? data.type : "") + "', " + pool.escape(data.text) + ", '" + (data.images ? q : "") + "', " + pool.escape(data.price) + ", " + pool.escape(data.location) + ",'" + data.post_time + "')", function (error, results, fields) {
+
+      if (error) throw error;
+
+      if (results.affectedRows === 1) {
+        console.info('saved post to db successfully');
+
+        iouser.emit('boardcast message', { to: 'be received by everyoneELSE', post: data });
+      }
+    });
+
+    //this funtion will run in the client to show/acknowledge the server has gotten the message.
+    fn(data.post_time);
+  });
+
+  socket.on('disconnect', function () {
+    iouser.emit('corpersCount', { count: Object.keys(iouser.connected).length }); // todo the disconnected socket should boardcast, let's not waste things and time abeg
+  });
+
+});
+
+
+
 app.get('/posts', function (req, res) {
   // set resposnse type to application/json
   res.setHeader('Content-Type', 'application/json');
@@ -858,7 +1047,7 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
                 res.sendStatus(200);
 
                 // once it saves in db them emit to other users
-                iouser.emit('accommodation', {
+                iouser.emit('boardcast message', { // or 'accommodation'
                   to: 'be received by everyoneELSE', post: {
                     statecode: req.session.statecode,
                     rentrange: req.body.rentrange,
@@ -1016,8 +1205,6 @@ var iosignup = io.of('/signup').on('connection', function (socket) { // when a n
 });
 
 
-
-
 var iologin = io.of('/login').on('connection', function (socket) { // when a new user is in the login page
 
   // when we receive 'login request' from any connected socket
@@ -1027,166 +1214,6 @@ var iologin = io.of('/login').on('connection', function (socket) { // when a new
 
 
 });
-
-
-// somehow logout doesn't work because the app/broswer doesn't go through app.get('/user/:who') when the back button is clicked after loggin out socket.io('/user) picks up the request first ...somehow
-
-// find a more authentic way to calculate the numbers of corpers online using io(/user) --so even if they duplicate pages, it won't double count
-
-var iouser = io.of('/user').on('connection', function (socket) { // when a new user is in the TIMELINE
-  console.log('socket.leave', socket.leave);
-  // console.log('how many', users.connected);
-  socket.on('ferret', (asf, name, fn) => {
-    // this funtion will run in the client to show/acknowledge the server has gotten the message.
-    fn('woot ' + name + asf);
-  });
-  socket.emit('callback', { this: 'is the call back' });
-
-  // find a way so if the server restarts (maybe because of updates and changes to this file) and the user happens to be in this URL log the user out of this url
-  // console.log('well', socket.handshake.query.last_post, isEmpty(socket.handshake.query.last_post) );
-
-  console.log('socket.id: ', socket.id, ' connected on', new Date(Date.now()).toGMTString());
-  // console.log('everythin: \n', iouser.connected );
-
-  console.log('how many ?', Object.keys(iouser.connected).length);
-  // it's still not very perfect, count each unique url or something
-  iouser.emit('corpersCount', { count: Object.keys(iouser.connected).length /* new Map(iouser.connected).size || Object.keys(iouser.connected).length */ }); // emit total corpers online https://stackoverflow.com/questions/126100/how-to-efficiently-count-the-number-of-keys-properties-of-an-object-in-javascrip
-
-  // find a way to work with cookies in socket.request.headers object for loggining in users again
-
-
-  // we're implementing this with ejs already
-  /*   pool.query("SELECT * FROM info WHERE email = '" + socket.handshake.query.user + "' ", function (error, results, fields) {
-      console.log('profile for ', socket.handshake.query.user);
-      if (error) {
-        console.log('Database query error', error);
-          throw error;
-      }
-  
-      // fields arg is just info about all the fields from the selected table
-      if (!isEmpty(results)) {
-        // send them bits by bits incase of slow network
-        console.log('Results', results.length);
-        
-        // the results is an array of object with one element of all the results from the db and we need only this 1st element/object.
-        socket.emit('corper profile', { to: 'be received by just this user socket only', post: results[0] });
-      }
-    }); */
-
-  // logot out time SELECT TIMESTAMPDIFF(MINUTE , session_usage_details.login_time , session_usage_details.logout_time) AS time
-
-  //--------------------------------------------------------------------------- optimize by running the two seperate queries (above & below) in parallel later
-
-  // when any user connects, send them (previous) posts in the db before now (that isn't in their timeline)
-  // find a way to handle images and videos
-  /** sender, statecode, type, text, price, location, post_time, input_time */
-
-  // posts currently in user's time line is socket.handshake.query.utl.split(',')
-
-  console.log('socket query parameter(s) [user timeline]', socket.handshake.query.utl.split(',').length);
-  var UTL = socket.handshake.query.utl.split(',');
-
-  // SELECT * FROM posts WHERE post_time > 1545439085610 ORDER BY posts.post_time ASC (selects posts newer than 1545439085610 | or posts after 1545439085610)
-
-  // right now, this query selects newer posts always | ''.split(',') returns a query with length 1 where the first elemeent is an empty string
-  // ordering by ASC starts from oldest, so the first result is the oldest post.
-
-  // so we're selecting posts newer than the ones currently in the user's timeline. or the server closed the connection error
-  var getpostsquery = "SELECT * FROM posts " + (UTL.length > 1 ? 'WHERE post_time > ' + UTL[UTL.length - 1] + ' ORDER by posts.post_time ASC' : ' ORDER by posts.post_time ASC');
-  pool.query(getpostsquery, function (error, results, fields) { // bring the results in ascending order
-
-    if (error) { // gracefully handle error e.g. ECONNRESET & ETIMEDOUT, in this case re-execute the query or connect again, act approprately
-      console.log(error);
-      throw error;
-    }
-
-    if (!isEmpty(results)) {
-      // console.log('posts', results);
-      Object.entries(results).forEach(
-        ([key, value]) => {
-          //console.log( 'post number ' + key, value.text);
-
-          //fix the time here too by converting the retrieved post_time colume value to number because SQL converts the value to string when saving (because we are using type varchar to store the data-number value)
-          value.age = moment(Number(value.post_time)).fromNow();
-
-          //if there is image(s) in the post we're sending to user from db then convert it to array. 
-          if (value.media) {
-            // value.media = value.media.split('  '); // previously on how we handled media(images) when we stored them in base64
-
-            // console.log('? ', (value.media.substring(0, 23) === "https://api.mapbox.com/"),(value.media.substring(0, 23) === "https://api.mapbox.com/" ? value.media : value.media.split(',')) );
-
-            value.media = (value.media.substring(0, 23) === "https://api.mapbox.com/" ? [value.media] : value.media.split(',')); // make only the url be in the array && we can't use .split(',') because there's ','s in the url
-
-
-
-            // ---this logic is expensive and buggy
-            /* // if what we stored is a map link, ie. a url...
-            try {
-              value.media = new URL(value.media).toString();
-            } catch (error) { // if it isn't
-              value.media = value.media.split(',');
-            } */
-
-          }
-
-
-          // send the posts little by little, or in batches so it'll be faster.
-
-          iouser.emit('boardcast message', { to: 'be received by everyoneELSE', post: value });
-
-          // console.log('sent BCs'); // commented here out so we don't flood the output with too much data, uncomment when you're doing testing.
-        }
-      );
-
-    }
-  });
-
-
-
-  socket.on('boardcast message', (data, fn) => {
-    console.log(socket.client.id + ' sent boardcast mesage on /user to everyone.');
-
-    data.age = moment(data.post_time).fromNow();
-
-    // if there are images in the post user boardcasted, before we save them to db, convert to string with double spaces ( '  ' ) between each image
-    if (data.images) {
-
-      var q = '';
-      var l = data.images.length;
-      data.images.forEach(function (item, index, array) {
-        //console.log(item, index);
-        q = l === index + 1 ? q.concat(item) : q.concat(item + '  ');
-
-        // save each image
-        console.log('checking', item.slice(item.indexOf(':') + 1, item.indexOf(';'))); // map picture won't save because they aren't in dataURL format
-        pool.query("INSERT INTO media (post_time, media, media_type) VALUES ('" + data.post_time + "', '" + item + "', " + pool.escape(item.slice(item.indexOf(':') + 1, item.indexOf(';'))) + ")");
-      });
-
-    }
-    // save to db --put picture in different columns // increse packet size for media (pixs and vids)                                                                                                                & when using pool.escape(data.text), there's no need for the enclosing from                 incase the user has ' or any funny characters
-    pool.query("INSERT INTO posts( sender, statecode, type, text, media, price, location, post_time) VALUES ('" + data.sender + "', '" + data.statecode + "', '" + (data.type ? data.type : "") + "', " + pool.escape(data.text) + ", '" + (data.images ? q : "") + "', " + pool.escape(data.price) + ", " + pool.escape(data.location) + ",'" + data.post_time + "')", function (error, results, fields) {
-
-      if (error) throw error;
-
-      if (results.affectedRows === 1) {
-        console.info('saved post to db successfully');
-
-        iouser.emit('boardcast message', { to: 'be received by everyoneELSE', post: data });
-      }
-    });
-
-    //this funtion will run in the client to show/acknowledge the server has gotten the message.
-    fn(data.post_time);
-  });
-
-  socket.on('disconnect', function () {
-    iouser.emit('corpersCount', { count: Object.keys(iouser.connected).length }); // todo the disconnected socket should boardcast, let's not waste things and time abeg
-  });
-
-});
-
-
-
 
 var chat = io
   .of('/chat')
