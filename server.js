@@ -859,7 +859,7 @@ app.post('/posts', upload.array('see', 12), function (req, res, next) {
           console.log('COMPARING key and req.files.length', key + 1, req.files.length, ((parseInt(key) + 1) === req.files.length)); // key is a number with string data type,
           if (((parseInt(key) + 1) === req.files.length)) {
             console.log('media aaray null ?', arraymedia);
-            var sqlquery = "INSERT INTO posts( media, statecode, type, text, price, location, post_time) VALUES ('" + (arraymedia ? arraymedia : '') + "','" + req.session.statecode + "', '" + (req.body.type ? req.body.type : "random") + "', " + pool.escape(req.body.text) + ", " + pool.escape((req.body.price ? req.body.price : "")) + ", " + pool.escape(req.session.location) + ",'" + req.body.post_time + "')"
+            var sqlquery = "INSERT INTO posts( media, statecode, type, text, price, location, post_time) VALUES ('" + (arraymedia ? arraymedia : '') + "','" + req.session.statecode + "', '" + (req.body.type ? req.body.type : "sale") + "', " + pool.escape(req.body.text) + ", " + pool.escape((req.body.price ? req.body.price : "")) + ", " + pool.escape(req.session.location) + ",'" + req.body.post_time + "')"
 
             pool.query(sqlquery, function (error, results, fields) {
               console.log('inserted data from: ', results);
@@ -908,7 +908,7 @@ app.post('/posts', upload.array('see', 12), function (req, res, next) {
 
   } else {
     console.log('null ?', req.session.location);
-    var sqlquery = "INSERT INTO posts( media, statecode, type, text, price, location, post_time) VALUES ('" + (arraymedia ? arraymedia : '') + "','" + req.session.statecode + "', '" + (req.body.type ? req.body.type : "random") + "', " + pool.escape(req.body.text) + ", " + pool.escape((req.body.price ? req.body.price : "")) + ", " + pool.escape(req.session.location) + ",'" + req.body.post_time + "')"
+    var sqlquery = "INSERT INTO posts( media, statecode, type, text, price, location, post_time) VALUES ('" + (arraymedia ? arraymedia : '') + "','" + req.session.statecode + "', '" + (req.body.type ? req.body.type : "sale") + "', " + pool.escape(req.body.text) + ", " + pool.escape((req.body.price ? req.body.price : "")) + ", " + pool.escape(req.session.location) + ",'" + req.body.post_time + "')"
     // console.log('the media info\n\n', req.files);
     pool.query(sqlquery, function (error, results, fields) {
       console.log('inserted data. results object:\n ', results);

@@ -32,5 +32,6 @@
     "mysql": "^2.16.0",
     "pug": "^2.0.3",
     "socket.io": "^2.1.1"
-  }
+  },
+  "eslintConfig":{}
 }

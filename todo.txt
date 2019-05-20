@@ -18,6 +18,13 @@ ask corpers how much their PPAs pay them, if they do at all, it'll help other co
 in update profile section or page, // ask if they want an accommodation and where would they want it to be
 
 
+don't move to the next slide until the current form is filled.
+
+
+there should not be any undefined.
+
+make the whole post and accommodation chronologically arranged
+
 always use https://github.com/tj/ejs/tree/0.8.3#features
 
 

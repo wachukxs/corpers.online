@@ -26,7 +26,7 @@
 
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"
       integrity="sha384-pjaaA8dDz/5BgdFUPX6M/9SUZv4d12SUPF0axWc+VRZkx5xU3daN+lYb49+Ax+Tl" crossorigin="anonymous">
-    </script>
+      </script>
 
 
     <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
@@ -528,7 +528,7 @@
 
 
                       <!-- // -->
-                      
+
                     </div>
                     <div class="carousel-item" style="height: 400px;">
                       <div class="progress mb-2" style="height: 1px;">
@@ -537,7 +537,8 @@
                       </div>
 
                       <h2>Precise location</h2>
-                      <small>Click geo to locate the accommodation in maps, corpers can use this to compare a number of options.</small>
+                      <small>Click geo to locate the accommodation in maps, corpers can use this to compare a number of
+                        options.</small>
                       <!-- //  -->
 
                       <!--
@@ -690,18 +691,19 @@
               </div>
 
               <div class="modal-footer">
-                  <!--             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <!--             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                   <button type="button" class="btn btn-primary">Save changes</button> -->
-      
-                  <div class="btn-group" role="group" aria-label="Carousel navigation">
-                    <button class="btn btn-outline-primary" id="ap" href="#accommodationFormCarousel" disabled="true" data-slide="prev">
-                      Previous
-                    </button>
-                    <button class="btn btn-primary" id="an" href="#accommodationFormCarousel" data-slide="next">
-                      Next
-                    </button>
-                  </div>
+
+                <div class="btn-group" role="group" aria-label="Carousel navigation">
+                  <button class="btn btn-outline-primary" id="ap" href="#accommodationFormCarousel" disabled="true"
+                    data-slide="prev">
+                    Previous
+                  </button>
+                  <button class="btn btn-primary" id="an" href="#accommodationFormCarousel" data-slide="next">
+                    Next
+                  </button>
                 </div>
+              </div>
             </form>
           </div>
 
@@ -723,9 +725,9 @@
           // change the next button to submit && make sure the form is full before they can submit
           // make the corper see a preview of how their post would look like too, to make them make changes as much as neccessary
           console.info('change');
-          $( "#an" ).replaceWith( "<input type='submit' class='btn btn-primary' id='accsub' value='Put up for rent'>" );
+          $("#an").replaceWith("<input type='submit' class='btn btn-primary' id='accsub' value='Put up for rent'>");
         } else if (e.from == 4 && e.to == 3) {
-          $( "#accsub" ).replaceWith( '<button class="btn btn-primary" id="an" href="#accommodationFormCarousel" data-slide="next">Next</button>' );
+          $("#accsub").replaceWith('<button class="btn btn-primary" id="an" href="#accommodationFormCarousel" data-slide="next">Next</button>');
         }
       });
 
@@ -813,9 +815,6 @@
 
             </div>
             <div class="modal-footer">
-<!--               <button type="button" class="btn btn-secondary" data-dismiss="modal">Save as draft</button>
-              <button type="button" class="btn btn-primary" id="SEND" disabled>Post</button> -->
-
               <input type="submit" class="btn btn-primary" id="postsubmit" value="Post it" disabled>
             </div>
 
@@ -850,6 +849,9 @@
         // append post_time
         FD.append('post_time', Date.now()); // data type number
 
+        // append post type
+        FD.append('type', 'sale');
+
         // Define what happens on successful data submission
         XHR.addEventListener("load", function (event) {
           // alert(event.target.responseText);
@@ -857,6 +859,8 @@
           // close the modal and reset the form
           $('#postModalSale').modal('hide');
           document.forms['postform'].reset();
+
+          document.getElementById('postsubmit').disabled = true;
 
           $("#tl").before(
             '<div class="alert alert-success mt-3 fade show" id="postposted" role="alert">Post created successfully.</div>'
@@ -1323,7 +1327,7 @@
         } else if (data.post.input_time) {
           bn.push(data.post.input_time);
         }
-
+        // console.log(data.post.type == "sale", data.post.type === "sale")
         // console.log('received boardcast message', data); // uncomment if we wanna see what we got
 
         var feeds = document.getElementById('tl');
@@ -1332,8 +1336,7 @@
         newFeed.setAttribute('class', 'list-group-item');
 
         // each post has a unique id, we'll later add state code to make it more unique
-        newFeed.setAttribute('id', (data.post.post_time || data.post
-          .input_time)); // later convert the input time to js timestamp
+        newFeed.setAttribute('id', (data.post.post_time || data.post.input_time)); // later convert the input time to js timestamp
 
         // chaining is not good for appendChild()
 
@@ -1359,62 +1362,64 @@
             g.appendChild(gg);
 
         } */
+        if (data.post.type == "sale") {
 
-        if (data.post.media && data.post.type == "sale") {
+          console.info('got sale');
+          if (data.post.media) {
+            var gg = document.createElement('div');
+            gg.setAttribute('class', 'app');
 
-          var gg = document.createElement('div');
-          gg.setAttribute('class', 'app');
+            var jk = data.post.media.length;
+            for (var i = 0; i < jk; i++) {
+              // var ii = 'img' + i.toString();
+              ii = document.createElement('img');
+              ii.setAttribute('class', 'img-fluid border');
 
-          var jk = data.post.media.length;
-          for (var i = 0; i < jk; i++) {
-            // var ii = 'img' + i.toString();
-            ii = document.createElement('img');
-            ii.setAttribute('class', 'img-fluid border');
-
-            // if what's coming is already a url (like our mapbox pictures) // change later maybe...
-            try {
-              var a = new URL(data.post.media[i]).toString();
-            } catch (error) { // if it's not already a url
-              // console.log(error);
-
+              // if what's coming is already a url (like our mapbox pictures) // change later maybe...
               try {
-                // if localhost
-                if (window.location.hostname == "localhost") {
-                  var a = new URL('/' + data.post.media[i], "http://localhost:8081")
-                    .toString(); // important: the trailing slash
+                var a = new URL(data.post.media[i]).toString();
+              } catch (error) { // if it's not already a url
+                // console.log(error);
 
-                } else { // if not localhost then get media from elsewhere
-                  // getting media from elsewhere
-                  var a = new URL('/corpersonline/images/' + data.post.media[i], "https://connarts.com.ng")
-                    .toString(); // upload images to this url when ever users upload images
+                try {
+                  // if localhost
+                  if (window.location.hostname == "localhost") {
+                    var a = new URL('/' + data.post.media[i], "http://localhost:8081")
+                      .toString(); // important: the trailing slash
+
+                  } else { // if not localhost then get media from elsewhere
+                    // getting media from elsewhere
+                    var a = new URL('/corpersonline/images/' + data.post.media[i], "https://connarts.com.ng")
+                      .toString(); // upload images to this url when ever users upload images
+                  }
+                } catch (error) {
+                  // console.error(error);
+
+                  // expected output: TypeError: Failed to construct 'URL': Invalid URL
+                  // Note - error messages will vary depending on browser
+
+                  // then use a placeholder image
+                  // initialise var a to a placeholder image
                 }
-              } catch (error) {
-                // console.error(error);
 
-                // expected output: TypeError: Failed to construct 'URL': Invalid URL
-                // Note - error messages will vary depending on browser
-
-                // then use a placeholder image
-                // initialise var a to a placeholder image
               }
 
+              ii.setAttribute('src', a); // add the trailing slash for normal images that was uploaded.
+              ii.setAttribute('alt', 'user\'s posted image'); // do better
+              gg.appendChild(ii);
             }
-
-            ii.setAttribute('src', a); // add the trailing slash for normal images that was uploaded.
-            ii.setAttribute('alt', 'user\'s posted image'); // do better
-            gg.appendChild(ii);
+            g.appendChild(gg);
           }
 
-          g.appendChild(gg);
 
 
 
           /*
-        var ii = document.createElement('img');
-        ii.setAttribute('class', 'col-4');
-        ii.setAttribute('data-src','holder.js/64x64?theme=thumb');
-        ii.setAttribute('alt', 'user\'s posted image');
-        */
+            var ii = document.createElement('img');
+            ii.setAttribute('class', 'col-4');
+            ii.setAttribute('data-src','holder.js/64x64?theme=thumb');
+            ii.setAttribute('alt', 'user\'s posted image');
+          */
 
           var e = document.createElement('div');
           e.setAttribute('class', 'd-flex w-100 justify-content-between');
@@ -1464,33 +1469,37 @@
 
           //right now, we'll append every post together
           feeds.insertBefore(newFeed, feeds.children[0]);
-        } else if (data.post.rentrange && data.post.rooms) {
+
+        }
+        else if (data.post.rentrange && data.post.rooms) {
           console.log('accommodation', data);
 
           // the carousel  
           var gg = document.createElement('div');
-          gg.setAttribute('id', 'carousel' + (data.post
-          .input_time)); // each carousel is has unique id with input time maybe new Date(data.post.input_time)
+          gg.setAttribute('id', 'carousel' + Date.parse(data.post.input_time)); // each carousel has unique id with input time maybe new Date(data.post.input_time)
           gg.setAttribute('class', 'carousel slide carousel-fade');
-          gg.setAttribute('data-ride', 'corousel');
+          gg.setAttribute('data-ride', 'carousel');
 
           // the indicators for the corousel
           var ind = document.createElement('ol');
-          ind.setAttribute('class', 'carousel-indicators');
+          ind.setAttribute('class', 'carousel-indicators bg-dark');
 
+
+          
+          
 
           // the carousel inner
           var cinn = document.createElement('div');
           cinn.setAttribute('class', 'carousel-inner');
 
-          var rms = data.post.rooms.split(',')
+          var rms = data.post.rooms.split(',');
 
-          var jk = data.post.media.split(',').length;
-          for (var i = 0; i < jk; i++) {
+          var jk = data.post.media.split(',');
+          for (var i = 0; i < jk.length; i++) {
 
             // the actual indicators
             var aind = document.createElement('li');
-            aind.setAttribute('data-target', '#carousel' + (data.post.input_time)); // the # is important
+            aind.setAttribute('data-target', '#carousel' + Date.parse(data.post.input_time)); // the # is important
             aind.setAttribute('data-slide-to', i);
 
             ind.appendChild(aind);
@@ -1499,16 +1508,16 @@
             // the carousel items
             var ci = document.createElement('div');
             ci.setAttribute('class', 'carousel-item' + (i == 0 ? ' active' :
-            '')); // the first carousel item must be active
+              '')); // the first carousel item must be active
 
             cinn.appendChild(ci);
 
 
             cimg = document.createElement('img');
             cimg.setAttribute('class', 'd-block img-fluid mx-auto');
-            cimg.setAttribute('src', jk[i]);
+            cimg.setAttribute('src', 'http://localhost:8081/' + jk[i]);
             cimg.setAttribute('alt',
-            `Might be a picture of a ${rms[i]}`); // this is not exactly correct, needs more work
+              `Might be a picture of a ${rms[i]}`); // this is not exactly correct, needs more work
 
 
             // for each carousel item, append to it the image and explanatory/description div
@@ -1533,8 +1542,30 @@
           }
           gg.appendChild(ind);
           gg.appendChild(cinn);
+          // append the other indicators here
+          
+          for (let index = 0; index <= 1; index++) {
+            // 2nd indicators
+            var aind2 = document.createElement('a');
+            aind2.setAttribute('class', 'carousel-control-' + ( index == 0 ? 'prev' : 'next' ) + ' bg-secondary');
+            aind2.setAttribute('href', '#carousel' + Date.parse(data.post.input_time));
+            aind2.setAttribute('data-slide', (index == 0 ? 'prev' : 'next'));
+            aind2.setAttribute('style', 'top: 43%; bottom: 43%;');
+            aind2.setAttribute('role', 'button');
+            aind2.setAttribute('title', (index == 0 ? 'Previous room' : 'Next room'));
 
+            var aind2icon = document.createElement('span');
+            aind2icon.setAttribute('class', 'carousel-control-' + (index == 0 ? 'prev' : 'next') + '-icon');
+            aind2icon.setAttribute('aria-hidden', 'true');
 
+            aind2.appendChild(aind2icon);
+            // append the other indicators here
+            gg.appendChild(aind2);
+          }
+          
+          
+
+          g.appendChild(gg);
 
           var e = document.createElement('div');
           e.setAttribute('class', 'd-flex w-100 justify-content-between');
@@ -1587,9 +1618,6 @@
           feeds.insertBefore(newFeed, feeds.children[0]);
         }
 
-
-
-
         // send 'my other event' to everyone else
 
         // find a way to record the number of people that has seen a particular ad/post. and show the sender.
@@ -1605,10 +1633,8 @@
       noNull = function () {
         console.log('typed');
         if (txtFld.value == "") {
-          document.getElementById('SEND').disabled = true;
           document.getElementById('postsubmit').disabled = true;
         } else {
-          document.getElementById('SEND').disabled = false;
           document.getElementById('postsubmit').disabled = false;
         }
       }
@@ -1634,60 +1660,62 @@
         images: [],
         videos: []
       };
-      var sendBtn = document.getElementById("SEND");
-
-      function sendMsg() {
-
-        console.log('sendMsg function running');
-
-        msg.text = txtFld.value,
-          msg.type = "sale",
-          msg.post_time = Date.now(),
-          msg.sender = pathArray[2],
-          msg.location = userlocation,
-          msg.statecode = usersc;
-        socket.emit('boardcast message', msg, (delivered_value) => {
-          // this funtion will run here to show the server has gotten our message.
-          console.log('server got our message ? ', delivered_value); // data will be 'true'
-        }); // use post time to know the particular message.
-
-        console.log(msg,
-          'append boardcast message to corper tl then use sth to make them know their stuff be delivered.');
-
-        //append sent message to sender's timeline (not yet !! maybe when we do we'll make user know it hasn't been done)
-
-        //close modal
-        $('#postModalSale').modal('hide');
-        //show that post has been made
-
-      }
-
-
-      // after post has been made and/or modal closed
-      $('#postModalSale').on('hidden.bs.modal', function (e) {
-        // do something...
-        console.log('post modal hidden');
-        txtFld.value = "";
-        document.getElementById('SEND').disabled = true;
-        //remove the attached image from the div and the input tag, empty the msg object
-
-        //if there's an attached image, remove it, we don't want errors incase the corper didn't pick any pictures
-        //remove all
-
-        while (previewParent.firstChild) {
-          previewParent.removeChild(previewParent.firstChild);
-        }
-
-        if (msg.images.length > 0) {
-          msg.images = [];
-        }
-      });
+      /*       var sendBtn = document.getElementById("SEND");
+      
+            function sendMsg() {
+      
+              console.log('sendMsg function running');
+      
+              msg.text = txtFld.value,
+                msg.type = "sale",
+                msg.post_time = Date.now(),
+                msg.sender = pathArray[2],
+                msg.location = userlocation,
+                msg.statecode = usersc;
+              socket.emit('boardcast message', msg, (delivered_value) => {
+                // this funtion will run here to show the server has gotten our message.
+                console.log('server got our message ? ', delivered_value); // data will be 'true'
+              }); // use post time to know the particular message.
+      
+              console.log(msg,
+                'append boardcast message to corper tl then use sth to make them know their stuff be delivered.');
+      
+              //append sent message to sender's timeline (not yet !! maybe when we do we'll make user know it hasn't been done)
+      
+              //close modal
+              $('#postModalSale').modal('hide');
+              //show that post has been made
+      
+            }
+      
+      
+            // after post has been made and/or modal closed
+            $('#postModalSale').on('hidden.bs.modal', function (e) {
+              // do something...
+              console.log('post modal hidden');
+              txtFld.value = "";
+              document.getElementById('SEND').disabled = true;
+              //remove the attached image from the div and the input tag, empty the msg object
+      
+              //if there's an attached image, remove it, we don't want errors incase the corper didn't pick any pictures
+              //remove all
+      
+              while (previewParent.firstChild) {
+                previewParent.removeChild(previewParent.firstChild);
+              }
+      
+              if (msg.images.length > 0) {
+                msg.images = [];
+              }
+            });
+      
+            sendBtn.addEventListener("click", sendMsg, false); */
 
       $('#postModalSale').on('shown.bs.modal', function (e) {
         txtFld.focus();
       });
 
-      sendBtn.addEventListener("click", sendMsg, false);
+
 
       /*
         WE'LL LAZY LOAD ALL CONTENT, FIND A WAY TO COMPRESS IMAGES, TRY TO FIND WHATSAPP COMPRESSION ALGORITHM (CAUSE THEY'RE REALLY GOOD) - ONCE WE DO THIS, MAYBE WE CAN DO VIDEO TOO
@@ -1853,7 +1881,7 @@
 
               break;
             case error
-            .PERMISSION_DENIED: // it could be the user denied permission by not accpting location prompt and that the browser denied because of http and not https
+              .PERMISSION_DENIED: // it could be the user denied permission by not accpting location prompt and that the browser denied because of http and not https
               // The user didn't accept the callout //showNudgeBanner();
               document.getElementById('locinfo').innerText =
                 'Please you\'d need to allow location on your broswer. Let\'s do this again';
@@ -1897,9 +1925,9 @@
 
           //once we get the geo coordinates, first we get the name of the place., nominatium isn't perfect yet, will just be saving data from it to compare the accuracy we get
           fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + position.coords.latitude +
-              '&lon=' + position.coords.longitude, {
-                signal
-              })
+            '&lon=' + position.coords.longitude, {
+              signal
+            })
             .then(
               function (response) {
                 if (response.status !== 200) {
@@ -2083,6 +2111,16 @@
       });
     </script>
 
+    <script> // https://developer.mozilla.org/en-US/docs/Web/API/Network_Information_API
+      var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      var type = connection.effectiveType;
+
+      function updateConnectionStatus() {
+        console.log("Connection type changed from " + type + " to " + connection.type);
+      }
+
+      connection.addEventListener('change', updateConnectionStatus);
+    </script>
 
     <!--on PoP day or the corper's birthday, pick one of these demos from https://tympanus.net/codrops/2019/01/08/animated-mesh-lines/ and display or use as the background.-->
   </body>

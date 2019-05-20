@@ -1,0 +1,5 @@
+{
+    "break_chained_methods": true,
+    "space_in_paren": true,
+    "indent_body_inner_html": true
+}
