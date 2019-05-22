@@ -31,8 +31,11 @@
 
     <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
     crossorigin="anonymous"></script> -->
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+    <!-- 
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
-      integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+      integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous"> -->
 
     <!-- <script src="/font-awesome.min.css"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.4/holder.js"
@@ -1445,7 +1448,19 @@
 
 
           var b = document.createElement('div');
-          b.setAttribute('class', 'align-items-center');
+          b.setAttribute('class', 'mt-2 row');
+          for (let index = 0; index < 3; index++) {
+            var zx = document.createElement('div');
+            zx.setAttribute('class', 'col-4 text-center');
+
+            var cv = document.createElement('i');
+            cv.setAttribute('class', (index == 0 ? 'far fa-bookmark' : index == 1 ? 'far fa-comment-alt' : 'fas fa-ellipsis-h'));
+
+            zx.appendChild(cv);
+
+            b.appendChild(zx);
+          }
+          
 
           var a = document.createElement('div');
           a.setAttribute('class', 'media mb-4');
@@ -1576,7 +1591,7 @@
           // k.classList(["maintext"]);
           k.setAttribute('class', 'maintext');
           k.innerHTML =
-            `<p><span class='font-italic text-muted'>Address</span>: <a href="#">${data.post.address} <span class=""></span> </a> </p> <p><span class='font-italic text-muted'>Directions</span>: ${data.post.directions}</p> <p><span class='font-italic text-muted'>Details</span>: ${data.post.type}, &#8358;${data.post.price} ${data.post.rentrange}. ${(data.post.tenure == 'Sublease' ? 'Sublease (expires ' + new Date(Date.parse(data.post.expire)).toDateString().italics().bold() + ')'  : 'New lease' )}</p>`;
+            `<p><span class='font-italic text-muted'>Address</span>: <a href="#">${data.post.address} <span class=""></span> </a> </p> <p><span class='font-italic text-muted'>Details</span>: ${data.post.type}, &#8358;${data.post.price} ${data.post.rentrange}. ${(data.post.tenure == 'Sublease' ? 'Sublease (expires ' + new Date(Date.parse(data.post.expire)).toDateString().italics().bold() + ')'  : 'New lease' )}</p> <p><span class='font-italic text-muted'>Directions</span>: ${data.post.directions}</p>`;
           var d = document.createElement('div');
           d.setAttribute('class', 'media-body');
           d.appendChild(e);
@@ -1596,7 +1611,18 @@
 
 
           var b = document.createElement('div');
-          b.setAttribute('class', 'align-items-center');
+          b.setAttribute('class', 'mt-2 row');
+          for (let index = 0; index < 3; index++) {
+            var zx = document.createElement('div');
+            zx.setAttribute('class', 'col-4 text-center');
+
+            var cv = document.createElement('i');
+            cv.setAttribute('class', (index == 0 ? 'far fa-bookmark' : index == 1 ? 'far fa-comment-alt' : 'fas fa-ellipsis-h'));
+
+            zx.appendChild(cv);
+
+            b.appendChild(zx);
+          }
 
           var a = document.createElement('div');
           a.setAttribute('class', 'media mb-4');
@@ -1833,9 +1859,7 @@
           "properties": {},
           "geometry": {
             "type": "Point",
-            "coordinates": [
-
-            ]
+            "coordinates": []
           }
         };
 
