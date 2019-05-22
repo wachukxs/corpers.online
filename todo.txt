@@ -21,6 +21,8 @@ in update profile section or page, // ask if they want an accommodation and wher
 don't move to the next slide until the current form is filled.
 
 
+corpers should be able to mark or select accommodations to compare with later ...make savings towards paying for a rent and stuffs... add reminders towards acquiring a rent and also know when someone else got the rent if they have enabled 'watch' feature on a rent... the watch feature is to know if other corpers are intrested in the rent and if they've acquired it (by any means, either they came in to agreement with the landlord and stuffs like that)... yeaaaaaaaaaaaa, corpers can come together to pay rent by contributing money or alawi together ...make group chats possible... maybe find a way to integrate group chats with existing chatting apps... or not!!!!
+
 there should not be any undefined.
 
 make the whole post and accommodation chronologically arranged

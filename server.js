@@ -551,9 +551,10 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
   // moment is better because it makes it exactly as it was, the other just uses string manipulation and it;s always an hour behind original time
   var e = moment(new Date(aUTL[aUTL.length - 1])).format('YYYY-MM-DD HH:mm:ss');
   // remember to check if the query to know if the time is actually greater than or less
-  console.log('time causing the ish', aUTL[aUTL.length - 1], e);
-
-  var getpostsquery = "SELECT * FROM posts " + (pUTL.length > 1 ? 'WHERE post_time > ' + pUTL[pUTL.length - 1] + ' ORDER by posts.post_time ASC' : ' ORDER by posts.post_time ASC')
+  console.log('time causing the ish', aUTL[aUTL.length - 1], pUTL[pUTL.length - 1]);
+  
+  /// there's much work on this section maybe, just to make sure sql sees and calculates the value as they should
+  var getpostsquery = "SELECT * FROM posts " + (pUTL.length > 1 ? 'WHERE post_time > "' + pUTL[pUTL.length - 1] + '" ORDER by posts.post_time ASC' : ' ORDER by posts.post_time ASC')
     + "; SELECT * FROM accommodations " + (aUTL.length > 1 ? 'WHERE input_time > "' + aUTL[aUTL.length - 1] + '" ORDER by accommodations.input_time ASC' :  ' ORDER BY accommodations.input_time ASC');
   pool.query(getpostsquery, function (error, results, fields) { // bring the results in ascending order
 
@@ -1033,10 +1034,10 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
           console.log('COMPARING key and req.files.length', key + 1, req.files.length, ((parseInt(key) + 1) === req.files.length)); // key is a number with string data type,
           if (((parseInt(key) + 1) === req.files.length)) {
             console.log('media array null ?', arraymedia);
-            var sqlquery = "INSERT INTO accommodations( statecode, streetname, type, price, media, rentrange, rooms, address, directions, tenure, expire) VALUES ('" +
-              req.session.statecode + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.rentamount + "', '" +
-              arraymedia + "', '" + req.body.rentrange + "', '" + req.body.rooms + "','" + req.body.address + "','" + req.body.directions + "','" + req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : null /**or '' */) +
-              "')";
+            var sqlquery = "INSERT INTO accommodations( statecode, streetname, type, price, media, rentrange, rooms, address, directions, tenure, expire, post_location) VALUES ('" +
+              req.session.statecode + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
+              arraymedia + "', '" + req.body.rentrange + "', '" + req.body.rooms + "','" + req.body.address + "','" + req.body.directions + "','" + 
+              req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : null /**or '' */) + "', " + pool.escape(req.session.location) + ")";
 
             pool.query(sqlquery, function (error, results, fields) {
               console.log('inserted data from: ', results);
@@ -1046,21 +1047,26 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
                 // then status code is good
                 res.sendStatus(200);
 
+                console.log('me before you', moment(Number(req.body.post_time)).fromNow(), req.body.post_time);
+                console.log('price', req.body.price);
+
                 // once it saves in db them emit to other users
                 iouser.emit('boardcast message', { // or 'accommodation'
                   to: 'be received by everyoneELSE', post: {
                     statecode: req.session.statecode,
+                    streetname: req.body.streetname,
                     rentrange: req.body.rentrange,
                     rooms: req.body.rooms,
                     tenure: req.body.tenure,
                     expiredate: (req.body.expiredate ? req.body.expiredate : ''),
-                    location: req.session.location,
+                    post_location: req.session.location,
                     media: arraymedia,
-                    post_time: new Date().toLocaleString(),
-                    type: 'accommodation',
+                    post_time: new Date().toLocaleString(), // not sure we need and make use of post time
+                    type: req.body.accommodationtype,
+                    address: req.body.address,
                     directions: req.body.directions,
-                    age: moment(Number(req.body.post_time)).fromNow(),
-                    price: (req.body.price ? req.body.price : '')
+                    age: moment(Date.now()).fromNow(),
+                    price: req.body.price
                   }
                 });
               } else {
@@ -1089,7 +1095,7 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
   }
   // ----------------------------------------------- delete this later. not yet, until we so if else for when there are no files.
   /* pool.query("INSERT INTO accommodations( statecode, streetname, type, price, media, rentrange, rooms, address, tenure, expire) VALUES ('" +
-    req.session.statecode + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.rentamount + "', '" +
+    req.session.statecode + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
     arraymedia + "', '" + req.body.rentrange + "', '" + req.body.rooms + "','" + req.body.address + "','" + req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : '') +
     "')", function (error, results, fields) {
 
@@ -1138,7 +1144,7 @@ app.post('/login', bodyParser.urlencoded({ extended: true }), function (req, res
           req.session.name_of_ppa = results1[0].name_of_ppa;
           req.session.location = req.session.servicestate + (results1[0].city_town ? ', ' + results1[0].city_town : '') /* + (results1[0].region_street ? ', ' + results1[0].region_street : '' ) */;
 
-          res.redirect(req.body.statecode);
+          res.redirect(req.body.statecode.toUpperCase());
 
         }
 

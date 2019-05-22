@@ -426,7 +426,7 @@
               <div class="modal-body">
 
                 <!-- https://getbootstrap.com/docs/4.1/components/carousel/ -->
-                <div id="accommodationFormCarousel" class="carousel slide" data-interval="false">
+                <div id="accommodationFormCarousel" class="carousel slide" data-keyboard="true" data-interval="false">
                   <div class="carousel-inner">
                     <div class="carousel-item active" style="height: 400px;">
                       <div class="progress mb-2" style="height: 1px;">
@@ -468,8 +468,12 @@
                       <!-- input tag check box id attribute connects with the for attribute of label tag -->
                       <div class="custom-control custom-checkbox">
                         <input name="rooms" type="checkbox" class="custom-control-input" id="rooms4"
-                          value="Toilet&Bathroom">
-                        <label class="custom-control-label" for="rooms4">Toilet & Bathroom ?</label>
+                          value="Toilet">
+                        <label class="custom-control-label" for="rooms4">Toilet ?</label>
+                      </div>
+                      <div class="custom-control custom-checkbox">
+                        <input name="rooms" type="checkbox" class="custom-control-input" id="rooms4" value="Bathroom">
+                        <label class="custom-control-label" for="rooms4">Bathroom ?</label>
                       </div>
                       <small id="" class="form-text text-muted mb-4">What rooms does the accommodation contain?</small>
                       <!-- // // test -->
@@ -508,16 +512,15 @@
                       </div>
                       <!-- / // / testing -->
 
-
                       <!-- this should be disabled until the person chooses either per month or quarter or year then we say price per whatever the person chose -->
                       <div class="form-group">
-                        <label for="rentamount">Price per month/quater/year</label>
+                        <label for="price">Price per month/quater/year</label>
 
                         <div class="input-group">
                           <div class="input-group-prepend">
                             <span class="input-group-text">&#8358;</span>
                           </div>
-                          <input name="rentamount" type="number" class="form-control" id="rentamount"
+                          <input name="price" type="number" class="form-control" id="price"
                             placeholder="Recurring price" required>
                           <div class="invalid-feedback" style="width: 100%;">
                             Your username is required.
@@ -570,8 +573,6 @@
                               we can even try to show a route in the map based on what address is and information in the directions textarea, we can even auto route.
                             -->
 
-
-
                       <!-- //end form for accommodation -->
                     </div>
                     <div class="carousel-item" style="height: 400px;">
@@ -610,7 +611,6 @@
                               or they can just do a short 15 seconds video of everywhere
                             -->
 
-
                       <!-- //end form for accommodation -->
                     </div>
                     <div class="carousel-item" style="height: 400px;">
@@ -631,12 +631,12 @@
                              -->
                       <div class="d-block my-3">
                         <div class="custom-control custom-radio">
-                          <input id="newrent" name="tenure" type="radio" class="custom-control-input" value="New rent"
+                          <input id="newrent" name="tenure" type="radio" class="custom-control-input" value="Lease"
                             required>
                           <label class="custom-control-label" for="newrent">New rent (No present occupant)</label>
                         </div>
                         <div class="custom-control custom-radio">
-                          <input id="oldrent" name="tenure" type="radio" class="custom-control-input" value="Old rent"
+                          <input id="oldrent" name="tenure" type="radio" class="custom-control-input" value="Sublease"
                             checked required>
                           <label class="custom-control-label" for="oldrent">Leasing out an active rent</label>
                         </div>
@@ -670,7 +670,6 @@
                           }
                         }
                       </script>
-
 
                       <!-- //end form for accommodation -->
                     </div>
@@ -781,9 +780,6 @@
                     <span>Image</span>
                     <input type="file" accept="image/*" name="see" class="upload" multiple id="IMG">
                   </div>
-
-
-
                   <!--<div class="fileUpload btn btn-light">
                                                   <span>Vid</span>
                                                   <input type="file" accept="video/*" class="upload" id="VID">
@@ -807,9 +803,6 @@
                   <!--
                               like malls/shops apartments markets parks/bustops or popular pickup and dropoff points. 
                             -->
-
-
-
                 </div>
               </div>
 
@@ -1263,8 +1256,6 @@
         socket.io.opts.transports = ['polling', 'websocket'];
       });
 
-
-
       //reason (String) either 'io server disconnect' or 'io client disconnect'
       socket.on('disconnect', (reason) => {
         //find a really good way to handle sessions - in server and client -- if user disconnects for too long and session expires, take user to login, if user closes this window, he shouldn't be able to open it unless it's thesame computer  --- just handle sessions effectively
@@ -1328,7 +1319,7 @@
           bn.push(data.post.input_time);
         }
         // console.log(data.post.type == "sale", data.post.type === "sale")
-        // console.log('received boardcast message', data); // uncomment if we wanna see what we got
+        console.log('received boardcast message', data); // uncomment if we wanna see what we got
 
         var feeds = document.getElementById('tl');
 
@@ -1336,7 +1327,7 @@
         newFeed.setAttribute('class', 'list-group-item');
 
         // each post has a unique id, we'll later add state code to make it more unique
-        newFeed.setAttribute('id', (data.post.post_time || data.post.input_time)); // later convert the input time to js timestamp
+        newFeed.setAttribute('id', (data.post.post_time || Date.parse(data.post.input_time) ) ); // later convert the input time to js timestamp
 
         // chaining is not good for appendChild()
 
@@ -1411,9 +1402,6 @@
             g.appendChild(gg);
           }
 
-
-
-
           /*
             var ii = document.createElement('img');
             ii.setAttribute('class', 'col-4');
@@ -1449,7 +1437,7 @@
           // c.setAttribute('data-src','holder.js/64x64');
 
           c.setAttribute('src',
-            'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E45x45%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E'
+            'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E' + data.post.statecode.slice(0, 2) + data.post.statecode.slice(3, 5) + '%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E'
           );
           // c.setAttribute('src', 'holder.js/45x45');
           c.setAttribute('alt', data.post.statecode);
@@ -1484,17 +1472,22 @@
           var ind = document.createElement('ol');
           ind.setAttribute('class', 'carousel-indicators bg-dark');
 
-
-          
-          
-
           // the carousel inner
           var cinn = document.createElement('div');
           cinn.setAttribute('class', 'carousel-inner');
 
-          var rms = data.post.rooms.split(',');
 
-          var jk = data.post.media.split(',');
+          // rooms is an array already!! how and when ?
+          // check if it's an array, else split
+          // because when a post is made, it is immediately sent to others before saving to db
+          // so in that state of being sent to others, it is an array, but from db, it's a string
+
+          
+          var rms = ( Array.isArray(data.post.rooms) ? data.post.rooms : data.post.rooms.split(',') );
+
+          var jk = ( Array.isArray(data.post.media) ? data.post.media : data.post.media.split(',') );
+
+          // var jk = data.post.media.split(',');
           for (var i = 0; i < jk.length; i++) {
 
             // the actual indicators
@@ -1503,7 +1496,6 @@
             aind.setAttribute('data-slide-to', i);
 
             ind.appendChild(aind);
-
 
             // the carousel items
             var ci = document.createElement('div');
@@ -1572,7 +1564,7 @@
 
           var z = document.createElement('h6');
           z.setAttribute('class', 'mb-1');
-          z.innerHTML = data.post.statecode.toUpperCase() + ' <br> <small>' + data.post.location + '</small>';
+          z.innerHTML = data.post.statecode.toUpperCase() + ' <br> <small>' + data.post.post_location + '</small>';
 
           var y = document.createElement('small');
           y.setAttribute('class', '');
@@ -1584,7 +1576,7 @@
           // k.classList(["maintext"]);
           k.setAttribute('class', 'maintext');
           k.innerHTML =
-            `<p><span class='font-italic text-muted'>Address</span>: <a href="#">${data.post.address} <span class=""></span> </a> </p> <p><span class='font-italic text-muted'>Directions</span>: ${data.post.directions}</p>`;
+            `<p><span class='font-italic text-muted'>Address</span>: <a href="#">${data.post.address} <span class=""></span> </a> </p> <p><span class='font-italic text-muted'>Directions</span>: ${data.post.directions}</p> <p><span class='font-italic text-muted'>Details</span>: ${data.post.type}, &#8358;${data.post.price} ${data.post.rentrange}. ${(data.post.tenure == 'Sublease' ? 'Sublease (expires ' + new Date(Date.parse(data.post.expire)).toDateString().italics().bold() + ')'  : 'New lease' )}</p>`;
           var d = document.createElement('div');
           d.setAttribute('class', 'media-body');
           d.appendChild(e);
@@ -1596,7 +1588,7 @@
           // c.setAttribute('data-src','holder.js/64x64');
 
           c.setAttribute('src',
-            'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E45x45%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E'
+            'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E' + data.post.statecode.slice(0, 2) + data.post.statecode.slice(3, 5) + '%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E'
           );
           // c.setAttribute('src', 'holder.js/45x45');
           c.setAttribute('alt', data.post.statecode);
