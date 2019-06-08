@@ -75,7 +75,7 @@ var fs = require('fs');
 var app = express();
 var server = http.Server(app);
 
-//var cookieparser = require('cookieparser');
+// var cookieparser = require('cookieparser');
 var session = require('express-session');
 var morgan = require('morgan');
 var moment = require('moment');
@@ -121,7 +121,6 @@ pool.on('acquire', function (connection) {
           if (err) {
               console.log('error when connecting to db:', err);
 
-              
               //We introduce a delay before attempting to reconnect,
               //to avoid a hot loop, and to allow our node script to
               //process asynchronous requests in the meantime.
@@ -137,7 +136,6 @@ pool.on('acquire', function (connection) {
       connection.on('error', function (err) {
           console.log(new Date(Date.now()).toGMTString(), ': database error', err.code); // e.g. 'ER_BAD_DB_ERROR'
 
-          
             //Connection to the MySQL server is usually
             //lost due to either server restart, or a
             //connnection idle timeout (the wait_timeout
@@ -384,7 +382,58 @@ app.get('/search', function (req, res) {
 
 app.get('/chat', function (req, res) {
   res.set('Content-Type', 'text/html');
-  res.sendFile(__dirname + '/chat.html');
+  // res.sendFile(__dirname + '/chat.html');
+  // req.query.posts.who and req.query.posts.when
+
+
+  /**
+   * WARNING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+   * TIME IS AN IMPORTANT ISSUE HERE. AND TIME CONVERSION TOO...
+   * 
+   * USE MOMENT AND NOT JS DATE FUNCTION FOR DATE CONVERSION
+   */
+
+
+  console.log('\n\n\n\n\n uhmmmm', req.query.posts.who, req.query.posts.when, req.query.posts.type, req.query.posts, moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss'));
+  console.log('---------time 4 q:', typeof req.query.posts.when, new Date(parseInt(req.query.posts.when)).toISOString().slice(0, 19).replace('T', ' '));
+  // 
+  if (req.query.posts) { // we need to be sure that they clicked from /account
+    if (req.query.posts.type == 'accommodation') {
+      var query = `SELECT * FROM accommodations WHERE statecode = '${req.query.posts.who}' AND input_time = '${moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss')}'`;
+      console.log('acc q', query);
+    } else if (req.query.posts.type == 'sale') {
+      var query = "SELECT * FROM posts WHERE statecode = '" + req.query.posts.who + "' AND post_time = '" + req.query.posts.when + "'";
+      console.log('post q', query);  
+    }
+    
+    pool.query(query, function (error, results, fields) {
+
+      if (error) throw error;
+      
+      if (!isEmpty(results)) {
+        console.info('got post from db successfully', results);
+  
+        // iouser.emit('boardcast message', { to: 'be received by everyoneELSE', post: data });
+      }
+    });
+  }
+  // when they update their profile. it should immediately reflect. so set it in the session object after a successfully update
+  if (req.session.loggedin) {
+    res.set('Content-Type', 'text/html');
+    // res.sendFile(__dirname + '/account.html');
+    res.render('pages/chat', { // having it named account.2 returns error cannot find module '2'
+      statecode: req.session.statecode.toUpperCase(),
+      servicestate: req.session.servicestate,
+      batch: req.session.batch,
+      statecode: req.session.statecode.toUpperCase(),
+      servicestate: req.session.servicestate,
+      batch: req.session.batch,
+      name_of_ppa: req.session.name_of_ppa
+    });
+  } else {
+    res.redirect('/login');
+  }
+  // res.send('in a bit');
 });
 
 app.get(['/map', '/maps'], function (req, res) {
@@ -473,7 +522,22 @@ app.get('/signup', function (req, res) {
   res.render('pages/register');
 });
 
+/**
+ * console log more socket methods
+ * // console.log('socket.join', socket.join);
+ * socket.leave function (room, fn){
+  debug('leave room %s', room);
+  var self = this;
+  this.adapter.del(this.id, room, function(err){
+    if (err) return fn && fn(err);
+    debug('left room %s', room);
+    delete self.rooms[room];
+    fn && fn(null);
+  });
+  return this;
+}
 
+ */
 
 
 // somehow logout doesn't work because the app/broswer doesn't go through app.get('/user/:who') when the back button is clicked after loggin out socket.io('/user) picks up the request first ...somehow
@@ -481,7 +545,7 @@ app.get('/signup', function (req, res) {
 // find a more authentic way to calculate the numbers of corpers online using io(/user) --so even if they duplicate pages, it won't double count
 
 var iouser = io.of('/user').on('connection', function (socket) { // when a new user is in the TIMELINE
-  console.log('socket.leave', socket.leave);
+  
   // console.log('how many', users.connected);
   socket.on('ferret', (asf, name, fn) => {
     // this funtion will run in the client to show/acknowledge the server has gotten the message.
@@ -529,11 +593,11 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
   /** sender, statecode, type, text, price, location, post_time, input_time */
 
   // posts currently in user's time line is socket.handshake.query.utl.split(',')
-  
+
   var pUTL = socket.handshake.query.putl.split(',');
   var aUTL = socket.handshake.query.autl.split(',');
   console.log('socket query parameter(s) [user timeline]\n', 'acc:' + aUTL.length, ' posts:' + pUTL.length);
-  
+
   // SELECT * FROM posts WHERE post_time > 1545439085610 ORDER BY posts.post_time ASC (selects posts newer than 1545439085610 | or posts after 1545439085610)
 
   // right now, this query selects newer posts always | ''.split(',') returns a query with length 1 where the first elemeent is an empty string
@@ -544,18 +608,18 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
 
 
   //
-  
+
   // ways to convert from js format to sql format
-  // var d = new Date(aUTL[aUTL.length - 1]).toISOString().slice(0, 19).replace('T', ' '); // or use moment .js library
-  
-  // moment is better because it makes it exactly as it was, the other just uses string manipulation and it;s always an hour behind original time
+  // var d = new Date(aUTL[aUTL.length - 1]).toISOString().slice(0, 19).replace('T', ' '); // or use moment.js library
+
+  // moment is better because it makes it exactly as it was, the other just uses string manipulation and it's always an hour behind original time
   var e = moment(new Date(aUTL[aUTL.length - 1])).format('YYYY-MM-DD HH:mm:ss');
   // remember to check if the query to know if the time is actually greater than or less
   console.log('time causing the ish', aUTL[aUTL.length - 1], pUTL[pUTL.length - 1]);
-  
-  /// there's much work on this section maybe, just to make sure sql sees and calculates the value as they should
+
+  /// there's much work on this section maybe, just to make sure sql sees and calculates the value as they should (or NOT ????)
   var getpostsquery = "SELECT * FROM posts " + (pUTL.length > 1 ? 'WHERE post_time > "' + pUTL[pUTL.length - 1] + '" ORDER by posts.post_time ASC' : ' ORDER by posts.post_time ASC')
-    + "; SELECT * FROM accommodations " + (aUTL.length > 1 ? 'WHERE input_time > "' + aUTL[aUTL.length - 1] + '" ORDER by accommodations.input_time ASC' :  ' ORDER BY accommodations.input_time ASC');
+    + "; SELECT * FROM accommodations " + (aUTL.length > 1 ? 'WHERE input_time > "' + e + '" ORDER by accommodations.input_time ASC' : ' ORDER BY accommodations.input_time ASC');
   pool.query(getpostsquery, function (error, results, fields) { // bring the results in ascending order
 
     if (error) { // gracefully handle error e.g. ECONNRESET & ETIMEDOUT, in this case re-execute the query or connect again, act approprately
@@ -606,7 +670,7 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
         ([key, value]) => {
 
           //fix the time here too by converting the retrieved post_time colume value to number because SQL converts the value to string when saving (because we are using type varchar to store the data-number value)
-          
+
           value.age = moment(new Date(value.input_time)).fromNow();
           // console.log('acc v:', value);
           iouser.emit('boardcast message', { to: 'be received by everyoneELSE', post: value });
@@ -1036,7 +1100,7 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
             console.log('media array null ?', arraymedia);
             var sqlquery = "INSERT INTO accommodations( statecode, streetname, type, price, media, rentrange, rooms, address, directions, tenure, expire, post_location) VALUES ('" +
               req.session.statecode + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
-              arraymedia + "', '" + req.body.rentrange + "', '" + req.body.rooms + "','" + req.body.address + "','" + req.body.directions + "','" + 
+              arraymedia + "', '" + req.body.rentrange + "', '" + req.body.rooms + "','" + req.body.address + "','" + req.body.directions + "','" +
               req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : null /**or '' */) + "', " + pool.escape(req.session.location) + ")";
 
             pool.query(sqlquery, function (error, results, fields) {
@@ -1224,12 +1288,35 @@ var iologin = io.of('/login').on('connection', function (socket) { // when a new
 var chat = io
   .of('/chat')
   .on('connection', function (socket) {
-    socket.emit('a message', { that: 'only', '/chat': 'will get' });
-    socket.emit('a message', { test: 'from socket', '/chat': 'will get, it ?' });
+    // console.log('\nsocket??', socket);
+    // socket.emit('message', { that: 'only', '/chat': 'will get' });
+    // socket.emit('message', { test: 'from socket', '/chat': 'will get, it ?' });
+
+    socket.on('room', function (room) {
+      console.log('room msg', room);
+
+      console.log('\nsocket is:', socket.id, socket.conn.id);
+      socket.join(room);
+      setTimeout(() => { console.log('\nsocket on room??', socket.rooms); }, 3000);
+      console.log('\nsocket remote addr or ip??', socket.conn.remoteAddress);
+    });
+
+    socket.on('hi', function (msg) {
+      console.log('\nwhat we got:', msg);
+    });
+
+    socket.on('message', function (msg) {
+      console.log('\nmessage we got:', msg);
+      chat.emit('message', { everyone: 'in', '/chat': 'will get', 'it': msg }); // everyone in /chat sees it
+
+      socket.emit('message', { everyone: 'in', '/chat': 'will get', 'it': msg }); // only the socket (itself) sees it.
+    });
+
+    // io.sockets.in(room).emit('message', 'what is going on, party people?'); // room is something unique. sockets.room
 
     //everyone, including self, in /chat will get it
     chat.emit('hi!', { test: 'from chat', '/chat': 'will get, it ?' });
-    chat.emit('a message', { everyone: 'in', '/chat': 'will get' });
+    // chat.emit('message', { everyone: 'in', '/chat': 'will get' });
   });
 
 var news = io
@@ -1250,3 +1337,19 @@ Specifies whether the emitted data contains binary. Increases performance when s
 
 socket.binary(false).emit('an event', { some: 'data' });
 */
+
+
+
+
+
+
+
+
+
+
+
+
+// --- always last
+app.use(function (req, res, next) {
+  res.status(404).send("Sorry can't find that! If you could just go back")
+});

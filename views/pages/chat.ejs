@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Chat</title>
+
+    <script src="jquery-3.3.1.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <link rel="stylesheet" href="bootstrap.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
+</head>
+
+<script src="/socket.io/socket.io.js"></script>
+
+
+
+<body class="container">
+    <h1>Chat page</h1>
+
+    <div class="alert alert-warning" role="alert">
+        A simple warning alert—check it out!
+    </div>
+
+    <div id="wall">
+
+    </div>
+
+    <div class="row">
+        <div class="col-10">
+            <textarea class="form-control" id="text" rows="3"></textarea>
+        </div>
+        <div class="col-2">
+            <button id="send" class="btn btn-primary">Send</button>
+        </div>
+    </div>
+
+    <!-- the room you join is unique with the person you're chatting with, it's made up of the unique ids of both parties -->
+
+    <script>
+        var chat = io.connect( 'http://localhost:8081/chat' );
+        // var socket = io.connect('http://localhost:8081');
+
+        chat.on( 'connect', function() {
+            chat.emit( 'hi', 'hiiiiiiiiiii from chat' );
+            chat.emit( 'hi', 'rofs ddsfaom' );
+            chat.emit( 'room', 'rofsddsfaom' );
+        } );
+
+        //-----
+        chat.on( 'a message', function( data ) { // when we receive 'a message'
+            console.log( data );
+            chat.emit( 'my other event', {
+                my: 'data-chat'
+            } ); // send 'my other event' to everyone in /chat
+        } );
+
+        chat.on( 'hi', function( data ) { // when we receive 'a message'
+            console.log( data );
+        } );
+
+        chat.on( 'my other event', function( data ) { // when we receive 'a message'
+            console.log( data );
+        } );
+
+        chat.on( 'message', function( data ) { //when we receive a boardcast message
+            console.log( 'we received message! ', data ); // add text-right later and text-center later
+            $( '#wall' )
+                .append( `<div class="card mb-2"><div class="card-body">
+                  ${data.it.message}
+                  </div><div class="card-footer text-muted">
+                  ${moment(data.it.time).format('LLLL')} (${moment(data.it.time).fromNow()})</div></div>` )
+        } );
+
+        /**
+         *
+         * socket.sockets || connected
+         *
+         * socket.id
+         *
+         * socket.fns
+         * socket.adapter.nsp.rooms
+         */
+
+
+        var textarea = document.getElementById( 'text' );
+        var send = document.getElementById( 'send' );
+
+        textarea.addEventListener( 'input', function( event ) {
+            if ( textarea.value === '' ) {
+                send.disabled = true;
+            } else {
+                send.disabled = false;
+            }
+        }, false );
+
+
+        send.addEventListener( 'click', function name( event ) {
+            // console.log(event);
+            chat.emit( 'message', {
+                message: textarea.value,
+                time: Date.now()
+            } );
+            textarea.value = '';
+        }, false );
+
+        var m = moment( 1559949327025 )
+            .fromNow();
+        console.log( 'moment', m );
+    </script>
+
+</body>
+
+</html>
