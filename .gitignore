@@ -3,6 +3,7 @@
 # Edit at https://www.gitignore.io/?templates=node,code
 
 ### Code ###
+.vs/
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -134,3 +135,6 @@ $RECYCLE.BIN/
 *.rar
 *.tar
 *.zip
+
+# js beautify
+.jsbeautifyrc
