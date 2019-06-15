@@ -321,7 +321,7 @@ app.get('/search', function (req, res) {
       }
 
       if (!isEmpty(results)) {
-        for (let index = 0; index < results.length; index++) {
+        for (index = 0; index < results.length; index++) {
           // unstringify the ppa_geodata entry
           // results[index]['ppa_geodata'] = JSON.parse(results[index].ppa_geodata);
 
@@ -1292,6 +1292,28 @@ var chat = io
     // socket.emit('message', { that: 'only', '/chat': 'will get' });
     // socket.emit('message', { test: 'from socket', '/chat': 'will get, it ?' });
 
+    // socket.handshake.query.to and socket.handshake.query.from
+
+    /**
+     * save all incoming message to db
+     * save who to message time attachments [link to the file, array datatype]
+     * 
+     * when sockets come online, check if they have any unread message, then send it to them,
+     * 
+     * the room name will be both involved parties statecode. if more, then all their statecode or something unique
+     * 
+     * how do we know read and unread messages ?
+     * 
+     * check all connected sockets if that state code is online, 
+     * send message to them and wait for the reciept funtion to run to mark the message as read
+     * 
+     * if they are not online then the message is unread
+     * 
+     * when they come online, check if they have any unread message, then send it to them,
+     * 
+     * and when they see the message, it should mark that it has been read... how ?
+     */
+
     socket.on('room', function (room) {
       console.log('room msg', room);
 
@@ -1303,6 +1325,11 @@ var chat = io
 
     socket.on('hi', function (msg) {
       console.log('\nwhat we got:', msg);
+    });
+
+    socket.on('ferret', (asf, name, fn) => {
+      // this funtion will run in the client to show/acknowledge the server has gotten the message.
+      fn('from server: we got the message woot ' + name + asf);
     });
 
     socket.on('message', function (msg) {

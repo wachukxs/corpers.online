@@ -1213,6 +1213,17 @@
 
 
 
+
+      /***
+       * 
+       * WARNING !!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+       * 
+       * READ SOMETHING ABOUT SCOPE WHERE IF YOU CAN MAKE VARIABLES NOT ACCESSIBLE FROM window object
+       * 
+       * Apply it to variable bm and bn and EVVVVVEEEEEERRRRRRRRYYYYYYYYYYYYYTTTTTTTTTTTTTTHHHHHHHHHHHHHHHHHHHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIINNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+      */
+
+
       var pathArray = window.location.pathname.split('/');
       console.log('user = ' + pathArray[2]);
 
@@ -1249,8 +1260,7 @@
       });
       socket.on('reconnect', (attemptNumber) => {
 
-        console.log(attemptNumber, 'reconnection, re-connected :', new Date(Date.now()).toLocaleString(), Date
-          .now());
+        console.log(attemptNumber, 'reconnection, re-connected :', new Date(Date.now()).toLocaleString() );
 
         $('div.alert.alert-danger').alert('close'); // Closes an alert by removing it from the DOM
 
