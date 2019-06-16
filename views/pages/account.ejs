@@ -436,7 +436,7 @@
                 <!-- https://getbootstrap.com/docs/4.1/components/carousel/ -->
                 <div id="accommodationFormCarousel" class="carousel slide" data-keyboard="true" data-interval="false">
                   <div class="carousel-inner">
-                    <div class="carousel-item active" style="height: 400px;">
+                    <div class="carousel-item mx-1 active" style="height: 400px;">
                       <div class="progress mb-2" style="height: 1px;">
                         <div class="progress-bar" role="progressbar" style="width: 20%;" aria-valuenow="20"
                           aria-valuemin="0" aria-valuemax="100"></div>
@@ -449,7 +449,7 @@
                         <label for="accommodationtype">Accommodation type</label>
                         <label class="sr-only" for="accommodationtype">Accommodation type</label>
                         <select class="custom-select pointer" name="accommodationtype" id="accommodationtype" required>
-                          <option selected>Choose...</option>
+                          <option value="" selected>Choose...</option>
                           <option value="Self contain">Self contain</option>
                           <option value="Flat">Flat</option>
                           <option value="1 bedroom flat">1 bedroom flat</option>
@@ -460,7 +460,7 @@
                       <!-- //test -->
                       <div class="custom-control custom-checkbox">
                         <input name="rooms" type="checkbox" class="custom-control-input" id="rooms1"
-                          value="Sitting room" checked disabled>
+                          value="Sitting room" required checked disabled>
                         <label class="custom-control-label" for="rooms1">Sitting room ?</label>
                       </div>
                       <div class="custom-control custom-checkbox">
@@ -471,17 +471,16 @@
                       <div class="custom-control custom-checkbox">
                         <input name="rooms" type="checkbox" class="custom-control-input" id="rooms3" value="Bedroom">
                         <label class="custom-control-label" for="rooms3">Bedroom ?</label>
-                        <!-- if it comes with a bedroom, then how many -->
+                        <!-- if it comes with a bedroom, then how many [do later] -->
                       </div>
                       <!-- input tag check box id attribute connects with the for attribute of label tag -->
                       <div class="custom-control custom-checkbox">
-                        <input name="rooms" type="checkbox" class="custom-control-input" id="rooms4"
-                          value="Toilet">
+                        <input name="rooms" type="checkbox" class="custom-control-input" id="rooms4" value="Toilet">
                         <label class="custom-control-label" for="rooms4">Toilet ?</label>
                       </div>
                       <div class="custom-control custom-checkbox">
-                        <input name="rooms" type="checkbox" class="custom-control-input" id="rooms4" value="Bathroom">
-                        <label class="custom-control-label" for="rooms4">Bathroom ?</label>
+                        <input name="rooms" type="checkbox" class="custom-control-input" id="rooms5" value="Bathroom">
+                        <label class="custom-control-label" for="rooms5">Bathroom ?</label>
                       </div>
                       <small id="" class="form-text text-muted mb-4">What rooms does the accommodation contain?</small>
                       <!-- // // test -->
@@ -490,7 +489,7 @@
 
                       <!-- // -->
                     </div>
-                    <div class="carousel-item" style="height: 400px;">
+                    <div class="carousel-item mx-1" style="height: 400px;">
                       <div class="progress mb-2" style="height: 1px;">
                         <div class="progress-bar" role="progressbar" style="width: 40%;" aria-valuenow="40"
                           aria-valuemin="0" aria-valuemax="100"></div>
@@ -541,7 +540,7 @@
                       <!-- // -->
 
                     </div>
-                    <div class="carousel-item" style="height: 400px;">
+                    <div class="carousel-item mx-1" style="height: 400px;">
                       <div class="progress mb-2" style="height: 1px;">
                         <div class="progress-bar" role="progressbar" style="width: 60%;" aria-valuenow="60"
                           aria-valuemin="0" aria-valuemax="100"></div>
@@ -551,15 +550,6 @@
                       <small>Click geo to locate the accommodation in maps, corpers can use this to compare a number of
                         options.</small>
                       <!-- //  -->
-
-                      <!--
-                            metrics we can generate from location are the prices of homes based on the location and size of these homes...
-
-                            we should also try to find other corrolation too. 
-                            create metrics and advise on prices and offer insights to rent seekers ...like asking for their budget before showing them houses within their budget.
-                          -->
-
-
                       <div class="form-group">
                         <label for="streetname">Street name</label>
                         <input type="text" name="streetname" class="form-control" id="streetname"
@@ -576,14 +566,14 @@
                           placeholder="Give directions to the accommodation from a popular nearby junction or how-to-miss building"></textarea>
                       </div>
                       <!-- 
-                              maybe a little map area to pin the location of the place if they're currently there
+                          maybe a little map area to pin the location of the place if they're currently there
 
-                              we can even try to show a route in the map based on what address is and information in the directions textarea, we can even auto route.
-                            -->
+                          we can even try to show a route in the map based on what address is and information in the directions textarea, we can even auto route.
+                      -->
 
                       <!-- //end form for accommodation -->
                     </div>
-                    <div class="carousel-item" style="height: 400px;">
+                    <div class="carousel-item mx-1" style="height: 400px;">
                       <div class="progress mb-2" style="height: 1px;">
                         <div class="progress-bar" role="progressbar" style="width: 80%;" aria-valuenow="80"
                           aria-valuemin="0" aria-valuemax="100"></div>
@@ -592,10 +582,12 @@
                       <h2>Let's see it</h2>
                       <!-- //form for accommodation -->
 
-                      <!-- <div class="form-group custom-file">
-                              <input type="file" class="custom-file-input" id="customFileLang" lang="es">
-                              <label class="custom-file-label" for="customFileLang">Images and/or Videos</label>
-                            </div> -->
+                      <!-- 
+                        <div class="form-group custom-file">
+                          <input type="file" class="custom-file-input" id="customFileLang" lang="es">
+                          <label class="custom-file-label" for="customFileLang">Images and/or Videos</label>
+                        </div> 
+                      -->
 
                       <!-- thatInput -->
                       <div class="box">
@@ -613,15 +605,15 @@
                       <!-- //thatInput -->
 
                       <!-- 
-                              the images and/or videos they'll put up will be based on the checked box under accommodation type
-                              so there would be as many input tag for the places in the accommodation
-                              ( doing this might be stressful, we show a bit of their gallary as a nudge when we do our app)
-                              or they can just do a short 15 seconds video of everywhere
-                            -->
+                        the images and/or videos they'll put up will be based on the checked box under accommodation type
+                        so there would be as many input tag for the places in the accommodation
+                        ( doing this might be stressful, we show a bit of their gallary as a nudge when we do our app)
+                        or they can just do a short 15 seconds video of everywhere
+                      -->
 
                       <!-- //end form for accommodation -->
                     </div>
-                    <div class="carousel-item" style="height: 400px;">
+                    <div class="carousel-item mx-1" style="height: 400px;">
                       <div class="progress mb-2" style="height: 1px;">
                         <div class="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="100"
                           aria-valuemin="0" aria-valuemax="100"></div>
@@ -633,10 +625,10 @@
                       <!-- //form for accommodation -->
 
                       <!-- 
-                              we already have price per month or quater or year, we just need to know when it'll expire
-                              &
-                              we'd compute how much the corper is expecting from whoever will take over from the rent.
-                             -->
+                          we already have price per month or quater or year, we just need to know when it'll expire
+                          &
+                          we'd compute how much the corper is expecting from whoever will take over from the rent.
+                      -->
                       <div class="d-block my-3">
                         <div class="custom-control custom-radio">
                           <input id="newrent" name="tenure" type="radio" class="custom-control-input" value="Lease"
@@ -652,7 +644,7 @@
 
                       <div id="expirediv" class="mb-4">
                         <label for="bday">When does your rent expires:</label>
-                        <input type="date" id="expire" min="" max="" name="expiredate">
+                        <input type="date" id="expire" min="" max="" name="expiredate" required>
                       </div>
 
                       <script>
@@ -661,19 +653,23 @@
                           10); // Minimum date is today!
                         // Max date is two years from now.
                         document.getElementById('expire').max = new Date(minmax.getFullYear() + 2, minmax.getMonth())
-                          .toISOString().substr(0,
-                            10); // The argument monthIndex is 0-based. This means that January = 0 and December = 11.
+                          .toISOString().substr(0, 10); // The argument monthIndex is 0-based. This means that January = 0 and December = 11.
 
                         var radios = document.forms["accommodationform"].elements['tenure'];
                         for (var i = 0, max = radios.length; i < max; i++) {
                           radios[i].onclick = function () {
-                            // console.log(this.value);
-                            if (this.value == 'Old rent') {
-                              console.log('old rent');
+                            // using if-else because we have just two options, so if it isn't one, it's the other
+
+                            // if expire date is showing, it means the rent isn't new, then it is required.
+                            
+                            if (this.id == 'oldrent') {
+                              console.log('an old rent [sublease]');
                               document.getElementById('expirediv').style.display = 'block';
+                              document.forms["accommodationform"].elements["expiredate"].required = true;
                             } else {
-                              console.log('new rent');
+                              console.log('new rent [lease]');
                               document.getElementById('expirediv').style.display = 'none';
+                              document.forms["accommodationform"].elements["expiredate"].required = false;
                             }
                           }
                         }
@@ -719,7 +715,7 @@
       </div>
     </div>
 
-    <script>
+    <script> // for the accommodation form carousel
       $('#accommodationFormCarousel').on('slide.bs.carousel', function (e) {
         // do something…
         console.log('e', e);
@@ -748,7 +744,9 @@
         console.info('acc modal shown');
         // document.getElementById('ap').disabled = true;
 
-        /// once a user submits accommodation, reset everrything and prevent user from posting twice
+        // once a user submits accommodation, reset everything and prevent user from posting twice
+        // also reset if all fields are empty when corper closes the carousel
+        // if the form is not completely filled, disable the submit/put up for rent button
       });
     </script>
 
@@ -904,6 +902,9 @@
 
         // Bind the FormData object and the form element
         var FD1 = new FormData(form1);
+
+        // append post_time
+        FD1.append('post_time', Date.now()); // data type number
 
         // Define what happens on successful data submission
         XHR1.addEventListener("load", function (event) {
@@ -1455,7 +1456,7 @@
           // c.setAttribute('data-src','holder.js/64x64');
 
           c.setAttribute('src',
-            'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E' + data.post.statecode.slice(0, 2) + data.post.statecode.slice(3, 5) + '%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E'
+            'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E' + `${data.post.statecode.slice(0, 2).toUpperCase()} ${data.post.statecode.slice(3, 5)}` + '%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E'
           );
           // c.setAttribute('src', 'holder.js/45x45');
           c.setAttribute('alt', data.post.statecode);
@@ -1609,7 +1610,7 @@
           // k.classList(["maintext"]);
           k.setAttribute('class', 'maintext');
           k.innerHTML =
-            `<p><span class='font-italic text-muted'>Address</span>: <a href="#">${data.post.address} <span class=""></span> </a> </p> <p><span class='font-italic text-muted'>Details</span>: ${data.post.type}, &#8358;${data.post.price} ${data.post.rentrange}. ${(data.post.tenure == 'Sublease' ? 'Sublease (expires ' + new Date(Date.parse(data.post.expire)).toDateString().italics().bold() + ')'  : 'New lease' )}</p> <p><span class='font-italic text-muted'>Directions</span>: ${data.post.directions}</p>`;
+            `<p><span class='font-italic text-muted'>Address</span>: <a href="#">${data.post.address} <span class=""></span> </a> </p> <p><span class='font-italic text-muted'>Details</span>: ${data.post.type}, &#8358;${data.post.price} ${data.post.rentrange}. ${(data.post.tenure == 'Sublease.' ? 'Sublease (expires ' + new Date(Date.parse(data.post.expire)).toDateString().italics().bold() + ').'  : 'New lease.' )}</p> <p><span class='font-italic text-muted'>Directions</span>: ${data.post.directions}</p>`;
           var d = document.createElement('div');
           d.setAttribute('class', 'media-body');
           d.appendChild(e);
@@ -1621,7 +1622,7 @@
           // c.setAttribute('data-src','holder.js/64x64');
 
           c.setAttribute('src',
-            'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E' + data.post.statecode.slice(0, 2) + data.post.statecode.slice(3, 5) + '%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E'
+            'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E' + `${data.post.statecode.slice(0, 2).toUpperCase()}  ${data.post.statecode.slice(3, 5)}` + '%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E'
           );
           // c.setAttribute('src', 'holder.js/45x45');
           c.setAttribute('alt', data.post.statecode);

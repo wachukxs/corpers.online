@@ -635,8 +635,10 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
         ([key, value]) => {
           //console.log( 'post number ' + key, value.text);
 
-          //fix the time here too by converting the retrieved post_time colume value to number because SQL converts the value to string when saving (because we are using type varchar to store the data-number value)
-          value.age = moment(Number(value.post_time)).fromNow();
+          // fix the time here too by converting the retrieved post_time colume value to number because SQL converts the value to string when saving (because we are using type varchar to store the data-number value)
+          // value.age = moment(Number(value.post_time)).fromNow();
+          value.age = moment( Number(value.post_time) )
+              .fromNow();
 
           //if there is image(s) in the post we're sending to user from db then convert it to array. 
           if (value.media) {
@@ -671,7 +673,9 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
 
           //fix the time here too by converting the retrieved post_time colume value to number because SQL converts the value to string when saving (because we are using type varchar to store the data-number value)
 
-          value.age = moment(new Date(value.input_time)).fromNow();
+          // value.age = moment(new Date(value.input_time)).fromNow();
+          value.age = moment( value.post_time || new Date( value.input_time ) ) // remove new Date(value.input_time) later
+              .fromNow();
           // console.log('acc v:', value);
           iouser.emit('boardcast message', { to: 'be received by everyoneELSE', post: value });
 
@@ -1098,10 +1102,10 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
           console.log('COMPARING key and req.files.length', key + 1, req.files.length, ((parseInt(key) + 1) === req.files.length)); // key is a number with string data type,
           if (((parseInt(key) + 1) === req.files.length)) {
             console.log('media array null ?', arraymedia);
-            var sqlquery = "INSERT INTO accommodations( statecode, streetname, type, price, media, rentrange, rooms, address, directions, tenure, expire, post_location) VALUES ('" +
+            var sqlquery = "INSERT INTO accommodations( statecode, streetname, type, price, media, rentrange, rooms, address, directions, tenure, expire, post_location, post_time) VALUES ('" +
               req.session.statecode + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
               arraymedia + "', '" + req.body.rentrange + "', '" + req.body.rooms + "','" + req.body.address + "','" + req.body.directions + "','" +
-              req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : null /**or '' */) + "', " + pool.escape(req.session.location) + ")";
+              req.body.tenure + "','" + ( req.body.expiredate ? req.body.expiredate : null /**or '' */ ) + "', " + pool.escape( req.session.location ) + "', " + pool.escape( req.body.post_time ) + ")";
 
             pool.query(sqlquery, function (error, results, fields) {
               console.log('inserted data from: ', results);
