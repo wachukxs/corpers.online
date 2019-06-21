@@ -61,7 +61,7 @@ rs.on('end', function () {
 //make sure only serving corpers can register!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! from the pattern matching in the sign up page, look for how js can manipulate it to make sure only serving members register!
 var bodyParser = require('body-parser');
 var multer = require('multer');
-var upload = multer();
+// var upload = multer();
 
 // using path module removes the buffer object from the req.files array of uploaded files,... incase we ever need this... info!
 var path = require('path');
@@ -394,25 +394,26 @@ app.get('/chat', function (req, res) {
    */
 
 
-  console.log('\n\n\n\n\n uhmmmm', req.query.posts.who, req.query.posts.when, req.query.posts.type, req.query.posts, moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss'));
-  console.log('---------time 4 q:', typeof req.query.posts.when, new Date(parseInt(req.query.posts.when)).toISOString().slice(0, 19).replace('T', ' '));
-  // 
+
   if (req.query.posts) { // we need to be sure that they clicked from /account
+    console.log('\n\n\n\n\n uhmmmm', req.query.posts.who, req.query.posts.when, req.query.posts.type, req.query.posts, moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss'));
+    console.log('---------time 4 q:', typeof req.query.posts.when, new Date(parseInt(req.query.posts.when)).toISOString().slice(0, 19).replace('T', ' '));
+
     if (req.query.posts.type == 'accommodation') {
       var query = `SELECT * FROM accommodations WHERE statecode = '${req.query.posts.who}' AND input_time = '${moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss')}'`;
       console.log('acc q', query);
     } else if (req.query.posts.type == 'sale') {
       var query = "SELECT * FROM posts WHERE statecode = '" + req.query.posts.who + "' AND post_time = '" + req.query.posts.when + "'";
-      console.log('post q', query);  
+      console.log('post q', query);
     }
-    
+
     pool.query(query, function (error, results, fields) {
 
       if (error) throw error;
-      
+
       if (!isEmpty(results)) {
         console.info('got post from db successfully', results);
-  
+
         // iouser.emit('boardcast message', { to: 'be received by everyoneELSE', post: data });
       }
     });
@@ -545,7 +546,7 @@ app.get('/signup', function (req, res) {
 // find a more authentic way to calculate the numbers of corpers online using io(/user) --so even if they duplicate pages, it won't double count
 
 var iouser = io.of('/user').on('connection', function (socket) { // when a new user is in the TIMELINE
-  
+
   // console.log('how many', users.connected);
   socket.on('ferret', (asf, name, fn) => {
     // this funtion will run in the client to show/acknowledge the server has gotten the message.
@@ -637,8 +638,8 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
 
           // fix the time here too by converting the retrieved post_time colume value to number because SQL converts the value to string when saving (because we are using type varchar to store the data-number value)
           // value.age = moment(Number(value.post_time)).fromNow();
-          value.age = moment( Number(value.post_time) )
-              .fromNow();
+          value.age = moment(Number(value.post_time))
+            .fromNow();
 
           //if there is image(s) in the post we're sending to user from db then convert it to array. 
           if (value.media) {
@@ -674,8 +675,8 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
           //fix the time here too by converting the retrieved post_time colume value to number because SQL converts the value to string when saving (because we are using type varchar to store the data-number value)
 
           // value.age = moment(new Date(value.input_time)).fromNow();
-          value.age = moment( value.post_time || new Date( value.input_time ) ) // remove new Date(value.input_time) later
-              .fromNow();
+          value.age = moment(value.post_time || new Date(value.input_time)) // remove new Date(value.input_time) later
+            .fromNow();
           // console.log('acc v:', value);
           iouser.emit('boardcast message', { to: 'be received by everyoneELSE', post: value });
 
@@ -707,7 +708,7 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
       });
 
     }
-    // save to db --put picture in different columns // increse packet size for media (pixs and vids)                                                                                                                & when using pool.escape(data.text), there's no need for the enclosing from                 incase the user has ' or any funny characters
+    // save to db --put picture in different columns // increse packet size for media (pixs and vids)                                                                                                                & when using pool.escape(data.text), there's no need for the enclosing single quotes incase the user has ' or any funny characters
     pool.query("INSERT INTO posts( sender, statecode, type, text, media, price, location, post_time) VALUES ('" + data.sender + "', '" + data.statecode + "', '" + (data.type ? data.type : "") + "', " + pool.escape(data.text) + ", '" + (data.images ? q : "") + "', " + pool.escape(data.price) + ", " + pool.escape(data.location) + ",'" + data.post_time + "')", function (error, results, fields) {
 
       if (error) throw error;
@@ -1105,7 +1106,7 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
             var sqlquery = "INSERT INTO accommodations( statecode, streetname, type, price, media, rentrange, rooms, address, directions, tenure, expire, post_location, post_time) VALUES ('" +
               req.session.statecode + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
               arraymedia + "', '" + req.body.rentrange + "', '" + req.body.rooms + "','" + req.body.address + "','" + req.body.directions + "','" +
-              req.body.tenure + "','" + ( req.body.expiredate ? req.body.expiredate : null /**or '' */ ) + "', " + pool.escape( req.session.location ) + "', " + pool.escape( req.body.post_time ) + ")";
+              req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : null /**or '' */) + "', " + pool.escape(req.session.location) + "', " + pool.escape(req.body.post_time) + ")";
 
             pool.query(sqlquery, function (error, results, fields) {
               console.log('inserted data from: ', results);
@@ -1224,7 +1225,7 @@ app.post('/login', bodyParser.urlencoded({ extended: true }), function (req, res
 });
 
 app.get('/logout', function (req, res) {
-  // handle post request, add data to database.
+  // add when user logged out to database
   console.log('came here /logout for ', req.session.id);
   req.session.loggedin = false;
   req.session.destroy(function (err) {
