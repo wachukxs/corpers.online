@@ -33,7 +33,11 @@ make the whole post and accommodation chronologically arranged
 
 always use https://github.com/tj/ejs/tree/0.8.3#features
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+sometimes the req.session data is not correct.
 
+if you duplicate a tab, and login with that tab, it overrides the session object of the previous tab it was duplicated from. we could use url parameter to avoid this [but i personally hate giving too much information in the url]
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 http://www.inspireux.com/articles/
 http://www.inspireux.com/2014/06/21/methods-to-achieve-user-delight/

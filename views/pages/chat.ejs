@@ -22,9 +22,12 @@
     <body class="container">
         <h1>Chat page</h1>
 
-        <div class="alert alert-warning" role="alert">
+        <div class="alert alert-warning" id="notifications" role="alert">
             A simple warning alert—check it out!
         </div>
+        <!-- this should also have like a drop down so they media about what they are talking about is constantly shown
+    
+    there should also be a way to make bargaining easy so a price is nominated by one party and if they both agree on it, it's saved on our system so we can handle escrow and online payments for the involved parties-->
 
         <div id="wall">
 
@@ -51,6 +54,10 @@
                 }
             });
             // var socket = io.connect('http://localhost:8081');
+
+            var textarea = document.getElementById('text');
+            var send = document.getElementById('send');
+            var notify = document.getElementById('notifications');
 
             chat.on('connect', function () { // get fallback from davidwalsh's blog if URLSearchParams isn't in browser
                 chat.emit('hi', 'replace with something useful, like notifying the other user that they are online');
@@ -86,6 +93,18 @@
                   ${moment(data.it.time).format('LLLL')} (${moment(data.it.time).fromNow()})</div></div>`)
             });
 
+            textarea.addEventListener('keypress', function () {
+                console.log('pressing')
+                chat.emit('typing', '<%= statecode %>'); // <%= batch %> <%= name_of_ppa %> <%= servicestate %>
+            });
+
+            chat.on('typing', function (data) {
+                notify.innerHTML = '<em>' + data + ' is typing a message...</em>';
+                setTimeout(() => {
+                    notify.innerHTML = 'a global variable or something that is easily coined';
+                }, 3500);
+            });
+
             /**
              *
              * socket.sockets || connected
@@ -96,10 +115,6 @@
              * socket.adapter.nsp.rooms
              */
 
-
-            var textarea = document.getElementById('text');
-            var send = document.getElementById('send');
-
             textarea.addEventListener('input', function (event) {
                 if (textarea.value === '') {
                     send.disabled = true;
@@ -107,7 +122,6 @@
                     send.disabled = false;
                 }
             }, false);
-
 
             send.addEventListener('click', function name(event) {
                 // console.log(event);

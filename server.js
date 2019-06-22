@@ -279,7 +279,7 @@ app.get(['/AB/:batch', '/AD/:batch', '/AK/:batch', '/AN/:batch', '/BA/:batch', '
 });
 
 app.get(['/AB/:batch/:code', '/AD/:batch/:code', '/AK/:batch/:code', '/AN/:batch/:code', '/BA/:batch/:code', '/BY/:batch/:code', '/BN/:batch/:code', '/BO/:batch/:code', '/CR/:batch/:code', '/DT/:batch/:code', '/EB/:batch/:code', '/ED/:batch/:code', '/EK/:batch/:code', '/EN/:batch/:code', '/FC/:batch/:code', '/GM/:batch/:code', '/IM/:batch/:code', '/JG/:batch/:code', '/KD/:batch/:code', '/KN/:batch/:code', '/KT/:batch/:code', '/KB/:batch/:code', '/KG/:batch/:code', '/KW/:batch/:code', '/LA/:batch/:code', '/NS/:batch/:code', '/NG/:batch/:code', '/OG/:batch/:code', '/OD/:batch/:code', '/OS/:batch/:code', '/OY/:batch/:code', '/PL/:batch/:code', '/RV/:batch/:code', '/SO/:batch/:code', '/TR/:batch/:code', '/YB/:batch/:code', '/ZM/:batch/:code'], function (req, res) {
-  console.log('tryna login ', req.session.id, req.session.loggedin);
+  console.log('tryna login ', req.session.statecode, req.session.id, req.session.loggedin);
   // they should be able to change state code too !!!!!!!!!!!! --later
 
   // when they update their profile. it should immediately reflect. so set it in the session object after a successfully update
@@ -287,9 +287,6 @@ app.get(['/AB/:batch/:code', '/AD/:batch/:code', '/AK/:batch/:code', '/AN/:batch
     res.set('Content-Type', 'text/html');
     // res.sendFile(__dirname + '/account.html');
     res.render('pages/account', { // having it named account.2 returns error cannot find module '2'
-      statecode: req.session.statecode.toUpperCase(),
-      servicestate: req.session.servicestate,
-      batch: req.session.batch,
       statecode: req.session.statecode.toUpperCase(),
       servicestate: req.session.servicestate,
       batch: req.session.batch,
@@ -301,7 +298,6 @@ app.get(['/AB/:batch/:code', '/AD/:batch/:code', '/AK/:batch/:code', '/AN/:batch
 });
 
 app.get('/search', function (req, res) {
-
   // maybe make use of [req.originalUrl .baseUrl .path] later. req.params too
 
   // "/search?type=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address + "&top=" + item.type_of_ppa; // nop type pa
@@ -385,19 +381,15 @@ app.get('/chat', function (req, res) {
   // res.sendFile(__dirname + '/chat.html');
   // req.query.posts.who and req.query.posts.when
 
-
   /**
    * WARNING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
    * TIME IS AN IMPORTANT ISSUE HERE. AND TIME CONVERSION TOO...
    * 
    * USE MOMENT AND NOT JS DATE FUNCTION FOR DATE CONVERSION
    */
-
-
-
   if (req.query.posts) { // we need to be sure that they clicked from /account
     console.log('\n\n\n\n\n uhmmmm', req.query.posts.who, req.query.posts.when, req.query.posts.type, req.query.posts, moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss'));
-    console.log('---------time 4 q:', typeof req.query.posts.when, new Date(parseInt(req.query.posts.when)).toISOString().slice(0, 19).replace('T', ' '));
+    // console.log( new Date(parseInt(req.query.posts.when)).toISOString().slice(0, 19).replace('T', ' ') ); // typeof req.query.posts.when = string
 
     if (req.query.posts.type == 'accommodation') {
       var query = `SELECT * FROM accommodations WHERE statecode = '${req.query.posts.who}' AND input_time = '${moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss')}'`;
@@ -413,6 +405,7 @@ app.get('/chat', function (req, res) {
 
       if (!isEmpty(results)) {
         console.info('got post from db successfully', results);
+        // then send it to the chat page of the involved parties so they are remainded of what they want to buy
 
         // iouser.emit('boardcast message', { to: 'be received by everyoneELSE', post: data });
       }
@@ -422,10 +415,8 @@ app.get('/chat', function (req, res) {
   if (req.session.loggedin) {
     res.set('Content-Type', 'text/html');
     // res.sendFile(__dirname + '/account.html');
+    console.log('wanna chat', req.session.statecode);
     res.render('pages/chat', { // having it named account.2 returns error cannot find module '2'
-      statecode: req.session.statecode.toUpperCase(),
-      servicestate: req.session.servicestate,
-      batch: req.session.batch,
       statecode: req.session.statecode.toUpperCase(),
       servicestate: req.session.servicestate,
       batch: req.session.batch,
@@ -607,9 +598,6 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
 
   // so we're selecting posts newer than the ones currently in the user's timeline. or the server closed the connection error
 
-
-  //
-
   // ways to convert from js format to sql format
   // var d = new Date(aUTL[aUTL.length - 1]).toISOString().slice(0, 19).replace('T', ' '); // or use moment.js library
 
@@ -773,7 +761,6 @@ app.get('/posts', function (req, res) {
     }
   });
 
-
   // res.status(200).send({ data: ["ghfc ty", "rewfhb iwre", "hblg er ieur\n\nthat apostrophe", "The happening place in Abia is NCCF!", "Well and NACC too. But NCCF would Never die!!!", "dsaf df asd", "5u96y j94938\nfdsig eor\n\ndfsnhgu es9rgre\n\ndsigj90e9re", "gfh r", "gejge rniog eoigrioerge ", "gf er rg erg", "fdg erei sug serugeis gr  \n\n\n\n\nThis", "test df gf byyyyyyyyy mee", "Okay. ", "This is it. And yep.", "I could sing. ... Oh"] });
 });
 
@@ -800,14 +787,7 @@ app.get('/newprofile', function (req, res) {
     pool.query("SELECT name_of_ppa FROM info WHERE name_of_ppa != '' ; SELECT ppa_address from info WHERE ppa_address != '' AND servicestate = '" + req.session.servicestate + "'; SELECT city_town FROM info WHERE city_town != '' AND servicestate = '" + req.session.servicestate + "'; SELECT region_street FROM info WHERE region_street != '' AND servicestate = '" + req.session.servicestate + "'", function (error2, results2, fields2) {
 
       if (error2) throw error2;
-      console.log('PPAs', results2);
-
-
-      for (let q = 0; q < results2[0].length; q++) {
-        // const element = array[index];
-        console.log(results2[0][q], q);
-
-      }
+      // console.log('PPAs', results2);
 
       res.set('Content-Type', 'text/html');
       // res.sendFile(__dirname + '/new profile/index.html');
@@ -816,18 +796,12 @@ app.get('/newprofile', function (req, res) {
         servicestate: req.session.servicestate,
         batch: req.session.batch,
         names_of_ppas: results2[0], // array of objects ie names_of_ppas[i].name_of_ppa
-
         ppa_addresses: results2[1],
         cities_towns: results2[2],
         regions_streets: results2[3]
-
         // select all distinct ppa type / address / name and send it to the front end as suggestions for the input when the corpers type
       });
-
     });
-
-
-
   } else {
     // res.redirect('/login');
     res.render('pages/login');
@@ -1206,7 +1180,7 @@ app.post('/login', bodyParser.urlencoded({ extended: true }), function (req, res
         if (error2) throw error2;
 
         if (results2.affectedRows === 1) {
-          req.session.statecode = req.body.statecode;
+          req.session.statecode = req.body.statecode.toUpperCase();
           req.session.batch = results1[0].batch;
           req.session.loggedin = true;
           req.session.servicestate = results1[0].servicestate;
@@ -1341,14 +1315,20 @@ var chat = io
       console.log('\nmessage we got:', msg);
       chat.emit('message', { everyone: 'in', '/chat': 'will get', 'it': msg }); // everyone in /chat sees it
 
-      socket.emit('message', { everyone: 'in', '/chat': 'will get', 'it': msg }); // only the socket (itself) sees it.
+      // socket.emit('message', { everyone: 'in', '/chat': 'will get', 'it': msg }); // only the socket (itself) sees it.
+    });
+    // Handle typing event
+    socket.on('typing', function (data) {
+      console.log('typing data:\n', data);
+      socket.broadcast.emit('typing', data);
     });
 
     // io.sockets.in(room).emit('message', 'what is going on, party people?'); // room is something unique. sockets.room
 
     //everyone, including self, in /chat will get it
     chat.emit('hi!', { test: 'from chat', '/chat': 'will get, it ?' });
-    // chat.emit('message', { everyone: 'in', '/chat': 'will get' });
+
+    // should know when who they are chatting with is online and when they are typing
   });
 
 var news = io
