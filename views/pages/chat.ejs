@@ -89,7 +89,7 @@
                 $('#wall')
                     .append(`<div class="card mb-2"><div class="card-body">
                   ${data.it.message}
-                  </div><div class="card-footer text-muted">
+                  </div><div class="small p-2 bg-dark text-muted">
                   ${moment(data.it.time).format('LLLL')} (${moment(data.it.time).fromNow()})</div></div>`)
             });
 
