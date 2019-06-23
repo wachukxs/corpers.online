@@ -33,6 +33,9 @@ make the whole post and accommodation chronologically arranged
 
 always use https://github.com/tj/ejs/tree/0.8.3#features
 
+
+make it so that when, supposedly corpers, click on #ServiceYear on the sign up page, it opens up twitter so they tweet about something regarding corpers online, something they would want to tweet. also <!-- link our twitter account with this a tag. it'll be an a tag, that'll open up a twitter page and also try to connect twitter with it, show relevant tweets about corpers by picking certain hashtags and keywords and display them in a sidebar -->
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 sometimes the req.session data is not correct.
 

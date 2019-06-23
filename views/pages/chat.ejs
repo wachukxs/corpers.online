@@ -94,7 +94,6 @@
             });
 
             textarea.addEventListener('keypress', function () {
-                console.log('pressing')
                 chat.emit('typing', '<%= statecode %>'); // <%= batch %> <%= name_of_ppa %> <%= servicestate %>
             });
 
@@ -102,7 +101,7 @@
                 notify.innerHTML = '<em>' + data + ' is typing a message...</em>';
                 setTimeout(() => {
                     notify.innerHTML = 'a global variable or something that is easily coined';
-                }, 3500);
+                }, 4500);
             });
 
             /**
