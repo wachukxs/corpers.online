@@ -34,6 +34,8 @@ make the whole post and accommodation chronologically arranged
 always use https://github.com/tj/ejs/tree/0.8.3#features
 
 
+so the way there's "someone is typing..." when chatting, why can't we have, new accommodation or sale or location coming through as someone is writing a post... oh and only people in a certain location can see post from other corpers closer to them, say you're in Abia. you should only see sale and accommodations from corpers in Abia. then we can turn it up a notch, you can only see post from corpers in your LGA and the ones close to you. we can use this as a motivation and nodge for corpers to complete their profile and indicate their LGA and other stuffs. we'd be and must be telling them why we need all these info. [this would be in the quickly reports section]
+
 make it so that when, supposedly corpers, click on #ServiceYear on the sign up page, it opens up twitter so they tweet about something regarding corpers online, something they would want to tweet. also <!-- link our twitter account with this a tag. it'll be an a tag, that'll open up a twitter page and also try to connect twitter with it, show relevant tweets about corpers by picking certain hashtags and keywords and display them in a sidebar -->
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
