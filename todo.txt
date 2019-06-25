@@ -33,6 +33,9 @@ make the whole post and accommodation chronologically arranged
 
 always use https://github.com/tj/ejs/tree/0.8.3#features
 
+improve the search bar at the index so corpers can search for stuffs according to states and LGAs then indicate at the other sides that their searches are based on results close to them, i.e. results in their LGAs because we wouldn't think they'd need results from elsewhere
+
+what if we make photographers do a contest. we make them take pictures of lodges and the best one wins something https://www.pinterest.com/pin/390616967679901314/ and we make it clear we want pictures of rural places.
 
 so the way there's "someone is typing..." when chatting, why can't we have, new accommodation or sale or location coming through as someone is writing a post... oh and only people in a certain location can see post from other corpers closer to them, say you're in Abia. you should only see sale and accommodations from corpers in Abia. then we can turn it up a notch, you can only see post from corpers in your LGA and the ones close to you. we can use this as a motivation and nodge for corpers to complete their profile and indicate their LGA and other stuffs. we'd be and must be telling them why we need all these info. [this would be in the quickly reports section]
 

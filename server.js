@@ -1267,11 +1267,19 @@ var iologin = io.of('/login').on('connection', function (socket) { // when a new
 var chat = io
   .of('/chat')
   .on('connection', function (socket) {
-    // console.log('\nsocket??', socket);
-    // socket.emit('message', { that: 'only', '/chat': 'will get' });
-    // socket.emit('message', { test: 'from socket', '/chat': 'will get, it ?' });
 
     // socket.handshake.query.to and socket.handshake.query.from
+
+    // save all the ever rooms a socket has been in, and output it so 
+
+    // then every socket joins a room where their state code is mentioned [an array]
+    
+    // and if this new room is a room that isn't saved, it means it's a new room, save it. we know by checking the output of the results of all rooms a socket is mentioned in with this new room value
+    socket.join(socket.handshake.query.from + (socket.handshake.query.to != '' ? '-' + socket.handshake.query.to : ''), () => {  // if ... .to is undefined // later when we make chat more roburst like whatsapp, this won't be needed
+      let rooms = Object.keys(socket.rooms); // object.keys converts the keys of an object into an array
+      console.log(rooms); // [ <socket.id>, 'room 237' ]
+      io.to('room 237').emit('a new user has joined the room'); // broadcast to everyone in the room
+    });
 
     /**
      * save all incoming message to db
@@ -1293,15 +1301,6 @@ var chat = io
      * and when they see the message, it should mark that it has been read... how ?
      */
 
-    socket.on('room', function (room) {
-      console.log('room msg', room);
-
-      console.log('\nsocket is:', socket.id, socket.conn.id);
-      socket.join(room);
-      setTimeout(() => { console.log('\nsocket on room??', socket.rooms); }, 3000);
-      console.log('\nsocket remote addr or ip??', socket.conn.remoteAddress);
-    });
-
     socket.on('hi', function (msg) {
       console.log('\nwhat we got:', msg);
     });
@@ -1311,15 +1310,15 @@ var chat = io
       fn('from server: we got the message woot ' + name + asf);
     });
 
-    socket.on('message', function (msg) {
+    socket.on('message', (msg, fn) => {
       console.log('\nmessage we got:', msg);
       chat.emit('message', { everyone: 'in', '/chat': 'will get', 'it': msg }); // everyone in /chat sees it
 
       // socket.emit('message', { everyone: 'in', '/chat': 'will get', 'it': msg }); // only the socket (itself) sees it.
+      fn(true, msg)
     });
     // Handle typing event
     socket.on('typing', function (data) {
-      console.log('typing data:\n', data);
       socket.broadcast.emit('typing', data);
     });
 

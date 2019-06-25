@@ -1,141 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Chat</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Chat</title>
 
-        <script src="jquery-3.3.1.min.js"></script>
-        <script src="bootstrap.min.js"></script>
-        <link rel="stylesheet" href="bootstrap.css">
+    <script src="jquery-3.3.1.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <link rel="stylesheet" href="bootstrap.css">
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"
-            integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
-    </head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
+</head>
 
-    <script src="/socket.io/socket.io.js"></script>
-
+<script src="/socket.io/socket.io.js"></script>
 
 
-    <body class="container">
-        <h1>Chat page</h1>
 
-        <div class="alert alert-warning" id="notifications" role="alert">
-            A simple warning alert—check it out!
-        </div>
-        <!-- this should also have like a drop down so they media about what they are talking about is constantly shown
+<body class="container">
+    <h1>Chat page</h1>
+
+    <div class="alert alert-warning" id="notifications" role="alert">
+        Corpers you've chatted with or want to chat with will appear here.
+    </div>
+    <!-- this should also have like a drop down so they media about what they are talking about is constantly shown
     
     there should also be a way to make bargaining easy so a price is nominated by one party and if they both agree on it, it's saved on our system so we can handle escrow and online payments for the involved parties-->
 
-        <div id="wall">
+    <div id="wall">
 
+    </div>
+
+    <div class="row">
+        <div class="col-10">
+            <textarea class="form-control" id="text" rows="3"></textarea>
         </div>
-
-        <div class="row">
-            <div class="col-10">
-                <textarea class="form-control" id="text" rows="3"></textarea>
-            </div>
-            <div class="col-2">
-                <button id="send" class="btn btn-primary">Send</button>
-            </div>
+        <div class="col-2">
+            <button id="send" class="btn btn-primary">Send</button>
         </div>
+    </div>
 
-        <!-- the room you join is unique with the person you're chatting with, it's made up of the unique ids of both parties -->
+    <!-- the room you join is unique with the person you're chatting with, it's made up of the unique ids of both parties -->
 
-        <script>
-            var chat = io.connect('http://localhost:8081/chat', {
-                transports: ['websocket'],
-                query: {
-                    from: '<%= statecode %>',
-                    to: new URLSearchParams(window.location.search)
-                        .get('posts[who]')
-                }
-            });
-            // var socket = io.connect('http://localhost:8081');
+    <script>
+        var chat = io.connect( 'http://localhost:8081/chat', {
+            transports: [ 'websocket' ],
+            query: {
+                from: '<%= statecode %>',
+                to: (new URLSearchParams( window.location.search )
+                    .get( 'posts[who]' ) != null ? new URLSearchParams( window.location.search )
+                    .get( 'posts[who]' ).toUpperCase() : '' )
+            }
+        } );
+        // var socket = io.connect('http://localhost:8081');
 
-            var textarea = document.getElementById('text');
-            var send = document.getElementById('send');
-            var notify = document.getElementById('notifications');
+        var textarea = document.getElementById( 'text' );
+        var send = document.getElementById( 'send' );
+        var notify = document.getElementById( 'notifications' );
 
-            chat.on('connect', function () { // get fallback from davidwalsh's blog if URLSearchParams isn't in browser
-                chat.emit('hi', 'replace with something useful, like notifying the other user that they are online');
-                chat.emit('ferret', 'aeee', 'tobi', (data) => {
-                    // this funtion will run here to show the server has gotten our message.
-                    console.log(data); // data will be 'woot ...'
-                });
-                chat.emit('room', 'rofsddsfaom');
-            });
+        chat.on( 'connect', function() { // get fallback from davidwalsh's blog if URLSearchParams isn't in browser
+            chat.emit( 'hi', 'replace with something useful, like notifying the other user that they are online' );
+            chat.emit( 'ferret', 'aeee', 'tobi', ( data ) => {
+                // this funtion will run here to show the server has gotten our message.
+                console.log( data ); // data will be 'woot ...'
+            } );
+            chat.emit( 'room', 'rofsddsfaom' );
+        } );
 
-            //-----
-            chat.on('a message', function (data) { // when we receive 'a message'
-                console.log(data);
-                chat.emit('my other event', {
-                    my: 'data-chat'
-                }); // send 'my other event' to everyone in /chat
-            });
+        //-----
+        chat.on( 'a message', function( data ) { // when we receive 'a message'
+            console.log( data );
+            chat.emit( 'my other event', {
+                my: 'data-chat'
+            } ); // send 'my other event' to everyone in /chat
+        } );
 
-            chat.on('hi', function (data) { // when we receive 'a message'
-                console.log(data);
-            });
+        chat.on( 'hi', function( data ) { // when we receive 'a message'
+            console.log( data );
+        } );
 
-            chat.on('my other event', function (data) { // when we receive 'a message'
-                console.log(data);
-            });
+        chat.on( 'my other event', function( data ) { // when we receive 'a message'
+            console.log( data );
+        } );
 
-            chat.on('message', function (data) { //when we receive a boardcast message
-                console.log('we received message! ', data); // add text-right later and text-center later
-                $('#wall')
-                    .append(`<div class="card mb-2"><div class="card-body">
-                  ${data.it.message}
+        chat.on( 'message', function( data ) { //when we receive a boardcast message
+            console.log( 'we received message! ', data ); // add text-right later and text-center later
+            $( '#wall' )
+                .append( `<div class="card mb-2"><div class="card-body">
+                  <div class="float-right">${data.it.message}</div>
                   </div><div class="small p-2 bg-dark text-muted">
-                  ${moment(data.it.time).format('LLLL')} (${moment(data.it.time).fromNow()})</div></div>`)
-            });
+                  ${new Date(data.it.time).toLocaleTimeString()} <span id="${data.it.time}"></span> </div></div>` )
+        } ); // new Date(Date.now()).toLocaleTimeString() ---- then if not today new Date(Date.now()).toLocaleString() ---maybe    [new Date(Date.now()).toDateString()]
 
-            textarea.addEventListener('keypress', function () {
-                chat.emit('typing', '<%= statecode %>'); // <%= batch %> <%= name_of_ppa %> <%= servicestate %>
-            });
+        textarea.addEventListener( 'keypress', function() {
+            chat.emit( 'typing', '<%= statecode %>' ); // <%= batch %> <%= name_of_ppa %> <%= servicestate %>
+        } );
 
-            chat.on('typing', function (data) {
-                notify.innerHTML = '<em>' + data + ' is typing a message...</em>';
-                setTimeout(() => {
-                    notify.innerHTML = 'a global variable or something that is easily coined';
-                }, 4500);
-            });
+        chat.on( 'typing', function( data ) {
+            notify.innerHTML = '<em>' + data + ' is typing a message...</em>';
+            setTimeout( () => {
+                notify.innerHTML = 'a global variable or something that is easily coined';
+            }, 1500 );
+        } );
 
-            /**
-             *
-             * socket.sockets || connected
-             *
-             * socket.id
-             *
-             * socket.fns
-             * socket.adapter.nsp.rooms
-             */
+        /**
+         *
+         * socket.sockets || connected
+         *
+         * socket.id
+         *
+         * socket.fns
+         * socket.adapter.nsp.rooms
+         */
 
-            textarea.addEventListener('input', function (event) {
-                if (textarea.value === '') {
-                    send.disabled = true;
-                } else {
-                    send.disabled = false;
-                }
-            }, false);
+        textarea.addEventListener( 'input', function( event ) {
+            if ( textarea.value === '' ) {
+                send.disabled = true;
+            } else {
+                send.disabled = false;
+            }
+        }, false );
 
-            send.addEventListener('click', function name(event) {
-                // console.log(event);
-                chat.emit('message', {
-                    message: textarea.value,
-                    time: Date.now()
-                });
-                textarea.value = '';
-            }, false);
+        send.addEventListener( 'click', function( event ) {
+            // console.log(event);
+            // when we send a message, we append it to the timeline, and when the server says it's gotten the message, we tag it as delivered. and if we get a connection from the corper to this particular room and the message has been in the viewport, we mark it as read
+            chat.emit( 'message', {
+                message: textarea.value,
+                time: Date.now()
+            }, ( data ) => {
+                // this funtion will run here to show the server has gotten our message.
+                console.log( 'g', data ); // data will be 'true, msg'
+            } );
+            textarea.value = '';
+        }, false );
 
-            var m = moment(1559949327025)
-                .fromNow();
-            console.log('moment', m);
-        </script>
+        var m = moment( 1559949327025 )
+            .fromNow();
+        console.log( 'moment', m );
+    </script>
 
-    </body>
+</body>
 
 </html>
