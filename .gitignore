@@ -138,3 +138,9 @@ $RECYCLE.BIN/
 
 # js beautify
 .jsbeautifyrc
+
+# windows .bat files
+*.bat
+
+# eslint config file
+eslintrc.json

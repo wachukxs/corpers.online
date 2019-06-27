@@ -392,7 +392,7 @@ app.get('/chat', function (req, res) {
     // console.log( new Date(parseInt(req.query.posts.when)).toISOString().slice(0, 19).replace('T', ' ') ); // typeof req.query.posts.when = string
 
     if (req.query.posts.type == 'accommodation') {
-      var query = `SELECT * FROM accommodations WHERE statecode = '${req.query.posts.who}' AND input_time = '${moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss')}'`;
+      var query = "SELECT * FROM accommodations WHERE statecode = '" + req.query.posts.who + "' AND input_time = '" + moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss') + "'";
       console.log('acc q', query);
     } else if (req.query.posts.type == 'sale') {
       var query = "SELECT * FROM posts WHERE statecode = '" + req.query.posts.who + "' AND post_time = '" + req.query.posts.when + "'";
@@ -411,6 +411,7 @@ app.get('/chat', function (req, res) {
       }
     });
   }
+
   // when they update their profile. it should immediately reflect. so set it in the session object after a successfully update
   if (req.session.loggedin) {
     res.set('Content-Type', 'text/html');
@@ -425,7 +426,7 @@ app.get('/chat', function (req, res) {
   } else {
     res.redirect('/login');
   }
-  // res.send('in a bit');
+
 });
 
 app.get(['/map', '/maps'], function (req, res) {
@@ -453,7 +454,7 @@ app.get(['/map', '/maps'], function (req, res) {
       } */
 
       // format to GeoJSON Format https://tools.ietf.org/html/rfc7946
-      for (let index = 0; index < results.length; index++) {
+      for (index = 0; index < results.length; index++) {
         // unstringify the ppa_geodata entry
         // results[index]['ppa_geodata'] = JSON.parse(results[index].ppa_geodata);
 
@@ -1311,11 +1312,12 @@ var chat = io
     });
 
     socket.on('message', (msg, fn) => {
-      console.log('\nmessage we got:', msg);
-      chat.emit('message', { everyone: 'in', '/chat': 'will get', 'it': msg }); // everyone in /chat sees it
-
-      // socket.emit('message', { everyone: 'in', '/chat': 'will get', 'it': msg }); // only the socket (itself) sees it.
-      fn(true, msg)
+      // console.log('\nmessage we got:', msg);
+      var m = { everyone: 'in', '/chat': 'will get', 'it': msg };
+      // chat.emit('message', m); // everyone in /chat sees it
+      socket.broadcast.emit('message', m);
+      // socket.emit('message', m); // only the socket (itself) sees it.
+      fn(m)
     });
     // Handle typing event
     socket.on('typing', function (data) {

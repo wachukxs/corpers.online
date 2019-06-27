@@ -1,0 +1,7 @@
+once a corper starts a chat from a post, a room is created if it's a new room (not previously in the db) and saved to the db, if it's an old room, their previous chat is opened and their previous messages and setteled or unsetteled deals is opened (what if the chat is not replied to or blocked ?)
+
+now the corper the chat is opened with isn't aware someone else wants to chat with them, so we check if they are online, if they are, we message them that a chat has been started with them.
+
+once a socket comes online, check it's state code, and check created_rooms column in db, if a/your state code appears in any room, you're auto joining it.
+
+we should be able to tell when that socket recieves a message (with the above logic)
