@@ -424,8 +424,8 @@ app.get('/chat', function (req, res) {
       servicestate: req.session.servicestate,
       batch: req.session.batch,
       name_of_ppa: req.session.name_of_ppa,
-      post: postresult,
-      newchat: req.query.posts.who.toUpperCase(),
+      postdetails: postresult,
+      newchat: {statecode: req.query.posts.who.toUpperCase()},
       posttime: req.query.posts.when, 
       posttype: req.query.posts.type
     });

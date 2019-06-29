@@ -30,15 +30,22 @@
             <!-- maybe put a search box here, clone whatsapp -->
             <div class="list-group list-group-flush">
                 <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                    <a hidden class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</a>
+                    <!-- <a hidden class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</a> -->
 
 
                     <% try { %>
                     <% if (newchat) { %>
-                    <h2><%= newchat %></h2>
+                    <a hidden class="nav-link" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="false">Home</a>
+
+
+                    <a data-statecode="<%= newchat.statecode %>" class="nav-link active list-group-item list-group-item-action" id="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>-tab" data-toggle="pill" href="#v-pills-<%= newchat.statecode.replace(/\//g, '-') %>" role="tab" aria-controls="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>" aria-selected="true">
+                        <div><%= newchat.statecode %> fullname</div>
+                        <small class="text-muted"><%= newchat.statecode %></small>
+                    </a>
                     <% } %>
                     <% } catch(error) { %>
-                       <% console.log('err', error); %>
+                        <a hidden class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</a>
+                    <%# console.log('err', error); %>
                     <% } %>
 
                     <a data-statecode="AB/17A/3457" class="nav-link list-group-item list-group-item-action" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">
@@ -91,7 +98,7 @@
             The top navbar is optional, and just for demonstration. Just create an element with the
             <code>#menu-toggle</code> ID which will toggle the menu when clicked.</p> -->
                 <div class="tab-content" id="v-pills-tabContent">
-                    <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                    <!-- <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
 
 
                         <div class="text-center mt-5 align-middle">
@@ -104,7 +111,52 @@
                             </h5>
                         </div>
 
-                    </div>
+                    </div> -->
+
+                    <% try { %>
+                        <% if (newchat) { %>
+                            <div class="tab-pane fade" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+
+
+                                <div class="text-center mt-5 align-middle">
+                                    <div class="">
+                                        <img src="/chat/undraw_chat_1wo5.png" alt="chat icon" width="250" height="250" srcset="/chat/undraw_chat_1wo5.svg" class="rounded">
+                                    </div>
+        
+                                    <h5 class="font-weight-light">
+                                        Corpers who have chatted you up show here.
+                                    </h5>
+                                </div>
+        
+                            </div>
+    
+    
+                            <div class="tab-pane fade show active" id="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>" role="tabpanel"
+                            aria-labelledby="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>-tab">
+                            <h6><%= newchat.statecode %></h6>
+                                <div class="wall">
+                                    just sth here
+                                </div>
+                            </div>
+                        <% } %>
+                        <% } catch(error) { %>
+                            <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+
+
+                                <div class="text-center mt-5 align-middle">
+                                    <div class="">
+                                        <img src="/chat/undraw_chat_1wo5.png" alt="chat icon" width="250" height="250" srcset="/chat/undraw_chat_1wo5.svg" class="rounded">
+                                    </div>
+        
+                                    <h5 class="font-weight-light">
+                                        Corpers who have chatted you up show here.
+                                    </h5>
+                                </div>
+        
+                            </div>
+                        <%# console.log('err', error); %>
+                        <% } %>
+
                     <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
                         <p>
                             profile tab
