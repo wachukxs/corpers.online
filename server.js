@@ -388,7 +388,8 @@ app.get('/chat', function (req, res) {
    * USE MOMENT AND NOT JS DATE FUNCTION FOR DATE CONVERSION
    */
   if (req.query.posts) { // we need to be sure that they clicked from /account
-    console.log('\n\n\n\n\n uhmmmm', req.query.posts.who, req.query.posts.when, req.query.posts.type, req.query.posts, moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss'));
+    var postresult;
+    // console.log('\n\n\n\n\n uhmmmm', req.query.posts.who, req.query.posts.when, req.query.posts.type, moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss'));
     // console.log( new Date(parseInt(req.query.posts.when)).toISOString().slice(0, 19).replace('T', ' ') ); // typeof req.query.posts.when = string
 
     if (req.query.posts.type == 'accommodation') {
@@ -404,6 +405,7 @@ app.get('/chat', function (req, res) {
       if (error) throw error;
 
       if (!isEmpty(results)) {
+        postresult = results;
         console.info('got post from db successfully', results);
         // then send it to the chat page of the involved parties so they are remainded of what they want to buy
 
@@ -413,7 +415,21 @@ app.get('/chat', function (req, res) {
   }
 
   // when they update their profile. it should immediately reflect. so set it in the session object after a successfully update
-  if (req.session.loggedin) {
+  if (req.session.loggedin && req.query.posts) {
+    res.set('Content-Type', 'text/html');
+    // res.sendFile(__dirname + '/account.html');
+    console.log('wanna chat', req.session.statecode);
+    res.render('pages/newchat', { // having it named account.2 returns error cannot find module '2'
+      statecode: req.session.statecode.toUpperCase(),
+      servicestate: req.session.servicestate,
+      batch: req.session.batch,
+      name_of_ppa: req.session.name_of_ppa,
+      post: postresult,
+      newchat: req.query.posts.who.toUpperCase(),
+      posttime: req.query.posts.when, 
+      posttype: req.query.posts.type
+    });
+  } else if (req.session.loggedin) {
     res.set('Content-Type', 'text/html');
     // res.sendFile(__dirname + '/account.html');
     console.log('wanna chat', req.session.statecode);
