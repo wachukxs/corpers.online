@@ -417,7 +417,7 @@ app.get('/chat', function (req, res) {
     res.set('Content-Type', 'text/html');
     // res.sendFile(__dirname + '/account.html');
     console.log('wanna chat', req.session.statecode);
-    res.render('pages/chat', { // having it named account.2 returns error cannot find module '2'
+    res.render('pages/newchat', { // having it named account.2 returns error cannot find module '2'
       statecode: req.session.statecode.toUpperCase(),
       servicestate: req.session.servicestate,
       batch: req.session.batch,
@@ -650,7 +650,7 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
 
           // send the posts little by little, or in batches so it'll be faster.
 
-          iouser.emit('boardcast message', { to: 'be received by everyoneELSE', post: value });
+          socket.emit('boardcast message', { to: 'be received by everyoneELSE', post: value });
 
           // console.log('sent BCs'); // commented here out so we don't flood the output with too much data, uncomment when you're doing testing.
         }
@@ -667,7 +667,7 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
           value.age = moment(value.post_time || new Date(value.input_time)) // remove new Date(value.input_time) later
             .fromNow();
           // console.log('acc v:', value);
-          iouser.emit('boardcast message', { to: 'be received by everyoneELSE', post: value });
+          socket.emit('boardcast message', { to: 'be received by everyoneELSE', post: value });
 
         }
       );
@@ -1265,17 +1265,81 @@ var iologin = io.of('/login').on('connection', function (socket) { // when a new
 
 });
 
+// truly only save rooms when a message has started in that room. 
+// then once chat page is open, use .ejs variables to send all the rooms the user has been in from the express query parameter
+
 var chat = io
   .of('/chat')
   .on('connection', function (socket) {
 
+    // immediately join all the rooms presently online they are involved in, someone wants to chat with you
+    var everyRoomOnline = Object.keys(chat.adapter.rooms)
+    for (index = 0; index < everyRoomOnline.length; index++) {
+      const onlineRoom = everyRoomOnline[index];
+
+      if (onlineRoom.includes(socket.handshake.query.from)) {
+        socket.join(onlineRoom);
+      }
+
+    }
+
+
+
     // socket.handshake.query.to and socket.handshake.query.from
+
+    // [so we save traffic, a bit maybe] also select old rooms, i.e. rooms not in everyOnlineRooms, also show that these rooms[the participants] are online[maybe with green in the front end][from chat.adapter.rooms object]
+
+    var query = " SELECT DISTINCT room FROM chats WHERE room LIKE '%" + socket.handshake.query.from + "%' "; // every room you've ever been mention in, i.e. consisting of who you sent message to and who sent message to you
+
+    pool.query(query, function (error, results, fields) {
+
+      if (error) throw error;
+
+      if (!isEmpty(results)) { // an array of objects with the columns as keys
+        console.info('got rooms from db successfully', results);
+        // join old rooms
+        for (index = 0; index < results.length; index++) {
+          const offlineRoom = results[index].room;
+
+          if (offlineRoom.includes(socket.handshake.query.from)) {
+            socket.join(offlineRoom);
+          }
+
+        }
+
+      } else if (isEmpty(results)) {
+        console.info('got empty rooms from db successfully', results);
+      }
+    });
 
     // save all the ever rooms a socket has been in, and output it so 
 
     // then every socket joins a room where their state code is mentioned [an array]
-    
+
     // and if this new room is a room that isn't saved, it means it's a new room, save it. we know by checking the output of the results of all rooms a socket is mentioned in with this new room value
+
+    // for now we are supporting only two per room
+    // only join rooms that has more than one participant. else why is it a room? and you can't chat alone with yourself!
+    // don't join rooms with the same state codes!! 
+    // only join a room a socket isn't already in --socket.io already takes care of this!!
+    if (socket.handshake.query.from != ('' || null) && socket.handshake.query.to != ('' & socket.handshake.query.from & null)) {
+      var room = socket.handshake.query.from + '-' + socket.handshake.query.to;
+
+      var q = "INSERT INTO chats (room) VALUES ('" + room + "')";
+      pool.query(q, function (error, results, fields) {
+        if (error) throw error;
+        // connected!
+        if (results.affectedRows === 1) { // when we've saved it, the corper can now join the room
+          socket.join(room, () => { // later when we make chat more roburst like whatsapp, this won't be needed
+            let rooms = Object.keys(socket.rooms); // object.keys converts the keys of an object into an array
+            console.log(rooms); // [ <socket.id>, 'room 237' ]
+            io.to(room).emit('a new user has joined the room'); // broadcast to everyone in the room
+          });
+        }
+      });
+
+    }
+
     socket.join(socket.handshake.query.from + (socket.handshake.query.to != '' ? '-' + socket.handshake.query.to : ''), () => {  // if ... .to is undefined // later when we make chat more roburst like whatsapp, this won't be needed
       let rooms = Object.keys(socket.rooms); // object.keys converts the keys of an object into an array
       console.log(rooms); // [ <socket.id>, 'room 237' ]
@@ -1312,12 +1376,25 @@ var chat = io
     });
 
     socket.on('message', (msg, fn) => {
-      // console.log('\nmessage we got:', msg);
-      var m = { everyone: 'in', '/chat': 'will get', 'it': msg };
-      // chat.emit('message', m); // everyone in /chat sees it
-      socket.broadcast.emit('message', m);
-      // socket.emit('message', m); // only the socket (itself) sees it.
-      fn(m)
+      if (socket.handshake.query.from != ('' || null) && socket.handshake.query.to != ('' & socket.handshake.query.from & null)) { // send message only to a particular room
+        var room = socket.handshake.query.from + '-' + socket.handshake.query.to;
+        var m = { 'from': {'statecode': socket.handshake.query.from}, 'to': {'statecode': socket.handshake.query.to}, 'it': msg };
+        // chat.emit('message', m); // everyone in /chat sees it
+        // socket.broadcast.emit('message', m);
+        socket.to(room).broadcast.emit('message', m); // if a message comes to you, it means you're going to join that room, but how do we make sure you can also send messages to that room at will ?> from the front tend!!
+        // socket.emit('message', m); // only the socket (itself) sees it.
+        fn(m) // run on client machine
+        // save message to db
+        var q = "INSERT INTO chats (room, message_from, message_to, time, message) VALUES ('" + room + "', '" + socket.handshake.query.from + "', '" + socket.handshake.query.to + "', '" + msg.time + "', '" + msg.message + "')";
+        pool.query(q, function (error, results, fields) {
+          if (error) throw error;
+          // connected!
+          if (results.affectedRows === 1) { // when we've saved it, the corper can now join the room
+            console.log('\n\nsaved message to db')
+          }
+        });
+      }
+
     });
     // Handle typing event
     socket.on('typing', function (data) {
@@ -1330,6 +1407,8 @@ var chat = io
     chat.emit('hi!', { test: 'from chat', '/chat': 'will get, it ?' });
 
     // should know when who they are chatting with is online and when they are typing
+
+
   });
 
 var news = io

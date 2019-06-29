@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>OuR test chat page*</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom styles for this template -->
+        <link href="/simple-sidebar.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+            integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+        <script src="/socket.io/socket.io.js"></script>
+    </head>
+
+    <body>
+
+        <div class="d-flex" id="wrapper">
+
+            <!-- Sidebar -->
+            <div class="bg-light border-right" id="sidebar-wrapper">
+                <div class="sidebar-heading">Contacts</div>
+                <!-- maybe put a search box here, clone whatsapp -->
+                <div class="list-group list-group-flush">
+                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                        <a hidden class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home"
+                            role="tab" aria-controls="v-pills-home" aria-selected="true">Home</a>
+
+                        <a data-statecode="AB/17A/3457" class="nav-link list-group-item list-group-item-action"
+                            id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab"
+                            aria-controls="v-pills-profile" aria-selected="false">
+                            <div>Full Name</div>
+                            <small class="text-muted">AB/17B/3456</small>
+                        </a>
+
+                        <a class="nav-link list-group-item list-group-item-action" id="v-pills-AB-17B-1214-tab"
+                            data-toggle="pill" href="#v-pills-AB-17B-1214" role="tab"
+                            aria-controls="v-pills-AB-17B-1214" aria-selected="false">Messages</a>
+
+                        <a class="nav-link list-group-item list-group-item-action" id="v-pills-settings-tab"
+                            data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings"
+                            aria-selected="false">Settings</a>
+                    </div>
+                </div>
+            </div>
+            <!-- /#sidebar-wrapper -->
+
+            <!-- Page Content -->
+            <div id="page-content-wrapper">
+
+                <nav class="navbar navbar-light bg-light">
+                    <button class="btn btn-primary" id="menu-toggle">
+                        <!-- small screens, chat shows, large screens, chats doesn't show  -->
+                        <div id="a" class="d-sm-block d-sm-block d-md-none d-lg-none d-xl-none"><i
+                                class="fas fa-chevron-left"></i>
+                            Chats</div>
+
+                        <!-- large screens, x shows, small screens x doesn't show  -->
+                        <div id="b" class="d-none d-sm-none d-md-block d-lg-block d-xl-block"><i
+                                class="fas fa-times"></i></div>
+                    </button>
+
+                    <div class="d-none d-sm-block" id="notifications">maybe some/all notifications show here</div>
+                    <!-- only on big screens -->
+
+                    <div class="dropdown">
+                        <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#">Block user</a>
+                            <a class="dropdown-item" href="#">Pay for item [escrow]</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Close deal, or verify goods</a>
+                        </div>
+                    </div>
+                </nav>
+
+                <div class="container-fluid">
+
+                    <!-- <p>The starting state of the menu will appear collapsed on smaller screens, and will appear
+            non-collapsed on larger screens. When toggled using the button below, the menu will change.</p>
+          <p>Make sure to keep all page content within the <code>#page-content-wrapper</code>.
+            The top navbar is optional, and just for demonstration. Just create an element with the
+            <code>#menu-toggle</code> ID which will toggle the menu when clicked.</p> -->
+                    <div class="tab-content" id="v-pills-tabContent">
+                        <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
+                            aria-labelledby="v-pills-home-tab">
+
+
+                            <div class="text-center mt-5 align-middle">
+                                <div class="">
+                                    <img src="/chat/undraw_chat_1wo5.png" alt="chat icon" width="250" height="250"
+                                        srcset="/chat/undraw_chat_1wo5.svg" class="rounded">
+                                </div>
+
+                                <h5 class="font-weight-light">
+                                    Corpers who have chatted you up show here.
+                                </h5>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane fade" id="v-pills-profile" role="tabpanel"
+                            aria-labelledby="v-pills-profile-tab">
+                            <p>
+                                profile tab
+                            </p>
+
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora nobis necessitatibus
+                            molestias! Nisi
+                            labore, a eaque, dolorem molestias, optio ratione soluta mollitia deserunt id consequatur
+                            explicabo
+                            quisquam totam officiis sapiente!
+                            <div class="wall">
+
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="v-pills-AB-17B-1214" role="tabpanel"
+                            aria-labelledby="v-pills-AB-17B-1214-tab">
+                            <h6>messages</h6>
+
+                            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Atque cum quas corporis totam
+                            quasi eius, porro vitae iusto laudantium commodi velit illo alias repudiandae similique
+                            praesentium enim
+                            necessitatibus aperiam reprehenderit!
+
+                            <div class="wall">
+
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="v-pills-settings" role="tabpanel"
+                            aria-labelledby="v-pills-settings-tab">
+                            <h6>settings ?!??!?! we need sth bettr</h6>
+                            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Fuga nobis vel dolore error, quam
+                            esse
+                            ratione tempore sed, sapiente earum nisi eveniet cum asperiores voluptatibus impedit
+                            molestiae molestias
+                            sint hic.
+
+                            <div class="wall">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- append before the new tab is shown -->
+                        <div class="col-10">
+                            <textarea class="form-control" id="text" rows="3"></textarea>
+                        </div>
+                        <div class="col-2">
+                            <button id="send" class="btn btn-primary">Send</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- /#page-content-wrapper -->
+
+        </div>
+        <!-- /#wrapper -->
+
+        <!-- Bootstrap core JavaScript -->
+        <script src="/jquery-3.3.1.min.js"></script>
+        <script src="/bootstrap.bundle.min.js"></script>
+
+        <!-- Menu Toggle Script -->
+        <script>
+            $("#menu-toggle")
+                .click(function (e) {
+                    e.preventDefault();
+                    $("#wrapper")
+                        .toggleClass("toggled");
+
+                    // Although it works fine, I believe there are unnecessary classes we can do without, therefore it need more work.
+                    $("#a")
+                        .toggleClass(
+                            "d-none d-md-block d-lg-none d-xl-none"); // d-sm-block d-sm-block d-md-none d-lg-none d-xl-block
+                    $("#b")
+                        .toggleClass(
+                            "d-none d-md-block d-lg-block d-xl-block d-xl-none"); // d-none d-sm-none d-md-block d-lg-block d-xl-block
+                });
+        </script>
+
+        <script>
+            $('a[data-toggle="pill"]')
+                .on('show.bs.tab', function (
+                    e) { // This event fires on tab show, but before the new tab has been shown
+                    console.log('show e.target', e.target) // newly activated tab
+                    console.log('show e.relatedTarget', e.relatedTarget) // previous active tab
+                })
+
+            $('a[data-toggle="pill"]')
+                .on('shown.bs.tab', function (
+                    e) { // This event fires on tab show after a tab has been shown
+                    console.log('shown e.target', e.target) // newly activated tab
+                    console.log('shown e.relatedTarget', e.relatedTarget) // previous active tab
+                })
+
+
+
+            $('a[data-toggle="pill"]')
+                .on('hide.bs.tab', function (
+                    e) { // This event fires when a new tab is to be shown (and thus the previous active tab is to be hidden)
+                    // console.log('hide e.target', e.target) // the current active tab
+                    // console.log('hide e.relatedTarget', e.relatedTarget) // new soon-to-be-active tab
+                })
+
+            $('a[data-toggle="pill"]')
+                .on('hidden.bs.tab', function (
+                    e) { // This event fires after a new tab is shown (and thus the previous active tab is hidden)
+                    // console.log('hidden e.target', e.target) // previous active tab
+                    // console.log('hidden e.relatedTarget', e.relatedTarget) //  new active tab
+                })
+        </script>
+
+
+        <!-- the room you join is unique with the person you're chatting with, it's made up of the unique ids of both parties -->
+
+        <script>
+            var chat = io.connect('http://localhost:8081/chat', {
+                transports: ['websocket'],
+                query: {
+                    from: '<%= statecode %>',
+                    to: (new URLSearchParams(window.location.search)
+                        .get('posts[who]') != null ? new URLSearchParams(window.location.search)
+                            .get('posts[who]')
+                            .toUpperCase() : '')
+                }
+            });
+            // var socket = io.connect('http://localhost:8081');
+            console.log('chat socket', chat)
+            var textarea = document.getElementById('text');
+            var send = document.getElementById('send');
+            var notify = document.getElementById('notifications');
+
+            chat.on('connect', function () { // get fallback from davidwalsh's blog if URLSearchParams isn't in browser
+                chat.emit('hi', 'replace with something useful, like notifying the other user that they are online');
+                chat.emit('ferret', 'aeee', 'tobi', (data) => {
+                    // this funtion will run here to show the server has gotten our message.
+                    console.log(data); // data will be 'woot ...'
+                });
+                chat.emit('room', 'rofsddsfaom');
+            });
+
+            //-----
+            chat.on('a message', function (data) { // when we receive 'a message'
+                console.log(data);
+                chat.emit('my other event', {
+                    my: 'data-chat'
+                }); // send 'my other event' to everyone in /chat
+            });
+
+            chat.on('hi', function (data) { // when we receive 'a message'
+                console.log(data);
+            });
+
+            chat.on('oldmessages', function (data) { //
+                console.log(data);
+            });
+
+            chat.on('message', function (data) { //when we receive a boardcast message
+                console.log('we received message! ', data); // add text-right later and text-center later
+                // run through the tabs at the side bar, if this sender hasn't messaged before, append his/her name to the side bar, at the top [2nd] and also their chatting tab
+
+                var it = document.getElementById('v-pills-tab').children;
+                var ith = []
+                for (index = 0; index < it.length; index++) {
+                    // const element = it[index].attributes['data-statecode'] == undefined
+                    if (it[index].attributes['data-statecode'] != undefined) {
+                        ith.push(it[index].attributes['data-statecode'].value)
+                    }
+                }
+                console.log(ith, data.from.statecode, ith.includes(data.from.statecode))
+                if (!ith.includes(data.from.statecode)) {
+                    // https://davidwalsh.name/javascript-replace
+                    $(`<a data-statecode="${data.from.statecode}" class="nav-link list-group-item list-group-item-action" id="v-pills-${data.from.statecode.replace(/\//g, '-')}-tab" data-toggle="pill" href="#v-pills-${data.from.statecode.replace(/\//g, '-')}" role="tab" aria-controls="v-pills-${data.from.statecode.replace(/\//g, '-')}" aria-selected="false">
+                        <div>${data.from.fullname}</div>
+                        <small class="text-muted">${data.from.statecode}</small>
+                    </a>` ).insertBefore('#v-pills-tab > a:nth-child(2)');
+
+                    // chatting tab
+                    $(`<div class="tab-pane fade" id="v-pills-${data.from.statecode.replace(/\//g, '-')}" role="tabpanel"
+                            aria-labelledby="v-pills-${data.from.statecode.replace(/\//g, '-')}-tab">
+                            <h6>${data.from.statecode}</h6>
+                            <div class="wall">
+
+                            </div>
+                        </div>`).insertBefore('#v-pills-tabContent > div:nth-child(2)');
+                }
+
+
+                $(`#${data.from.statecode.replace(/\//g, '-')} > .wall`)
+                    .append(`<div class="pr-5"><div class="card mb-2"><div class="card-body">
+                  <div class="float-left">${data.it.message}</div>
+                  </div><div class="small p-2 bg-dark text-muted">
+                  ${new Date(data.it.time).toLocaleTimeString()} <span id="${data.it.time}"></span> </div></div></div>`)
+            }); // new Date(Date.now()).toLocaleTimeString() ---- then if not today new Date(Date.now()).toLocaleString() ---maybe    [new Date(Date.now()).toDateString()]
+
+            textarea.addEventListener('keypress', function () {
+                chat.emit('typing', '<%= statecode %>'); // <%= batch %> <%= name_of_ppa %> <%= servicestate %>
+            });
+
+            chat.on('typing', function (data) {
+                notify.innerHTML = '<em>' + data + ' is typing a message...</em>';
+                setTimeout(() => {
+                    notify.innerHTML = 'a global variable or something that is easily coined';
+                }, 1500);
+            });
+
+            /**
+             *
+             * socket.sockets || connected
+             *
+             * socket.id
+             *
+             * socket.fns
+             * socket.adapter.nsp.rooms
+             */
+
+            textarea.addEventListener('input', function (event) {
+                if (textarea.value === '') {
+                    send.disabled = true;
+                } else {
+                    send.disabled = false;
+                }
+            }, false);
+
+            send.addEventListener('click', function (event) {
+                // console.log(event);
+                // when we send a message, we append it to the timeline, and when the server says it's gotten the message, we tag it as delivered. and if we get a connection from the corper to this particular room and the message has been in the viewport, we mark it as read
+                var k = {
+                    message: textarea.value,
+                    time: Date.now()
+                };
+                chat.emit('message', k, (data) => {
+                    // this funtion will run here to show the server has gotten our message.
+                    // this message means this corper sent the message, so pad the msg box from the left
+                    console.log('g', data); // data will be 'true, msg'
+                    $('.wall')
+                        .append(`<div class="pl-5"><div class="card mb-2"><div class="card-body">
+                  <div class="float-right">${data.it.message}</div>
+                  </div><div class="text-right small p-2 bg-dark text-muted">
+                  ${new Date(data.it.time).toLocaleTimeString()} <span id="${data.it.time}"></span> </div></div></div>`)
+                });
+                textarea.value = '';
+            }, false);
+
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        // socket.disconnect(close)
+        // -----close (Boolean) whether to close the underlying connection
+        // -----Returns Socket
+            /* io.on( 'connection', ( socket ) => {
+                setTimeout( () => socket.disconnect( true ), 5000 ); // Disconnects this client. If value of close is true, closes the underlying connection. Otherwise, it just disconnects the namespace.
+            } ); */
+
+        // Event: ‘disconnecting’
+        // reason (String) the reason of the disconnection (either client or server-side)
+        // Fired when the client is going to be disconnected (but hasn’t left its rooms yet).
+
+            /* io.on( 'connection', ( socket ) => {
+                socket.on( 'disconnecting', ( reason ) => {
+                    let rooms = Object.keys( socket.rooms );
+                    // ...
+                } );
+            } ); */
+        </script>
+
+    </body>
+
+</html>

@@ -47,6 +47,18 @@ sometimes the req.session data is not correct.
 if you duplicate a tab, and login with that tab, it overrides the session object of the previous tab it was duplicated from. we could use url parameter to avoid this [but i personally hate giving too much information in the url]
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.
+
+we should be able to tell dates in texts and suggests to remind them of their meetings for say an exchange. if they click on a date, we suggest when we think the date is and ask or try to infer what is happening on that date and if they need a reminder.
+
+say for example we see a random 'Thursday' or 'thur' or any of this short informal way of spelling, we try to check the words before and after it and try to ask, if we can't infer, what is happening on that data...
+
+ask, if it is a meet up for an exchange or whatnot, the location of the meet up so we try to plot it in the map and see what's up
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
 http://www.inspireux.com/articles/
 http://www.inspireux.com/2014/06/21/methods-to-achieve-user-delight/
 Designers like to talk about achieving the ultimate goal of “user delight.” In fact, it’s one of our primary goals where I work at RelateIQ. It’s not enough to just provide information and functionality anymore. Successful product teams go one step further and aim to delight their users. But, what exactly does that mean? Below are some ways of thinking about user delight and what you can do to create more delightful experiences.
