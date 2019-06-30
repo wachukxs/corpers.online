@@ -44,7 +44,7 @@
                     </a>
                     <% } %>
                     <% } catch(error) { %>
-                        <a hidden class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</a>
+                    <a hidden class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</a>
                     <%# console.log('err', error); %>
                     <% } %>
 
@@ -114,48 +114,47 @@
                     </div> -->
 
                     <% try { %>
-                        <% if (newchat) { %>
-                            <div class="tab-pane fade" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                    <% if (newchat) { %>
+                    <div class="tab-pane fade" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
 
 
-                                <div class="text-center mt-5 align-middle">
-                                    <div class="">
-                                        <img src="/chat/undraw_chat_1wo5.png" alt="chat icon" width="250" height="250" srcset="/chat/undraw_chat_1wo5.svg" class="rounded">
-                                    </div>
-        
-                                    <h5 class="font-weight-light">
-                                        Corpers who have chatted you up show here.
-                                    </h5>
-                                </div>
-        
+                        <div class="text-center mt-5 align-middle">
+                            <div class="">
+                                <img src="/chat/undraw_chat_1wo5.png" alt="chat icon" width="250" height="250" srcset="/chat/undraw_chat_1wo5.svg" class="rounded">
                             </div>
-    
-    
-                            <div class="tab-pane fade show active" id="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>" role="tabpanel"
-                            aria-labelledby="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>-tab">
-                            <h6><%= newchat.statecode %></h6>
-                                <div class="wall">
-                                    just sth here
-                                </div>
-                            </div>
-                        <% } %>
-                        <% } catch(error) { %>
-                            <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+
+                            <h5 class="font-weight-light">
+                                Corpers who have chatted you up show here.
+                            </h5>
+                        </div>
+
+                    </div>
 
 
-                                <div class="text-center mt-5 align-middle">
-                                    <div class="">
-                                        <img src="/chat/undraw_chat_1wo5.png" alt="chat icon" width="250" height="250" srcset="/chat/undraw_chat_1wo5.svg" class="rounded">
-                                    </div>
-        
-                                    <h5 class="font-weight-light">
-                                        Corpers who have chatted you up show here.
-                                    </h5>
-                                </div>
-        
+                    <div class="tab-pane fade show active" id="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>" role="tabpanel" aria-labelledby="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>-tab">
+                        <h6><%= newchat.statecode %></h6>
+                        <div class="wall">
+                            just sth here
+                        </div>
+                    </div>
+                    <% } %>
+                    <% } catch(error) { %>
+                    <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+
+
+                        <div class="text-center mt-5 align-middle">
+                            <div class="">
+                                <img src="/chat/undraw_chat_1wo5.png" alt="chat icon" width="250" height="250" srcset="/chat/undraw_chat_1wo5.svg" class="rounded">
                             </div>
-                        <%# console.log('err', error); %>
-                        <% } %>
+
+                            <h5 class="font-weight-light">
+                                Corpers who have chatted you up show here.
+                            </h5>
+                        </div>
+
+                    </div>
+                    <%# console.log('err', error); %>
+                    <% } %>
 
                     <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
                         <p>
@@ -236,30 +235,33 @@
     </script>
 
     <script>
-        $( 'a[data-toggle="pill"]' )
+        $( '#v-pills-tab' )
             .on( 'show.bs.tab', function(
                 e ) { // This event fires on tab show, but before the new tab has been shown
-                console.log( 'show e.target', e.target ) // newly activated tab
-                console.log( 'show e.relatedTarget', e.relatedTarget ) // previous active tab
+                // console.log( 'show e.target', e.target ) // newly activated tab
+                // console.log( 'show e.relatedTarget', e.relatedTarget ) // previous active tab
             } )
 
-        $( 'a[data-toggle="pill"]' )
-            .on( 'shown.bs.tab', function(
-                e ) { // This event fires on tab show after a tab has been shown
-                console.log( 'shown e.target', e.target ) // newly activated tab
-                console.log( 'shown e.relatedTarget', e.relatedTarget ) // previous active tab
+        $( '#v-pills-tab' )
+            .on( 'shown.bs.tab', function( e ) { // This event fires on tab show after a tab has been shown
+                // console.log( 'shown e.target', e.target ) // newly activated tab
+                // console.log( 'shown e.relatedTarget', e.relatedTarget ) // previous active tab
+                
+                chat.query.to = e.target.attributes['data-statecode'].value ;
+                console.log('done', chat.query )
+                // if class .bg-warning is present, remove it
             } )
 
 
 
-        $( 'a[data-toggle="pill"]' )
+        $( '#v-pills-tab' )
             .on( 'hide.bs.tab', function(
                 e ) { // This event fires when a new tab is to be shown (and thus the previous active tab is to be hidden)
                 // console.log('hide e.target', e.target) // the current active tab
                 // console.log('hide e.relatedTarget', e.relatedTarget) // new soon-to-be-active tab
             } )
 
-        $( 'a[data-toggle="pill"]' )
+        $( '#v-pills-tab' )
             .on( 'hidden.bs.tab', function(
                 e ) { // This event fires after a new tab is shown (and thus the previous active tab is hidden)
                 // console.log('hidden e.target', e.target) // previous active tab
@@ -282,7 +284,7 @@
             }
         } );
         // var socket = io.connect('http://localhost:8081');
-        console.log( 'chat socket', chat )
+        console.log( 'chat socket', chat );
         var textarea = document.getElementById( 'text' );
         var send = document.getElementById( 'send' );
         var notify = document.getElementById( 'notifications' );
@@ -312,6 +314,8 @@
             console.log( data );
         } );
 
+        
+
         chat.on( 'message', function( data ) { //when we receive a boardcast message
             console.log( 'we received message! ', data ); // add text-right later and text-center later
             // run through the tabs at the side bar, if this sender hasn't messaged before, append his/her name to the side bar, at the top [2nd] and also their chatting tab
@@ -325,13 +329,15 @@
                     ith.push( it[ index ].attributes[ 'data-statecode' ].value )
                 }
             }
-            console.log( ith, data.from.statecode, ith.includes( data.from.statecode ) )
+            // console.log( ith, data.from.statecode, ith.includes( data.from.statecode ) )
             if ( !ith.includes( data.from.statecode ) ) {
                 // https://davidwalsh.name/javascript-replace
-                $( `<a data-statecode="${data.from.statecode}" class="nav-link list-group-item list-group-item-action" id="v-pills-${data.from.statecode.replace(/\//g, '-')}-tab" data-toggle="pill" href="#v-pills-${data.from.statecode.replace(/\//g, '-')}" role="tab" aria-controls="v-pills-${data.from.statecode.replace(/\//g, '-')}" aria-selected="false">
+                var d = `<a data-statecode="${data.from.statecode}" class="nav-link list-group-item list-group-item-action bg-warning new" id="v-pills-${data.from.statecode.replace(/\//g, '-')}-tab" data-toggle="pill" href="#v-pills-${data.from.statecode.replace(/\//g, '-')}" role="tab" aria-controls="v-pills-${data.from.statecode.replace(/\//g, '-')}" aria-selected="false">
                         <div>${data.from.fullname}</div>
                         <small class="text-muted">${data.from.statecode}</small>
-                    </a>` )
+                    </a>`;
+                
+                $( d )
                     .insertBefore( '#v-pills-tab > a:nth-child(2)' );
 
                 // chatting tab
