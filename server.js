@@ -425,8 +425,8 @@ app.get('/chat', function (req, res) {
       batch: req.session.batch,
       name_of_ppa: req.session.name_of_ppa,
       postdetails: postresult,
-      newchat: {statecode: req.query.posts.who.toUpperCase()},
-      posttime: req.query.posts.when, 
+      newchat: { statecode: req.query.posts.who.toUpperCase() },
+      posttime: req.query.posts.when,
       posttype: req.query.posts.type
     });
   } else if (req.session.loggedin) {
@@ -1297,7 +1297,7 @@ var chat = io
         socket.join(onlineRoom);
       }
 
-    }
+    } // ON EVERY MESSAGE, WE CAN ITERATE THROUGH ALL THE CONNECTED ROOMS AND IF A ROOM CONTAINS BOTH THE .TO AND .FROM, WE SEND TO THAT ROOM BUT THIS METHOD IS INEFFICIENT, IF THE ROOM ISN'T ALREADY EXISTING, CREATE IT AND JOIN, ELSE JUST ONLY JOIN
 
 
 
@@ -1305,7 +1305,7 @@ var chat = io
 
     // [so we save traffic, a bit maybe] also select old rooms, i.e. rooms not in everyOnlineRooms, also show that these rooms[the participants] are online[maybe with green in the front end][from chat.adapter.rooms object]
 
-    var query = " SELECT DISTINCT room FROM chats WHERE room LIKE '%" + socket.handshake.query.from + "%' "; // every room you've ever been mention in, i.e. consisting of who you sent message to and who sent message to you
+    var query = " SELECT DISTINCT room FROM chats WHERE room LIKE '%" + socket.handshake.query.from + "%' AND message IS NOT NULL "; // every room you've ever been mention in, i.e. consisting of who you sent message to and who sent message to you
 
     pool.query(query, function (error, results, fields) {
 
@@ -1338,7 +1338,9 @@ var chat = io
     // only join rooms that has more than one participant. else why is it a room? and you can't chat alone with yourself!
     // don't join rooms with the same state codes!! 
     // only join a room a socket isn't already in --socket.io already takes care of this!!
-    if (socket.handshake.query.from != ('' || null) && socket.handshake.query.to != ('' & socket.handshake.query.from & null)) {
+
+    // old logic
+    /* if (socket.handshake.query.from != ('' || null) && socket.handshake.query.to != ('' & socket.handshake.query.from & null)) {
       var room = socket.handshake.query.from + '-' + socket.handshake.query.to;
 
       var q = "INSERT INTO chats (room) VALUES ('" + room + "')";
@@ -1354,13 +1356,14 @@ var chat = io
         }
       });
 
-    }
+    } */
 
-    socket.join(socket.handshake.query.from + (socket.handshake.query.to != '' ? '-' + socket.handshake.query.to : ''), () => {  // if ... .to is undefined // later when we make chat more roburst like whatsapp, this won't be needed
+    // old logic where rooms where created just on connection, ...ineffective and one sided
+    /* socket.join(socket.handshake.query.from + (socket.handshake.query.to != '' ? '-' + socket.handshake.query.to : ''), () => {  // if ... .to is undefined // later when we make chat more roburst like whatsapp, this won't be needed
       let rooms = Object.keys(socket.rooms); // object.keys converts the keys of an object into an array
       console.log(rooms); // [ <socket.id>, 'room 237' ]
       io.to('room 237').emit('a new user has joined the room'); // broadcast to everyone in the room
-    });
+    }); */
 
     /**
      * save all incoming message to db
@@ -1392,16 +1395,39 @@ var chat = io
     });
 
     socket.on('message', (msg, fn) => {
-      if (socket.handshake.query.from != ('' || null) && socket.handshake.query.to != ('' & socket.handshake.query.from & null)) { // send message only to a particular room
-        var room = socket.handshake.query.from + '-' + socket.handshake.query.to;
-        var m = { 'from': {'statecode': socket.handshake.query.from}, 'to': {'statecode': socket.handshake.query.to}, 'it': msg };
-        // chat.emit('message', m); // everyone in /chat sees it
-        // socket.broadcast.emit('message', m);
-        socket.to(room).broadcast.emit('message', m); // if a message comes to you, it means you're going to join that room, but how do we make sure you can also send messages to that room at will ?> from the front tend!!
+      console.log('meshgg', msg.message, 'to', msg.to, 'from', socket.handshake.query.from)
+      if (socket.handshake.query.from != ('' || null) && msg.to != ('' & socket.handshake.query.from & null)) { // send message only to a particular room
+        var m = { 'from': { 'statecode': socket.handshake.query.from }, 'to': { 'statecode': msg.to }, 'it': msg };
+        
+        var everyRoomOnline = Object.keys(chat.adapter.rooms)
+        // ON EVERY MESSAGE, WE CAN ITERATE THROUGH ALL THE CONNECTED ROOMS AND IF A ROOM CONTAINS BOTH THE .TO AND .FROM, WE SEND TO THAT ROOM BUT THIS METHOD IS INEFFICIENT, IF THE ROOM ISN'T ALREADY EXISTING, CREATE IT AND JOIN, ELSE JUST ONLY JOIN
+        console.log('\n\n\n\nevery online room', everyRoomOnline)
+        if (everyRoomOnline.includes(socket.handshake.query.from + '-' + msg.to)) {
+          //In the array!
+          var room = socket.handshake.query.from + '-' + msg.to;
+          socket.join(room, () => {
+            // to do, add the socket the message is sent to to the room too
+            socket.to(room).broadcast.emit('message', m); // broadcast to everyone in the room
+          });
+        } else if (everyRoomOnline.includes(msg.to + '-' + socket.handshake.query.from)) {
+          //In the array!
+          var room = msg.to + '-' + socket.handshake.query.from;
+          socket.join(room, () => {
+            socket.to(room).broadcast.emit('message', m);
+          });
+        } else {
+          //Not in the array
+          var room = socket.handshake.query.from + '-' + msg.to;
+          socket.join(room, () => {
+            socket.to(room).broadcast.emit('message', m);
+          });
+        }
+
+
         // socket.emit('message', m); // only the socket (itself) sees it.
         fn(m) // run on client machine
         // save message to db
-        var q = "INSERT INTO chats (room, message_from, message_to, time, message) VALUES ('" + room + "', '" + socket.handshake.query.from + "', '" + socket.handshake.query.to + "', '" + msg.time + "', '" + msg.message + "')";
+        var q = "INSERT INTO chats (room, message_from, message_to, time, message) VALUES ('" + room + "', '" + socket.handshake.query.from + "', '" + msg.to + "', '" + msg.time + "', '" + msg.message + "')";
         pool.query(q, function (error, results, fields) {
           if (error) throw error;
           // connected!
