@@ -381,67 +381,83 @@ app.get('/chat', function (req, res) {
   // res.sendFile(__dirname + '/chat.html');
   // req.query.posts.who and req.query.posts.when
 
+  // to get old chats
+
+
   /**
    * WARNING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
    * TIME IS AN IMPORTANT ISSUE HERE. AND TIME CONVERSION TOO...
-   * 
-   * USE MOMENT AND NOT JS DATE FUNCTION FOR DATE CONVERSION
+   * utc + 1 is our time zone [when converting], or use moment .js
    */
-  if (req.query.posts) { // we need to be sure that they clicked from /account
+
+
+
+  if (req.session.loggedin && req.query.posts) { // we need to be sure that they clicked from /account
     var postresult;
     // console.log('\n\n\n\n\n uhmmmm', req.query.posts.who, req.query.posts.when, req.query.posts.type, moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss'));
     // console.log( new Date(parseInt(req.query.posts.when)).toISOString().slice(0, 19).replace('T', ' ') ); // typeof req.query.posts.when = string
 
     if (req.query.posts.type == 'accommodation') {
-      var query = "SELECT * FROM accommodations WHERE statecode = '" + req.query.posts.who + "' AND input_time = '" + moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss') + "'";
-      console.log('acc q', query);
+      var query = "SELECT * FROM accommodations WHERE statecode = '" + req.query.posts.who + "' AND input_time = '" + moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss') + "' ;  SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL ";
+
     } else if (req.query.posts.type == 'sale') {
-      var query = "SELECT * FROM posts WHERE statecode = '" + req.query.posts.who + "' AND post_time = '" + req.query.posts.when + "'";
-      console.log('post q', query);
+      var query = "SELECT * FROM posts WHERE statecode = '" + req.query.posts.who + "' AND post_time = '" + req.query.posts.when + "' ;  SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL ";
+
     }
 
     pool.query(query, function (error, results, fields) {
 
       if (error) throw error;
 
-      if (!isEmpty(results)) {
-        postresult = results;
+      if (!(isEmpty(results[0]) && isEmpty(results[1]))) {
         console.info('got post from db successfully', results);
+        // so if the newchat has chatted before, i.e. is in oldchats, then just make it highlighted
         // then send it to the chat page of the involved parties so they are remainded of what they want to buy
-
+        res.render('pages/newchat', { // having it named account.2 returns error cannot find module '2'
+          statecode: req.session.statecode.toUpperCase(),
+          servicestate: req.session.servicestate,
+          batch: req.session.batch,
+          name_of_ppa: req.session.name_of_ppa,
+          postdetails: results[0],
+          newchat: { statecode: req.query.posts.who.toUpperCase() },
+          posttime: req.query.posts.when,
+          posttype: req.query.posts.type,
+          oldchats: results[1]
+        });
         // iouser.emit('boardcast message', { to: 'be received by everyoneELSE', post: data });
       }
     });
-  }
 
-  // when they update their profile. it should immediately reflect. so set it in the session object after a successfully update
-  if (req.session.loggedin && req.query.posts) {
-    res.set('Content-Type', 'text/html');
-    // res.sendFile(__dirname + '/account.html');
-    console.log('wanna chat', req.session.statecode);
-    res.render('pages/newchat', { // having it named account.2 returns error cannot find module '2'
-      statecode: req.session.statecode.toUpperCase(),
-      servicestate: req.session.servicestate,
-      batch: req.session.batch,
-      name_of_ppa: req.session.name_of_ppa,
-      postdetails: postresult,
-      newchat: { statecode: req.query.posts.who.toUpperCase() },
-      posttime: req.query.posts.when,
-      posttype: req.query.posts.type
-    });
   } else if (req.session.loggedin) {
     res.set('Content-Type', 'text/html');
     // res.sendFile(__dirname + '/account.html');
     console.log('wanna chat', req.session.statecode);
-    res.render('pages/newchat', { // having it named account.2 returns error cannot find module '2'
-      statecode: req.session.statecode.toUpperCase(),
-      servicestate: req.session.servicestate,
-      batch: req.session.batch,
-      name_of_ppa: req.session.name_of_ppa
+    var query = "SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL ";
+    pool.query(query, function (error, results, fields) {
+
+      if (error) throw error;
+
+      if (!isEmpty(results)) {
+        console.info('got post from db successfully', results);
+
+        // then send it to the chat page of the involved parties so they are remainded of what they want to buy
+        res.render('pages/newchat', { // having it named account.2 returns error cannot find module '2'
+          statecode: req.session.statecode.toUpperCase(),
+          servicestate: req.session.servicestate,
+          batch: req.session.batch,
+          name_of_ppa: req.session.name_of_ppa,
+          oldchats: results
+        });
+        // iouser.emit('boardcast message', { to: 'be received by everyoneELSE', post: data });
+      }
     });
+
+
   } else {
     res.redirect('/login');
   }
+
+
 
 });
 
@@ -1398,7 +1414,7 @@ var chat = io
       console.log('meshgg', msg.message, 'to', msg.to, 'from', socket.handshake.query.from)
       if (socket.handshake.query.from != ('' || null) && msg.to != ('' & socket.handshake.query.from & null)) { // send message only to a particular room
         var m = { 'from': { 'statecode': socket.handshake.query.from }, 'to': { 'statecode': msg.to }, 'it': msg };
-        
+
         var everyRoomOnline = Object.keys(chat.adapter.rooms)
         // ON EVERY MESSAGE, WE CAN ITERATE THROUGH ALL THE CONNECTED ROOMS AND IF A ROOM CONTAINS BOTH THE .TO AND .FROM, WE SEND TO THAT ROOM BUT THIS METHOD IS INEFFICIENT, IF THE ROOM ISN'T ALREADY EXISTING, CREATE IT AND JOIN, ELSE JUST ONLY JOIN
         console.log('\n\n\n\nevery online room', everyRoomOnline)

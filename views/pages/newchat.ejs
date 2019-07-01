@@ -33,8 +33,20 @@
                     <!-- <a hidden class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</a> -->
 
 
+
+
+
                     <% try { %>
-                    <% if (newchat) { %>
+                    <%# oldchats is an ARRAY of objects %>
+                    <% if (oldchats && oldchats.length > 0) { // select UNIQUE message_to and message_from from oldchats, later order them by most recent time %>
+                    <%# // https://codeburst.io/javascript-array-distinct-5edc93501dc4 %>
+                    <% var neww = [...new Set(oldchats.map(x => x.message_to))].concat([...new Set(oldchats.map(x => x.message_from))]) %>
+                    <% var newwer = [...new Set(neww)] %>
+                    <% newwer.splice(newwer.indexOf(statecode), 1) %>
+
+                    <% try { %>
+                    <% if (newchat && ! newwer.includes(newchat.statecode)) { %>
+                    <%# check if newchat is in newwer, if it isnt, output --  if it is, make it the first item of the array %>
                     <a hidden class="nav-link" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="false">Home</a>
 
 
@@ -42,11 +54,30 @@
                         <div><%= newchat.statecode %> fullname</div>
                         <small class="text-muted"><%= newchat.statecode %></small>
                     </a>
+                    <% } else if ( newchat && newwer.includes(newchat.statecode) ) { %>
+                    <% newwer[0] = newchat.statecode // make the newchat.statecode first in newwer %>
                     <% } %>
                     <% } catch(error) { %>
                     <a hidden class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</a>
                     <%# console.log('err', error); %>
                     <% } %>
+
+
+                    <% for (index = 0; index < newwer.length; index++) { %>
+
+                    <a data-statecode="<%= newwer[index] %>" class="nav-link list-group-item list-group-item-action old" id="v-pills-<%= newwer[index].replace(/\//g, '-') %>-tab" data-toggle="pill" href="#v-pills-<%= newwer[index].replace(/\//g, '-') %>" role="tab" aria-controls="v-pills-<%= newwer[index].replace(/\//g, '-') %>" aria-selected="false">
+                        <%# get fullname from oldchats, iterate through the objects' properties %>
+                        <div><%= newwer[index] %> fullname</div>
+                        <small class="text-muted"><%= newwer[index] %></small>
+                    </a>
+
+                    <% } %>
+                    <% } %>
+                    <% } catch (error) { %>
+                    <% console.log('err', error); %>
+                    <h4>nooooo</h4>
+                    <% } %>
+
 
                     <a data-statecode="AB/17A/3457" class="nav-link list-group-item list-group-item-action" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">
                         <div>Full Name</div>
@@ -64,7 +95,7 @@
         <!-- Page Content -->
         <div id="page-content-wrapper">
 
-            <nav class="navbar navbar-light bg-light">
+            <nav class="navbar navbar-light bg-light sticky-top">
                 <button class="btn btn-primary" id="menu-toggle">
                     <!-- small screens, chat shows, large screens, chats doesn't show  -->
                     <!-- Visible only on xs, sm -->
@@ -116,7 +147,9 @@
                     </div> -->
 
                     <% try { %>
-                    <% if (newchat) { %>
+                        <%# if there is newchat, it either is in newwer of it isn't so we only need to check if newchat is in newwer, if it isnt, output -- that means if it exists, it is in newwer %>
+                        <% if (newchat && ! newwer.includes(newchat.statecode)) { // %>
+                    
                     <div class="tab-pane fade" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
 
 
@@ -132,15 +165,15 @@
 
                     </div>
 
-
+                    <!-- new chats [the chatting tab] -->
                     <div class="tab-pane fade show active" id="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>" role="tabpanel" aria-labelledby="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>-tab">
-                        <h6><%= newchat.statecode %></h6>
+                        <h6><%= newchat.statecode %>'s wall</h6>
                         <div class="wall">
                             just sth here
                         </div>
                     </div>
                     <% } %>
-                    <% } catch(error) { %>
+                    <% } catch(error) { // if there is no newchat, this is what happens %>
                     <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
 
 
@@ -157,7 +190,68 @@
                     </div>
                     <%# console.log('err', error); %>
                     <% } %>
+                    <!-- // new chats -->
 
+                    <!-- old chats [the chatting tab]  -->
+                    <% if (true) { // if there is now new chat, we don't need to check if it is in newwer %>
+                        <%= console.log('\n\n\t there is new chat and it is inside newwer'); %>
+                    <% for (index = 0; index < newwer.length; index++) { %>
+
+                    <div class="tab-pane fade" id="v-pills-<%= newwer[index].replace(/\//g, '-') %>" role="tabpanel" aria-labelledby="v-pills-<%= newwer[index].replace(/\//g, '-') %>-tab">
+                        <h6><%= newwer[index] %>'s wall</h6>
+                        <div class="wall">
+                            <%# append the old chat messages here %>
+                            <% oldchats = oldchats.sort( (a, b) => (a.time > b.time) ? 1 : -1 ) // don't change // https://flaviocopes.com/how-to-sort-array-of-objects-by-property-javascript/ %>
+                            <%# the appending %>
+                            <%# /**
+                            * within the wall
+                            * sort oldchats according to oldchat[index].time or _time
+                            * then loop through oldchats
+                            * if the newwer[index] is contained in the oldchat[index].room == true && oldchat[index].message_from == newwer[index] == true, append to the RIGHT [i.e. they sent the message]
+                            * 
+                            * if the newwer[index] is contained in the oldchat[index].room == true && oldchat[index].message_to newwer[index] == true, append to the LEFT [i.e they received the message]
+                            */ %>
+
+                            <% for (i = 0; i < newwer.length; i++) { %>
+
+                            <% for (index = 0; index < oldchats.length; index++) { %>
+
+
+                            <% if ( oldchats[index].room.includes( newwer[i] && statecode ) && oldchats[index].message_from == newwer[i] ) { // append to right %>
+                            <div class="pl-5">
+                                <div class="card mb-2">
+                                    <div class="card-body">
+                                        <div class="float-right"><%= oldchats[index].message %></div>
+                                    </div>
+                                    <div class="text-right small p-2 bg-dark text-muted">
+                                        <%= new Date(parseInt(oldchats[index].time)).toLocaleString("en-US") %> <span id="<%= oldchats[index].time %>"></span> </div>
+                                </div>
+                            </div>
+                            <% } else if (oldchats[index].room.includes( newwer[i] && statecode ) && oldchats[index].message_to == newwer[i]) { // append to left %>
+                            <div class="pr-5">
+                                <div class="card mb-2">
+                                    <div class="card-body">
+                                        <div class="float-left"><%= oldchats[index].message %></div>
+                                    </div>
+                                    <div class="small p-2 bg-dark text-muted">
+                                        <%= new Date(parseInt(oldchats[index].time)).toLocaleString("en-US") %> <span id="<%= oldchats[index].time %>"></span> </div>
+                                </div>
+                            </div>
+                            <% } %>
+
+
+                            <% } %>
+
+                            <% } %>
+
+
+                        </div>
+                    </div>
+
+                    <% } %>
+
+                    <% } %>
+                    <!-- // old chats -->
                     <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
                         <p>
                             profile tab
@@ -227,9 +321,11 @@
                     .toggleClass( "toggled" );
 
                 // now swap classes, make a now visible on md, lg, and xl but hidden on xs and sm
-              $("#a").toggleClass("d-none d-md-block d-lg-none  d-lg-block d-xl-none  d-xl-block d-block d-sm-none  d-none d-sm-block d-md-none  "); // d-sm-block d-sm-block d-md-none d-lg-none d-xl-block
-              // make b hidden on md, lg, xl but visible on xs and sm
-              $("#b").toggleClass("d-none d-md-block d-lg-none  d-lg-block d-xl-none  d-xl-block d-block d-sm-none  d-none d-sm-block d-md-none"); // d-none d-sm-none d-md-block d-lg-block d-xl-block
+                $( "#a" )
+                    .toggleClass( "d-none d-md-block d-lg-none  d-lg-block d-xl-none  d-xl-block d-block d-sm-none  d-none d-sm-block d-md-none  " ); // d-sm-block d-sm-block d-md-none d-lg-none d-xl-block
+                // make b hidden on md, lg, xl but visible on xs and sm
+                $( "#b" )
+                    .toggleClass( "d-none d-md-block d-lg-none  d-lg-block d-xl-none  d-xl-block d-block d-sm-none  d-none d-sm-block d-md-none" ); // d-none d-sm-none d-md-block d-lg-block d-xl-block
             } );
     </script>
 
@@ -242,14 +338,15 @@
         var chat = io.connect( 'http://localhost:8081/chat', {
             transports: [ 'websocket' ],
             query: {
-                from: '<%= statecode %>' // might change how this works, if tabs are open from the same browser, it's value is thesame on both tabs from the backend
+                from: new URLSearchParams( window.location.search )
+                    .get( 's' ) // '<%= statecode %>' // might change <%= statecode %>, because if tabs are open from the same browser, it's value is thesame on both tabs from the backend
             }
         } );
         var k = {
             to: ( new URLSearchParams( window.location.search )
-                    .get( 'posts[who]' ) != null ? new URLSearchParams( window.location.search )
-                    .get( 'posts[who]' )
-                    .toUpperCase() : '' )
+                .get( 'posts[who]' ) != null ? new URLSearchParams( window.location.search )
+                .get( 'posts[who]' )
+                .toUpperCase() : '' )
         }
         // var socket = io.connect('http://localhost:8081');
         console.log( 'chat socket', chat );
@@ -282,13 +379,13 @@
             console.log( data );
         } );
 
-        
+
 
         chat.on( 'message', function( data ) { //when we receive a boardcast message
             console.log( 'we received message! ', data ); // add text-right later and text-center later
             // run through the tabs at the side bar, if this sender hasn't messaged before, append his/her name to the side bar, at the top [2nd] and also their chatting tab
 
-            var it = document.getElementById( 'v-pills-tab' )
+            /* var it = document.getElementById( 'v-pills-tab' )
                 .children;
             var ith = []
             for ( index = 0; index < it.length; index++ ) {
@@ -296,18 +393,26 @@
                 if ( it[ index ].attributes[ 'data-statecode' ] != undefined ) {
                     ith.push( it[ index ].attributes[ 'data-statecode' ].value )
                 }
-            }
+            } */
+
             // console.log( ith, data.from.statecode, ith.includes( data.from.statecode ) )
-            if ( !ith.includes( data.from.statecode ) ) {
+            if ( $( `#v-pills-tab > a[data-statecode="${data.from.statecode}"]` )
+                .length == 1 ) {
+                // if it was there before, just move it --not clone
+                $( `#v-pills-tab > a[data-statecode="${data.from.statecode}"]` )
+                    .insertBefore( '#v-pills-tab > a:nth-child(2)' );
+
+            } else { // if it wasn't there before, create it!!!!!!!!!
                 // https://davidwalsh.name/javascript-replace
                 var d = `<a data-statecode="${data.from.statecode}" class="nav-link list-group-item list-group-item-action bg-warning new" id="v-pills-${data.from.statecode.replace(/\//g, '-')}-tab" data-toggle="pill" href="#v-pills-${data.from.statecode.replace(/\//g, '-')}" role="tab" aria-controls="v-pills-${data.from.statecode.replace(/\//g, '-')}" aria-selected="false">
                         <div>${data.from.fullname}</div>
                         <small class="text-muted">${data.from.statecode}</small>
                     </a>`;
-                
-                $( d ).insertBefore( '#v-pills-tab > a:nth-child(2)' );
 
-                // chatting tab
+                $( d )
+                    .insertBefore( '#v-pills-tab > a:nth-child(2)' );
+
+                // the chatting tab
                 $( `<div class="tab-pane fade" id="v-pills-${data.from.statecode.replace(/\//g, '-')}" role="tabpanel"
                             aria-labelledby="v-pills-${data.from.statecode.replace(/\//g, '-')}-tab">
                             <h6>${data.from.statecode}</h6>
@@ -318,11 +423,13 @@
                     .insertBefore( '#v-pills-tabContent > div:nth-child(2)' );
             }
 
-            // add the .bg-warning class to the sidebar tab of the [receiving] account [if it isn't the active tab] ot show there's a new message
-            if (!$( `#v-pills-tab > a[data-statecode="${data.from.statecode}"]` ).hasClass('active')) {
-                $( `#v-pills-tab > a[data-statecode="${data.from.statecode}"]` ).addClass( "bg-warning" );
+            // add the .bg-warning class to the sidebar tab of the [receiving] account [if it isn't the active tab] to show there's a new message
+            if ( !$( `#v-pills-tab > a[data-statecode="${data.from.statecode}"]` )
+                .hasClass( 'active' ) ) {
+                $( `#v-pills-tab > a[data-statecode="${data.from.statecode}"]` )
+                    .addClass( "bg-warning" );
             }
-            
+
             // append the message to the account's wall
             $( `#v-pills-${data.from.statecode.replace(/\//g, '-')} > .wall` )
                 .append( `<div class="pr-5"><div class="card mb-2"><div class="card-body">
@@ -367,7 +474,7 @@
             // we set the chat.query.to attribute here.
             k.message = textarea.value,
                 k.time = Date.now()
-            
+
             chat.emit( 'message', k, ( data ) => {
                 // this funtion will run here to show the server has gotten our message.
                 // this message means this corper sent the message, so pad the msg box from the left
@@ -390,9 +497,9 @@
             setTimeout( () => socket.disconnect( true ), 5000 ); // Disconnects this client. If value of close is true, closes the underlying connection. Otherwise, it just disconnects the namespace.
         } ); */
 
-        // Event: ‘disconnecting’
+        // Event: 'disconnecting'
         // reason (String) the reason of the disconnection (either client or server-side)
-        // Fired when the client is going to be disconnected (but hasn’t left its rooms yet).
+        // Fired when the client is going to be disconnected (but hasn't left its rooms yet).
 
         /* io.on( 'connection', ( socket ) => {
             socket.on( 'disconnecting', ( reason ) => {
@@ -413,13 +520,28 @@
             .on( 'shown.bs.tab', function( e ) { // This event fires on tab show after a tab has been shown
                 // console.log( 'shown e.target', e.target ) // newly activated tab
                 // console.log( 'shown e.relatedTarget', e.relatedTarget ) // previous active tab
-                
+
+                /**
+                 * if the newly activeted tab has bg-warning, it hasn't been read, so when we click it, we record that the new messages has been read
+                 * 
+                 * now how do we know the number of messages that hasn't be read, and how the we calculate when these messages are now read
+                 * 
+                 * every message on creation, is decleared unread, 
+                 * but when [GOES WIHTOUT SAYING: the recipient is online and] the sender's tab on the recipient's machine has been clicked, then those messages are now read
+                 * 
+                 * so we check the recipient's and senders statecode for every tab opened to view messages, and the set of messages unread on that tab is now marked as read.
+                 * 
+                 * also we need to be able to count the number of unread messages so we can display on account.ejs and even here to. we keep count of every incoming messages first...
+                 */
+
                 // gave errors for days, you can't change query parameters from chat object after connection, unless you reconnect https://github.com/socketio/socket.io/issues/1677
-                k.to = e.target.attributes['data-statecode'].value ;
-                
+                k.to = e.target.attributes[ 'data-statecode' ].value;
+
                 // if class .bg-warning is present, remove it
-                if ($( e.target ).hasClass( "bg-warning" )) {
-                    $( e.target ).removeClass( "bg-warning" ) // could be "bg-warning bg-info" i.e multiple classes
+                if ( $( e.target )
+                    .hasClass( "bg-warning" ) ) {
+                    $( e.target )
+                        .removeClass( "bg-warning" ) // could be "bg-warning bg-info" i.e multiple classes
                 }
             } )
 
