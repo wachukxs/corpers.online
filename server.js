@@ -640,10 +640,10 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
   console.log('time causing the ish', aUTL[aUTL.length - 1], pUTL[pUTL.length - 1]);
 
   /// there's much work on this section maybe, just to make sure sql sees and calculates the value as they should (or NOT ????)
-  var getpostsquery = "SELECT * FROM posts " + (pUTL.length > 1 ? 'WHERE post_time > "' + pUTL[pUTL.length - 1] + '" ORDER by posts.post_time ASC' : ' ORDER by posts.post_time ASC')
-    + "; SELECT * FROM accommodations " + (aUTL.length > 1 ? 'WHERE input_time > "' + e + '" ORDER by accommodations.input_time ASC' : ' ORDER BY accommodations.input_time ASC');
+  var getpostsquery = "SELECT * FROM posts WHERE statecode LIKE '%"+ socket.handshake.query.statecode.substring(0, 2)  +"%'" + (pUTL.length > 1 ? ' AND post_time > "' + pUTL[pUTL.length - 1] + '" ORDER by posts.post_time ASC' : ' ORDER by posts.post_time ASC')
+    + "; SELECT * FROM accommodations WHERE statecode LIKE '%"+ socket.handshake.query.statecode.substring(0, 2)  +"%'" + (aUTL.length > 1 ? ' AND input_time > "' + e + '" ORDER by accommodations.input_time ASC' : ' ORDER BY accommodations.input_time ASC');
   pool.query(getpostsquery, function (error, results, fields) { // bring the results in ascending order
-
+    console.log('\n\n\n getpostsquery \n\n"\t', getpostsquery);
     if (error) { // gracefully handle error e.g. ECONNRESET & ETIMEDOUT, in this case re-execute the query or connect again, act approprately
       console.log(error);
       throw error;

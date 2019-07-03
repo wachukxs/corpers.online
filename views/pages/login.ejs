@@ -97,14 +97,14 @@
                             <div class="col-md-4 mb-3">
                                 <label for="email">State code</label>
                                 <input name="statecode" type="text" class="form-control text-uppercase" autocomplete="" autofocus id="statecode" placeholder="AB/16A/2639" required>
-                                <div class="invalid-feedback">
+                                <div hidden class="wrong">
                                     Wrong state code
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label for="password">Password</label>
                                 <input name="password" type="password" class="form-control" autocomplete="current-password" id="password" placeholder="Password" required>
-                                <div class="invalid-feedback">
+                                <div hidden class="wrong">
                                     or password.
                                 </div>
                             </div>
@@ -177,8 +177,11 @@
             var urlParams = new URLSearchParams( window.location.search );
             // URLSearchParams also provides familiar Object methods like keys(), values(), and entries():
             if ( urlParams.has( 'l' ) ) {
-                document.getElementsByClassName( 'invalid-feedback' )[ 0 ].style.display = 'block';
-                document.getElementsByClassName( 'invalid-feedback' )[ 1 ].style.display = 'block';
+				document.getElementsByClassName( 'wrong' )[ 0 ].removeAttribute('hidden');
+				document.getElementById( 'statecode' ).classList.add('is-invalid');
+
+				document.getElementById( 'password' ).classList.add('is-invalid');
+                document.getElementsByClassName( 'wrong' )[ 1 ].removeAttribute('hidden');
             }
         } else {
 
@@ -191,8 +194,11 @@
                 return results === null ? '' : decodeURIComponent( results[ 1 ].replace( /\+/g, ' ' ) );
             };
             if ( getUrlParameter( 'l' ) && ( getUrlParameter( 'l' ) == 'n' ) ) {
-                document.getElementsByClassName( 'invalid-feedback' )[ 0 ].style.display = 'block';
-                document.getElementsByClassName( 'invalid-feedback' )[ 1 ].style.display = 'block';
+                document.getElementsByClassName( 'wrong' )[ 0 ].removeAttribute('hidden');
+				document.getElementById( 'statecode' ).classList.add('is-invalid');
+
+				document.getElementById( 'password' ).classList.add('is-invalid');
+                document.getElementsByClassName( 'wrong' )[ 1 ].removeAttribute('hidden');
             }
         }
     </script>
