@@ -415,6 +415,7 @@ app.get('/chat', function (req, res) {
         // then send it to the chat page of the involved parties so they are remainded of what they want to buy
         res.render('pages/newchat', { // having it named account.2 returns error cannot find module '2'
           statecode: req.session.statecode.toUpperCase(),
+          statecode2: req.query.s,
           servicestate: req.session.servicestate,
           batch: req.session.batch,
           name_of_ppa: req.session.name_of_ppa,
@@ -443,6 +444,7 @@ app.get('/chat', function (req, res) {
         // then send it to the chat page of the involved parties so they are remainded of what they want to buy
         res.render('pages/newchat', { // having it named account.2 returns error cannot find module '2'
           statecode: req.session.statecode.toUpperCase(),
+          statecode2: req.query.s,
           servicestate: req.session.servicestate,
           batch: req.session.batch,
           name_of_ppa: req.session.name_of_ppa,
@@ -547,30 +549,13 @@ app.get('/signup', function (req, res) {
   res.render('pages/register');
 });
 
-/**
- * console log more socket methods
- * // console.log('socket.join', socket.join);
- * socket.leave function (room, fn){
-  debug('leave room %s', room);
-  var self = this;
-  this.adapter.del(this.id, room, function(err){
-    if (err) return fn && fn(err);
-    debug('left room %s', room);
-    delete self.rooms[room];
-    fn && fn(null);
-  });
-  return this;
-}
-
- */
-
-
 // somehow logout doesn't work because the app/broswer doesn't go through app.get('/user/:who') when the back button is clicked after loggin out socket.io('/user) picks up the request first ...somehow
 
 // find a more authentic way to calculate the numbers of corpers online using io(/user) --so even if they duplicate pages, it won't double count
 
 var iouser = io.of('/user').on('connection', function (socket) { // when a new user is in the TIMELINE
-
+  
+  socket.join(socket.handshake.query.statecode.substring(0, 2));
   // console.log('how many', users.connected);
   socket.on('ferret', (asf, name, fn) => {
     // this funtion will run in the client to show/acknowledge the server has gotten the message.
@@ -584,34 +569,15 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
   console.log('socket.id: ', socket.id, ' connected on', new Date(Date.now()).toGMTString());
   // console.log('everythin: \n', iouser.connected );
 
-  console.log('how many ?', Object.keys(iouser.connected).length);
+  console.log('\nsocket.handshake.query.statecode.substring(0, 2)?', socket.handshake.query.statecode.substring(0, 2));
   // it's still not very perfect, count each unique url or something
   iouser.emit('corpersCount', { count: Object.keys(iouser.connected).length /* new Map(iouser.connected).size || Object.keys(iouser.connected).length */ }); // emit total corpers online https://stackoverflow.com/questions/126100/how-to-efficiently-count-the-number-of-keys-properties-of-an-object-in-javascrip
 
   // find a way to work with cookies in socket.request.headers object for loggining in users again
 
-
-  // we're implementing this with ejs already
-  /*   pool.query("SELECT * FROM info WHERE email = '" + socket.handshake.query.user + "' ", function (error, results, fields) {
-      console.log('profile for ', socket.handshake.query.user);
-      if (error) {
-        console.log('Database query error', error);
-          throw error;
-      }
-  
-      // fields arg is just info about all the fields from the selected table
-      if (!isEmpty(results)) {
-        // send them bits by bits incase of slow network
-        console.log('Results', results.length);
-        
-        // the results is an array of object with one element of all the results from the db and we need only this 1st element/object.
-        socket.emit('corper profile', { to: 'be received by just this user socket only', post: results[0] });
-      }
-    }); */
-
   // logot out time SELECT TIMESTAMPDIFF(MINUTE , session_usage_details.login_time , session_usage_details.logout_time) AS time
 
-  //--------------------------------------------------------------------------- optimize by running the two seperate queries (above & below) in parallel later
+  //-------- optimize by running the two seperate queries (above & below) in parallel later
 
   // when any user connects, send them (previous) posts in the db before now (that isn't in their timeline)
   // find a way to handle images and videos
@@ -640,8 +606,8 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
   console.log('time causing the ish', aUTL[aUTL.length - 1], pUTL[pUTL.length - 1]);
 
   /// there's much work on this section maybe, just to make sure sql sees and calculates the value as they should (or NOT ????)
-  var getpostsquery = "SELECT * FROM posts WHERE statecode LIKE '%"+ socket.handshake.query.statecode.substring(0, 2)  +"%'" + (pUTL.length > 1 ? ' AND post_time > "' + pUTL[pUTL.length - 1] + '" ORDER by posts.post_time ASC' : ' ORDER by posts.post_time ASC')
-    + "; SELECT * FROM accommodations WHERE statecode LIKE '%"+ socket.handshake.query.statecode.substring(0, 2)  +"%'" + (aUTL.length > 1 ? ' AND input_time > "' + e + '" ORDER by accommodations.input_time ASC' : ' ORDER BY accommodations.input_time ASC');
+  var getpostsquery = "SELECT * FROM posts WHERE statecode LIKE '%" + socket.handshake.query.statecode.substring(0, 2) + "%'" + (pUTL.length > 1 ? ' AND post_time > "' + pUTL[pUTL.length - 1] + '" ORDER by posts.post_time ASC' : ' ORDER by posts.post_time ASC')
+    + "; SELECT * FROM accommodations WHERE statecode LIKE '%" + socket.handshake.query.statecode.substring(0, 2) + "%'" + (aUTL.length > 1 ? ' AND input_time > "' + e + '" ORDER by accommodations.input_time ASC' : ' ORDER BY accommodations.input_time ASC');
   pool.query(getpostsquery, function (error, results, fields) { // bring the results in ascending order
     console.log('\n\n\n getpostsquery \n\n"\t', getpostsquery);
     if (error) { // gracefully handle error e.g. ECONNRESET & ETIMEDOUT, in this case re-execute the query or connect again, act approprately
@@ -681,7 +647,7 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
           }
 
           // send the posts little by little, or in batches so it'll be faster.
-
+          
           socket.emit('boardcast message', { to: 'be received by everyoneELSE', post: value });
 
           // console.log('sent BCs'); // commented here out so we don't flood the output with too much data, uncomment when you're doing testing.
@@ -737,11 +703,11 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
       if (results.affectedRows === 1) {
         console.info('saved post to db successfully');
 
-        iouser.emit('boardcast message', { to: 'be received by everyoneELSE', post: data });
+        socket.in(socket.handshake.query.statecode.substring(0, 2)).emit('boardcast message', { to: 'be received by everyoneELSE', post: data });
       }
     });
 
-    //this funtion will run in the client to show/acknowledge the server has gotten the message.
+    // this funtion will run in the client to show/acknowledge the server has gotten the message.
     fn(data.post_time);
   });
 
@@ -760,37 +726,58 @@ app.get('/posts', function (req, res) {
   // so we're selecting posts newer than the ones currently in the user's timeline. or the server closed the connection error
 
   // SELECT * FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT ppa_address, ppa_geodata, type_of_ppa FROM info WHERE ppa_address != '' AND ppa_geodata != '' AND type_of_ppa != ''
-  pool.query("SELECT streetname, type, input_time, statecode, price, rentrange FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != ''", function (error, results, fields) { // bring the results in ascending order
+  console.log('search query parameters', req.query)
+
+  if (req.query.s) {
+    var q = "SELECT streetname, type, input_time, statecode, price, rentrange FROM accommodations WHERE statecode LIKE '" + req.query.s.substring(0, 2) + "%' ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != '' AND statecode LIKE '" + req.query.s.substring(0, 2) + "%'";
+  } else {
+    var q = '';
+    for (let index = 0; index < states_short.length; index++) {
+      const element = states_short[index];
+      q += "SELECT streetname, type, input_time, statecode, price, rentrange FROM accommodations WHERE statecode LIKE '" + element + "%' ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != '' AND statecode LIKE '" + element + "%' ;"; // the trailing ';' is very important
+    }
+    // var q = "SELECT streetname, type, input_time, statecode, price, rentrange FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != ''";
+  }
+
+  // console.log('search sql query ', q)
+  pool.query(q, function (error, results, fields) { // bring the results in ascending order
 
     if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
       console.log(error);
       throw error;
     }
-    var acc = [];
-    var ppa = [];
+
 
     if (!isEmpty(results)) {
-      console.log('search results', results);
-
-      Object.entries(results[0]).forEach(
-        ([key, value]) => {
-          console.log('post number ' + key, value);
-          acc.push(value.streetname);
-        }
-      );
-
-      Object.entries(results[1]).forEach(
-        ([key, value]) => {
-          console.log('post number ' + key, value);
-          ppa.push(value.ppa_address);
-        }
-      );
-
       // res.json({er: 'er'}); // auto sets content-type header with the correct content-type
       // res.send({ user: 'tobi' });
-
+      console.log('\n[=', results.length, results)
       // res.status(200).send({ data: {ppas: ppa, accommodations: acc} }); // {a: acc, p: ppa}
-      res.status(200).send({ data: { ppas: results[1], accommodations: results[0] } }); // {a: acc, p: ppa}
+      
+      if (req.query.s) {
+        var thisisit = { data: { ppas: results[1], accommodations: results[0] } };
+      } else {
+        var thisisit = { data: {} };
+        for (let index = 0, k=0; index < results.length; index+=2, k++) {
+          // never increment index like ++index or index++ or -- because you'd be changing the value of index in the next iteration
+          // const element = results[index];
+
+          // the first query // and subsequent even numbered index values of the results from the query will be in results[index]
+          /* for (let i = 0; index < results[index].length; index++) {
+            if (results[index][i].input_time) {
+              results[index][i].age = moment(new Date(results[index][i].input_time)).fromNow()
+            }
+            
+          } */
+          console.log('\n', index, k)
+          thisisit.data[states_long[k]] = results[index].concat(results[index+1])
+          // thisisit.data[states_long[index+1]] = results[index+1]
+          // the last result of thisisit is undefined because states_long[37 + 1] is above the last index of results
+        }
+      }
+      
+      res.status(200).send(thisisit); // {a: acc, p: ppa}
+      console.log('>>>>>>>>>>>>', thisisit)
     }
   });
 
@@ -947,7 +934,7 @@ app.post('/posts', upload.array('see', 12), function (req, res, next) {
                 res.sendStatus(200);
 
                 // once it saves in db them emit to other users
-                iouser.emit('boardcast message', {
+                iouser.to(req.session.statecode.substring(0,2)).emit('boardcast message', {
                   to: 'be received by everyoneELSE', post: {
                     statecode: req.session.statecode,
                     location: req.session.location,
@@ -960,16 +947,12 @@ app.post('/posts', upload.array('see', 12), function (req, res, next) {
                   }
                 });
               } else {
-
                 // this is really important for the form to get response
                 res.sendStatus(500);
                 // === res.status(500).send('Internal Server Error')
               }
             });
-
-
           }
-
 
         });
         src.on('error', function (err) {
@@ -983,7 +966,7 @@ app.post('/posts', upload.array('see', 12), function (req, res, next) {
       }
     );
 
-  } else {
+  } else { // if no files
     console.log('null ?', req.session.location);
     var sqlquery = "INSERT INTO posts( media, statecode, type, text, price, location, post_time) VALUES ('" + (arraymedia ? arraymedia : '') + "','" + req.session.statecode + "', '" + (req.body.type ? req.body.type : "sale") + "', " + pool.escape(req.body.text) + ", " + pool.escape((req.body.price ? req.body.price : "")) + ", " + pool.escape(req.session.location) + ",'" + req.body.post_time + "')"
     // console.log('the media info\n\n', req.files);
@@ -995,8 +978,8 @@ app.post('/posts', upload.array('see', 12), function (req, res, next) {
         // then status code is good
         res.sendStatus(200)
 
-        // once it saves in db them emit to other users
-        iouser.emit('boardcast message', {
+        // once it saves in db them emit to other users in the same state
+        iouser.to(req.session.statecode.substring(0,2)).emit('boardcast message', {
           to: 'be received by everyoneELSE', post: {
             statecode: req.session.statecode,
             location: req.session.location,
@@ -1023,6 +1006,10 @@ app.post('/posts', upload.array('see', 12), function (req, res, next) {
 });
 
 
+var states_short = ['AB', 'AD', 'AK', 'AN', 'BA', 'BY', 'BN', 'BO', 'CR', 'DT', 'EB', 'ED', 'EK', 'EN', 'FC', 'GM', 'IM', 'JG', 'KD', 'KN', 'KT', 'KB', 'KG', 'KW', 'LA', 'NS', 'NG', 'OG', 'OD', 'OS', 'OY', 'PL', 'RV', 'SO', 'TR', 'YB', 'ZM'];
+
+var states_long = ['ABIA', 'ADAMAWA', 'AKWA IBOM', 'ANAMBRA', 'BAUCHI', 'BAYELSA', 'BENUE', 'BORNO', 'CROSS RIVER', 'DELTA', 'EBONYI', 'EDO', 'EKITI', 'ENUGU', 'FCT - ABUJA', 'GOMBE', 'IMO', 'JIGAWA', 'KADUNA', 'KANO', 'KASTINA', 'KEBBI', 'KOGI', 'KWARA', 'LAGOS', 'NASSARAWA', 'NIGER', 'OGUN', 'ONDO', 'OSUN', 'OYO', 'PLATEAU', 'RIVERS', 'SOKOTO', 'TARABA', 'YOBE', 'ZAMFARA'];
+
 app.post('/signup', function (req, res) {
   // handle post request, add data to database.
   // implement the hashing of password before saving to the db
@@ -1037,11 +1024,7 @@ app.post('/signup', function (req, res) {
       ['ABIA', 'ADAMAWA', 'AKWA IBOM', 'ANAMBRA', 'BAUCHI', 'BAYELSA', 'BENUE', 'BORNO', 'CROSS RIVER', 'DELTA', 'EBONYI', 'EDO', 'EKITI', 'ENUGU', 'FCT - ABUJA', 'GOMBE', 'IMO', 'JIGAWA', 'KADUNA', 'KANO', 'KASTINA', 'KEBBI', 'KOGI', 'KWARA', 'LAGOS', 'NASSARAWA', 'NIGER', 'OGUN', 'ONDO', 'OSUN', 'OYO', 'PLATEAU', 'RIVERS', 'SOKOTO', 'TARABA', 'YOBE', 'ZAMFARA'] ;
   */
 
-  var s01 = ['AB', 'AD', 'AK', 'AN', 'BA', 'BY', 'BN', 'BO', 'CR', 'DT', 'EB', 'ED', 'EK', 'EN', 'FC', 'GM', 'IM', 'JG', 'KD', 'KN', 'KT', 'KB', 'KG', 'KW', 'LA', 'NS', 'NG', 'OG', 'OD', 'OS', 'OY', 'PL', 'RV', 'SO', 'TR', 'YB', 'ZM'];
-
-  var s02 = ['ABIA', 'ADAMAWA', 'AKWA IBOM', 'ANAMBRA', 'BAUCHI', 'BAYELSA', 'BENUE', 'BORNO', 'CROSS RIVER', 'DELTA', 'EBONYI', 'EDO', 'EKITI', 'ENUGU', 'FCT - ABUJA', 'GOMBE', 'IMO', 'JIGAWA', 'KADUNA', 'KANO', 'KASTINA', 'KEBBI', 'KOGI', 'KWARA', 'LAGOS', 'NASSARAWA', 'NIGER', 'OGUN', 'ONDO', 'OSUN', 'OYO', 'PLATEAU', 'RIVERS', 'SOKOTO', 'TARABA', 'YOBE', 'ZAMFARA'];
-
-  var theservicestate = s02[s01.indexOf(req.body.statecode.slice(0, 2))];
+  var theservicestate = states_long[states_short.indexOf(req.body.statecode.slice(0, 2))];
 
   var sqlquery = "INSERT INTO info(email, firstname, middlename, password, lastname, statecode, batch, servicestate) VALUES ('" + req.body.email + "', '" + req.body.firstname + "', '" + req.body.middlename + "', '" + req.body.password + "', '" + req.body.lastname + "', '" + req.body.statecode + "', '" + req.body.statecode.slice(3, 6) + "', '" + theservicestate + "'  )";
   pool.query(sqlquery, function (error, results, fields) {
@@ -1196,7 +1179,7 @@ app.post('/login', bodyParser.urlencoded({ extended: true }), function (req, res
   var sqlquery = "SELECT name_of_ppa, lga, region_street, city_town, batch, servicestate, statecode FROM info WHERE statecode = '" + req.body.statecode.toUpperCase() + "' AND password = '" + req.body.password + "' ";
   pool.query(sqlquery, function (error1, results1, fields1) {
     console.log(req.body, req.body.statecode, req.body.password);
-    console.log('selected data from db, logging In...', results1, results1[0]/* , results1[0].batch */); // error sometimes, maybe when there's no db conn: ...
+    console.log('selected data from db, logging In...', results1); // error sometimes, maybe when there's no db conn: ...
     if (error1) throw error1;
     // connected!
     if (isEmpty(results1)) {

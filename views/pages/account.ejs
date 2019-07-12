@@ -451,7 +451,7 @@
 
                                             <!-- //test -->
                                             <div class="custom-control custom-checkbox">
-                                                <input name="rooms" type="checkbox" class="custom-control-input" id="rooms1" value="Sitting room" required checked disabled>
+                                                <input name="rooms" type="checkbox" class="custom-control-input" id="rooms1" value="Sitting room">
                                                 <label class="custom-control-label" for="rooms1">Sitting room ?</label>
                                             </div>
                                             <div class="custom-control custom-checkbox">
@@ -1254,7 +1254,7 @@
                 putl: bm,
                 autl: bn,
                 test: 'ertrerer',
-                statecode: '<%= statecode %>'
+                statecode: window.location.pathname.substring(1,12) // '<%= statecode %>'
             }
         } );
 
@@ -2105,6 +2105,7 @@
 
             // Typeahead can also search deep inside an object, just separate the keys with "." like display: ['string', 'deeper.key.level']
             // display: ["streetname", "ppa_address"], // or be specific in the group objects
+            emptyTemplate: 'No result for "{{query}}"', //  <a> Put a reminder for when it\'s avaliable or tell them to search for other similar things after giving them similar results </a> 
             source: {
                 // group cannot be 'data'
                 accommodations: {
@@ -2121,7 +2122,8 @@
                         url: "/posts",
 
                         data: { // set url query parameter if we want to do backend/query search
-                            q: '{{query}}'
+                            q: '{{query}}',
+                            s: window.location.pathname.substring(1,12) // '<%= statecode %>'
                         },
 
                         path: 'data.accommodations'
@@ -2140,7 +2142,8 @@
                     ajax: {
                         url: "/posts",
                         data: { // set url query parameter if we want to do backend/query search
-                            q: '{{query}}'
+                            q: '{{query}}',
+                            s: window.location.pathname.substring(1,12) // '<%= statecode %>'
                         },
                         path: 'data.ppas'
                     }

@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>OuR test chat page*</title>
+    <title><%= statecode2 %> chat</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/bootstrap.min.css" rel="stylesheet">
@@ -18,6 +18,12 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
 
     <script src="/socket.io/socket.io.js"></script>
+
+    <style>
+        .nl {
+            max-width: 60%;
+        }
+    </style>
 </head>
 
 <body>
@@ -33,16 +39,13 @@
                     <!-- <a hidden class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</a> -->
 
 
-
-
-
                     <% try { %>
                     <%# oldchats is an ARRAY of objects %>
                     <% if (oldchats && oldchats.length > 0) { // select UNIQUE message_to and message_from from oldchats, later order them by most recent time %>
                     <%# // https://codeburst.io/javascript-array-distinct-5edc93501dc4 %>
                     <% var neww = [...new Set(oldchats.map(x => x.message_to))].concat([...new Set(oldchats.map(x => x.message_from))]) %>
                     <% var newwer = [...new Set(neww)] %>
-                    <% newwer.splice(newwer.indexOf(statecode), 1) %>
+                    <% newwer.splice(newwer.indexOf(statecode2), 1) %>
 
                     <% try { %>
                     <% if (newchat && ! newwer.includes(newchat.statecode)) { %>
@@ -52,7 +55,10 @@
 
                     <a data-statecode="<%= newchat.statecode %>" class="nav-link active list-group-item list-group-item-action" id="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>-tab" data-toggle="pill" href="#v-pills-<%= newchat.statecode.replace(/\//g, '-') %>" role="tab" aria-controls="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>" aria-selected="true">
                         <div><%= newchat.statecode %> fullname</div>
-                        <small class="text-muted"><%= newchat.statecode %></small>
+                        <div>
+                            <small class="text-muted"><%= newchat.statecode %></small>
+                            <span class="float-right badge badge-secondary badge-pill"></span>
+                        </div>
                     </a>
                     <% } else if ( newchat && newwer.includes(newchat.statecode) ) { %>
                     <% newwer[0] = newchat.statecode // make the newchat.statecode first in newwer %>
@@ -64,11 +70,15 @@
 
 
                     <% for (index = 0; index < newwer.length; index++) { %>
-
-                    <a data-statecode="<%= newwer[index] %>" class="nav-link list-group-item list-group-item-action old" id="v-pills-<%= newwer[index].replace(/\//g, '-') %>-tab" data-toggle="pill" href="#v-pills-<%= newwer[index].replace(/\//g, '-') %>" role="tab" aria-controls="v-pills-<%= newwer[index].replace(/\//g, '-') %>" aria-selected="false">
+                    <%# if newchat is in newwer, make it active and aria-selected=true %>
+                    <a data-statecode="<%= newwer[index] %>" class="<%= (newwer[index] == newchat.statecode ? 'active '  : '' ) %> nav-link list-group-item list-group-item-action old" id="v-pills-<%= newwer[index].replace(/\//g, '-') %>-tab" data-toggle="pill" href="#v-pills-<%= newwer[index].replace(/\//g, '-') %>" role="tab" aria-controls="v-pills-<%= newwer[index].replace(/\//g, '-') %>" aria-selected="<%= (newwer[index] == newchat.statecode ? 'true'  : 'false' ) %>">
                         <%# get fullname from oldchats, iterate through the objects' properties %>
                         <div><%= newwer[index] %> fullname</div>
-                        <small class="text-muted"><%= newwer[index] %></small>
+                        <div>
+                            <small class="text-muted"><%= newwer[index] %></small>
+                            <span class="float-right badge badge-secondary badge-pill"></span>
+                        </div>
+
                     </a>
 
                     <% } %>
@@ -81,7 +91,9 @@
 
                     <a data-statecode="AB/17A/3457" class="nav-link list-group-item list-group-item-action" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">
                         <div>Full Name</div>
-                        <small class="text-muted">AB/17B/3456</small>
+                        <div>
+                            <small class="text-muted">AB/17B/3456</small> <span class="float-right badge badge-secondary badge-pill">5</span>
+                        </div>
                     </a>
 
                     <a class="nav-link list-group-item list-group-item-action" id="v-pills-AB-17B-1214-tab" data-toggle="pill" href="#v-pills-AB-17B-1214" role="tab" aria-controls="v-pills-AB-17B-1214" aria-selected="false">Messages</a>
@@ -147,9 +159,9 @@
                     </div> -->
 
                     <% try { %>
-                        <%# if there is newchat, it either is in newwer of it isn't so we only need to check if newchat is in newwer, if it isnt, output -- that means if it exists, it is in newwer %>
-                        <% if (newchat && ! newwer.includes(newchat.statecode)) { // %>
-                    
+                    <%# if there is newchat, it either is in newwer of it isn't so we only need to check if newchat is in newwer, if it isnt, output -- that means if it exists, it is in newwer %>
+                    <% if (newchat && ! newwer.includes(newchat.statecode)) { // %>
+
                     <div class="tab-pane fade" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
 
 
@@ -194,10 +206,11 @@
 
                     <!-- old chats [the chatting tab]  -->
                     <% if (true) { // if there is now new chat, we don't need to check if it is in newwer %>
-                        <%= console.log('\n\n\t there is new chat and it is inside newwer'); %>
+                    <%= console.log('\n\n\t there is new chat and it is inside newwer'); %>
                     <% for (index = 0; index < newwer.length; index++) { %>
 
-                    <div class="tab-pane fade" id="v-pills-<%= newwer[index].replace(/\//g, '-') %>" role="tabpanel" aria-labelledby="v-pills-<%= newwer[index].replace(/\//g, '-') %>-tab">
+                    <%# if newchat is in newwer, then show the tab, make it's class to contain "show active" and aria-selected=true %>
+                    <div class="tab-pane fade <%= (newwer[index] == newchat.statecode ? 'show active'  : '' ) %>" id="v-pills-<%= newwer[index].replace(/\//g, '-') %>" role="tabpanel" aria-labelledby="v-pills-<%= newwer[index].replace(/\//g, '-') %>-tab">
                         <h6><%= newwer[index] %>'s wall</h6>
                         <div class="wall">
                             <%# append the old chat messages here %>
@@ -217,7 +230,7 @@
                             <% for (index = 0; index < oldchats.length; index++) { %>
 
 
-                            <% if ( oldchats[index].room.includes( newwer[i] && statecode ) && oldchats[index].message_from == newwer[i] ) { // append to right %>
+                            <% if ( oldchats[index].room.includes( newwer[i] ) && oldchats[index].message_to == newwer[i] ) { // append to right %>
                             <div class="pl-5">
                                 <div class="card mb-2">
                                     <div class="card-body">
@@ -227,7 +240,7 @@
                                         <%= new Date(parseInt(oldchats[index].time)).toLocaleString("en-US") %> <span id="<%= oldchats[index].time %>"></span> </div>
                                 </div>
                             </div>
-                            <% } else if (oldchats[index].room.includes( newwer[i] && statecode ) && oldchats[index].message_to == newwer[i]) { // append to left %>
+                            <% } else if (oldchats[index].room.includes( newwer[i] ) && oldchats[index].message_from == newwer[i]) { // append to left %>
                             <div class="pr-5">
                                 <div class="card mb-2">
                                     <div class="card-body">
@@ -338,8 +351,7 @@
         var chat = io.connect( 'http://localhost:8081/chat', {
             transports: [ 'websocket' ],
             query: {
-                from: new URLSearchParams( window.location.search )
-                    .get( 's' ) // '<%= statecode %>' // might change <%= statecode %>, because if tabs are open from the same browser, it's value is thesame on both tabs from the backend
+                from: '<%= statecode2 %>' // new URLSearchParams( window.location.search ).get( 's' ) // '<%= statecode %>' // might change <%= statecode %>, because if tabs are open from the same browser, it's value is thesame on both tabs from the backend
             }
         } );
         var k = {
@@ -383,30 +395,29 @@
 
         chat.on( 'message', function( data ) { //when we receive a boardcast message
             console.log( 'we received message! ', data ); // add text-right later and text-center later
-            // run through the tabs at the side bar, if this sender hasn't messaged before, append his/her name to the side bar, at the top [2nd] and also their chatting tab
 
-            /* var it = document.getElementById( 'v-pills-tab' )
-                .children;
-            var ith = []
-            for ( index = 0; index < it.length; index++ ) {
-                // const element = it[index].attributes['data-statecode'] == undefined
-                if ( it[ index ].attributes[ 'data-statecode' ] != undefined ) {
-                    ith.push( it[ index ].attributes[ 'data-statecode' ].value )
-                }
-            } */
-
-            // console.log( ith, data.from.statecode, ith.includes( data.from.statecode ) )
+            // if the sender has messaged before and is present
             if ( $( `#v-pills-tab > a[data-statecode="${data.from.statecode}"]` )
                 .length == 1 ) {
+                // select the innerHTML of span and incremnent if there is a number
                 // if it was there before, just move it --not clone
+                console.log( '909', $( `#v-pills-tab > a[data-statecode="${data.from.statecode}"] span` )
+                    .html() == '' );
                 $( `#v-pills-tab > a[data-statecode="${data.from.statecode}"]` )
                     .insertBefore( '#v-pills-tab > a:nth-child(2)' );
 
             } else { // if it wasn't there before, create it!!!!!!!!!
+                //if this sender hasn't messaged before, append his/her name to the side bar, at the top [2nd] and also their chatting tab
+                //& since the person hasn't messaged before, the number of unread message is one
+
+                // get the innerHTML of the span class, parse to number and increment
                 // https://davidwalsh.name/javascript-replace
                 var d = `<a data-statecode="${data.from.statecode}" class="nav-link list-group-item list-group-item-action bg-warning new" id="v-pills-${data.from.statecode.replace(/\//g, '-')}-tab" data-toggle="pill" href="#v-pills-${data.from.statecode.replace(/\//g, '-')}" role="tab" aria-controls="v-pills-${data.from.statecode.replace(/\//g, '-')}" aria-selected="false">
                         <div>${data.from.fullname}</div>
+                        <div>
                         <small class="text-muted">${data.from.statecode}</small>
+                        <span class="float-right badge badge-secondary badge-pill">1</span>
+                        </div>
                     </a>`;
 
                 $( d )
