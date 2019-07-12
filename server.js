@@ -409,51 +409,47 @@ app.get('/chat', function (req, res) {
 
       if (error) throw error;
 
-      if (!(isEmpty(results[0]) && isEmpty(results[1]))) {
-        console.info('got post from db successfully', results);
-        // so if the newchat has chatted before, i.e. is in oldchats, then just make it highlighted
-        // then send it to the chat page of the involved parties so they are remainded of what they want to buy
-        res.render('pages/newchat', { // having it named account.2 returns error cannot find module '2'
-          statecode: req.session.statecode.toUpperCase(),
-          statecode2: req.query.s,
-          servicestate: req.session.servicestate,
-          batch: req.session.batch,
-          name_of_ppa: req.session.name_of_ppa,
-          postdetails: results[0],
-          newchat: { statecode: req.query.posts.who.toUpperCase() },
-          posttime: req.query.posts.when,
-          posttype: req.query.posts.type,
-          oldchats: results[1]
-        });
-        // iouser.emit('boardcast message', { to: 'be received by everyoneELSE', post: data });
-      }
+      console.info('got post', results[0], '\nand chats', results[1], '\nfrom db successfully');
+      // so if the newchat has chatted before, i.e. is in oldchats, then just make it highlighted
+      // then send it to the chat page of the involved parties so they are remainded of what they want to buy
+      res.render('pages/newchat', { // having it named account.2 returns error cannot find module '2'
+        statecode: req.session.statecode.toUpperCase(),
+        statecode2: req.query.s,
+        servicestate: req.session.servicestate,
+        batch: req.session.batch,
+        name_of_ppa: req.session.name_of_ppa,
+        postdetails: (isEmpty(results[0]) ? null : results[0]), // tell user the post no longer exists, we hope not to use this function
+        newchat: { statecode: req.query.posts.who.toUpperCase() },
+        posttime: req.query.posts.when,
+        posttype: req.query.posts.type,
+        oldchats: results[1]
+      });
+
+
     });
 
   } else if (req.session.loggedin) {
     res.set('Content-Type', 'text/html');
     // res.sendFile(__dirname + '/account.html');
-    console.log('wanna chat', req.session.statecode);
+    console.log('wanna chat', req.session.statecode, req.query.s);
     var query = "SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL ";
     pool.query(query, function (error, results, fields) {
 
       if (error) throw error;
 
-      if (!isEmpty(results)) {
-        console.info('got post from db successfully', results);
+      console.info('got chats from db successfully', results);
 
-        // then send it to the chat page of the involved parties so they are remainded of what they want to buy
-        res.render('pages/newchat', { // having it named account.2 returns error cannot find module '2'
-          statecode: req.session.statecode.toUpperCase(),
-          statecode2: req.query.s,
-          servicestate: req.session.servicestate,
-          batch: req.session.batch,
-          name_of_ppa: req.session.name_of_ppa,
-          oldchats: results
-        });
-        // iouser.emit('boardcast message', { to: 'be received by everyoneELSE', post: data });
-      }
+      // then send it to the chat page of the involved parties so they are remainded of what they want to buy
+      res.render('pages/newchat', { // having it named account.2 returns error cannot find module '2'
+        statecode: req.session.statecode.toUpperCase(),
+        statecode2: req.query.s,
+        servicestate: req.session.servicestate,
+        batch: req.session.batch,
+        name_of_ppa: req.session.name_of_ppa,
+        oldchats: results,
+        newchat: null
+      });
     });
-
 
   } else {
     res.redirect('/login');
@@ -554,7 +550,7 @@ app.get('/signup', function (req, res) {
 // find a more authentic way to calculate the numbers of corpers online using io(/user) --so even if they duplicate pages, it won't double count
 
 var iouser = io.of('/user').on('connection', function (socket) { // when a new user is in the TIMELINE
-  
+
   socket.join(socket.handshake.query.statecode.substring(0, 2));
   // console.log('how many', users.connected);
   socket.on('ferret', (asf, name, fn) => {
@@ -609,7 +605,7 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
   var getpostsquery = "SELECT * FROM posts WHERE statecode LIKE '%" + socket.handshake.query.statecode.substring(0, 2) + "%'" + (pUTL.length > 1 ? ' AND post_time > "' + pUTL[pUTL.length - 1] + '" ORDER by posts.post_time ASC' : ' ORDER by posts.post_time ASC')
     + "; SELECT * FROM accommodations WHERE statecode LIKE '%" + socket.handshake.query.statecode.substring(0, 2) + "%'" + (aUTL.length > 1 ? ' AND input_time > "' + e + '" ORDER by accommodations.input_time ASC' : ' ORDER BY accommodations.input_time ASC');
   pool.query(getpostsquery, function (error, results, fields) { // bring the results in ascending order
-    console.log('\n\n\n getpostsquery \n\n"\t', getpostsquery);
+
     if (error) { // gracefully handle error e.g. ECONNRESET & ETIMEDOUT, in this case re-execute the query or connect again, act approprately
       console.log(error);
       throw error;
@@ -647,7 +643,7 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
           }
 
           // send the posts little by little, or in batches so it'll be faster.
-          
+
           socket.emit('boardcast message', { to: 'be received by everyoneELSE', post: value });
 
           // console.log('sent BCs'); // commented here out so we don't flood the output with too much data, uncomment when you're doing testing.
@@ -753,12 +749,12 @@ app.get('/posts', function (req, res) {
       // res.send({ user: 'tobi' });
       console.log('\n[=', results.length, results)
       // res.status(200).send({ data: {ppas: ppa, accommodations: acc} }); // {a: acc, p: ppa}
-      
+
       if (req.query.s) {
         var thisisit = { data: { ppas: results[1], accommodations: results[0] } };
       } else {
         var thisisit = { data: {} };
-        for (let index = 0, k=0; index < results.length; index+=2, k++) {
+        for (let index = 0, k = 0; index < results.length; index += 2, k++) {
           // never increment index like ++index or index++ or -- because you'd be changing the value of index in the next iteration
           // const element = results[index];
 
@@ -770,12 +766,12 @@ app.get('/posts', function (req, res) {
             
           } */
           console.log('\n', index, k)
-          thisisit.data[states_long[k]] = results[index].concat(results[index+1])
+          thisisit.data[states_long[k]] = results[index].concat(results[index + 1])
           // thisisit.data[states_long[index+1]] = results[index+1]
           // the last result of thisisit is undefined because states_long[37 + 1] is above the last index of results
         }
       }
-      
+
       res.status(200).send(thisisit); // {a: acc, p: ppa}
       console.log('>>>>>>>>>>>>', thisisit)
     }
@@ -934,7 +930,7 @@ app.post('/posts', upload.array('see', 12), function (req, res, next) {
                 res.sendStatus(200);
 
                 // once it saves in db them emit to other users
-                iouser.to(req.session.statecode.substring(0,2)).emit('boardcast message', {
+                iouser.to(req.session.statecode.substring(0, 2)).emit('boardcast message', {
                   to: 'be received by everyoneELSE', post: {
                     statecode: req.session.statecode,
                     location: req.session.location,
@@ -979,7 +975,7 @@ app.post('/posts', upload.array('see', 12), function (req, res, next) {
         res.sendStatus(200)
 
         // once it saves in db them emit to other users in the same state
-        iouser.to(req.session.statecode.substring(0,2)).emit('boardcast message', {
+        iouser.to(req.session.statecode.substring(0, 2)).emit('boardcast message', {
           to: 'be received by everyoneELSE', post: {
             statecode: req.session.statecode,
             location: req.session.location,
