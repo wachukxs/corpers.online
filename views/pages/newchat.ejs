@@ -41,17 +41,20 @@
 
                     <% try { %>
                     <%# oldchats is an ARRAY of objects %>
-                    <% if (oldchats) { // select UNIQUE message_to and message_from from oldchats, later order them by most recent time %>
+                    <% if (oldchats) { // select UNIQUE statecodes [message_to and message_from] from oldchats, later order them by most recent time %>
                     <%# // https://codeburst.io/javascript-array-distinct-5edc93501dc4 %>
+
                     <% var neww = [...new Set(oldchats.map(x => x.message_to))].concat([...new Set(oldchats.map(x => x.message_from))]) %>
-                    <% var newwer = [...new Set(neww)] %>
-                    <% newwer.splice(newwer.indexOf(statecode2), 1) %>
+                    <% var newwer = [...new Set(neww)]; %>
+
+                    <% console.log('>>>>>>>', neww, '\n\n\n\n\n\n', newwer)  %>
+                    <% newwer.splice(newwer.indexOf(statecode2), 1) // if owner's statecode is in newwer, remove it, we don't need it %>
 
                     <% try { %>
                     <% console.log('\n\n\n\n\n\n\n\n\n\n\n\n\n\n-',newchat,newwer,  ! newwer.includes(newchat.statecode))  %>
-                    <% if (newchat && ! newwer.includes(newchat.statecode)) { %>
+                    <% if (newchat ) { %>
                     <% console.log('\n\n\n\n\n\n\n\n\n\n\n\n\n\n newchat.statecode')  %>
-                    <%# check if newchat is in newwer, if it isnt, output --  if it is, make it the first item of the array %>
+                    <%# check if newchat is in newwer, if it isnt, output this next lines of code--  if it is, make it the first item of the array %>
                     <a hidden class="nav-link" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="false">Home</a>
 
 
@@ -62,18 +65,23 @@
                             <span class="float-right badge badge-secondary badge-pill"></span>
                         </div>
                     </a>
-                    <% } else if ( newchat && newwer.includes(newchat.statecode) ) { %>
-                    <% newwer[0] = newchat.statecode // make the newchat.statecode first in newwer %>
+                    <% } if ( newchat && newwer.includes(newchat.statecode) ) { %>
+                    <% // newwer.splice(newwer.indexOf(newchat.statecode), 1) // if newchat is in newwer, remove it, we already outputted it up %>
                     <% } %>
                     <% } catch(error) { %>
+                    <%# there's no newchat %>
                     <a hidden class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</a>
-                    <%# console.log('err', error); %>
+                    <% console.log('err', error); %>
                     <% } %>
 
 
                     <% for (index = 0; index < newwer.length; index++) { %>
-                    <%# if newchat is in newwer, make it active and aria-selected=true %>
-                    <a data-statecode="<%= newwer[index] %>" class="<%= (newchat && newwer[index] == newchat.statecode ? 'active '  : '' ) %> nav-link list-group-item list-group-item-action old" id="v-pills-<%= newwer[index].replace(/\//g, '-') %>-tab" data-toggle="pill" href="#v-pills-<%= newwer[index].replace(/\//g, '-') %>" role="tab" aria-controls="v-pills-<%= newwer[index].replace(/\//g, '-') %>" aria-selected="<%= (newwer[index] == newchat.statecode ? 'true'  : 'false' ) %>">
+                    <%#  %>
+                    <%  if ( newchat && newwer[index] == newchat.statecode ) { %>
+                    <% console.log('skipping newchat ...we already outputted it'); %>
+                    <% continue; // if newchat is in newwer, skip it, we already outputted it up %>
+                    <% } %>
+                    <a data-statecode="<%= newwer[index] %>" class="nav-link list-group-item list-group-item-action old" id="v-pills-<%= newwer[index].replace(/\//g, '-') %>-tab" data-toggle="pill" href="#v-pills-<%= newwer[index].replace(/\//g, '-') %>" role="tab" aria-controls="v-pills-<%= newwer[index].replace(/\//g, '-') %>" aria-selected="false">
                         <%# get fullname from oldchats, iterate through the objects' properties %>
                         <div><%= newwer[index] %> fullname</div>
                         <div>
@@ -161,8 +169,8 @@
                     </div> -->
 
                     <% try { %>
-                    <%# if there is newchat, it either is in newwer of it isn't so we only need to check if newchat is in newwer, if it isnt, output -- that means if it exists, it is in newwer %>
-                    <% if (newchat && ! newwer.includes(newchat.statecode)) { // %>
+                    <%# if there is newchat, it either is in newwer or it isn't so we only need to check if newchat is in newwer, if it isnt, output this next lines of code-- that means if it exists, it is in newwer %>
+                    <% if (newchat) { // %>
 
                     <div class="tab-pane fade" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
 
@@ -180,12 +188,12 @@
                     </div>
 
                     <!-- new chats [the chatting tab] -->
-                    <div class="tab-pane fade show active" id="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>" role="tabpanel" aria-labelledby="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>-tab">
+                    <!-- <div class="tab-pane fade show active" id="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>" role="tabpanel" aria-labelledby="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>-tab">
                         <h6><%= newchat.statecode %>'s wall</h6>
                         <div class="wall">
-                            just sth here
+                            just sth here, no, old messages here
                         </div>
-                    </div>
+                    </div> -->
                     <% } %>
                     <% } catch(error) { // if there is no newchat, this is what happens %>
                     <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
@@ -211,7 +219,7 @@
                     <%= console.log('\n\n\t'); %>
                     <% for (index = 0; index < newwer.length; index++) { %>
                     <%# if newchat is in newwer, then show the tab, make it's class to contain "show active" and aria-selected=true %>
-                    <div class="tab-pane fade <%= (newchat && newwer[index] == newchat.statecode ? 'show active'  : '' ) %>" id="v-pills-<%= newwer[index].replace(/\//g, '-') %>" role="tabpanel" aria-labelledby="v-pills-<%= newwer[index].replace(/\//g, '-') %>-tab">
+                    <div class="tab-pane fade <%= ( newchat && newwer[index] == newchat.statecode ? 'show active' : '' )  %> " id="v-pills-<%= newwer[index].replace(/\//g, '-') %>" role="tabpanel" aria-labelledby="v-pills-<%= newwer[index].replace(/\//g, '-') %>-tab">
                         <h6><%= newwer[index] %>'s wall</h6>
                         <div class="wall">
                             <%# append the old chat messages here %>
