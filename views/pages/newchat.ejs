@@ -71,7 +71,7 @@
                     <% } catch(error) { %>
                     <%# there's no newchat %>
                     <a hidden class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</a>
-                    <% console.log('err', error); %>
+                    <% console.log('err 01', error); %>
                     <% } %>
 
 
@@ -169,9 +169,10 @@
                     </div> -->
 
                     <% try { %>
+                    <% console.log('err88---888 03', newchat); %>
                     <%# if there is newchat, it either is in newwer or it isn't so we only need to check if newchat is in newwer, if it isnt, output this next lines of code-- that means if it exists, it is in newwer %>
                     <% if (newchat) { // %>
-
+                    <% console.log('err88888888 03', newchat); %>
                     <div class="tab-pane fade" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
 
 
@@ -194,8 +195,7 @@
                             just sth here, no, old messages here
                         </div>
                     </div> -->
-                    <% } %>
-                    <% } catch(error) { // if there is no newchat, this is what happens %>
+                    <% } else { %>
                     <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
 
 
@@ -210,7 +210,11 @@
                         </div>
 
                     </div>
-                    <%# console.log('err', error); %>
+                    <% } %>
+                    <% } catch (error) { // if there is no newchat, this is what happens %>
+                    <% console.log('===== 03', newchat); %>
+
+                    <% console.log('err 03', error); %>
                     <% } %>
                     <!-- // new chats -->
 
