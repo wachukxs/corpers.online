@@ -1176,7 +1176,24 @@ app.post('/login', bodyParser.urlencoded({ extended: true }), function (req, res
   pool.query(sqlquery, function (error1, results1, fields1) {
     console.log(req.body, req.body.statecode, req.body.password);
     console.log('selected data from db, logging In...', results1); // error sometimes, maybe when there's no db conn: ...
-    if (error1) throw error1;
+    if (error1) {
+      console.log('the error code:', error1.code)
+      switch (error1.code) { // do more here
+        case 'ER_ACCESS_DENIED_ERROR':
+
+          break;
+        case 'ECONNREFUSED':
+
+          break;
+        case 'PROTOCOL_CONNECTION_LOST':
+
+          break;
+
+        default:
+          break;
+      }
+      throw error1;
+    }
     // connected!
     if (isEmpty(results1)) {
       // res.sendStatus(406);
@@ -1282,7 +1299,8 @@ var iologin = io.of('/login').on('connection', function (socket) { // when a new
 var chat = io
   .of('/chat')
   .on('connection', function (socket) {
-
+    console.log('all\n', )
+    
     // immediately join all the rooms presently online they are involved in, someone wants to chat with you
     var everyRoomOnline = Object.keys(chat.adapter.rooms)
     for (index = 0; index < everyRoomOnline.length; index++) {
@@ -1412,10 +1430,21 @@ var chat = io
           });
         } else {
           //Not in the array
+          
+          // then add both sockets...from and to ...to thesame room [to get the .to, find the socket that the query.from is msg.to]
+          
           var room = socket.handshake.query.from + '-' + msg.to;
-          socket.join(room, () => {
-            socket.to(room).broadcast.emit('message', m);
-          });
+          var x = Object.keys(chat.sockets);
+          for (const s of x){
+            if (chat.sockets[s].handshake.query.from == msg.to) {
+              console.log('got it', chat.sockets[s].handshake.query.from)
+              chat.sockets[s].join(room, () => {
+                socket.join(room, () => {
+                  socket.to(room).broadcast.emit('message', m);
+                });
+              })
+            }
+          }
         }
 
 

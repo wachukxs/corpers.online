@@ -18,7 +18,14 @@ ask corpers how much their PPAs pay them, if they do at all, it'll help other co
 in update profile section or page, // ask if they want an accommodation and where would they want it to be
 
 
+>>>>>>>>>>>>>>>>>> use https://www.javascripting.com/view/knwl-js to parse dates and time and places in texts
 
+use https://www.javascripting.com/view/faye for push notifications ?!?!
+use https://www.javascripting.com/view/dimple for some insights, ...
+
+for the images in account http://stylehatch.github.io/photoset-grid/ & https://www.javascripting.com/view/photoset-grid ---- https://www.javascripting.com/view/imgliquid
+
+lazy load images https://www.javascripting.com/view/unveil & https://www.javascripting.com/view/jquery_lazyload
 
 [[[[[[[[[[ if our server is down, it shouldn't say, since you're offline!!! we should do better error reporting for EVERYTHING ]]]]]]]]]]
 

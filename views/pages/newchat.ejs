@@ -51,7 +51,7 @@
                     <% newwer.splice(newwer.indexOf(statecode2), 1) // if owner's statecode is in newwer, remove it, we don't need it %>
 
                     <% try { %>
-                    <% console.log('\n\n\n\n\n\n\n\n\n\n\n\n\n\n-',newchat,newwer,  ! newwer.includes(newchat.statecode))  %>
+                    <% console.log(oldchats, '\n\n\n\n\n\n\n\n\n\n\n\n\n\n-',newchat,newwer,  ! newwer.includes(newchat.statecode))  %>
                     <% if (newchat ) { %>
                     <% console.log('\n\n\n\n\n\n\n\n\n\n\n\n\n\n newchat.statecode')  %>
                     <%# check if newchat is in newwer, if it isnt, output this next lines of code--  if it is, make it the first item of the array %>
@@ -66,7 +66,7 @@
                         </div>
                     </a>
                     <% } if ( newchat && newwer.includes(newchat.statecode) ) { %>
-                    <% // newwer.splice(newwer.indexOf(newchat.statecode), 1) // if newchat is in newwer, remove it, we already outputted it up %>
+                    <% console.log('there is new chat in newwer') %>
                     <% } %>
                     <% } catch(error) { %>
                     <%# there's no newchat %>
@@ -188,13 +188,15 @@
 
                     </div>
 
-                    <!-- new chats [the chatting tab] -->
-                    <!-- <div class="tab-pane fade show active" id="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>" role="tabpanel" aria-labelledby="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>-tab">
+                    <% if ( newwer.length == 0) { // if they've never chatted before %>
+                    <div class="tab-pane fade show active" id="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>" role="tabpanel" aria-labelledby="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>-tab">
                         <h6><%= newchat.statecode %>'s wall</h6>
                         <div class="wall">
-                            just sth here, no, old messages here
+                            no old messages they haven't chatted before
                         </div>
-                    </div> -->
+                    </div>
+                    <% } %>
+
                     <% } else { %>
                     <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
 
@@ -212,7 +214,7 @@
                     </div>
                     <% } %>
                     <% } catch (error) { // if there is no newchat, this is what happens %>
-                    <% console.log('===== 03', newchat); %>
+                    <%#  %>
 
                     <% console.log('err 03', error); %>
                     <% } %>
@@ -220,7 +222,7 @@
 
                     <!-- old chats [the chatting tab]  -->
                     <% if (newwer) { // if there are old chats [newwer] // if there is no new chat, we don't need to check if it is in newwer %>
-                    <%= console.log('\n\n\t'); %>
+                    <%= console.log('\n\n\t newwer=', newwer); %>
                     <% for (index = 0; index < newwer.length; index++) { %>
                     <%# if newchat is in newwer, then show the tab, make it's class to contain "show active" and aria-selected=true %>
                     <div class="tab-pane fade <%= ( newchat && newwer[index] == newchat.statecode ? 'show active' : '' )  %> " id="v-pills-<%= newwer[index].replace(/\//g, '-') %>" role="tabpanel" aria-labelledby="v-pills-<%= newwer[index].replace(/\//g, '-') %>-tab">
