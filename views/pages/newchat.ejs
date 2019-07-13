@@ -406,21 +406,25 @@
             console.log( 'we received message! ', data ); // add text-right later and text-center later
 
             // if the sender has messaged before and is present
-            if ( $( `#v-pills-tab > a[data-statecode="${data.from.statecode}"]` )
-                .length == 1 ) {
-                // select the innerHTML of span and incremnent if there is a number
-                // if it was there before, just move it --not clone
-                var num_msg = $( `#v-pills-tab > a[data-statecode="${data.from.statecode}"] span` );
-                if ( !num_msg.html() == '' ) { // if it is not empty, i.e. there was a number there, there's been unread messages
-                    var c = parseInt( num_msg.html() );
-                    num_msg.html( c + 1 ); // increase the number of unread messages by one
-                } else { // i.e. no new messages before, make it one
-                    num_msg.html( 1 );
+            var thetab = $( `#v-pills-tab > a[data-statecode="${data.from.statecode}"]` );
+            if ( thetab.length == 1 ) {
+                if ( !thetab.hasClass( 'active show' ) ) {
+                    // check if it isn't the present open tab
+
+
+                    // select the innerHTML of span and incremnent if there is a number
+                    // if it was there before, just move it --not clone
+                    var num_msg = $( `#v-pills-tab > a[data-statecode="${data.from.statecode}"] span` );
+                    if ( !num_msg.html() == '' ) { // if it is not empty, i.e. there was a number there, there's been unread messages
+                        var c = parseInt( num_msg.html() );
+                        num_msg.html( c + 1 ); // increase the number of unread messages by one
+                    } else { // i.e. no new messages before, make it one
+                        num_msg.html( 1 );
+                    }
+
+                    $( `#v-pills-tab > a[data-statecode="${data.from.statecode}"]` )
+                        .insertBefore( '#v-pills-tab > a:nth-child(2)' );
                 }
-
-                $( `#v-pills-tab > a[data-statecode="${data.from.statecode}"]` )
-                    .insertBefore( '#v-pills-tab > a:nth-child(2)' );
-
             } else { // if it wasn't there before, create it!!!!!!!!!
                 //if this sender hasn't messaged before, append his/her name to the side bar, at the top [2nd] and also their chatting tab
                 //& since the person hasn't messaged before, the number of unread message is one
@@ -569,8 +573,9 @@
                     $( e.target )
                         .removeClass( "bg-warning" ) // could be "bg-warning bg-info" i.e multiple classes
                 }
-                // also remove number of unread messages
+                // also remove number of unread messages once the chat is opened
                 console.log( '89', e.target.children[ 1 ].children[ 1 ].innerText )
+                e.target.children[ 1 ].children[ 1 ].innerText = '';
             } )
 
 
