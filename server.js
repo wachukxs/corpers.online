@@ -251,7 +251,7 @@ app.get('/', function (req, res) {
 
 
 app.get(['/AB', '/AD', '/AK', '/AN', '/BA', '/BY', '/BN', '/BO', '/CR', '/DT', '/EB', '/ED', '/EK', '/EN', '/FC', '/GM', '/IM', '/JG', '/KD', '/KN', '/KT', '/KB', '/KG', '/KW', '/LA', '/NS', '/NG', '/OG', '/OD', '/OS', '/OY', '/PL', '/RV', '/SO', '/TR', '/YB', '/ZM'], function (req, res) {
-  console.log('tryna login ', req.session.id, req.session.loggedin);
+  // console.log('tryna login ', req.session.id, req.session.loggedin);
   if (req.session.loggedin) {
     res.set('Content-Type', 'text/html');
     // res.sendFile(__dirname + '/state.html');
@@ -265,7 +265,7 @@ app.get(['/AB', '/AD', '/AK', '/AN', '/BA', '/BY', '/BN', '/BO', '/CR', '/DT', '
 });
 
 app.get(['/AB/:batch', '/AD/:batch', '/AK/:batch', '/AN/:batch', '/BA/:batch', '/BY/:batch', '/BN/:batch', '/BO/:batch', '/CR/:batch', '/DT/:batch', '/EB/:batch', '/ED/:batch', '/EK/:batch', '/EN/:batch', '/FC/:batch', '/GM/:batch', '/IM/:batch', '/JG/:batch', '/KD/:batch', '/KN/:batch', '/KT/:batch', '/KB/:batch', '/KG/:batch', '/KW/:batch', '/LA/:batch', '/NS/:batch', '/NG/:batch', '/OG/:batch', '/OD/:batch', '/OS/:batch', '/OY/:batch', '/PL/:batch', '/RV/:batch', '/SO/:batch', '/TR/:batch', '/YB/:batch', '/ZM/:batch'], function (req, res) {
-  console.log('tryna login ', req.session.id, req.session.loggedin);
+  // console.log('tryna login ', req.session.id, req.session.loggedin);
   if (req.session.loggedin) {
     res.set('Content-Type', 'text/html');
     // res.sendFile(__dirname + '/state.html');
@@ -279,7 +279,7 @@ app.get(['/AB/:batch', '/AD/:batch', '/AK/:batch', '/AN/:batch', '/BA/:batch', '
 });
 
 app.get(['/AB/:batch/:code', '/AD/:batch/:code', '/AK/:batch/:code', '/AN/:batch/:code', '/BA/:batch/:code', '/BY/:batch/:code', '/BN/:batch/:code', '/BO/:batch/:code', '/CR/:batch/:code', '/DT/:batch/:code', '/EB/:batch/:code', '/ED/:batch/:code', '/EK/:batch/:code', '/EN/:batch/:code', '/FC/:batch/:code', '/GM/:batch/:code', '/IM/:batch/:code', '/JG/:batch/:code', '/KD/:batch/:code', '/KN/:batch/:code', '/KT/:batch/:code', '/KB/:batch/:code', '/KG/:batch/:code', '/KW/:batch/:code', '/LA/:batch/:code', '/NS/:batch/:code', '/NG/:batch/:code', '/OG/:batch/:code', '/OD/:batch/:code', '/OS/:batch/:code', '/OY/:batch/:code', '/PL/:batch/:code', '/RV/:batch/:code', '/SO/:batch/:code', '/TR/:batch/:code', '/YB/:batch/:code', '/ZM/:batch/:code'], function (req, res) {
-  console.log('tryna login ', req.session.statecode, req.session.id, req.session.loggedin);
+  // console.log('tryna login ', req.session.statecode, req.session.id, req.session.loggedin);
   // they should be able to change state code too !!!!!!!!!!!! --later
 
   // when they update their profile. it should immediately reflect. so set it in the session object after a successfully update
@@ -397,11 +397,16 @@ app.get('/chat', function (req, res) {
     // console.log('\n\n\n\n\n uhmmmm', req.query.posts.who, req.query.posts.when, req.query.posts.type, moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss'));
     // console.log( new Date(parseInt(req.query.posts.when)).toISOString().slice(0, 19).replace('T', ' ') ); // typeof req.query.posts.when = string
 
+    // ALSO SELECT OLDMESSAGES THAT ARE NOT SENT... THEN COUNT THEM... 
     if (req.query.posts.type == 'accommodation') {
-      var query = "SELECT * FROM accommodations WHERE statecode = '" + req.query.posts.who + "' AND input_time = '" + moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss') + "' ;  SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL ";
+      var query = "SELECT * FROM accommodations WHERE statecode = '" + req.query.posts.who + "' AND input_time = '" + moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss') + "' ; "
+        + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL AND message_sent = true ;"
+        + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL AND message_sent = false ;";
 
     } else if (req.query.posts.type == 'sale') {
-      var query = "SELECT * FROM posts WHERE statecode = '" + req.query.posts.who + "' AND post_time = '" + req.query.posts.when + "' ;  SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL ";
+      var query = "SELECT * FROM posts WHERE statecode = '" + req.query.posts.who + "' AND post_time = '" + req.query.posts.when + "' ;"
+        + "  SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL AND message_sent = true ;"
+        + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL AND message_sent = false ;";
 
     }
 
@@ -422,7 +427,8 @@ app.get('/chat', function (req, res) {
         newchat: { statecode: req.query.posts.who.toUpperCase() },
         posttime: req.query.posts.when,
         posttype: req.query.posts.type,
-        oldchats: results[1]
+        oldchats: results[1],
+        oldunreadchats: results[2]
       });
 
 
@@ -432,7 +438,8 @@ app.get('/chat', function (req, res) {
     res.set('Content-Type', 'text/html');
     // res.sendFile(__dirname + '/account.html');
     console.log('wanna chat', req.session.statecode, req.query.s);
-    var query = "SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL ";
+    var query = "SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL ;"
+    + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL AND message_sent = false ;";
     pool.query(query, function (error, results, fields) {
 
       if (error) throw error;
@@ -447,7 +454,8 @@ app.get('/chat', function (req, res) {
         batch: req.session.batch,
         name_of_ppa: req.session.name_of_ppa,
         oldchats: results,
-        newchat: null
+        newchat: null,
+        oldunreadchats: results[1]
       });
     });
 
@@ -562,10 +570,10 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
   // find a way so if the server restarts (maybe because of updates and changes to this file) and the user happens to be in this URL log the user out of this url
   // console.log('well', socket.handshake.query.last_post, isEmpty(socket.handshake.query.last_post) );
 
-  console.log('socket.id: ', socket.id, ' connected on', new Date(Date.now()).toGMTString());
+  // console.log('socket.id: ', socket.id, ' connected on', new Date(Date.now()).toGMTString());
   // console.log('everythin: \n', iouser.connected );
 
-  console.log('\nsocket.handshake.query.statecode.substring(0, 2)?', socket.handshake.query.statecode.substring(0, 2));
+  // console.log('\nsocket.handshake.query.statecode.substring(0, 2)?', socket.handshake.query.statecode.substring(0, 2));
   // it's still not very perfect, count each unique url or something
   iouser.emit('corpersCount', { count: Object.keys(iouser.connected).length /* new Map(iouser.connected).size || Object.keys(iouser.connected).length */ }); // emit total corpers online https://stackoverflow.com/questions/126100/how-to-efficiently-count-the-number-of-keys-properties-of-an-object-in-javascrip
 
@@ -583,7 +591,7 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
 
   var pUTL = socket.handshake.query.putl.split(',');
   var aUTL = socket.handshake.query.autl.split(',');
-  console.log('socket query parameter(s) [user timeline]\n', 'acc:' + aUTL.length, ' posts:' + pUTL.length);
+  // console.log('socket query parameter(s) [user timeline]\n', 'acc:' + aUTL.length, ' posts:' + pUTL.length);
 
   // SELECT * FROM posts WHERE post_time > 1545439085610 ORDER BY posts.post_time ASC (selects posts newer than 1545439085610 | or posts after 1545439085610)
 
@@ -599,7 +607,7 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
   // moment is better because it makes it exactly as it was, the other just uses string manipulation and it's always an hour behind original time
   var e = moment(new Date(aUTL[aUTL.length - 1])).format('YYYY-MM-DD HH:mm:ss');
   // remember to check if the query to know if the time is actually greater than or less
-  console.log('time causing the ish', aUTL[aUTL.length - 1], pUTL[pUTL.length - 1]);
+  // console.log('time causing the ish', aUTL[aUTL.length - 1], pUTL[pUTL.length - 1]);
 
   /// there's much work on this section maybe, just to make sure sql sees and calculates the value as they should (or NOT ????)
   var getpostsquery = "SELECT * FROM posts WHERE statecode LIKE '%" + socket.handshake.query.statecode.substring(0, 2) + "%'" + (pUTL.length > 1 ? ' AND post_time > "' + pUTL[pUTL.length - 1] + '" ORDER by posts.post_time ASC' : ' ORDER by posts.post_time ASC')
@@ -1175,7 +1183,7 @@ app.post('/login', bodyParser.urlencoded({ extended: true }), function (req, res
   var sqlquery = "SELECT name_of_ppa, lga, region_street, city_town, batch, servicestate, statecode FROM info WHERE statecode = '" + req.body.statecode.toUpperCase() + "' AND password = '" + req.body.password + "' ";
   pool.query(sqlquery, function (error1, results1, fields1) {
     console.log(req.body, req.body.statecode, req.body.password);
-    console.log('selected data from db, logging In...', results1); // error sometimes, maybe when there's no db conn: ...
+    // console.log('selected data from db, logging In...', results1); // error sometimes, maybe when there's no db conn: ...
     if (error1) {
       console.log('the error code:', error1.code)
       switch (error1.code) { // do more here
@@ -1202,7 +1210,7 @@ app.post('/login', bodyParser.urlencoded({ extended: true }), function (req, res
       res.status(502).redirect('/login?l=n');
     } else if (results1.length === 1) {
 
-      console.log('req.session.id: ', req.session.id);
+      // console.log('req.session.id: ', req.session.id);
       // insert login time and session id into db for usage details
       pool.query("INSERT INTO session_usage_details( statecode, session_id, user_agent) VALUES ('" + req.body.statecode + "', '" + req.session.id + "', '" + req.headers["user-agent"] + "')", function (error2, results2, fields2) {
 
@@ -1299,8 +1307,8 @@ var iologin = io.of('/login').on('connection', function (socket) { // when a new
 var chat = io
   .of('/chat')
   .on('connection', function (socket) {
-    console.log('all\n', )
-    
+    console.log('all\n')
+
     // immediately join all the rooms presently online they are involved in, someone wants to chat with you
     var everyRoomOnline = Object.keys(chat.adapter.rooms)
     for (index = 0; index < everyRoomOnline.length; index++) {
@@ -1352,31 +1360,6 @@ var chat = io
     // don't join rooms with the same state codes!! 
     // only join a room a socket isn't already in --socket.io already takes care of this!!
 
-    // old logic
-    /* if (socket.handshake.query.from != ('' || null) && socket.handshake.query.to != ('' & socket.handshake.query.from & null)) {
-      var room = socket.handshake.query.from + '-' + socket.handshake.query.to;
-
-      var q = "INSERT INTO chats (room) VALUES ('" + room + "')";
-      pool.query(q, function (error, results, fields) {
-        if (error) throw error;
-        // connected!
-        if (results.affectedRows === 1) { // when we've saved it, the corper can now join the room
-          socket.join(room, () => { // later when we make chat more roburst like whatsapp, this won't be needed
-            let rooms = Object.keys(socket.rooms); // object.keys converts the keys of an object into an array
-            console.log(rooms); // [ <socket.id>, 'room 237' ]
-            io.to(room).emit('a new user has joined the room'); // broadcast to everyone in the room
-          });
-        }
-      });
-
-    } */
-
-    // old logic where rooms where created just on connection, ...ineffective and one sided
-    /* socket.join(socket.handshake.query.from + (socket.handshake.query.to != '' ? '-' + socket.handshake.query.to : ''), () => {  // if ... .to is undefined // later when we make chat more roburst like whatsapp, this won't be needed
-      let rooms = Object.keys(socket.rooms); // object.keys converts the keys of an object into an array
-      console.log(rooms); // [ <socket.id>, 'room 237' ]
-      io.to('room 237').emit('a new user has joined the room'); // broadcast to everyone in the room
-    }); */
 
     /**
      * save all incoming message to db
@@ -1407,43 +1390,71 @@ var chat = io
       fn('from server: we got the message woot ' + name + asf);
     });
 
+    function corperonline(sc) {
+      var x = Object.keys(chat.sockets);
+      var t = ''; // false
+      for (const s of x) {
+        if (chat.sockets[s].handshake.query.from == sc) { // if they're online
+
+          console.log('got it, they online', chat.sockets[s].handshake.query.from);
+          t = s; // true
+
+          break;
+        }
+      }
+      return t;
+    }
+
     socket.on('message', (msg, fn) => {
-      console.log('meshgg', msg.message, 'to', msg.to, 'from', socket.handshake.query.from)
+      // console.log('meshgg', msg.message, 'to', msg.to, 'from', socket.handshake.query.from)
       if (socket.handshake.query.from != ('' || null) && msg.to != ('' & socket.handshake.query.from & null)) { // send message only to a particular room
-        var m = { 'from': { 'statecode': socket.handshake.query.from }, 'to': { 'statecode': msg.to }, 'it': msg };
+        var m = {
+          'from': { 'statecode': socket.handshake.query.from },
+          'to': { 'statecode': msg.to },
+          'it': msg
+        };
 
         var everyRoomOnline = Object.keys(chat.adapter.rooms)
         // ON EVERY MESSAGE, WE CAN ITERATE THROUGH ALL THE CONNECTED ROOMS AND IF A ROOM CONTAINS BOTH THE .TO AND .FROM, WE SEND TO THAT ROOM BUT THIS METHOD IS INEFFICIENT, IF THE ROOM ISN'T ALREADY EXISTING, CREATE IT AND JOIN, ELSE JUST ONLY JOIN
         console.log('\n\n\n\nevery online room', everyRoomOnline)
-        if (everyRoomOnline.includes(socket.handshake.query.from + '-' + msg.to)) {
+
+        //// in the IFs statements, check if the receipient sockets are online too before sending!!!
+        if (everyRoomOnline.includes(socket.handshake.query.from + '-' + msg.to) && corperonline(msg.to)) {
           //In the array!
           var room = socket.handshake.query.from + '-' + msg.to;
           socket.join(room, () => {
             // to do, add the socket the message is sent to to the room too
             socket.to(room).broadcast.emit('message', m); // broadcast to everyone in the room
+            m.sent = true;
           });
-        } else if (everyRoomOnline.includes(msg.to + '-' + socket.handshake.query.from)) {
+          console.log('\n\ngot close to deliver ? 001', !m.sent)
+        } else if (everyRoomOnline.includes(msg.to + '-' + socket.handshake.query.from) && corperonline(msg.to)) {
           //In the array!
           var room = msg.to + '-' + socket.handshake.query.from;
           socket.join(room, () => {
             socket.to(room).broadcast.emit('message', m);
+            m.sent = true;
           });
+          console.log('\n\ngot close to deliver ? 02', !m.sent)
         } else {
           //Not in the array
-          
+
           // then add both sockets...from and to ...to thesame room [to get the .to, find the socket that the query.from is msg.to]
-          
+
           var room = socket.handshake.query.from + '-' + msg.to;
-          var x = Object.keys(chat.sockets);
-          for (const s of x){
-            if (chat.sockets[s].handshake.query.from == msg.to) {
-              console.log('got it', chat.sockets[s].handshake.query.from)
-              chat.sockets[s].join(room, () => {
-                socket.join(room, () => {
-                  socket.to(room).broadcast.emit('message', m);
-                });
-              })
-            }
+
+          var s = corperonline(msg.to)
+          if (s) {
+            chat.sockets[s].join(room, () => {
+              socket.join(room, () => {
+                socket.to(room).broadcast.emit('message', m);
+                m.sent = true;
+              });
+            })
+          }
+          else { // they must be offline
+            console.log('\n\ndid not deliver', !m.sent)
+            m.sent = false;
           }
         }
 
@@ -1451,7 +1462,7 @@ var chat = io
         // socket.emit('message', m); // only the socket (itself) sees it.
         fn(m) // run on client machine
         // save message to db
-        var q = "INSERT INTO chats (room, message_from, message_to, time, message) VALUES ('" + room + "', '" + socket.handshake.query.from + "', '" + msg.to + "', '" + msg.time + "', '" + msg.message + "')";
+        var q = "INSERT INTO chats (room, message_from, message_to, time, message, message_sent) VALUES ('" + room + "', '" + socket.handshake.query.from + "', '" + msg.to + "', '" + msg.time + "', '" + msg.message + "', " + pool.escape(m.sent) + ")";
         pool.query(q, function (error, results, fields) {
           if (error) throw error;
           // connected!

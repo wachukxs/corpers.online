@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <link rel="icon" type="image/png" href="logo/new/logo32x32.png" />
 
     <title><%= statecode2 %> chat</title>
 
@@ -41,19 +42,22 @@
 
                     <% try { %>
                     <%# oldchats is an ARRAY of objects %>
-                    <% if (oldchats) { // select UNIQUE statecodes [message_to and message_from] from oldchats, later order them by most recent time %>
+                    <% if (oldchats || oldunreadchats) { // select UNIQUE statecodes [message_to and message_from] from oldchats, later order them by most recent time %>
                     <%# // https://codeburst.io/javascript-array-distinct-5edc93501dc4 %>
 
                     <% var neww = [...new Set(oldchats.map(x => x.message_to))].concat([...new Set(oldchats.map(x => x.message_from))]) %>
                     <% var newwer = [...new Set(neww)]; %>
 
+                    <% var newwunread = [...new Set(oldunreadchats.map(x => x.message_to))].concat([...new Set(oldunreadchats.map(x => x.message_from))]) %>
+
                     <% console.log('>>>>>>>', neww, '\n\n\n\n\n\n', newwer)  %>
                     <% newwer.splice(newwer.indexOf(statecode2), 1) // if owner's statecode is in newwer, remove it, we don't need it %>
 
+                    <% newwer.splice(newwunread.indexOf(statecode2), 1) // if owner's statecode is in newwer, remove it, we don't need it %>
+
                     <% try { %>
                     <% console.log(oldchats, '\n\n\n\n\n\n\n\n\n\n\n\n\n\n-',newchat,newwer,  ! newwer.includes(newchat.statecode))  %>
-                    <% if (newchat ) { %>
-                    <% console.log('\n\n\n\n\n\n\n\n\n\n\n\n\n\n newchat.statecode')  %>
+                    <% if (newchat) { %>
                     <%# check if newchat is in newwer, if it isnt, output this next lines of code--  if it is, make it the first item of the array %>
                     <a hidden class="nav-link" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="false">Home</a>
 
@@ -414,8 +418,7 @@
             // if the sender has messaged before and is present
             var thetab = $( `#v-pills-tab > a[data-statecode="${data.from.statecode}"]` );
             if ( thetab.length == 1 ) {
-                if ( !thetab.hasClass( 'active show' ) ) {
-                    // check if it isn't the present open tab
+                if ( !thetab.hasClass( 'active' ) ) { // check if it isn't the present open tab
 
 
                     // select the innerHTML of span and incremnent if there is a number
