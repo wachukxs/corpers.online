@@ -161,7 +161,7 @@ var url = 'mongodb://localhost:27017/';
 */
 server.listen(8081, function () { // auto change port if port is already in use, handle error gracefully
   console.log('node server listening on port :8081');
-});
+}); //  throw er; // Unhandled 'error' event // Error: listen EADDRINUSE :::8081
 
 // WARNING: app.listen(80) will NOT work here!
 /**
@@ -264,6 +264,31 @@ app.get(['/AB', '/AD', '/AK', '/AN', '/BA', '/BY', '/BN', '/BO', '/CR', '/DT', '
   }
 });
 
+
+var states_short = ['AB', 'AD', 'AK', 'AN', 'BA', 'BY', 'BN', 'BO', 'CR', 'DT', 'EB', 'ED', 'EK', 'EN', 'FC', 'GM', 'IM', 'JG', 'KD', 'KN', 'KT', 'KB', 'KG', 'KW', 'LA', 'NS', 'NG', 'OG', 'OD', 'OS', 'OY', 'PL', 'RV', 'SO', 'TR', 'YB', 'ZM'];
+
+var states_long = ['ABIA', 'ADAMAWA', 'AKWA IBOM', 'ANAMBRA', 'BAUCHI', 'BAYELSA', 'BENUE', 'BORNO', 'CROSS RIVER', 'DELTA', 'EBONYI', 'EDO', 'EKITI', 'ENUGU', 'FCT - ABUJA', 'GOMBE', 'IMO', 'JIGAWA', 'KADUNA', 'KANO', 'KASTINA', 'KEBBI', 'KOGI', 'KWARA', 'LAGOS', 'NASSARAWA', 'NIGER', 'OGUN', 'ONDO', 'OSUN', 'OYO', 'PLATEAU', 'RIVERS', 'SOKOTO', 'TARABA', 'YOBE', 'ZAMFARA'];
+
+// new Date(Date.now()).getFullYear().toString().substring(2,4)
+_r = '/';
+for (index = 0; index < states_short.length; index++) {
+  _r += states_short[index] + (index + 1 == states_short.length ? '/' : '|');
+}
+var r = new Date(Date.now()).getFullYear();
+
+_r += r.toString().substring(2, 4) + '|' + (r - 1).toString().substring(2, 4) + '|' + (r - 2).toString().substring(2, 4) + '[abc]/[0-9]{4}/';
+
+// '/user/' + r.toString().substring(2,4) + '|' + (r - 1).toString().substring(2,4) + '|' + (r - 2).toString().substring(2,4) + '[abc]/[0-9]{4}'
+// '/user/17|18|19[abc]/[0-9]{4}'
+
+// do later
+/* app.get(_r, function userIdHandler(req, res) {
+  console.log('\nreq.route:', req.route);
+  console.log('\nreq.params:', req.params);
+  console.log('\n_r:', _r);
+  res.send('GET');
+}); */
+
 app.get(['/AB/:batch', '/AD/:batch', '/AK/:batch', '/AN/:batch', '/BA/:batch', '/BY/:batch', '/BN/:batch', '/BO/:batch', '/CR/:batch', '/DT/:batch', '/EB/:batch', '/ED/:batch', '/EK/:batch', '/EN/:batch', '/FC/:batch', '/GM/:batch', '/IM/:batch', '/JG/:batch', '/KD/:batch', '/KN/:batch', '/KT/:batch', '/KB/:batch', '/KG/:batch', '/KW/:batch', '/LA/:batch', '/NS/:batch', '/NG/:batch', '/OG/:batch', '/OD/:batch', '/OS/:batch', '/OY/:batch', '/PL/:batch', '/RV/:batch', '/SO/:batch', '/TR/:batch', '/YB/:batch', '/ZM/:batch'], function (req, res) {
   // console.log('tryna login ', req.session.id, req.session.loggedin);
   if (req.session.loggedin) {
@@ -281,17 +306,26 @@ app.get(['/AB/:batch', '/AD/:batch', '/AK/:batch', '/AN/:batch', '/BA/:batch', '
 app.get(['/AB/:batch/:code', '/AD/:batch/:code', '/AK/:batch/:code', '/AN/:batch/:code', '/BA/:batch/:code', '/BY/:batch/:code', '/BN/:batch/:code', '/BO/:batch/:code', '/CR/:batch/:code', '/DT/:batch/:code', '/EB/:batch/:code', '/ED/:batch/:code', '/EK/:batch/:code', '/EN/:batch/:code', '/FC/:batch/:code', '/GM/:batch/:code', '/IM/:batch/:code', '/JG/:batch/:code', '/KD/:batch/:code', '/KN/:batch/:code', '/KT/:batch/:code', '/KB/:batch/:code', '/KG/:batch/:code', '/KW/:batch/:code', '/LA/:batch/:code', '/NS/:batch/:code', '/NG/:batch/:code', '/OG/:batch/:code', '/OD/:batch/:code', '/OS/:batch/:code', '/OY/:batch/:code', '/PL/:batch/:code', '/RV/:batch/:code', '/SO/:batch/:code', '/TR/:batch/:code', '/YB/:batch/:code', '/ZM/:batch/:code'], function (req, res) {
   // console.log('tryna login ', req.session.statecode, req.session.id, req.session.loggedin);
   // they should be able to change state code too !!!!!!!!!!!! --later
-
+  console.log('\n\n\n req.params', req.params.batch, req.params.code) // req.path is shorthand for url.parse(req.url).pathname
   // when they update their profile. it should immediately reflect. so set it in the session object after a successfully update
+
+  var query = " SELECT * FROM chats WHERE message_to = '" + req.path.substring(1, 12).toUpperCase() + "' AND message IS NOT NULL AND message_sent = false ;"
   if (req.session.loggedin) {
     res.set('Content-Type', 'text/html');
     // res.sendFile(__dirname + '/account.html');
-    res.render('pages/account', { // having it named account.2 returns error cannot find module '2'
-      statecode: req.session.statecode.toUpperCase(),
-      servicestate: req.session.servicestate,
-      batch: req.session.batch,
-      name_of_ppa: req.session.name_of_ppa
+    pool.query(query, function (error, results, fields) {
+
+      if (error) throw error;
+      res.render('pages/account', { // having it named account.2 returns error cannot find module '2'
+        statecode: req.session.statecode.toUpperCase(),
+        statecode2: req.path.substring(1, 12).toUpperCase(),
+        servicestate: req.session.servicestate,
+        batch: req.session.batch,
+        name_of_ppa: req.session.name_of_ppa,
+        total_num_unread_msg: results.filter((value, index, array) => { return value.message_to == req.path.substring(1, 12).toUpperCase() && value.message_sent == 0 }).length
+      });
     });
+
   } else {
     res.redirect('/login');
   }
@@ -383,14 +417,11 @@ app.get('/chat', function (req, res) {
 
   // to get old chats
 
-
   /**
    * WARNING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
    * TIME IS AN IMPORTANT ISSUE HERE. AND TIME CONVERSION TOO...
    * utc + 1 is our time zone [when converting], or use moment .js
    */
-
-
 
   if (req.session.loggedin && req.query.posts) { // we need to be sure that they clicked from /account
     var postresult;
@@ -400,21 +431,30 @@ app.get('/chat', function (req, res) {
     // ALSO SELECT OLDMESSAGES THAT ARE NOT SENT... THEN COUNT THEM... 
     if (req.query.posts.type == 'accommodation') {
       var query = "SELECT * FROM accommodations WHERE statecode = '" + req.query.posts.who + "' AND input_time = '" + moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss') + "' ; "
-        + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL AND message_sent = true ;"
-        + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL AND message_sent = false ;";
+        // + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL ;"
+        + " SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;"
+        // + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL AND message_sent = false ;";
+        + " SELECT * FROM chats WHERE message_to = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;"
+        + " SELECT * FROM chats WHERE message_from = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;"
+        + " SELECT firstname, lastname FROM info WHERE statecode = '" + req.query.posts.who.toUpperCase() + "' ;";
 
-    } else if (req.query.posts.type == 'sale') {
+    } else if (req.query.posts.type == 'sale') { // we will only do escrow payments for products sale
       var query = "SELECT * FROM posts WHERE statecode = '" + req.query.posts.who + "' AND post_time = '" + req.query.posts.when + "' ;"
-        + "  SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL AND message_sent = true ;"
-        + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL AND message_sent = false ;";
+        // + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL ;"
+        + " SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;"
+        // + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL AND message_sent = false ;";
+        + " SELECT * FROM chats WHERE message_to = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;"
+        + " SELECT * FROM chats WHERE message_from = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;"
+        + " SELECT firstname, lastname FROM info WHERE statecode = '" + req.query.posts.who.toUpperCase() + "' ;";
 
     }
+    /**SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%AB/17B/1234%' AND chats.message IS NOT NULL   */
 
     pool.query(query, function (error, results, fields) {
 
       if (error) throw error;
 
-      console.info('got post', results[0], '\nand chats', results[1], '\nfrom db successfully');
+      // console.info('\nold chats', results[1], '\nfrom db successfully');
       // so if the newchat has chatted before, i.e. is in oldchats, then just make it highlighted
       // then send it to the chat page of the involved parties so they are remainded of what they want to buy
       res.render('pages/newchat', { // having it named account.2 returns error cannot find module '2'
@@ -423,12 +463,14 @@ app.get('/chat', function (req, res) {
         servicestate: req.session.servicestate,
         batch: req.session.batch,
         name_of_ppa: req.session.name_of_ppa,
-        postdetails: (isEmpty(results[0]) ? null : results[0]), // tell user the post no longer exists, we hope not to use this function
-        newchat: { statecode: req.query.posts.who.toUpperCase() },
+        postdetails: (isEmpty(results[0]) ? null : results[0]), // tell user the post no longer exists, maybe it was bought or something, we should delete it if it was bought, we hope not to use this function
+        newchat: { statecode: req.query.posts.who.toUpperCase(), name: results[4][0] },
         posttime: req.query.posts.when,
         posttype: req.query.posts.type,
-        oldchats: results[1],
-        oldunreadchats: results[2]
+        oldchats: results[1], // leave it like this!!
+        oldunreadchats: results[2], // messages that was sent to this user but this user hasn't seen them
+        oldunsentchats: results[3], // messages this user sent but hasn't deliver, i.e. the receipent hasn't seen it
+        total_num_unread_msg: results[2].filter((value, index, array) => { return value.message_to == req.query.s && value.message_sent == 0 }).length
       });
 
 
@@ -437,14 +479,16 @@ app.get('/chat', function (req, res) {
   } else if (req.session.loggedin) {
     res.set('Content-Type', 'text/html');
     // res.sendFile(__dirname + '/account.html');
-    console.log('wanna chat', req.session.statecode, req.query.s);
-    var query = "SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL ;"
-    + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL AND message_sent = false ;";
+    // console.log('wanna chat', req.session.statecode, req.query.s);
+    var query = // "SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL;"
+      " SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;"
+      + " SELECT * FROM chats WHERE message_to = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;"
+      + " SELECT * FROM chats WHERE message_from = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;";
     pool.query(query, function (error, results, fields) {
 
       if (error) throw error;
 
-      console.info('got chats from db successfully', results);
+      // console.info('got unread chats from db successfully', results[1]);
 
       // then send it to the chat page of the involved parties so they are remainded of what they want to buy
       res.render('pages/newchat', { // having it named account.2 returns error cannot find module '2'
@@ -453,9 +497,11 @@ app.get('/chat', function (req, res) {
         servicestate: req.session.servicestate,
         batch: req.session.batch,
         name_of_ppa: req.session.name_of_ppa,
-        oldchats: results,
+        oldchats: results[0], // leave it like this!!
         newchat: null,
-        oldunreadchats: results[1]
+        oldunreadchats: results[1], // (isEmpty(results[1]) ? null : results[1])
+        oldunsentchats: results[2],
+        total_num_unread_msg: results[1].filter((value, index, array) => { return value.message_to == req.query.s && value.message_sent == 0 }).length
       });
     });
 
@@ -690,7 +736,7 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
       var q = '';
       var l = data.images.length;
       data.images.forEach(function (item, index, array) {
-        //console.log(item, index);
+        // console.log(item, index);
         q = l === index + 1 ? q.concat(item) : q.concat(item + '  ');
 
         // save each image
@@ -720,8 +766,6 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
   });
 
 });
-
-
 
 app.get('/posts', function (req, res) {
   // set resposnse type to application/json
@@ -781,7 +825,7 @@ app.get('/posts', function (req, res) {
       }
 
       res.status(200).send(thisisit); // {a: acc, p: ppa}
-      console.log('>>>>>>>>>>>>', thisisit)
+      // console.log('>>>>>>>>>>>>', thisisit)
     }
   });
 
@@ -1009,11 +1053,6 @@ app.post('/posts', upload.array('see', 12), function (req, res, next) {
 
 });
 
-
-var states_short = ['AB', 'AD', 'AK', 'AN', 'BA', 'BY', 'BN', 'BO', 'CR', 'DT', 'EB', 'ED', 'EK', 'EN', 'FC', 'GM', 'IM', 'JG', 'KD', 'KN', 'KT', 'KB', 'KG', 'KW', 'LA', 'NS', 'NG', 'OG', 'OD', 'OS', 'OY', 'PL', 'RV', 'SO', 'TR', 'YB', 'ZM'];
-
-var states_long = ['ABIA', 'ADAMAWA', 'AKWA IBOM', 'ANAMBRA', 'BAUCHI', 'BAYELSA', 'BENUE', 'BORNO', 'CROSS RIVER', 'DELTA', 'EBONYI', 'EDO', 'EKITI', 'ENUGU', 'FCT - ABUJA', 'GOMBE', 'IMO', 'JIGAWA', 'KADUNA', 'KANO', 'KASTINA', 'KEBBI', 'KOGI', 'KWARA', 'LAGOS', 'NASSARAWA', 'NIGER', 'OGUN', 'ONDO', 'OSUN', 'OYO', 'PLATEAU', 'RIVERS', 'SOKOTO', 'TARABA', 'YOBE', 'ZAMFARA'];
-
 app.post('/signup', function (req, res) {
   // handle post request, add data to database.
   // implement the hashing of password before saving to the db
@@ -1182,7 +1221,7 @@ app.post('/login', bodyParser.urlencoded({ extended: true }), function (req, res
   // how to handle wrong password with right email or more rearly, right password and wrong password.
   var sqlquery = "SELECT name_of_ppa, lga, region_street, city_town, batch, servicestate, statecode FROM info WHERE statecode = '" + req.body.statecode.toUpperCase() + "' AND password = '" + req.body.password + "' ";
   pool.query(sqlquery, function (error1, results1, fields1) {
-    console.log(req.body, req.body.statecode, req.body.password);
+    //  console.log(req.body, req.body.statecode, req.body.password);
     // console.log('selected data from db, logging In...', results1); // error sometimes, maybe when there's no db conn: ...
     if (error1) {
       console.log('the error code:', error1.code)
@@ -1307,7 +1346,23 @@ var iologin = io.of('/login').on('connection', function (socket) { // when a new
 var chat = io
   .of('/chat')
   .on('connection', function (socket) {
-    console.log('all\n')
+
+    // get user details...
+    pool.query("SELECT firstname, lastname FROM info WHERE statecode = '" + socket.handshake.query.from + "'", function (error, results, fields) { // bring the results in ascending order
+
+      if (error) {
+        console.log(error);
+        throw error;
+      }
+
+      if (!isEmpty(results)) {
+        console.log('we should get to this point', results[0]);
+        socket.names = results[0]
+      } else {
+        console.log('we should not get to this point', results);
+      }
+
+    });
 
     // immediately join all the rooms presently online they are involved in, someone wants to chat with you
     var everyRoomOnline = Object.keys(chat.adapter.rooms)
@@ -1333,7 +1388,7 @@ var chat = io
       if (error) throw error;
 
       if (!isEmpty(results)) { // an array of objects with the columns as keys
-        console.info('got rooms from db successfully', results);
+        // console.info('got rooms from db successfully', results);
         // join old rooms
         for (index = 0; index < results.length; index++) {
           const offlineRoom = results[index].room;
@@ -1345,7 +1400,7 @@ var chat = io
         }
 
       } else if (isEmpty(results)) {
-        console.info('got empty rooms from db successfully', results);
+        // console.info('got empty rooms from db successfully', results);
       }
     });
 
@@ -1390,15 +1445,14 @@ var chat = io
       fn('from server: we got the message woot ' + name + asf);
     });
 
-    function corperonline(sc) {
-      var x = Object.keys(chat.sockets);
+    /**this function checks if a corper is online, it takes the corper's statecode on a socket's query parameter and the socket namespace to check */
+    function corperonline(sc, ns) {
+      console.log('checking if someone is online')
+      var x = Object.keys(ns.sockets);
       var t = ''; // false
       for (const s of x) {
-        if (chat.sockets[s].handshake.query.from == sc) { // if they're online
-
-          console.log('got it, they online', chat.sockets[s].handshake.query.from);
-          t = s; // true
-
+        if (ns.sockets[s].handshake.query.from == sc) { // if they're online
+          t = s; // true // return the socket.id
           break;
         }
       }
@@ -1406,21 +1460,28 @@ var chat = io
     }
 
     socket.on('message', (msg, fn) => {
-      // console.log('meshgg', msg.message, 'to', msg.to, 'from', socket.handshake.query.from)
+      // declare the encapsulating object
+      var m = {
+        'from': {},
+        'to': {}
+      };
+
       if (socket.handshake.query.from != ('' || null) && msg.to != ('' & socket.handshake.query.from & null)) { // send message only to a particular room
-        var m = {
+        /* var m = {
           'from': { 'statecode': socket.handshake.query.from },
           'to': { 'statecode': msg.to },
           'it': msg
-        };
+        }; */
+        m.from.statecode = socket.handshake.query.from, m.to.statecode = msg.to, m.it = msg;
+        m.from.firstname = socket.names.firstname, m.from.lastname = socket.names.lastname;
 
         var everyRoomOnline = Object.keys(chat.adapter.rooms)
         // ON EVERY MESSAGE, WE CAN ITERATE THROUGH ALL THE CONNECTED ROOMS AND IF A ROOM CONTAINS BOTH THE .TO AND .FROM, WE SEND TO THAT ROOM BUT THIS METHOD IS INEFFICIENT, IF THE ROOM ISN'T ALREADY EXISTING, CREATE IT AND JOIN, ELSE JUST ONLY JOIN
-        console.log('\n\n\n\nevery online room', everyRoomOnline)
+        // console.log('\n\n\n\nevery online room', everyRoomOnline)
 
         //// in the IFs statements, check if the receipient sockets are online too before sending!!!
-        if (everyRoomOnline.includes(socket.handshake.query.from + '-' + msg.to) && corperonline(msg.to)) {
-          //In the array!
+        if (everyRoomOnline.includes(socket.handshake.query.from + '-' + msg.to) && corperonline(msg.to, chat)) {
+          // In the array!
           var room = socket.handshake.query.from + '-' + msg.to;
           socket.join(room, () => {
             // to do, add the socket the message is sent to to the room too
@@ -1428,8 +1489,8 @@ var chat = io
             m.sent = true;
           });
           console.log('\n\ngot close to deliver ? 001', !m.sent)
-        } else if (everyRoomOnline.includes(msg.to + '-' + socket.handshake.query.from) && corperonline(msg.to)) {
-          //In the array!
+        } else if (everyRoomOnline.includes(msg.to + '-' + socket.handshake.query.from) && corperonline(msg.to, chat)) {
+          // In the array!
           var room = msg.to + '-' + socket.handshake.query.from;
           socket.join(room, () => {
             socket.to(room).broadcast.emit('message', m);
@@ -1437,13 +1498,11 @@ var chat = io
           });
           console.log('\n\ngot close to deliver ? 02', !m.sent)
         } else {
-          //Not in the array
-
+          // Not in the array
           // then add both sockets...from and to ...to thesame room [to get the .to, find the socket that the query.from is msg.to]
 
           var room = socket.handshake.query.from + '-' + msg.to;
-
-          var s = corperonline(msg.to)
+          var s = corperonline(msg.to, chat)
           if (s) {
             chat.sockets[s].join(room, () => {
               socket.join(room, () => {
@@ -1454,20 +1513,29 @@ var chat = io
           }
           else { // they must be offline
             console.log('\n\ndid not deliver', !m.sent)
+            // emit an incremented number of unread message to other necessary pages, after inserting to database
+            var socket_id = corperonline(msg.to, iouser)
+            // console.log('akkkhhhh', iouser)
+            if (socket_id) {
+              console.log('\n\nfound socket', socket_id)
+              iouser.to(socket_id).emit('totalunreadmsg', 1)
+            }
             m.sent = false;
           }
         }
 
-
         // socket.emit('message', m); // only the socket (itself) sees it.
         fn(m) // run on client machine
         // save message to db
-        var q = "INSERT INTO chats (room, message_from, message_to, time, message, message_sent) VALUES ('" + room + "', '" + socket.handshake.query.from + "', '" + msg.to + "', '" + msg.time + "', '" + msg.message + "', " + pool.escape(m.sent) + ")";
+        var q = "INSERT INTO chats (room, message_from, message_to, time, message, message_sent) VALUES ('" + room + "', '" + socket.handshake.query.from + "', '" + msg.to + "', '" + msg.time + "', " + pool.escape(msg.message) + ", " + pool.escape(m.sent) + ")";
         pool.query(q, function (error, results, fields) {
           if (error) throw error;
           // connected!
           if (results.affectedRows === 1) { // when we've saved it, the corper can now join the room
             console.log('\n\nsaved message to db')
+            if (!m.sent) {
+              // to number of unread message to database
+            }
           }
         });
       }
@@ -1478,14 +1546,28 @@ var chat = io
       socket.broadcast.emit('typing', data);
     });
 
+    socket.on('read', (m, fn) => {
+      var q = "UPDATE chats SET message_sent = true WHERE message IS NOT NULL AND message_from = '" + m.message_from + "' AND message_to = '" + m.message_to + "'";
+      pool.query(q, function (error, results, fields) {
+        if (error) throw error;
+        // connected!
+        if (results.changedRows > 0) { // when we've saved it, the corper can now join the room
+          console.log('\n\nupdated messages delivered');
+          // emit to the message_from if online to know that the message_to has read the message [so double tick on both ends]
+          fn(m); // fn takes only one parameter
+        }
+      });
+
+      // this funtion will run in the client to show/acknowledge the server has gotten the message.
+      // emit an event to message_from to know that his/her message has been read
+    });
+
     // io.sockets.in(room).emit('message', 'what is going on, party people?'); // room is something unique. sockets.room
 
     //everyone, including self, in /chat will get it
     chat.emit('hi!', { test: 'from chat', '/chat': 'will get, it ?' });
 
     // should know when who they are chatting with is online and when they are typing
-
-
   });
 
 var news = io

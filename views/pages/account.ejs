@@ -363,7 +363,10 @@
                     <a class="nav-link" href="/map" aria-selected="true">Maps</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/chat?s=<%= statecode %>" aria-selected="true">Messages</a>
+                    <a class="nav-link" href="/chat?s=<%= statecode2 %>" aria-selected="true">
+                        Messages
+                        <span id="totalunreadmsg" class="float-right badge badge-secondary badge-pill"><%= (total_num_unread_msg > 0 ? total_num_unread_msg : '') %></span>
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/logout" aria-selected="true">Logout</a>
@@ -1254,8 +1257,22 @@
                 putl: bm,
                 autl: bn,
                 test: 'ertrerer',
-                statecode: window.location.pathname.substring(1,12) // '<%= statecode %>'
+                from: window.location.pathname.substring( 1, 12 ),
+                statecode: '<%= statecode %>' // window.location.pathname.substring( 1, 12 ) // '<%= statecode %>'
             }
+        } );
+
+        socket.on( 'totalunreadmsg', function( data ) {
+            console.log( 'got an unread message', data );
+            // (data.count == 1 ? '' : 's') adds 's' to 'corpers' if there are more than one corpers online.
+            
+                var ph = document.getElementById( 'totalunreadmsg' ).innerHTML;
+                if ( !ph == '' ) { // if it is not empty, i.e. there was a number there, there's been unread messages
+                    var c = parseInt( ph );
+                    document.getElementById( 'totalunreadmsg' ).innerHTML = c + 1; // increment the number of messages
+                } else {
+                    document.getElementById( 'totalunreadmsg' ).innerHTML = 1;
+                }
         } );
 
         socket.on( 'connect', function() {
@@ -1483,23 +1500,23 @@
                 var b = document.createElement( 'div' );
                 b.setAttribute( 'class', 'mt-2 row' );
                 // do not put var b inside the this next if block. it would affect newFeed.appendChild(b)
-                if (window.location.pathname.substring(1) != data.post.statecode.toUpperCase()) { // if they aren't the one who made the post, show the three interact icons
-                for ( let index = 0; index < 3; index++ ) {
-                    var zx = document.createElement( 'a' );
-                    if ( index == 1 ) {
-                        zx.href = `/chat?s=<%= statecode %>&posts[type]=sale&posts[who]=${data.post.statecode}&posts[when]=${(data.post.post_time || Date.parse(data.post.input_time) )}`;
+                if ( window.location.pathname.substring( 1 ) != data.post.statecode.toUpperCase() ) { // if they aren't the one who made the post, show the three interact icons
+                    for ( let index = 0; index < 3; index++ ) {
+                        var zx = document.createElement( 'a' );
+                        if ( index == 1 ) {
+                            zx.href = `/chat?s=<%= statecode %>&posts[type]=sale&posts[who]=${data.post.statecode}&posts[when]=${(data.post.post_time || Date.parse(data.post.input_time) )}`;
+                        }
+                        zx.setAttribute( 'class', 'col-4 text-center' );
+
+                        var cv = document.createElement( 'i' );
+                        cv.setAttribute( 'class', ( index == 0 ? 'far fa-bookmark' : index == 1 ? 'far fa-comment-alt' : 'fas fa-ellipsis-h' ) );
+
+                        zx.appendChild( cv );
+
+                        b.appendChild( zx );
                     }
-                    zx.setAttribute( 'class', 'col-4 text-center' );
-
-                    var cv = document.createElement( 'i' );
-                    cv.setAttribute( 'class', ( index == 0 ? 'far fa-bookmark' : index == 1 ? 'far fa-comment-alt' : 'fas fa-ellipsis-h' ) );
-
-                    zx.appendChild( cv );
-
-                    b.appendChild( zx );
                 }
-                }
-                
+
 
 
                 var a = document.createElement( 'div' );
@@ -1652,23 +1669,23 @@
                 var b = document.createElement( 'div' );
                 b.setAttribute( 'class', 'mt-2 row' );
                 // do not put var b inside the this next if block. it would affect newFeed.appendChild(b)
-                if (window.location.pathname.substring(1) != data.post.statecode.toUpperCase()) { // if they aren't the one who made the post, show the three interact icons
+                if ( window.location.pathname.substring( 1 ) != data.post.statecode.toUpperCase() ) { // if they aren't the one who made the post, show the three interact icons
                     for ( let index = 0; index < 3; index++ ) {
-                    var zx = document.createElement( 'a' );
-                    if ( index == 1 ) {
-                        zx.href = `/chat?s=<%= statecode %>&posts[type]=accommodation&posts[who]=${data.post.statecode}&posts[when]=${(data.post.post_time || Date.parse(data.post.input_time) )}`;
+                        var zx = document.createElement( 'a' );
+                        if ( index == 1 ) {
+                            zx.href = `/chat?s=<%= statecode %>&posts[type]=accommodation&posts[who]=${data.post.statecode}&posts[when]=${(data.post.post_time || Date.parse(data.post.input_time) )}`;
+                        }
+                        zx.setAttribute( 'class', 'col-4 text-center' );
+
+                        var cv = document.createElement( 'i' );
+                        cv.setAttribute( 'class', ( index == 0 ? 'far fa-bookmark' : index == 1 ? 'far fa-comment-alt' : 'fas fa-ellipsis-h' ) );
+
+                        zx.appendChild( cv );
+
+                        b.appendChild( zx );
                     }
-                    zx.setAttribute( 'class', 'col-4 text-center' );
-
-                    var cv = document.createElement( 'i' );
-                    cv.setAttribute( 'class', ( index == 0 ? 'far fa-bookmark' : index == 1 ? 'far fa-comment-alt' : 'fas fa-ellipsis-h' ) );
-
-                    zx.appendChild( cv );
-
-                    b.appendChild( zx );
                 }
-                }
-                
+
 
                 var a = document.createElement( 'div' );
                 a.setAttribute( 'class', 'media mb-4' );
@@ -2123,7 +2140,7 @@
 
                         data: { // set url query parameter if we want to do backend/query search
                             q: '{{query}}',
-                            s: window.location.pathname.substring(1,12) // '<%= statecode %>'
+                            s: window.location.pathname.substring( 1, 12 ) // '<%= statecode %>'
                         },
 
                         path: 'data.accommodations'
@@ -2143,7 +2160,7 @@
                         url: "/posts",
                         data: { // set url query parameter if we want to do backend/query search
                             q: '{{query}}',
-                            s: window.location.pathname.substring(1,12) // '<%= statecode %>'
+                            s: window.location.pathname.substring( 1, 12 ) // '<%= statecode %>'
                         },
                         path: 'data.ppas'
                     }

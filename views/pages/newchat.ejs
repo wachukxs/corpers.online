@@ -33,12 +33,19 @@
 
         <!-- Sidebar -->
         <div class="bg-light border-right" id="sidebar-wrapper">
-            <div class="sidebar-heading">Contacts</div>
+            <%# var total_num_unread_msg = oldunreadchats.filter((value, index, array) => { return value.message_to == statecode2 && value.message_sent == 0 }).length ; %>
+            <div class="sidebar-heading">
+                <div class="align-items-center">
+                    Contacts
+                    <span id="totalunreadmsg" class="float-right badge badge-secondary badge-pill"><%= (total_num_unread_msg > 0 ? total_num_unread_msg : '') %></span>
+                </div>
+            </div>
+
+
             <!-- maybe put a search box here, clone whatsapp -->
             <div class="list-group list-group-flush">
                 <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                     <!-- <a hidden class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</a> -->
-
 
                     <% try { %>
                     <%# oldchats is an ARRAY of objects %>
@@ -48,49 +55,51 @@
                     <% var neww = [...new Set(oldchats.map(x => x.message_to))].concat([...new Set(oldchats.map(x => x.message_from))]) %>
                     <% var newwer = [...new Set(neww)]; %>
 
-                    <% var newwunread = [...new Set(oldunreadchats.map(x => x.message_to))].concat([...new Set(oldunreadchats.map(x => x.message_from))]) %>
+                    <% var _newwunread = [...new Set(oldunreadchats.map(x => x.message_to))].concat([...new Set(oldunreadchats.map(x => x.message_from))]) %>
+                    <% var newwunread = [...new Set(_newwunread)]; %>
 
-                    <% console.log('>>>>>>>', neww, '\n\n\n\n\n\n', newwer)  %>
-                    <% newwer.splice(newwer.indexOf(statecode2), 1) // if owner's statecode is in newwer, remove it, we don't need it %>
+                    <% newwer.splice(newwer.indexOf(statecode2), 1) // if owner's statecode is in newwer, remove it, we don't need it, we really don't. in fact, we should not have it %>
 
-                    <% newwer.splice(newwunread.indexOf(statecode2), 1) // if owner's statecode is in newwer, remove it, we don't need it %>
-
+                    <% newwunread.splice(newwunread.indexOf(statecode2), 1) // if owner's statecode is in newwer, remove it, we don't need it %>
+                    <% // console.log('>>>>>>>neww', neww, '\n\n\n\n newwer=', newwer, '\n\n\n\n newwunread=', newwunread)  %>
                     <% try { %>
-                    <% console.log(oldchats, '\n\n\n\n\n\n\n\n\n\n\n\n\n\n-',newchat,newwer,  ! newwer.includes(newchat.statecode))  %>
+                    <% // console.log(oldchats, '\n\n\n\n\n-',newchat,newwer,  ! newwer.includes(newchat.statecode))  %>
                     <% if (newchat) { %>
                     <%# check if newchat is in newwer, if it isnt, output this next lines of code--  if it is, make it the first item of the array %>
                     <a hidden class="nav-link" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="false">Home</a>
 
-
                     <a data-statecode="<%= newchat.statecode %>" class="nav-link active list-group-item list-group-item-action" id="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>-tab" data-toggle="pill" href="#v-pills-<%= newchat.statecode.replace(/\//g, '-') %>" role="tab" aria-controls="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>" aria-selected="true">
-                        <div><%= newchat.statecode %> fullname</div>
+                        <div><%= `${newchat.name.lastname} ${newchat.name.firstname}` %></div>
+                        <% // console.log('the newchat', newchat) %>
                         <div>
                             <small class="text-muted"><%= newchat.statecode %></small>
                             <span class="float-right badge badge-secondary badge-pill"></span>
                         </div>
                     </a>
-                    <% } if ( newchat && newwer.includes(newchat.statecode) ) { %>
-                    <% console.log('there is new chat in newwer') %>
+                    <% } else { %>
+                    <% // console.log('there is new chat') %>
+                    <a hidden class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</a>
                     <% } %>
                     <% } catch(error) { %>
-                    <%# there's no newchat %>
-                    <a hidden class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</a>
-                    <% console.log('err 01', error); %>
+                    <!-- <a hidden class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</a> -->
+                    <% // console.log('err 01', error); %>
                     <% } %>
 
-
-                    <% for (index = 0; index < newwer.length; index++) { %>
+                    <% for (newweri = 0; newweri < newwer.length; newweri++) { %>
                     <%#  %>
-                    <%  if ( newchat && newwer[index] == newchat.statecode ) { %>
-                    <% console.log('skipping newchat ...we already outputted it'); %>
+                    <%  if ( newchat && newwer[newweri] == newchat.statecode ) { %>
+                    <% // console.log('skipping newchat ...we already outputted it'); %>
                     <% continue; // if newchat is in newwer, skip it, we already outputted it up %>
                     <% } %>
-                    <a data-statecode="<%= newwer[index] %>" class="nav-link list-group-item list-group-item-action old" id="v-pills-<%= newwer[index].replace(/\//g, '-') %>-tab" data-toggle="pill" href="#v-pills-<%= newwer[index].replace(/\//g, '-') %>" role="tab" aria-controls="v-pills-<%= newwer[index].replace(/\//g, '-') %>" aria-selected="false">
+                    <%# if an unread message is part of the old message, color the tab orange  %>
+                    <a data-statecode="<%= newwer[newweri] %>" class="<%= ( newwunread.includes(newwer[newweri]) ? 'bg-warning' : '' ) %> nav-link list-group-item list-group-item-action old" id="v-pills-<%= newwer[newweri].replace(/\//g, '-') %>-tab" data-toggle="pill" href="#v-pills-<%= newwer[newweri].replace(/\//g, '-') %>" role="tab" aria-controls="v-pills-<%= newwer[newweri].replace(/\//g, '-') %>" aria-selected="false">
                         <%# get fullname from oldchats, iterate through the objects' properties %>
-                        <div><%= newwer[index] %> fullname</div>
+                        <% var f = oldchats.find(x => x.message_from == newwer[newweri] ); // console.log('old chats', oldchats) %>
+                        <div><%= `${f.sender_lastname} ${f.sender_firstname}` %></div>
                         <div>
-                            <small class="text-muted"><%= newwer[index] %></small>
-                            <span class="float-right badge badge-secondary badge-pill"></span>
+                            <small class="text-muted"><%= newwer[newweri] %></small>
+                            <% var num_unread_msg = oldunreadchats.filter((value, index, array) => { return value.message_from == newwer[newweri] && value.message_to == statecode2 && value.message_sent == 0 }).length ; %>
+                            <span class="float-right badge badge-secondary badge-pill"><%= (num_unread_msg > 0 ? num_unread_msg : '') %></span>
                         </div>
 
                     </a>
@@ -171,9 +180,10 @@
                         </div>
 
                     </div> -->
+                    <%# the socket will be in every unread message group. so we would loop the unread message array inside the neww for loop, so if the message is in unread we color it and count it. and maybe even demacate it... then we arrange it ||| we also need to arrange the sidebar tab %>
 
                     <% try { %>
-                    <% console.log('err88---888 03', newchat); %>
+                    <% // console.log('err88---888 03', newchat); %>
                     <%# if there is newchat, it either is in newwer or it isn't so we only need to check if newchat is in newwer, if it isnt, output this next lines of code-- that means if it exists, it is in newwer %>
                     <% if (newchat) { // %>
                     <% console.log('err88888888 03', newchat); %>
@@ -192,7 +202,7 @@
 
                     </div>
 
-                    <% if ( newwer.length == 0) { // if they've never chatted before %>
+                    <% if ( newwer.length == 0 || !newwer.includes(newchat.statecode)) { // for when they open up a new chat and if they've never chatted before // i.e. this guy has no old chat AT ALL they possibly couldn't have chatted before %>
                     <div class="tab-pane fade show active" id="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>" role="tabpanel" aria-labelledby="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>-tab">
                         <h6><%= newchat.statecode %>'s wall</h6>
                         <div class="wall">
@@ -226,7 +236,7 @@
 
                     <!-- old chats [the chatting tab]  -->
                     <% if (newwer) { // if there are old chats [newwer] // if there is no new chat, we don't need to check if it is in newwer %>
-                    <%= console.log('\n\n\t newwer=', newwer); %>
+                    <%# console.log('\n\n\t newwer=', newwer); %>
                     <% for (index = 0; index < newwer.length; index++) { %>
                     <%# if newchat is in newwer, then show the tab, make it's class to contain "show active" and aria-selected=true %>
                     <div class="tab-pane fade <%= ( newchat && newwer[index] == newchat.statecode ? 'show active' : '' )  %> " id="v-pills-<%= newwer[index].replace(/\//g, '-') %>" role="tabpanel" aria-labelledby="v-pills-<%= newwer[index].replace(/\//g, '-') %>-tab">
@@ -236,46 +246,38 @@
                             <% oldchats = oldchats.sort( (a, b) => (a.time > b.time) ? 1 : -1 ) // don't change // https://flaviocopes.com/how-to-sort-array-of-objects-by-property-javascript/ %>
                             <%# the appending %>
                             <%# /**
-                            * within the wall
-                            * sort oldchats according to oldchat[index].time or _time
+                            * within the wall, sort oldchats according to oldchat[index].time or _time
                             * then loop through oldchats
                             * if the newwer[index] is contained in the oldchat[index].room == true && oldchat[index].message_from == newwer[index] == true, append to the RIGHT [i.e. they sent the message]
                             * 
                             * if the newwer[index] is contained in the oldchat[index].room == true && oldchat[index].message_to newwer[index] == true, append to the LEFT [i.e they received the message]
                             */ %>
 
-                            <% for (i = 0; i < newwer.length; i++) { %>
+                            <% for (ocindex = 0; ocindex < oldchats.length; ocindex++) { %>
 
-                            <% for (index = 0; index < oldchats.length; index++) { %>
-
-
-                            <% if ( oldchats[index].room.includes( newwer[i] ) && oldchats[index].message_to == newwer[i] ) { // append to right %>
+                            <% if ( oldchats[ocindex].room.includes( newwer[index] ) && oldchats[ocindex].message_to == newwer[index] && oldchats[ocindex].message_from == statecode2) { // append to right %>
                             <div class="pl-5">
                                 <div class="card mb-2">
                                     <div class="card-body">
-                                        <div class="float-right"><%= oldchats[index].message %></div>
+                                        <div class="float-right"><%= oldchats[ocindex].message %></div>
                                     </div>
                                     <div class="text-right small p-2 bg-dark text-muted">
-                                        <%= new Date(parseInt(oldchats[index].time)).toLocaleString("en-US") %> <span id="<%= oldchats[index].time %>"></span> </div>
+                                        <%= new Date(parseInt(oldchats[ocindex].time)).toLocaleString("en-US") %> <span id="<%= oldchats[ocindex].time %>"></span> </div>
                                 </div>
                             </div>
-                            <% } else if (oldchats[index].room.includes( newwer[i] ) && oldchats[index].message_from == newwer[i]) { // append to left %>
+                            <% } else if (oldchats[ocindex].room.includes( newwer[index] ) && oldchats[ocindex].message_to == statecode2 && oldchats[ocindex].message_from == newwer[index]) { // append to left %>
                             <div class="pr-5">
                                 <div class="card mb-2">
                                     <div class="card-body">
-                                        <div class="float-left"><%= oldchats[index].message %></div>
+                                        <div class="float-left"><%= oldchats[ocindex].message %></div>
                                     </div>
                                     <div class="small p-2 bg-dark text-muted">
-                                        <%= new Date(parseInt(oldchats[index].time)).toLocaleString("en-US") %> <span id="<%= oldchats[index].time %>"></span> </div>
+                                        <%= new Date(parseInt(oldchats[ocindex].time)).toLocaleString("en-US") %> <span id="<%= oldchats[ocindex].time %>"></span> </div>
                                 </div>
                             </div>
                             <% } %>
 
-
                             <% } %>
-
-                            <% } %>
-
 
                         </div>
                     </div>
@@ -361,9 +363,6 @@
             } );
     </script>
 
-
-
-
     <!-- the room you join is unique with the person you're chatting with, it's made up of the unique ids of both parties -->
 
     <script>
@@ -420,7 +419,6 @@
             if ( thetab.length == 1 ) {
                 if ( !thetab.hasClass( 'active' ) ) { // check if it isn't the present open tab
 
-
                     // select the innerHTML of span and incremnent if there is a number
                     // if it was there before, just move it --not clone
                     var num_msg = $( `#v-pills-tab > a[data-statecode="${data.from.statecode}"] span` );
@@ -429,6 +427,14 @@
                         num_msg.html( c + 1 ); // increase the number of unread messages by one
                     } else { // i.e. no new messages before, make it one
                         num_msg.html( 1 );
+                    }
+                    // increment the total number of unread messages
+                    var total_num_unread_msg = $( "#totalunreadmsg" );
+                    if ( !total_num_unread_msg.html() == '' ) { // if it is not empty, i.e. there was a number there, there's been unread messages
+                        var c = parseInt( total_num_unread_msg.html() );
+                        total_num_unread_msg.html( c + 1 ); //
+                    } else { //
+                        total_num_unread_msg.html( 1 );
                     }
 
                     $( `#v-pills-tab > a[data-statecode="${data.from.statecode}"]` )
@@ -441,7 +447,7 @@
                 // get the innerHTML of the span class, parse to number and increment
                 // https://davidwalsh.name/javascript-replace
                 var d = `<a data-statecode="${data.from.statecode}" class="nav-link list-group-item list-group-item-action bg-warning new" id="v-pills-${data.from.statecode.replace(/\//g, '-')}-tab" data-toggle="pill" href="#v-pills-${data.from.statecode.replace(/\//g, '-')}" role="tab" aria-controls="v-pills-${data.from.statecode.replace(/\//g, '-')}" aria-selected="false">
-                        <div>${data.from.fullname}</div>
+                        <div>${data.from.lastname} ${data.from.firstname}</div>
                         <div>
                         <small class="text-muted">${data.from.statecode}</small>
                         <span class="float-right badge badge-secondary badge-pill">1</span>
@@ -478,7 +484,7 @@
         } ); // new Date(Date.now()).toLocaleTimeString() ---- then if not today new Date(Date.now()).toLocaleString() ---maybe    [new Date(Date.now()).toDateString()]
 
         textarea.addEventListener( 'keypress', function() {
-            chat.emit( 'typing', '<%= statecode %>' ); // <%= batch %> <%= name_of_ppa %> <%= servicestate %>
+            chat.emit( 'typing', '<%= statecode2 %>' ); // <%= batch %> <%= name_of_ppa %> <%= servicestate %>
         } );
 
         chat.on( 'typing', function( data ) {
@@ -489,11 +495,8 @@
         } );
 
         /**
-         *
          * socket.sockets || connected
-         *
          * socket.id
-         *
          * socket.fns
          * socket.adapter.nsp.rooms
          */
@@ -582,12 +585,35 @@
                     $( e.target )
                         .removeClass( "bg-warning" ) // could be "bg-warning bg-info" i.e multiple classes
                 }
-                // also remove number of unread messages once the chat is opened
-                console.log( '89', e.target.children[ 1 ].children[ 1 ].innerText )
+
+
+                // if this tab has unread messages, subtract from the total number of unread messages
+                var total_num_unread_msg = $( "#totalunreadmsg" );
+
+                if ( !total_num_unread_msg.html() == '' ) { // if it is not empty, i.e. there was a number there, there's been unread messages
+                    var c = parseInt( total_num_unread_msg.html() );
+                    var remove = parseInt( ( e.target.children[ 1 ].children[ 1 ].innerText == '' ? 0 : e.target.children[ 1 ].children[ 1 ].innerText ) );
+                    console.log( 'total messages', e.target.children[ 1 ].children[ 1 ].innerText, c - remove )
+                    total_num_unread_msg.html( ( c - remove == 0 ? '' : c - remove ) ); // if it'll be zero, show nothing
+                } else { //
+                    // total_num_unread_msg.html( 1 );
+                }
+
+                // also remove number of unread messages once the chat is opened // use namedItem() instead not [1]
+                console.log( e.target.children, '89', e.target.children[ 1 ].children[ 1 ].innerText )
                 e.target.children[ 1 ].children[ 1 ].innerText = '';
+
+                // if unread messages, emit that the messages have been read!!
+                // chat.emit( 'read', {message_from: e.target.attributes[ 'data-statecode' ].value, message_to: '<%= statecode2 %>'} ); // when it gets to them if they are online, put double ticks
+                chat.emit( 'read', {
+                    message_from: e.target.attributes[ 'data-statecode' ].value,
+                    message_to: '<%= statecode2 %>'
+                }, ( data ) => {
+                    // this funtion will run here to show the server has gotten our message.
+                    console.log( 'was just read', data ); // data will be 'woot ...' // then double tick
+                } );
+                // for a scenerio where you click the chat icon from account page... what if your new chat has sent you an unread message before? does the number of unread message show? i think yes... is this shown event run, to sh0w that the message has been read ?... maybe, find out! ---did, answer is no ...what we can do now it to check if the new chat is in the oldunread array and maybe put a settimeout function to remove the number of unread messages the tab is in the user's view, i.e. the user has seen it
             } )
-
-
 
         $( '#v-pills-tab' )
             .on( 'hide.bs.tab', function(
