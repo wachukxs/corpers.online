@@ -425,9 +425,8 @@ app.get('/search', function (req, res) {
     });
   } else if (req.query.rentrange) { // if it's an accomodation
   // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode;
-  pool.query("SELECT * FROM accommodations WHERE rentrange = '" + req.query.rentrange + "'", function (error, results, fields) {
+  pool.query("SELECT * FROM accommodations WHERE rentrange = '" + req.query.rentrange + "' AND input_time = '"+ req.query.it +"'", function (error, results, fields) {
 
-  })
     res.render('pages/search', accommodation_details /* {
       statecode: req.session.statecode.toUpperCase(),
       servicestate: req.session.servicestate,
@@ -435,6 +434,8 @@ app.get('/search', function (req, res) {
       name_of_ppa: req.session.name_of_ppa,
       nop: JSON.stringify(results)
     } */);
+  })
+    
   }
 
 

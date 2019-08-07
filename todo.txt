@@ -17,6 +17,11 @@ ask corpers how much their PPAs pay them, if they do at all, it'll help other co
 
 in update profile section or page, // ask if they want an accommodation and where would they want it to be
 
+
+
+also once people are done negotiating their goods or accommodation space we remove it from the timeline, it means we're done with it.
+
+
 //// concerning the total_num_unread_msg on account.ejs page, it is not exactly accurate because if a user is logged in and a new message is sent while they are in this page, if they open chat page and navigate back here, it shows the old/previous number of unread messages
 >>>>>>>>>>>>>>>>>> use https://www.javascripting.com/view/knwl-js to parse dates and time and places in texts
 
