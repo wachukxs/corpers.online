@@ -136,6 +136,9 @@ app.get('/signup', function (req, res) {
 app.get('/map', function (req, res) {
   res.sendFile(__dirname + '/map.html');
 });
+app.get('/batch', function (req, res) {
+  res.sendFile(__dirname + '/batch.html');
+});
 
 app.post('/addplace', function(req, res){
   //handle post request, add data to database.

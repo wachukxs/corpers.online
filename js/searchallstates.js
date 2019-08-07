@@ -70,12 +70,18 @@
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                     };
                 },
-                display: [ 'streetname', 'type', 'group', "name_of_ppa", "ppa_address" ], // seems 'group' options isn't working
+                display: [ 'streetname', 'type', "name_of_ppa", "ppa_address", 'price' ], // what you can search and it autocompletes // 'group' options works but isn't ideal yet because we can't implement // display cannot be a function
                 // Be careful as item properties might contain Url-unsafe characters
                 href: function( item ) {
                     // console.log('acc href', item);
-                    return "/search?type=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    if (item.name_of_ppa) { // if it's a ppa
+                        return "/search?type=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                        "&top=" + item.type_of_ppa;
+                    } else if (item.rentrange) { // if it's an accommodation
+                        return "/search?type=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
                         item.statecode; // sn sc it
+                    }
+                    
                 },
                 ajax: {
                     url: "/posts",
@@ -792,6 +798,7 @@
         callback: {
             onInit: function( node ) {
                 console.log( 'Typeahead Initiated on ', node );
+                
             },
             onReceiveRequest: function( node, searchtext ) {
                 console.log( 'gonna search ', node, searchtext );

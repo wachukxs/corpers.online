@@ -65,28 +65,10 @@ var multer = require('multer');
 
 // using path module removes the buffer object from the req.files array of uploaded files,... incase we ever need this... info!
 var path = require('path');
-
-/* list (array) of accepted files */
-const acceptedfiles = ['image/gif', 'image/jpeg', 'image/png', 'image/tiff', 'image/vnd.wap.wbmp', 'image/x-icon', 'image/x-jng', 'image/x-ms-bmp', 'image/svg+xml', 'image/webp', 'video/3gpp', 'video/mpeg', 'video/mp4', 'video/x-msvideo', 'video/x-ms-wmv', 'video/x-ms-asf', 'video/x-mng', 'video/x-flv', 'video/quicktime'];
-
-/* handles SETTING the path for STORAGE and NAMING of files */
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    // console.log('THE FILE', file)
-    if (acceptedfiles.includes(file.mimetype)) {
-      cb(null, './img/')
-    } /* else { // try to catch this error and show it to the user, for now we're just ignoring unacceptable files
-        err = new Error('file not accepted')
-        cb(err, './test/')
-      } */
-
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + file.originalname.slice(file.originalname.lastIndexOf('.'))) // get the file extension of the file you want to copy plus the '.' char 
-  }
-})
-
-var upload = multer({ storage: storage })
+var upload = multer({
+  dest: /* path.join(__dirname, '/img') */ '/img' // using path.join(__dirname, '/img') adds extra gibbrish
+  // you might also want to set some limits: https://github.com/expressjs/multer#limits
+});
 
 var fs = require('fs');
 
@@ -361,7 +343,6 @@ app.get('/search', function (req, res) {
 
   // if we know where the ppa is, get the geo data and show it on the map
   if (req.query.nop) {
-    // we have req.query.nop=name_of_ppa + req.query.pa=ppa_address + req.query.top=type_of_ppa // also select ppa closer to it and other relevant info we'll find later
     pool.query("SELECT name_of_ppa, ppa_address, type_of_ppa, ppa_geodata FROM info WHERE name_of_ppa = '" + req.query.nop + "'", function (error, results, fields) { // bring the results in ascending order
 
       if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
@@ -396,25 +377,25 @@ app.get('/search', function (req, res) {
         }
       }
 
-      ppa_details = {};
+      toSend = {};
 
       if (req.session.statecode) {
-        ppa_details.statecode = req.session.statecode.toUpperCase();
+        toSend.statecode = req.session.statecode.toUpperCase();
       }
       if (req.session.servicestate) {
-        ppa_details.servicestate = req.session.servicestate;
+        toSend.statecode = req.session.servicestate;
       }
       if (req.session.batch) {
-        ppa_details.batch = req.session.batch;
+        toSend.statecode = req.session.batch;
       }
       if (req.session.name_of_ppa) {
-        ppa_details.name_of_ppa = req.session.name_of_ppa;
+        toSend.statecode = req.session.name_of_ppa;
       }
-      ppa_details.nop = JSON.stringify(results);
+      toSend.nop = JSON.stringify(results);
 
-      console.log('let\'s see nop', ppa_details.nop);
+      console.log('let\'s see nop', toSend.nop);
       // having it named 'pages/account.2' returns error cannot find module '2'
-      res.render('pages/search', ppa_details /* {
+      res.render('pages/search', toSend /* {
         statecode: req.session.statecode.toUpperCase(),
         servicestate: req.session.servicestate,
         batch: req.session.batch,
@@ -424,17 +405,7 @@ app.get('/search', function (req, res) {
 
     });
   } else if (req.query.rentrange) { // if it's an accomodation
-  // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode;
-  pool.query("SELECT * FROM accommodations WHERE rentrange = '" + req.query.rentrange + "'", function (error, results, fields) {
 
-  })
-    res.render('pages/search', accommodation_details /* {
-      statecode: req.session.statecode.toUpperCase(),
-      servicestate: req.session.servicestate,
-      batch: req.session.batch,
-      name_of_ppa: req.session.name_of_ppa,
-      nop: JSON.stringify(results)
-    } */);
   }
 
 
@@ -959,35 +930,132 @@ app.post('/addplace', function (req, res) {
 app.post('/posts', upload.array('see', 12), function (req, res, next) {
   // handle post request, add data to database... do more
 
-  var sqlquery = "INSERT INTO posts( media, statecode, type, text, price, location, post_time) VALUES ('" + (req.files.length > 0 ? [...new Set(req.files.map(x => x.filename))] : '') + "','" + req.session.statecode + "', '" + (req.body.type ? req.body.type : "sale") + "', " + pool.escape(req.body.text) + ", " + pool.escape((req.body.price ? req.body.price : "")) + ", " + pool.escape(req.session.location) + ",'" + req.body.post_time + "')"
+  console.log('let\'s see:', req.files, (req.files.length > 0)); // req.files is an array of objects
 
-  pool.query(sqlquery, function (error, results, fields) {
-    console.log('inserted data from: ', results);
-    if (error) throw error;
-    // connected!
-    if (results.affectedRows === 1) {
-      // then status code is good
-      res.sendStatus(200);
+  // if there are images in the post user boardcasted
+  if (req.files.length > 0) {
+    // save the files in an array
+    var arraymedia = [];
 
-      // once it saves in db them emit to other users
-      iouser.to(req.session.statecode.substring(0, 2)).emit('boardcast message', {
-        to: 'be received by everyoneELSE', post: {
-          statecode: req.session.statecode,
-          location: req.session.location,
-          media: (req.files.length > 0 ? [...new Set(req.files.map(x => x.filename))] : false),
-          post_time: req.body.post_time,
-          type: req.body.type,
-          text: req.body.text,
-          age: moment(Number(req.body.post_time)).fromNow(),
-          price: (req.body.price ? req.body.price : '')
-        }
-      });
-    } else {
-      // this is really important for the form to get response
-      res.sendStatus(500);
-      // === res.status(500).send('Internal Server Error')
-    }
-  });
+    /* var l = req.files.length;
+    req.files.forEach(function (item, index, array) {
+      console.log('item:\n', item,'index:\n', index);
+    }); */
+
+    // insert and work with the media
+    Object.entries(req.files).forEach(
+      ([key, value]) => {
+        console.log('key:', key, 'value:', value);
+
+        var regex = /\\/gi;
+
+        /** When using the "single"
+         data come in "req.file" regardless of the attribute "name". 
+        **/
+        var tmp_path = value.path.replace(regex, '/'); // changing \\ to / in the string
+
+        /** The original name of the uploaded file
+            stored in the variable "originalname".
+        **/
+        var target_path = 'img/' + value.originalname;
+
+        /** A better way to copy the uploaded file. **/
+        var src = fs.createReadStream(tmp_path);
+        var dest = fs.createWriteStream(target_path);
+        src.pipe(dest);
+        // fs.unlink(tmp_path); //deleting the tmp_path
+        src.on('end', function (err) {
+          // res.render('complete');
+          if (err) {
+            console.log('ignore next line FAILED!!!!, pushing', value.originalname);
+          }
+          console.log('complete, pushing', value.originalname);
+
+          arraymedia.push(value.originalname); // returns a number!
+
+          // when we're done, insert in db and emit to other users
+
+          console.log('COMPARING key and req.files.length', key + 1, req.files.length, ((parseInt(key) + 1) === req.files.length)); // key is a number with string data type,
+          if (((parseInt(key) + 1) === req.files.length)) {
+            console.log('media aaray null ?', arraymedia);
+            var sqlquery = "INSERT INTO posts( media, statecode, type, text, price, location, post_time) VALUES ('" + (arraymedia ? arraymedia : '') + "','" + req.session.statecode + "', '" + (req.body.type ? req.body.type : "sale") + "', " + pool.escape(req.body.text) + ", " + pool.escape((req.body.price ? req.body.price : "")) + ", " + pool.escape(req.session.location) + ",'" + req.body.post_time + "')"
+
+            pool.query(sqlquery, function (error, results, fields) {
+              console.log('inserted data from: ', results);
+              if (error) throw error;
+              // connected!
+              if (results.affectedRows === 1) {
+                // then status code is good
+                res.sendStatus(200);
+
+                // once it saves in db them emit to other users
+                iouser.to(req.session.statecode.substring(0, 2)).emit('boardcast message', {
+                  to: 'be received by everyoneELSE', post: {
+                    statecode: req.session.statecode,
+                    location: req.session.location,
+                    media: arraymedia,
+                    post_time: req.body.post_time,
+                    type: req.body.type,
+                    text: req.body.text,
+                    age: moment(Number(req.body.post_time)).fromNow(),
+                    price: (req.body.price ? req.body.price : '')
+                  }
+                });
+              } else {
+                // this is really important for the form to get response
+                res.sendStatus(500);
+                // === res.status(500).send('Internal Server Error')
+              }
+            });
+          }
+
+        });
+        src.on('error', function (err) {
+          console.log('error: ', err);
+        });
+
+        dest.on('close', function () {
+          console.log('dooneeeee\n');
+        })
+
+      }
+    );
+
+  } else { // if no files
+    console.log('null ?', req.session.location);
+    var sqlquery = "INSERT INTO posts( media, statecode, type, text, price, location, post_time) VALUES ('" + (arraymedia ? arraymedia : '') + "','" + req.session.statecode + "', '" + (req.body.type ? req.body.type : "sale") + "', " + pool.escape(req.body.text) + ", " + pool.escape((req.body.price ? req.body.price : "")) + ", " + pool.escape(req.session.location) + ",'" + req.body.post_time + "')"
+    // console.log('the media info\n\n', req.files);
+    pool.query(sqlquery, function (error, results, fields) {
+      console.log('inserted data. results object:\n ', results);
+      if (error) throw error;
+      // connected!
+      if (results.affectedRows === 1) {
+        // then status code is good
+        res.sendStatus(200)
+
+        // once it saves in db them emit to other users in the same state
+        iouser.to(req.session.statecode.substring(0, 2)).emit('boardcast message', {
+          to: 'be received by everyoneELSE', post: {
+            statecode: req.session.statecode,
+            location: req.session.location,
+            // media: arraymedia, // we don't have any media something
+            post_time: req.body.post_time,
+            type: req.body.type,
+            text: req.body.text,
+            age: moment(Number(req.body.post_time)).fromNow(),
+            price: (req.body.price ? req.body.price : '')
+          }
+        });
+
+      } else {
+        // this is really important. for the form to get response
+        res.sendStatus(500)
+        // === res.status(500).send('Internal Server Error')
+      }
+    });
+
+
+  }
 
 
 });
@@ -1078,7 +1146,7 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
             var sqlquery = "INSERT INTO accommodations( statecode, streetname, type, price, media, rentrange, rooms, address, directions, tenure, expire, post_location, post_time) VALUES ('" +
               req.session.statecode + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
               arraymedia + "', '" + req.body.rentrange + "', '" + req.body.rooms + "','" + req.body.address + "','" + req.body.directions + "','" +
-              req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : null /**or '' */) + "', " + pool.escape(req.session.location) + ", " + pool.escape(req.body.post_time) + ")";
+              req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : null /**or '' */) + "', " + pool.escape(req.session.location) + "', " + pool.escape(req.body.post_time) + ")";
 
             pool.query(sqlquery, function (error, results, fields) {
               console.log('inserted data from: ', results);
@@ -1295,7 +1363,7 @@ var chat = io
       }
 
       if (!isEmpty(results)) {
-        // console.log('we should get to this point', results[0]);
+        console.log('we should get to this point', results[0]);
         socket.names = results[0]
       } else {
         console.log('we should not get to this point', results);
@@ -1305,16 +1373,16 @@ var chat = io
 
     // immediately join all the rooms presently online they are involved in, someone wants to chat with you
     var everyRoomOnline = Object.keys(chat.adapter.rooms)
-    console.log('everyRoomOnline: ', everyRoomOnline);
     for (index = 0; index < everyRoomOnline.length; index++) {
       const onlineRoom = everyRoomOnline[index];
 
       if (onlineRoom.includes(socket.handshake.query.from)) {
-        console.log('\nsaw onlineRoom', `${onlineRoom} is got in ${socket.handshake.query.from}`);
         socket.join(onlineRoom);
       }
 
     } // ON EVERY MESSAGE, WE CAN ITERATE THROUGH ALL THE CONNECTED ROOMS AND IF A ROOM CONTAINS BOTH THE .TO AND .FROM, WE SEND TO THAT ROOM BUT THIS METHOD IS INEFFICIENT, IF THE ROOM ISN'T ALREADY EXISTING, CREATE IT AND JOIN, ELSE JUST ONLY JOIN
+
+
 
     // socket.handshake.query.to and socket.handshake.query.from
 
@@ -1327,16 +1395,13 @@ var chat = io
       if (error) throw error;
 
       if (!isEmpty(results)) { // an array of objects with the columns as keys
-        console.info('got rooms from db successfully', results);
+        // console.info('got rooms from db successfully', results);
         // join old rooms
         for (index = 0; index < results.length; index++) {
           const offlineRoom = results[index].room;
 
           if (offlineRoom.includes(socket.handshake.query.from)) {
-            console.log('\nsaw offlineRoom', `${offlineRoom} is got in ${socket.handshake.query.from}`);
-            socket.join(offlineRoom, () => {
-              console.log('\nand joined', `${offlineRoom}`);
-            });
+            socket.join(offlineRoom);
           }
 
         }
@@ -1391,11 +1456,10 @@ var chat = io
     function corperonline(sc, ns) {
       console.log('checking if someone is online')
       var x = Object.keys(ns.sockets);
-      var t = false; // false
+      var t = ''; // false
       for (const s of x) {
         if (ns.sockets[s].handshake.query.from == sc) { // if they're online
           t = s; // true // return the socket.id
-          console.log('they are/were...', s)
           break;
         }
       }
@@ -1409,7 +1473,7 @@ var chat = io
         'to': {}
       };
 
-      if (socket.handshake.query.from != ('' || null) && msg.to != ('' && socket.handshake.query.from && null)) { // send message only to a particular room
+      if (socket.handshake.query.from != ('' || null) && msg.to != ('' & socket.handshake.query.from & null)) { // send message only to a particular room
         /* var m = {
           'from': { 'statecode': socket.handshake.query.from },
           'to': { 'statecode': msg.to },
@@ -1423,57 +1487,31 @@ var chat = io
         // console.log('\n\n\n\nevery online room', everyRoomOnline)
 
         //// in the IFs statements, check if the receipient sockets are online too before sending!!!
-
-        var c_online = corperonline(msg.to, chat);
-        //[TODO]// check if they are both in the room before sending to the room. [DONE]
-
-        // THE TWO IF STATEMENTS HAVE THE SAME LOGIC BUT DIFFERENT IMPLMENTATION
-
-        if (chat.adapter.rooms[socket.handshake.query.from + '-' + msg.to] && c_online) {
+        if (everyRoomOnline.includes(socket.handshake.query.from + '-' + msg.to) && corperonline(msg.to, chat)) {
           // In the array!
           var room = socket.handshake.query.from + '-' + msg.to;
-          console.log('is in room ?', chat.adapter.rooms[room].sockets[socket.id]);
-          if (!chat.adapter.rooms[room].sockets[socket.id]) { // if the sending socket is NOT in the room
-
-          }
-
-          if (!chat.adapter.rooms[room].sockets[c_online]) {
-            chat.sockets[c_online].join(room, () => {
-              console.log(msg.to, "wasn't in", room, "just joined")
-            })
-          }
           socket.join(room, () => {
             // to do, add the socket the message is sent to to the room too
             socket.to(room).broadcast.emit('message', m); // broadcast to everyone in the room
             m.sent = true;
           });
           console.log('\n\ngot close to deliver ? 001', !m.sent)
-        } else if (chat.adapter.rooms[msg.to + '-' + socket.handshake.query.from] && c_online) {
+        } else if (everyRoomOnline.includes(msg.to + '-' + socket.handshake.query.from) && corperonline(msg.to, chat)) {
           // In the array!
-          console.log(socket.id, 'what ??????', c_online) // chat.sockets[c_online].id
           var room = msg.to + '-' + socket.handshake.query.from;
-
-          console.log('are in room ? sender = ', chat.adapter.rooms[room].sockets[socket.id], 'receipent =', chat.adapter.rooms[room].sockets[c_online]);
-          if (chat.adapter.rooms[room].sockets[socket.id] && chat.adapter.rooms[room].sockets[c_online]) { // if they are both online and in the room
+          socket.join(room, () => {
             socket.to(room).broadcast.emit('message', m);
-          } else {
-            chat.sockets[c_online].join(room, () => {
-              socket.join(room, () => {
-                socket.to(room).broadcast.emit('message', m);
-                m.sent = true;
-              });
-            })
-          }
-
-          console.log('\n\ngot close to deliver ? 02', !m.sent) // something is wrong here. if new delete all messages. and a new corper open a new chat with another corper. if the initiating corper sends messages, the other corper receives, the other corpers sends messages, the initiating corper doens't receive it immeidately 
+            m.sent = true;
+          });
+          console.log('\n\ngot close to deliver ? 02', !m.sent)
         } else {
           // Not in the array
           // then add both sockets...from and to ...to thesame room [to get the .to, find the socket that the query.from is msg.to]
 
           var room = socket.handshake.query.from + '-' + msg.to;
-
-          if (c_online) {
-            chat.sockets[c_online].join(room, () => {
+          var s = corperonline(msg.to, chat)
+          if (s) {
+            chat.sockets[s].join(room, () => {
               socket.join(room, () => {
                 socket.to(room).broadcast.emit('message', m);
                 m.sent = true;

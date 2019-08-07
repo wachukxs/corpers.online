@@ -6,8 +6,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google" content="notranslate">
     <meta name="description" content="Get connected with other corpers.">
-    <meta name="keywords" content="Corpers. Information. PPAs. accommodation.">
+    <meta name="keywords" content="Corpers. Information. PPAs. Accommodation. Routes. Directions. Landmarks.">
     <meta name="author" content="corpers">
 
     <title>
@@ -338,11 +339,16 @@
             /* word-wrap: break-word; */
             /* or overflow-wrap */
 
+            -ms-word-break: break-all;
+            word-break: break-all;
+
+            /* Non standard for WebKit */
             word-break: break-word;
 
-            /* -webkit-hyphens: auto;
-        -ms-hyphens: auto;
-        hyphens: auto; */
+            -webkit-hyphens: auto;
+            -moz-hyphens: auto;
+            -ms-hyphens: auto;
+            hyphens: auto;
         }
     </style>
 </head>
@@ -767,7 +773,7 @@
                     </div>
                     <div class="modal-body">
 
-                        <textarea autofocus required name="text" type="text" class="form-control mb-3 shadow-sm" placeholder="Write a message. Share the location of an accommodation for rent, your PPA, a popular venue, or a route. Get creative." id="TXT"></textarea>
+                        <textarea autofocus required name="text" type="text" class="form-control mb-3 shadow-sm" placeholder="Upload items for sale. Share the location of your PPA (give directions from a popular landmark or junction!). Get creative." id="TXT"></textarea>
                         <!--make sure there's no space between opening and closing textarea tag-->
 
                         <small id="locinfo"></small>
@@ -781,7 +787,8 @@
 
 
                                 <div class="fileUpload btn btn-outline-dark">
-                                    <span>Image</span>
+                                    <span class="d-none d-md-block d-lg-none   d-lg-block d-xl-none   d-xl-block">Image</span>
+                                    <i class="fas fa-images   d-block d-sm-none  d-none d-sm-block d-md-none"></i>
                                     <input type="file" accept="image/*" name="see" class="upload" multiple id="IMG">
                                 </div>
                                 <!--<div class="fileUpload btn btn-light">
@@ -797,10 +804,21 @@
 
 
                                 <div class="btn-group" role="group" aria-label="Sharing places and locations">
-                                    <div class="btn btn-outline-dark" id="findme">Share location</div>
+                                    <div class="btn btn-outline-dark" id="findme">
+                                        <!-- Visible only on md, lg, xl -->
+                                        <span class="d-none d-md-block d-lg-none   d-lg-block d-xl-none   d-xl-block">Share current location</span>
+                                        
+                                        <!-- Visible only on xs, sm -->
+                                        <i class="fas fa-location-arrow  d-block d-sm-none  d-none d-sm-block d-md-none"></i>
+                                    </div>
+                                    
                                     <!-- <button class="btn btn-outline-dark" id="findme">Share location</button> -->
 
-                                    <div class="btn btn-outline-dark" id="place">or accommodation</div>
+                                    <div class="btn btn-outline-dark" id="place">
+                                        <span class="d-none d-md-block d-lg-none   d-lg-block d-xl-none   d-xl-block">or accommodation</span>
+                                        <i class="fas fa-home   d-block d-sm-none  d-none d-sm-block d-md-none"></i>
+                                    </div>
+                                    
                                     <!-- <button class="btn btn-outline-dark" id="place">or accommodation</button> -->
                                 </div>
                                 <!-- way less than 245418.50 -->
@@ -860,18 +878,25 @@
                 $( '#postModalSale' )
                     .modal( 'hide' );
                 document.forms[ 'postform' ].reset();
+                // also clear the append image in the document body
+                document.getElementById( 'previewParent' )
+                    .removeChild( document.getElementById( 'preview' ) );
 
                 document.getElementById( 'postsubmit' )
                     .disabled = true;
 
+
+                // some times there are cases where posts happen immediately after each other 
+                // and there would then be more than one notifications on the user tl...
+                // how do we ensure they are closed as they come ? A dedicated functions to handle notifications ????/    
                 $( "#tl" )
                     .before(
                         '<div class="alert alert-success mt-3 fade show" id="postposted" role="alert">Post created successfully.</div>'
                     );
 
                 setTimeout( function() {
-                    $( '#postposted' )
-                        .alert( 'close' ); // Closes an alert by removing it from the DOM
+                    $( 'div.alert.alert-success.mt-3.fade.show' )
+                        .alert( 'close' ); // Closes an (now all) alert by removing it from the DOM
                 }, 2000 );
             } );
 
@@ -1265,14 +1290,17 @@
         socket.on( 'totalunreadmsg', function( data ) {
             console.log( 'got an unread message', data );
             // (data.count == 1 ? '' : 's') adds 's' to 'corpers' if there are more than one corpers online.
-            
-                var ph = document.getElementById( 'totalunreadmsg' ).innerHTML;
-                if ( !ph == '' ) { // if it is not empty, i.e. there was a number there, there's been unread messages
-                    var c = parseInt( ph );
-                    document.getElementById( 'totalunreadmsg' ).innerHTML = c + 1; // increment the number of messages
-                } else {
-                    document.getElementById( 'totalunreadmsg' ).innerHTML = 1;
-                }
+
+            var ph = document.getElementById( 'totalunreadmsg' )
+                .innerHTML;
+            if ( !ph == '' ) { // if it is not empty, i.e. there was a number there, there's been unread messages
+                var c = parseInt( ph );
+                document.getElementById( 'totalunreadmsg' )
+                    .innerHTML = c + 1; // increment the number of messages
+            } else {
+                document.getElementById( 'totalunreadmsg' )
+                    .innerHTML = 1;
+            }
         } );
 
         socket.on( 'connect', function() {
@@ -1431,9 +1459,9 @@
                                     var a = new URL( '/' + data.post.media[ i ], "http://localhost:8081" )
                                         .toString(); // important: the trailing slash
 
-                                } else { // if not localhost then get media from elsewhere
-                                    // getting media from elsewhere
-                                    var a = new URL( '/corpersonline/images/' + data.post.media[ i ], "https://connarts.com.ng" )
+                                } else if ( window.location.hostname == "corpers.online" ) { // if not localhost then get media from live site
+                                    // getting media from live site
+                                    var a = new URL( '/' + data.post.media[ i ], "https://corpers.online" )
                                         .toString(); // upload images to this url when ever users upload images
                                 }
                             } catch ( error ) {
@@ -1578,7 +1606,7 @@
 
                     cimg = document.createElement( 'img' );
                     cimg.setAttribute( 'class', 'd-block img-fluid mx-auto' );
-                    cimg.setAttribute( 'src', 'http://localhost:8081/' + jk[ i ] );
+                    cimg.setAttribute( 'src', ( window.location.hostname == "localhost" ? 'http://localhost:8081/' : 'https://corpers.online/' ) + jk[ i ] );
                     cimg.setAttribute( 'alt',
                         `Might be a picture of a ${(rms[i] == undefined ? rms[0] : rms[i])}` ); // this is not exactly correct, needs more work
 

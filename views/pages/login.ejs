@@ -95,15 +95,15 @@
                     <form id="loginform" class="container" action="/login" method="POST" enctype="application/x-www-form-urlencoded">
                         <div class="form-row">
                             <div class="col-md-4 mb-3">
-                                <label for="email">State code</label>
-                                <input name="statecode" type="text" class="form-control text-uppercase" autocomplete="" autofocus id="statecode" placeholder="AB/16A/2639" required>
+                                <label for="statecode">State code</label>
+                                <input name="statecode" type="text" tabindex="0" maxlength="11" class="form-control text-uppercase" autocomplete="" autofocus id="statecode" placeholder="AB/16A/2639" required>
                                 <div hidden class="wrong">
                                     Wrong state code
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label for="password">Password</label>
-                                <input name="password" type="password" class="form-control" autocomplete="current-password" id="password" placeholder="Password" required>
+                                <input name="password" type="password" tabindex="0" class="form-control" autocomplete="current-password" id="password" placeholder="Password" required>
                                 <div hidden class="wrong">
                                     or password.
                                 </div>
