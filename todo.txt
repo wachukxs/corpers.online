@@ -18,6 +18,8 @@ ask corpers how much their PPAs pay them, if they do at all, it'll help other co
 in update profile section or page, // ask if they want an accommodation and where would they want it to be
 
 
+/////// make the pop up be entirely in view when a ppa is clicked from the index page.
+
 
 also once people are done negotiating their goods or accommodation space we remove it from the timeline, it means we're done with it.
 

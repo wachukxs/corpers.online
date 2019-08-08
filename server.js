@@ -399,16 +399,16 @@ app.get('/search', function (req, res) {
       ppa_details = {};
 
       if (req.session.statecode) {
-        ppa_details.statecode = req.session.statecode.toUpperCase();
+        ppa_details.user.statecode = req.session.statecode.toUpperCase();
       }
       if (req.session.servicestate) {
-        ppa_details.servicestate = req.session.servicestate;
+        ppa_details.user.servicestate = req.session.servicestate;
       }
       if (req.session.batch) {
-        ppa_details.batch = req.session.batch;
+        ppa_details.user.batch = req.session.batch;
       }
       if (req.session.name_of_ppa) {
-        ppa_details.name_of_ppa = req.session.name_of_ppa;
+        ppa_details.user.name_of_ppa = req.session.name_of_ppa;
       }
       ppa_details.nop = JSON.stringify(results);
 
@@ -423,19 +423,21 @@ app.get('/search', function (req, res) {
       } */);
 
     });
-  } else if (req.query.rentrange) { // if it's an accomodation
-  // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode;
-  pool.query("SELECT * FROM accommodations WHERE rentrange = '" + req.query.rentrange + "' AND input_time = '"+ req.query.it +"'", function (error, results, fields) {
+  } else if (req.query.rr) { // if it's an accomodation
+    // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
+    pool.query("SELECT * FROM accommodations WHERE rentrange = '" + req.query.rr + "' AND input_time = '" + req.query.it + "'", function (error, results, fields) {
 
-    res.render('pages/search', accommodation_details /* {
+      accommodation_details = {};
+      accommodation_details.nop = null; // initialize to null because the frontend is expecting nop to be somthing.
+      res.render('pages/search', accommodation_details /* {
       statecode: req.session.statecode.toUpperCase(),
       servicestate: req.session.servicestate,
       batch: req.session.batch,
       name_of_ppa: req.session.name_of_ppa,
       nop: JSON.stringify(results)
     } */);
-  })
-    
+    })
+
   }
 
 
