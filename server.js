@@ -428,7 +428,7 @@ app.get('/search', function (req, res) {
     pool.query("SELECT * FROM accommodations WHERE rentrange = '" + req.query.rr + "' AND input_time = '" + req.query.it + "'", function (error, results, fields) {
 
       accommodation_details = {};
-      accommodation_details.nop = null; // initialize to null because the frontend is expecting nop to be somthing.
+      accommodation_details.nop = '[]'; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
       res.render('pages/search', accommodation_details /* {
       statecode: req.session.statecode.toUpperCase(),
       servicestate: req.session.servicestate,

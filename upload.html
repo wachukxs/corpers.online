@@ -1,31 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>using upload</title>
+    <style>
+    html,
+body {
+  height: 100%;
+  margin: 0px;
+}
+
+.grid {
+  display: grid;
+  height: 100%;
+  background-color: lightgreen;
+  grid-template-columns: repeat(2, 50%);
+  grid-template-rows: repeat(2, 50%);
+  /*grid-gap: 5px;*/
+  grid-auto-columns: 50%;
+  grid-auto-flow: column;
+}
+
+.item {
+  border: 1px solid;
+  grid-area: span 1 / span 1;
+}
+
+.item:nth-child(odd) {
+  background-color: lightblue;
+}
+
+.item:nth-child(even) {
+  background-color: lightslategray;
+}
+
+.item1 {
+  grid-area: span 1/ span 2;
+}
+
+
+    </style>
+    <style>
+        /* https://uxdesign.cc/creating-horizontal-scrolling-containers-the-right-way-css-grid-c256f64fc585 */
+        .app {
+            display: grid;
+            grid-template-columns: 20px 1fr 20px;
+        }
+
+        .app>* {
+            grid-column: 2 / -2;
+        }
+
+        .app>.full {
+            grid-column: 1 / -1;
+        }
+
+        .hs {
+            display: grid;
+            grid-gap: 10px;
+            grid-template-columns: 10px;
+            grid-auto-flow: column;
+            grid-auto-columns: calc(50% - 5px * 2);
+            grid-template-rows: minmax(150px, 1fr);
+            padding: 0 20px;
+        }
+
+        .hs>li:last-child {
+            margin-right: 20px;
+        }
+
+        .hs:before,
+        .hs:after {
+            content: '';
+            width: 10px;
+        }
+    </style>
 </head>
+
 <body>
     <!--  SINGLE FILE -->
-<form action="/uploadfile" enctype="multipart/form-data" method="POST"> 
-    <input type="file" name="myFile" />
-    <input type="submit" value="Upload a file"/>
- </form>
-  
-  <br>
- <!-- MULTIPLE FILES -->
-  
- <form action="/uploadmultiple"  enctype="multipart/form-data" method="POST">
-   Select images: <input type="file" name="myFiles" multiple>
-   <input type="submit" value="Upload your files"/>
- </form>
-  <br>
-   <!--   PHOTO-->
-  
- <form action="/upload/photo" enctype="multipart/form-data" method="POST"> 
-   <input type="file" name="myImage" accept="image/*" />
-   <input type="submit" value="Upload a Photo"/>
- </form>
+    <form action="/uploadfile" enctype="multipart/form-data" method="POST">
+        <input type="file" name="myFile" />
+        <input type="submit" value="Upload a file" />
+    </form>
+
+    <br>
+    <!-- MULTIPLE FILES -->
+
+    <form action="/uploadmultiple" enctype="multipart/form-data" method="POST">
+        Select images: <input type="file" name="myFiles" multiple>
+        <input type="submit" value="Upload your files" />
+    </form>
+    <br>
+    <!--   PHOTO-->
+
+    <form action="/upload/photo" enctype="multipart/form-data" method="POST">
+        <input type="file" name="myImage" accept="image/*" />
+        <input type="submit" value="Upload a Photo" />
+    </form>
+
+    <hr>
+    <div class="grid">
+        <div class="item item1">1</div>
+        <div class="item item2">2</div>
+        <div class="item item3">3</div>
+        <div class="item item1">4</div>
+        <div class="item item2">5</div>
+        <div class="item item3">6</div>
+      </div>
+    <div class="app hs">
+        <div><img src="testimg/2.png" alt=""></div>
+        <div><img src="testimg/1.jpg" alt="" srcset=""></div>
+        <div><img src="testimg/3.png" alt=""></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
 </body>
+
 </html>

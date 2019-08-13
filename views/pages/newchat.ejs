@@ -124,7 +124,6 @@
 
                     <a class="nav-link list-group-item list-group-item-action" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</a> -->
 
-
                 </div>
             </div>
         </div>
@@ -211,6 +210,23 @@
                         <h6><%= newchat.statecode %>'s wall</h6>
                         <div class="wall">
                             no old messages they haven't chatted before
+                            <div class="messages">
+
+                            </div>
+
+                            <div class="chatbox insidewall">
+                                <!-- the chat box will be inside every user's wall, help us save drafts and be more particular -->
+                                <div class="row">
+                                    <!-- append before the new tab is shown -->
+                                    <div class="col-10">
+                                        <textarea class="form-control text" sc="<%= newchat.statecode.replace(/\//g, '-') %>" rows="3"></textarea>
+                                    </div>
+                                    <div class="col-2">
+                                        <button class="btn btn-primary send" sc="<%= newchat.statecode.replace(/\//g, '-') %>" disabled='true'>Send</button>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                     <% } %>
@@ -245,42 +261,58 @@
                     <div class="tab-pane fade <%= ( newchat && newwer[index] == newchat.statecode ? 'show active' : '' )  %> " id="v-pills-<%= newwer[index].replace(/\//g, '-') %>" role="tabpanel" aria-labelledby="v-pills-<%= newwer[index].replace(/\//g, '-') %>-tab">
                         <h6><%= newwer[index] %>'s wall</h6>
                         <div class="wall">
-                            <%# append the old chat messages here %>
-                            <% oldchats = oldchats.sort( (a, b) => (a.time > b.time) ? 1 : -1 ) // don't change // https://flaviocopes.com/how-to-sort-array-of-objects-by-property-javascript/ %>
-                            <%# the appending %>
-                            <%# /**
-                            * within the wall, sort oldchats according to oldchat[index].time or _time
-                            * then loop through oldchats
-                            * if the newwer[index] is contained in the oldchat[index].room == true && oldchat[index].message_from == newwer[index] == true, append to the RIGHT [i.e. they sent the message]
-                            * 
-                            * if the newwer[index] is contained in the oldchat[index].room == true && oldchat[index].message_to newwer[index] == true, append to the LEFT [i.e they received the message]
-                            */ %>
+                            <div class="messages">
+                                <%# append the old chat messages here %>
+                                <% oldchats = oldchats.sort( (a, b) => (a.time > b.time) ? 1 : -1 ) // don't change // https://flaviocopes.com/how-to-sort-array-of-objects-by-property-javascript/ %>
+                                <%# the appending %>
+                                <%# /**
+                                    * within the wall, sort oldchats according to oldchat[index].time or _time
+                                    * then loop through oldchats
+                                    * if the newwer[index] is contained in the oldchat[index].room == true && oldchat[index].message_from == newwer[index] == true, append to the RIGHT [i.e. they sent the message]
+                                    * 
+                                    * if the newwer[index] is contained in the oldchat[index].room == true && oldchat[index].message_to newwer[index] == true, append to the LEFT [i.e they received the message]
+                                    */ %>
 
-                            <% for (ocindex = 0; ocindex < oldchats.length; ocindex++) { %>
+                                <% for (ocindex = 0; ocindex < oldchats.length; ocindex++) { %>
 
-                            <% if ( oldchats[ocindex].room.includes( newwer[index] ) && oldchats[ocindex].message_to == newwer[index] && oldchats[ocindex].message_from == statecode2) { // append to right %>
-                            <div class="pl-5">
-                                <div class="card mb-2">
-                                    <div class="card-body">
-                                        <div class="float-right"><%= oldchats[ocindex].message %></div>
+                                <% if ( oldchats[ocindex].room.includes( newwer[index] ) && oldchats[ocindex].message_to == newwer[index] && oldchats[ocindex].message_from == statecode2) { // append to right %>
+                                <div class="pl-5">
+                                    <div class="card mb-2">
+                                        <div class="card-body">
+                                            <div class="float-right"><%= oldchats[ocindex].message %></div>
+                                        </div>
+                                        <div class="text-right small p-2 bg-dark text-muted">
+                                            <%= new Date(parseInt(oldchats[ocindex].time)).toLocaleString("en-US") %> <span id="<%= oldchats[ocindex].time %>"></span> </div>
                                     </div>
-                                    <div class="text-right small p-2 bg-dark text-muted">
-                                        <%= new Date(parseInt(oldchats[ocindex].time)).toLocaleString("en-US") %> <span id="<%= oldchats[ocindex].time %>"></span> </div>
+                                </div>
+                                <% } else if (oldchats[ocindex].room.includes( newwer[index] ) && oldchats[ocindex].message_to == statecode2 && oldchats[ocindex].message_from == newwer[index]) { // append to left %>
+                                <div class="pr-5">
+                                    <div class="card mb-2">
+                                        <div class="card-body">
+                                            <div class="float-left"><%= oldchats[ocindex].message %></div>
+                                        </div>
+                                        <div class="small p-2 bg-dark text-muted">
+                                            <%= new Date(parseInt(oldchats[ocindex].time)).toLocaleString("en-US") %> <span id="<%= oldchats[ocindex].time %>"></span> </div>
+                                    </div>
+                                </div>
+                                <% } %>
+
+                                <% } %>
+                            </div>
+
+
+                            <div class="chatbox insidewall">
+                                <!-- the chat box will be inside every user's wall, help us save drafts and be more particular -->
+                                <div class="row">
+                                    <!-- append before the new tab is shown -->
+                                    <div class="col-10">
+                                        <textarea class="form-control text" sc="<%= newwer[index].replace(/\//g, '-') %>" rows="3"></textarea>
+                                    </div>
+                                    <div class="col-2">
+                                        <button class="btn btn-primary send" sc="<%= newwer[index].replace(/\//g, '-') %>" disabled='true'>Send</button>
+                                    </div>
                                 </div>
                             </div>
-                            <% } else if (oldchats[ocindex].room.includes( newwer[index] ) && oldchats[ocindex].message_to == statecode2 && oldchats[ocindex].message_from == newwer[index]) { // append to left %>
-                            <div class="pr-5">
-                                <div class="card mb-2">
-                                    <div class="card-body">
-                                        <div class="float-left"><%= oldchats[ocindex].message %></div>
-                                    </div>
-                                    <div class="small p-2 bg-dark text-muted">
-                                        <%= new Date(parseInt(oldchats[ocindex].time)).toLocaleString("en-US") %> <span id="<%= oldchats[ocindex].time %>"></span> </div>
-                                </div>
-                            </div>
-                            <% } %>
-
-                            <% } %>
 
                         </div>
                     </div>
@@ -332,15 +364,7 @@
 
 
                 </div>
-                <div class="row">
-                    <!-- append before the new tab is shown -->
-                    <div class="col-10">
-                        <textarea class="form-control" id="text" rows="3"></textarea>
-                    </div>
-                    <div class="col-2">
-                        <button id="send" class="btn btn-primary">Send</button>
-                    </div>
-                </div>
+                <!-- chat box was formerly here -->
             </div>
 
         </div>
@@ -387,8 +411,8 @@
         }
         // var socket = io.connect('http://localhost:8081');
         console.log( 'chat socket', chat );
-        var textarea = document.getElementById( 'text' );
-        var send = document.getElementById( 'send' );
+        var textarea = document.getElementsByClassName( 'text' );
+        var send = document.getElementsByClassName( 'send' ); // document.getElementById( 'send' );
         var notify = document.getElementById( 'notifications' );
 
         chat.on( 'connect', function() { // get fallback from davidwalsh's blog if URLSearchParams isn't in browser
@@ -469,7 +493,9 @@
                             aria-labelledby="v-pills-${data.from.statecode.replace(/\//g, '-')}-tab">
                             <h6>${data.from.statecode}</h6>
                             <div class="wall">
+                                <div class="messages">
 
+                                </div>
                             </div>
                         </div>` )
                     .insertBefore( '#v-pills-tabContent > div:nth-child(2)' );
@@ -483,16 +509,16 @@
             }
 
             // append the message to the account's wall
-            $( `#v-pills-${data.from.statecode.replace(/\//g, '-')} > .wall` )
+            $( `#v-pills-${data.from.statecode.replace(/\//g, '-')} > .wall > .messages` )
                 .append( `<div class="pr-5"><div class="card mb-2"><div class="card-body">
                   <div class="float-left">${data.it.message}</div>
                   </div><div class="small p-2 bg-dark text-muted">
                   ${new Date(data.it.time).toLocaleTimeString()} <span id="${data.it.time}"></span> </div></div></div>` )
         } ); // new Date(Date.now()).toLocaleTimeString() ---- then if not today new Date(Date.now()).toLocaleString() ---maybe    [new Date(Date.now()).toDateString()]
 
-        textarea.addEventListener( 'keypress', function() {
+        /* textarea.addEventListener( 'keypress', function() {
             chat.emit( 'typing', '<%= statecode2 %>' ); // <%= batch %> <%= name_of_ppa %> <%= servicestate %>
-        } );
+        } ); */
 
         chat.on( 'typing', function( data ) {
             notify.innerHTML = '<em>' + data + ' is typing a message...</em>';
@@ -508,16 +534,50 @@
          * socket.adapter.nsp.rooms
          */
 
-        textarea.addEventListener( 'input', function( event ) {
+        /* textarea.addEventListener( 'input', function( event ) {
             if ( textarea.value === '' ) {
                 send.disabled = true;
             } else {
                 send.disabled = false;
             }
+        }, false ); */
+        document.querySelectorAll( '.text' ).forEach( text_area => {
+            text_area.addEventListener( 'input', function( event ) {
+            if ( text_area.value === '' ) {
+                document.querySelector( `button[sc='${event.srcElement.attributes['sc'].value}']` ).disabled = true;
+            } else {
+                document.querySelector( `button[sc='${event.srcElement.attributes['sc'].value}']` ).disabled = false;
+            }
         }, false );
+        } )
 
-        send.addEventListener( 'click', function( event ) {
-            // console.log(event);
+        document.querySelectorAll( '.send' ).forEach( item => {
+                item.addEventListener( 'click', event => {
+                    //handle click
+                    console.log( 'event', event.srcElement.attributes[ 'sc' ].value );
+                    console.log( 'h', document.querySelector( `textarea[sc='${event.srcElement.attributes['sc'].value}']` ) )
+                    // an alternative to using document.querySelector to long chain from event to the textarea.value attribute and clear it// event.srcElement.parentElement.offsetParent.parentElement.children[0].lastElementChild.value
+
+                    k.message = document.querySelector( `textarea[sc='${event.srcElement.attributes['sc'].value}']` ).value, //textarea.value,
+                        k.time = Date.now()
+                    chat.emit( 'message', k, ( data ) => {
+                        // this funtion will run here to show the server has gotten our message.
+                        // this message means this corper sent the message, so pad the msg box from the left
+                        console.log( 'g', data ); // data will be 'true, msg'
+                        $( `#v-pills-${data.to.statecode.replace(/\//g, '-')} > .wall > .messages` ) // data.to... because we're appending to the receipient's wall/timeline in this corper's page
+                            .append( `<div class="pl-5"><div class="card mb-2"><div class="card-body">
+                  <div class="float-right">${data.it.message}</div>
+                  </div><div class="text-right small p-2 bg-dark text-muted">
+                  ${new Date(data.it.time).toLocaleTimeString()} <span id="${data.it.time}"></span> </div></div></div>` )
+                    } );
+
+                    document.querySelector( `textarea[sc='${event.srcElement.attributes['sc'].value}']` ).value = ''; // textarea.value = '';
+
+                }, false )
+            });
+
+        /* send.addEventListener( 'click', function( event ) {
+            console.log( 'event', event );
             // when we send a message, we append it to the timeline, and when the server says it's gotten the message, we tag it as delivered. and if we get a connection from the corper to this particular room and the message has been in the viewport, we mark it as read
 
             // we set the chat.query.to attribute here.
@@ -528,14 +588,14 @@
                 // this funtion will run here to show the server has gotten our message.
                 // this message means this corper sent the message, so pad the msg box from the left
                 console.log( 'g', data ); // data will be 'true, msg'
-                $( `#v-pills-${data.to.statecode.replace(/\//g, '-')} > .wall` ) // data.to... because we're appending to the receipient's wall/timeline in this corper's page
+                $( `#v-pills-${data.to.statecode.replace(/\//g, '-')} > .wall > .messages` ) // data.to... because we're appending to the receipient's wall/timeline in this corper's page
                     .append( `<div class="pl-5"><div class="card mb-2"><div class="card-body">
                   <div class="float-right">${data.it.message}</div>
                   </div><div class="text-right small p-2 bg-dark text-muted">
                   ${new Date(data.it.time).toLocaleTimeString()} <span id="${data.it.time}"></span> </div></div></div>` )
             } );
             textarea.value = '';
-        }, false );
+        }, false ); */
 
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
