@@ -44,7 +44,7 @@
     <!-- the room you join is unique with the person you're chatting with, it's made up of the unique ids of both parties -->
 
     <script>
-        var chat = io.connect( 'http://localhost:8081/chat', {
+        var chat = io.connect( '/chat', {
             transports: [ 'websocket' ],
             query: {
                 from: '<%= statecode %>',
@@ -54,7 +54,7 @@
                     .toUpperCase() : '' )
             }
         } );
-        // var socket = io.connect('http://localhost:8081');
+        
         console.log('chat socket', chat)
         var textarea = document.getElementById( 'text' );
         var send = document.getElementById( 'send' );

@@ -321,13 +321,17 @@ app.get(['/AB/:batch', '/AD/:batch', '/AK/:batch', '/AN/:batch', '/BA/:batch', '
   }
 });
 
-app.get(['/AB/:batch/:code', '/AD/:batch/:code', '/AK/:batch/:code', '/AN/:batch/:code', '/BA/:batch/:code', '/BY/:batch/:code', '/BN/:batch/:code', '/BO/:batch/:code', '/CR/:batch/:code', '/DT/:batch/:code', '/EB/:batch/:code', '/ED/:batch/:code', '/EK/:batch/:code', '/EN/:batch/:code', '/FC/:batch/:code', '/GM/:batch/:code', '/IM/:batch/:code', '/JG/:batch/:code', '/KD/:batch/:code', '/KN/:batch/:code', '/KT/:batch/:code', '/KB/:batch/:code', '/KG/:batch/:code', '/KW/:batch/:code', '/LA/:batch/:code', '/NS/:batch/:code', '/NG/:batch/:code', '/OG/:batch/:code', '/OD/:batch/:code', '/OS/:batch/:code', '/OY/:batch/:code', '/PL/:batch/:code', '/RV/:batch/:code', '/SO/:batch/:code', '/TR/:batch/:code', '/YB/:batch/:code', '/ZM/:batch/:code'], function (req, res) {
+/**great resource for express route regex https://www.kevinleary.net/regex-route-express/ & https://forbeslindesay.github.io/express-route-tester/ */
+
+app.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm))/:batch_stream(((17|18|19)([abcACB])))/:lastfour(([0-9]{4}))', function (req, res) { // ['/AB/:batch/:code', '/AD/:batch/:code', '/AK/:batch/:code', '/AN/:batch/:code', '/BA/:batch/:code', '/BY/:batch/:code', '/BN/:batch/:code', '/BO/:batch/:code', '/CR/:batch/:code', '/DT/:batch/:code', '/EB/:batch/:code', '/ED/:batch/:code', '/EK/:batch/:code', '/EN/:batch/:code', '/FC/:batch/:code', '/GM/:batch/:code', '/IM/:batch/:code', '/JG/:batch/:code', '/KD/:batch/:code', '/KN/:batch/:code', '/KT/:batch/:code', '/KB/:batch/:code', '/KG/:batch/:code', '/KW/:batch/:code', '/LA/:batch/:code', '/NS/:batch/:code', '/NG/:batch/:code', '/OG/:batch/:code', '/OD/:batch/:code', '/OS/:batch/:code', '/OY/:batch/:code', '/PL/:batch/:code', '/RV/:batch/:code', '/SO/:batch/:code', '/TR/:batch/:code', '/YB/:batch/:code', '/ZM/:batch/:code']
   // console.log('tryna login ', req.session.statecode, req.session.id, req.session.loggedin);
   // they should be able to change state code too !!!!!!!!!!!! --later
-  console.log('\n\n\n req.params', req.params.batch, req.params.code) // req.path is shorthand for url.parse(req.url).pathname
+  console.log('\n\n\nreq.params', req.params.batch, req.params.code) // req.path is shorthand for url.parse(req.url).pathname
   // when they update their profile. it should immediately reflect. so set it in the session object after a successfully update
 
-  var query = " SELECT * FROM chats WHERE message_to = '" + req.path.substring(1, 12).toUpperCase() + "' AND message IS NOT NULL AND message_sent = false ;"
+
+  /** this query runs so we can get the number of unread messages the user has */
+  var query = "SELECT * FROM chats WHERE message_to = '" + req.path.substring(1, 12).toUpperCase() + "' AND message IS NOT NULL AND message_sent = false ;"
   if (req.session.loggedin) {
     res.set('Content-Type', 'text/html');
     // res.sendFile(__dirname + '/account.html');
@@ -369,7 +373,7 @@ app.get('/search', function (req, res) {
         throw error;
       }
 
-      if (!isEmpty(results)) {
+      else if (!isEmpty(results)) {
         for (index = 0; index < results.length; index++) {
           // unstringify the ppa_geodata entry
           // results[index]['ppa_geodata'] = JSON.parse(results[index].ppa_geodata);
@@ -558,7 +562,7 @@ app.get(['/map', '/maps'], function (req, res) {
       throw error;
     }
 
-    if (!isEmpty(results)) {
+    else if (!isEmpty(results)) {
       console.log('geo data for map', results);
 
       // JSON.parse(JSON.stringify([{ g: 'g', l: 'l' }, { g: 'g', l: 'l' }, { g: 'g', l: { g: 'g', l: { g: 'g', l: 'l' } } }]))
@@ -612,13 +616,11 @@ app.get(['/map', '/maps'], function (req, res) {
 
 app.get('/login', function (req, res) {
   res.set('Content-Type', 'text/html');
-  // res.sendFile(__dirname + '/login.html');
   res.render('pages/login');
 });
 
 app.get('/contact', function (req, res) {
   res.set('Content-Type', 'text/html');
-  // res.sendFile(__dirname + '/login.html');
   res.render('pages/contact');
 });
 
@@ -689,6 +691,8 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
   // remember to check if the query to know if the time is actually greater than or less
   // console.log('time causing the ish', aUTL[aUTL.length - 1], pUTL[pUTL.length - 1]);
 
+  // we stopped using sender column from posts table, so it's null !
+
   /// there's much work on this section maybe, just to make sure sql sees and calculates the value as they should (or NOT ????)
   var getpostsquery = "SELECT * FROM posts WHERE statecode LIKE '%" + socket.handshake.query.statecode.substring(0, 2) + "%'" + (pUTL.length > 1 ? ' AND post_time > "' + pUTL[pUTL.length - 1] + '" ORDER by posts.post_time ASC' : ' ORDER by posts.post_time ASC')
     + "; SELECT * FROM accommodations WHERE statecode LIKE '%" + socket.handshake.query.statecode.substring(0, 2) + "%'" + (aUTL.length > 1 ? ' AND input_time > "' + e + '" ORDER by accommodations.input_time ASC' : ' ORDER BY accommodations.input_time ASC');
@@ -699,7 +703,8 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
       throw error;
     }
 
-    if (!isEmpty(results)) {
+
+    else if (!isEmpty(results[0]) || !isEmpty(results[1])) { // formerly !isEmpty(results) but results is [[...], [...]]
       // console.log('posts', results);
 
       // FOR THE POSTS - sales
@@ -712,7 +717,7 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
           value.age = moment(Number(value.post_time))
             .fromNow();
 
-          //if there is image(s) in the post we're sending to user from db then convert it to array. 
+          //if there is image(s) in the post we're sending to user from db then convert it to array.
           if (value.media) {
             // value.media = value.media.split('  '); // previously on how we handled media(images) when we stored them in base64
 
@@ -754,6 +759,9 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
         }
       );
 
+    } else {
+      socket.emit('boardcast message', { to: 'be received by everyoneELSE', post: {} });
+      console.log('emitting empty posts, first user or the tl is empty');
     }
   });
 
@@ -830,7 +838,7 @@ app.get('/posts', function (req, res) {
     }
 
 
-    if (!isEmpty(results)) {
+    else if (!isEmpty(results)) {
       // res.json({er: 'er'}); // auto sets content-type header with the correct content-type
       // res.send({ user: 'tobi' });
       console.log('\n[=', results.length, results)
@@ -877,7 +885,6 @@ app.get('/profile', function (req, res) {
       // select all distinct ppa type / address / name and send it to the front end as suggestions for the input when the corpers type
     });
   } else {
-    // res.redirect('/login');
     res.render('pages/login');
   }
 
@@ -905,7 +912,6 @@ app.get('/newprofile', function (req, res) {
       });
     });
   } else {
-    // res.redirect('/login');
     res.render('pages/login');
   }
 
@@ -995,7 +1001,7 @@ app.post('/posts', upload.array('see', 12), function (req, res, next) {
 
 });
 
-app.post('/signup', function (req, res) {
+app.post('/signup', bodyParser.urlencoded({ extended: true }), function (req, res) {
   // handle post request, add data to database.
   // implement the hashing of password before saving to the db
   // also when some one signs up, it counts as login time too, so we should include it in usage details table
@@ -1003,23 +1009,45 @@ app.post('/signup', function (req, res) {
   // we can find the service state with req.body.statecode.slice(0, 2) which gives the first two letters
 
   /**
-  *
+  *   Either one of 
   *   ['AB', 'AD', 'AK', 'AN', 'BA', 'BY', 'BN', 'BO', 'CR', 'DT', 'EB', 'ED', 'EK', 'EN', 'FC', 'GM', 'IM', 'JG', 'KD', 'KN', 'KT', 'KB', 'KG', 'KW', 'LA', 'NS', 'NG', 'OG', 'OD', 'OS', 'OY', 'PL', 'RV', 'SO', 'TR', 'YB', 'ZM'] ;
       
       ['ABIA', 'ADAMAWA', 'AKWA IBOM', 'ANAMBRA', 'BAUCHI', 'BAYELSA', 'BENUE', 'BORNO', 'CROSS RIVER', 'DELTA', 'EBONYI', 'EDO', 'EKITI', 'ENUGU', 'FCT - ABUJA', 'GOMBE', 'IMO', 'JIGAWA', 'KADUNA', 'KANO', 'KASTINA', 'KEBBI', 'KOGI', 'KWARA', 'LAGOS', 'NASSARAWA', 'NIGER', 'OGUN', 'ONDO', 'OSUN', 'OYO', 'PLATEAU', 'RIVERS', 'SOKOTO', 'TARABA', 'YOBE', 'ZAMFARA'] ;
   */
 
-  var theservicestate = states_long[states_short.indexOf(req.body.statecode.slice(0, 2))];
+  var theservicestate = states_long[states_short.indexOf(req.body.statecode.slice(0, 2).toUpperCase())];
 
-  var sqlquery = "INSERT INTO info(email, firstname, middlename, password, lastname, statecode, batch, servicestate) VALUES ('" + req.body.email + "', '" + req.body.firstname + "', '" + req.body.middlename + "', '" + req.body.password + "', '" + req.body.lastname + "', '" + req.body.statecode + "', '" + req.body.statecode.slice(3, 6) + "', '" + theservicestate + "'  )";
+  var thestream = req.body.statecode.slice(5, 6).toUpperCase();
+  function getstream(sb) {
+    return sb == 'A' ? 1
+      : sb == 'B' ? 2
+        : sb == 'C' ? 3
+          : 4; // because we're sure it's gonna be 'D'
+  }
+
+  var sqlquery = "INSERT INTO info(email, firstname, middlename, password, lastname, statecode, batch, servicestate, stream) VALUES ('" + req.body.email + "', '" + req.body.firstname + "', '" + req.body.middlename + "', '" + req.body.password + "', '" + req.body.lastname + "', '" + req.body.statecode.toUpperCase() + "', '" + req.body.statecode.slice(3, 6).toUpperCase() + "', '" + theservicestate + "' , '" + getstream(thestream) + "'  )";
   pool.query(sqlquery, function (error, results, fields) {
     console.log('inserted data from: ', results);
-    if (error) throw error;
-    // connected!
-    if (results.affectedRows === 1) {
-      req.session.user = req.body;
+    if (error) {
+      console.log('the error code:', error.code)
+      switch (error.code) { // do more here
+        case 'ER_DUP_ENTRY': // ER_DUP_ENTRY if a statecode exists already
+          res.redirect('/signup?m=d'); // [m]essage = [d]uplicate
+          break;
+      }
+      // throw error;
+    }
+
+    // "else if" is very important
+    else if (results.affectedRows === 1) {
+      req.session.statecode = req.body.statecode.toUpperCase();
       req.session.loggedin = true;
-      res.redirect(req.body.statecode);
+      req.session.servicestate = theservicestate;
+      req.session.batch = req.body.statecode.toUpperCase().slice(3, 6);
+      req.session.loggedin = true;
+      req.session.location = req.session.servicestate;
+
+      res.redirect(req.body.statecode.toUpperCase());
     }
   });
 
@@ -1297,7 +1325,7 @@ var chat = io
         throw error;
       }
 
-      if (!isEmpty(results)) {
+      else if (!isEmpty(results)) {
         // console.log('we should get to this point', results[0]);
         socket.names = results[0]
       } else {
@@ -1574,5 +1602,5 @@ socket.binary(false).emit('an event', { some: 'data' });
 
 // --- always last
 app.use(function (req, res, next) {
-  res.status(404).send("Sorry can't find that! If you could just go back")
+  res.status(404).send("Sorry can't find that! If you could just go back, please. Thank You.")
 });

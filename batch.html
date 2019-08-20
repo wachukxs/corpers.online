@@ -8,9 +8,12 @@
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-    
+    <form action="/fa" method="post">
+    <input type="text" name="n" id="a" required pattern="(BN|AB|ab)\/\d\d[abcACB]\/\d\d\d\d">
+    <input type="submit" value="submit">
+    </form>
 <script>
-  var socket = io('http://corpers.online:8081/socket.io');
+  
 </script>
 </body>
 </html>

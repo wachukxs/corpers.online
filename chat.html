@@ -41,8 +41,7 @@
     <!-- the room you join is unique with the person you're chatting with, it's made up of the unique ids of both parties -->
 
     <script>
-        var chat = io.connect( 'http://localhost:8081/chat' );
-        // var socket = io.connect('http://localhost:8081');
+        var chat = io.connect( '/chat' );
 
         chat.on( 'connect', function() {
             chat.emit( 'hi', {from: 'hiiiiiiiiiii from chat'} );

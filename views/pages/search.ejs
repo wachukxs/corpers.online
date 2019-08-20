@@ -123,7 +123,7 @@
             grid-auto-columns: 45%;
         }
     </style>
-    </style>
+    
 </head>
 
 <body>
@@ -196,10 +196,10 @@
 
             //---
 
-            here = < % -nop % > ;
+            here = <%- nop %> ;
             console.log( 'here.length', here, here.length );
             if ( here.length > 0 ) { // if the array is not empty...
-                console.log( 'creating popup:', < % -nop % > );
+                console.log( 'creating popup:', <%- nop %> );
 
                 /* var popup = L.popup()
                   .setLatLng(<%- nop %>[0].properties.ppa_geodata.latlng)

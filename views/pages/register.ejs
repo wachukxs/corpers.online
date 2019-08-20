@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html>
 
 <head>
@@ -85,9 +85,9 @@
                         <div class="col-md-4 mb-3">
                             <label for="firstname">Full name</label>
                             <div class="input-group">
-                                <input type="text" name="lastname" pattern="[A-Z-'a-z]+" autocomplete="cc-family-name" class="form-control" id="lastname" placeholder="Last name" autofocus required>
-                                <input type="text" name="middlename" pattern="[A-Z-'a-z]+" autocomplete="cc-given-name" class="form-control" id="middlename" placeholder="Middle name" value="">
-                                <input type="text" name="firstname" pattern="[A-Z-a'-z]+" autocomplete="cc-name" class="form-control" id="firstname" placeholder="First name" value="" required>
+                                <input type="text" name="lastname" autocomplete="cc-family-name" class="form-control" id="lastname" placeholder="Last name" autofocus required>
+                                <input type="text" name="middlename" autocomplete="cc-given-name" class="form-control" id="middlename" placeholder="Middle name" value="">
+                                <input type="text" name="firstname" autocomplete="cc-name" class="form-control" id="firstname" placeholder="First name" value="" required>
                             </div>
                             <small data-reason="help text" class="text-muted">Middle name is optional.</small>
                         </div>
@@ -110,7 +110,7 @@
                     <div class="form-row">
                         <div class="col-md-4 mb-3">
                             <label for="statecode">State Code</label>
-                            <input id="scinput" type="text" pattern="[A-Z]{2}[/][0-9]{2}[ABC][/][0-9]{4}" class="form-control text-uppercase" id="statecode" name="statecode" placeholder="e.g. AB/17A/4567" required>
+                            <input id="scinput" type="text" pattern="(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/\d\d[abcdACBD]\/\d\d\d\d" class="form-control text-uppercase" id="statecode" name="statecode" placeholder="e.g. AB/17A/4567" required>
                             <!-- add distinct state codes.-->
                             <small class="text-muted">This will help verify corpers.</small>
                             <div class="valid-feedback">
@@ -140,16 +140,18 @@
     </main>
 
     <script>
-        // (AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM)[/](17|18)[ABC][/][0-9]{4}
-        var years = parseInt( new Date( Date.now() )
-            .getFullYear()
-            .toFixed()
-            .slice( 2, 4 ) );
-        document.forms[ 0 ].elements[ 5 ].pattern.replace( '()', '(' + ( years - 1 )
-            .toString() + '|' + years.toString() + ')' );
+		// (AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/\d\d[abcACB]\/\d\d\d\d
+		// [^~!@#$%&*()_+=\-?/\\:;{}[\]\[]
+		// ([A-Za-z]+[\'\-]?[A-Za-z]\w+)
+		var years = parseInt( new Date( Date.now() ).getFullYear().toFixed().slice( 2, 4 ) );
+		var yearrange = '(' + ( years - 1 ).toString() + '|' + years.toString() + ')';
+		// document.forms[ 0 ].elements[ 5 ].pattern.replace( '\\d\\d', yearrange );
+		
+		document.forms[ 0 ].elements[ 5 ].pattern = '(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)[\\/]'+yearrange+'[abcACB][\\/]\\d\\d\\d\\d'; // extra escaping probably because we're setting with string from here and not directly from the pattern attribute
+
         document.getElementById( 'scinput' )
             .oninvalid = function( event ) {
-                event.target.setCustomValidity( "State code should start with a valid state abbrevation, have forward slashes, appropraite batch number and four trailing digits. Thank you." );
+                event.target.setCustomValidity("State code should start with a valid state abbrevation, have forward slashes, appropriate batch, and four trailing digits. Right? And are you currently serving?");
             }
     </script>
 
@@ -157,8 +159,7 @@
         <p>Corpers Online built by <a href="#!">@Corpers</a> for <a href="#!">Corpers</a>.</p>
         <p>
             &copy; <script>
-                document.write( new Date()
-                    .getFullYear() )
+                document.write( new Date().getFullYear() )
             </script>
         </p>
     </footer>

@@ -96,14 +96,14 @@
                         <div class="form-row">
                             <div class="col-md-4 mb-3">
                                 <label for="statecode">State code</label>
-                                <input name="statecode" type="text" tabindex="0" maxlength="11" class="form-control text-uppercase" autocomplete="" autofocus id="statecode" placeholder="AB/16A/2639" required>
+                                <input name="statecode" type="text" pattern="(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/\d\d[abcACB]\/\d\d\d\d" tabindex="0" class="form-control text-uppercase" autocomplete="" autofocus id="statecode" placeholder="AB/16A/2639" required='true'>
                                 <div hidden class="wrong">
                                     Wrong state code
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label for="password">Password</label>
-                                <input name="password" type="password" tabindex="0" class="form-control" autocomplete="current-password" id="password" placeholder="Password" required>
+                                <input name="password" type="password" tabindex="0" class="form-control" autocomplete="current-password" id="password" placeholder="Password" required='true'>
                                 <div hidden class="wrong">
                                     or password.
                                 </div>
@@ -141,6 +141,15 @@
 
 
     <script>
+		var years = parseInt( new Date( Date.now() ).getFullYear().toFixed().slice( 2, 4 ) );
+		var yearrange = '(' + ( years - 1 ).toString() + '|' + years.toString() + ')';
+		// document.forms[ 0 ].elements[ 5 ].pattern.replace( '\\d\\d', yearrange );
+		
+		document.forms[ 0 ].elements[ 0 ].pattern = '(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)[\\/]'+yearrange+'[abcACB][\\/]\\d\\d\\d\\d';
+		document.forms[ 0 ].elements[ 0 ]
+            .oninvalid = function( event ) {
+                event.target.setCustomValidity("State code should start with a valid state abbrevation, have forward slashes, appropriate batch, and four trailing digits. Right? And are you currently serving?");
+            }
         /* 	function logit() {
 				var jjk = new FormData(document.getElementById("loginform"));
 				console.log('the form', jjk);

@@ -800,15 +800,26 @@ $.typeahead({
             console.log('Typeahead Initiated on ', node);
 
         },
+        // the first set of results that comes
         onReceiveRequest: function (node, searchtext) {
             console.log('gonna search ', node, searchtext);
             // save seacrhtext in db for corper's preference and other good functionalities
             // if they searched for an accommodation, alert them when one is avalible.
             // even give the option of them putting on alert when a particulart item or property is up for sale or rent respectively
         },
-        onResult: function (node, searchtext, results, l) { // When the result container is displayed
-            console.log('search result', node, searchtext, results, l);
+        // Whenever the result changes, this callback will be triggered.
+        onResult: function (node, query, result, resultCount, resultCountPerGroup) { // When the result container is displayed
+            console.log('search result', node, query, result, resultCount, resultCountPerGroup); // results is an array of objects of the search results
             // let's see what the user is seeing
+            
+            if (resultCount == 0){
+                // let's see the search text, emit it
+                if(query.length > 2){
+                    var qq = query;
+                    var ql = query.length;
+                }
+            }
+
         },
         // The ul.typeahead__list has max-height: 300px; and is scrollable, onNavigateAfter is set to scroll the result container if arrow UP or DOWN are pressed to the .active item.
         onNavigateAfter: function (node, lis, a, item, query, event) {
@@ -828,6 +839,22 @@ $.typeahead({
                 $(a).append('<span class="flag-chart flag-' + item.display.replace(' ', '-').toLowerCase() + '"></span>')
             } */
 
+        },
+        onHideLayout: function (node, query) { // IFFFFFFFFFF they asked for something and we didn't have it, we'll save it and ask other corpers about it. so if it's a ppa that was searched for and we didn't have anything about it we'd ask a corper that serves there to put it on the map!!! same with accommodations and everyother thing possible... we should be able to suggest to them similar things when ever we can't find a goods they want to buy
+            console.log('closed the search layout', node, query)
+            if(query.length > 0){ // means they clicked to another page
+                console.log('sth', query)
+            }
+        },
+        // Triggers when the Typeahead results layout is displayed.
+        onShowLayout: function (node, query) { // they asked for something and we had it
+            console.log('showed the search layout', node, query)
+            
+        },
+        // Triggers every time a new search is executed in Typeahead.
+        onSearch: function (node, query) { // they asked for something and we had it
+            console.log('on the search', node, query)
+            
         }
     },
     debug: true

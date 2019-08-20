@@ -784,8 +784,6 @@
 
                         <div class="d-flex align-items-center">
                             <div class="mr-auto">
-
-
                                 <div class="fileUpload btn btn-outline-dark">
                                     <span class="d-none d-md-block d-lg-none   d-lg-block d-xl-none   d-xl-block">Image</span>
                                     <i class="fas fa-images   d-block d-sm-none  d-none d-sm-block d-md-none"></i>
@@ -807,18 +805,18 @@
                                     <div class="btn btn-outline-dark" id="findme">
                                         <!-- Visible only on md, lg, xl -->
                                         <span class="d-none d-md-block d-lg-none   d-lg-block d-xl-none   d-xl-block">Share current location</span>
-                                        
+
                                         <!-- Visible only on xs, sm -->
                                         <i class="fas fa-location-arrow  d-block d-sm-none  d-none d-sm-block d-md-none"></i>
                                     </div>
-                                    
+
                                     <!-- <button class="btn btn-outline-dark" id="findme">Share location</button> -->
 
                                     <div class="btn btn-outline-dark" id="place">
                                         <span class="d-none d-md-block d-lg-none   d-lg-block d-xl-none   d-xl-block">or accommodation</span>
                                         <i class="fas fa-home   d-block d-sm-none  d-none d-sm-block d-md-none"></i>
                                     </div>
-                                    
+
                                     <!-- <button class="btn btn-outline-dark" id="place">or accommodation</button> -->
                                 </div>
                                 <!-- way less than 245418.50 -->
@@ -866,6 +864,7 @@
 
             // append post_time
             FD.append( 'post_time', Date.now() ); // data type number
+            console.log( 'post_time', Date.now() );
 
             // append post type
             FD.append( 'type', 'sale' );
@@ -878,9 +877,12 @@
                 $( '#postModalSale' )
                     .modal( 'hide' );
                 document.forms[ 'postform' ].reset();
-                // also clear the append image in the document body
-                document.getElementById( 'previewParent' )
+                // also clear the append image in the document body if it exists
+                if (document.getElementById( 'previewParent' ).hasChildNodes()) {
+                    document.getElementById( 'previewParent' )
                     .removeChild( document.getElementById( 'preview' ) );
+                }
+                
 
                 document.getElementById( 'postsubmit' )
                     .disabled = true;
@@ -1018,9 +1020,10 @@
                     <!--//-->
                 </div>
 
-                <div class="col-md-6" data-spy="scroll" data-offset="0">
+                <div class="col-md-6" data-spy="scroll" id="middlediv" data-offset="0">
 
                     <div id="loader" class='pb-3'></div>
+                    <div id="1or0"></div>
                     <!--in this middle part, we'll give various toggle tabs for location of accommodation, PPAs, SPAs, SALES-->
                     <!-- Nav tabs for the accommodation, PPAs, SPAs, SALES -->
                     <!-- <ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
@@ -1384,12 +1387,56 @@
         socket.on( 'callback', cb );
 
 
-        //when we receive a boardcast message --save them (in var bm --an array somewhere up).
-        //so that thing where we can confirm a message has gotten to the server.
+        /*  when we receive a boardcast message --save them (in var bm --an array somewhere up).
+            so that thing where we can confirm a message has gotten to the server. */
         var bc = function( data ) {
             // remove the loader --this is not a very awesom logic, but it works well
             document.getElementById( 'loader' )
                 .style.display = 'none';
+
+            // check if it's empty i.e. the person is the first to register in the state
+            /** tell the user they are the first to show up from their state and they should start using the platform, basically give them a tour */
+            var tell = function() {
+                if (!document.getElementById( "1or0msg" )) { // if it isn't there before
+                    console.log( 'teeeeelllllllllllll' );
+                // create a new div element 
+                var newDiv = document.createElement( "div" );
+                newDiv.id = '1or0msg'
+                newDiv.className = 'pt-4 pb-2 display-2';
+                newDiv.style.fontSize = '1.5rem';
+                // and give it some content 
+                var newContent = document.createTextNode( "Either you're the first or no one has posted stuffs... yet! Either ways, welcome. Now Tell others what you want to sell. Post something!" );
+                // add the text node to the newly created div
+                newDiv.appendChild( newContent );
+
+                // add the newly created element and its content into the DOM
+                document.getElementById( "1or0" )
+                    .appendChild( newDiv );
+                }
+            };
+            // know when they are the first user in their state or if no one has posted on their state
+            if ( typeof data.post === 'object' ) {
+                console.log( 'wahat w egogt', data );
+
+                if ( (JSON.stringify( data.post ) === '{}' || JSON.stringify( data.post ) === '[]') && !document.getElementById( "tl" ).contains(document.getElementsByClassName('list-group-item')[0]) ) {
+                    // return true; // give them a tour guide
+                    console.log( 'got heree e ;' )
+                    tell();
+                } else if ( !data.post && !document.getElementById( "tl" ).contains(document.getElementsByClassName('list-group-item')[0]) ) {
+                    // return true; // give them a tour guide
+                    console.log( 'got heree e ;==' )
+                    tell();
+                } else {
+                    // return false; // remove the element div that tells them they are the first if the div exists
+                    if (document.getElementById( "1or0" )
+                        .hasChildNodes() && document.getElementById( "tl" ).contains(document.getElementsByClassName('list-group-item')[0])) {
+                            document.getElementById( "1or0" ).removeChild(document.getElementById('1or0msg'));
+                    }
+
+                        
+                }
+
+            }
 
             // sales have post_time while accommodations have input_time [time stamp format]
 
