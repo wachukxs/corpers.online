@@ -282,9 +282,10 @@ app.get(['/AB', '/AD', '/AK', '/AN', '/BA', '/BY', '/BN', '/BO', '/CR', '/DT', '
   }
 });
 
-
+/**an array of the NYSC abbrevation standard of all the states in nigeria */
 var states_short = ['AB', 'AD', 'AK', 'AN', 'BA', 'BY', 'BN', 'BO', 'CR', 'DT', 'EB', 'ED', 'EK', 'EN', 'FC', 'GM', 'IM', 'JG', 'KD', 'KN', 'KT', 'KB', 'KG', 'KW', 'LA', 'NS', 'NG', 'OG', 'OD', 'OS', 'OY', 'PL', 'RV', 'SO', 'TR', 'YB', 'ZM'];
 
+/**an array of all the states in nigeria */
 var states_long = ['ABIA', 'ADAMAWA', 'AKWA IBOM', 'ANAMBRA', 'BAUCHI', 'BAYELSA', 'BENUE', 'BORNO', 'CROSS RIVER', 'DELTA', 'EBONYI', 'EDO', 'EKITI', 'ENUGU', 'FCT - ABUJA', 'GOMBE', 'IMO', 'JIGAWA', 'KADUNA', 'KANO', 'KASTINA', 'KEBBI', 'KOGI', 'KWARA', 'LAGOS', 'NASSARAWA', 'NIGER', 'OGUN', 'ONDO', 'OSUN', 'OYO', 'PLATEAU', 'RIVERS', 'SOKOTO', 'TARABA', 'YOBE', 'ZAMFARA'];
 
 // new Date(Date.now()).getFullYear().toString().substring(2,4)
@@ -675,7 +676,7 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
 
   var pUTL = socket.handshake.query.putl.split(',');
   var aUTL = socket.handshake.query.autl.split(',');
-  // console.log('socket query parameter(s) [user timeline]\n', 'acc:' + aUTL.length, ' posts:' + pUTL.length);
+  console.log('socket query parameter(s) [user timeline]\n', 'acc:' + aUTL.length, ' posts:' + pUTL.length);
 
   // SELECT * FROM posts WHERE post_time > 1545439085610 ORDER BY posts.post_time ASC (selects posts newer than 1545439085610 | or posts after 1545439085610)
 
@@ -691,7 +692,7 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
   // moment is better because it makes it exactly as it was, the other just uses string manipulation and it's always an hour behind original time
   var e = moment(new Date(aUTL[aUTL.length - 1])).format('YYYY-MM-DD HH:mm:ss');
   // remember to check if the query to know if the time is actually greater than or less
-  // console.log('time causing the ish', aUTL[aUTL.length - 1], pUTL[pUTL.length - 1]);
+  // console.log(e, 'time causing the ish', aUTL[aUTL.length - 1], pUTL[pUTL.length - 1]); // when timeline is empty, e is "Invalid Date"
 
   // we stopped using sender column from posts table, so it's null !
 
@@ -701,7 +702,7 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
   pool.query(getpostsquery, function (error, results, fields) { // bring the results in ascending order
 
     if (error) { // gracefully handle error e.g. ECONNRESET & ETIMEDOUT, in this case re-execute the query or connect again, act approprately
-      console.log(error);
+      console.log('>>>>>>****', error);
       throw error;
     }
 
@@ -892,8 +893,17 @@ app.get('/profile', function (req, res) {
 
 });
 
+// do a function or end point that returns all the LGAs of a state (that it collects as )
+
 app.get('/newprofile', function (req, res) {
+  let allslga = fs.readFileSync('moreplaces.json'); // maybe use the async .readFile('', (err, data) => {})
+  let fjk = JSON.parse(allslga);
+  
   if (req.session.loggedin) {
+    var jn = req.session.statecode.toUpperCase()
+    
+    /**an array of all the local government in the state */
+    var lgas = fjk.states[states_short.indexOf(jn.slice(0, 2))][ states_long[states_short.indexOf(jn.slice(0, 2))] ] ;
     // use the ones from their service state // AND servicestate = '" + req.session.servicestate + "'
     pool.query("SELECT name_of_ppa FROM info WHERE name_of_ppa != '' ; SELECT ppa_address from info WHERE ppa_address != '' AND servicestate = '" + req.session.servicestate + "'; SELECT city_town FROM info WHERE city_town != '' AND servicestate = '" + req.session.servicestate + "'; SELECT region_street FROM info WHERE region_street != '' AND servicestate = '" + req.session.servicestate + "'", function (error2, results2, fields2) {
 
@@ -904,12 +914,14 @@ app.get('/newprofile', function (req, res) {
       // res.sendFile(__dirname + '/new profile/index.html');
       res.render('pages/newprofile', {
         statecode: req.session.statecode.toUpperCase(),
-        servicestate: req.session.servicestate,
+        servicestate: req.session.servicestate.toUpperCase(),
         batch: req.session.batch,
         names_of_ppas: results2[0], // array of objects ie names_of_ppas[i].name_of_ppa
         ppa_addresses: results2[1],
         cities_towns: results2[2],
-        regions_streets: results2[3]
+        regions_streets: results2[3],
+        states: states_long,
+        lgas: lgas
         // select all distinct ppa type / address / name and send it to the front end as suggestions for the input when the corpers type
       });
     });
@@ -928,10 +940,10 @@ app.post('/profile', bodyParser.urlencoded({ extended: true/* , type: 'applicati
   // var sqlquery = "UPDATE info SET accomodation_location = '" + req.body.accomodation_location + "', servicestate = '" + req.body.servicestate + "', name_of_ppa = '" + req.body.name_of_ppa + "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" + req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" + req.body.type_of_ppa + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" + req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city + "', spaornot = '" + req.body.spaornot + "' WHERE email = '" + req.body.email + "' " ;
 
   /*[req.body.accomodation_location, req.body.servicestate, req.body.name_of_ppa, req.body.lga, req.body.city_town, req.body.region_street, req.body.stream, req.body.type_of_ppa, req.body.ppa_address, req.body.travel_from_state, req.body.travel_from_city, req.body.spaornot, req.body.email],*/
-  console.log('\n\nthe req.body for /profile', req.body, '\n\n', req.body.statecode);
+  console.log('\n\nthe req.body for /newprofile', req.body, '\n\n', req.body.statecode);
   // console.log('\n\n', req);
   var sqlquery = "UPDATE info SET accommodation_location = '" + (req.body.accommodation_location ? req.body.accommodation_location : '') +
-    "', servicestate = '" + req.body.servicestate + "', name_of_ppa = '" + req.body.name_of_ppa +
+    "', servicestate = '" + req.body.ss + "', name_of_ppa = '" + req.body.name_of_ppa +
     "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" +
     req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" +
     req.body.type_of_ppa + "', ppa_geodata = '" + (req.body.ppa_geodata ? req.body.ppa_geodata : null) + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" +
@@ -952,11 +964,11 @@ app.post('/profile', bodyParser.urlencoded({ extended: true/* , type: 'applicati
       servicestate: req.session.servicestate,
       batch: req.session.batch, */
       req.session.name_of_ppa = req.body.name_of_ppa;
-      res.status(200).redirect(req.session.statecode /* + '?e=y' */); // [e]dit=[y]es|[n]o
+      res.status(200).redirect(req.session.statecode.toUpperCase() /* + '?e=y' */); // [e]dit=[y]es|[n]o
       // res.sendStatus(200);
     } else {
       // res.sendStatus(500);
-      res.status(500).redirect('/profile' + '?e=n'); // [e]dit=[y]es|[n]o
+      res.status(500).redirect('/newprofile' + '?e=n'); // [e]dit=[y]es|[n]o
     }
   });
 
@@ -1604,5 +1616,5 @@ socket.binary(false).emit('an event', { some: 'data' });
 
 // --- always last
 app.use(function (req, res, next) {
-  res.status(404).send("Sorry can't find that! If you could just go back, please. Thank You.")
+  res.status(404).send("Sorry can't find that! If you could just go back, please, or go <a href='/'>home</a>. Thank You.")
 });

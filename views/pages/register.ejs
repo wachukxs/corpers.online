@@ -85,7 +85,7 @@
                         <div class="col-md-4 mb-3">
                             <label for="firstname">Full name</label>
                             <div class="input-group">
-                                <input type="text" name="lastname" autocomplete="cc-family-name" class="form-control" id="lastname" placeholder="Last name" autofocus required>
+                                <input type="text" name="lastname" autocomplete="cc-family-name" class="form-control" id="lastname" placeholder="Last name" autofocus required> <!--  pattern="[^!@#$%&()=+~?><\\\/|,.:;1234567890]" -->
                                 <input type="text" name="middlename" autocomplete="cc-given-name" class="form-control" id="middlename" placeholder="Middle name" value="">
                                 <input type="text" name="firstname" autocomplete="cc-name" class="form-control" id="firstname" placeholder="First name" value="" required>
                             </div>
@@ -96,7 +96,8 @@
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="inputGroupPrepend">@</span>
-                                </div>
+								</div>
+								<!-- prevent duplicate emails. make by pattern attribute -->
                                 <input type="email" class="form-control" autocomplete="email" name="email" id="email" placeholder="Your email" aria-describedby="inputGroupPrepend" required>
                             </div>
                         </div>
@@ -111,7 +112,7 @@
                         <div class="col-md-4 mb-3">
                             <label for="statecode">State Code</label>
                             <input id="scinput" type="text" pattern="(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/\d\d[abcdACBD]\/\d\d\d\d" class="form-control text-uppercase" id="statecode" name="statecode" placeholder="e.g. AB/17A/4567" required>
-                            <!-- add distinct state codes.-->
+                            <!-- add distinct state codes. make sure state codes haven't been registered before -->
                             <small class="text-muted">This will help verify corpers.</small>
                             <div class="valid-feedback">
                                 Looks good!
@@ -126,7 +127,7 @@
                         <label class="form-check-label" for="knowme">Remember me</label>
                         <!--once the "remember me" button is checked, the text will turn to we won't forget.-->
                     </div>
-                    <input type="submit" class="btn btn-primary" value="Submit">
+                    <input type="submit" class="btn btn-primary" value="Submit"> <!-- make browser save the statecode and password -->
                     <!--<button type="submit" class="btn btn-primary">Submit</button>-->
                 </form>
             </div>

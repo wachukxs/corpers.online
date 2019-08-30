@@ -448,7 +448,7 @@
 
                                             <div class="form-group">
                                                 <label for="accommodationtype">Accommodation type</label>
-                                                <label class="sr-only" for="accommodationtype">Accommodation type</label>
+                                                <!-- <label class="sr-only" for="accommodationtype">Accommodation type</label> -->
                                                 <select class="custom-select pointer" name="accommodationtype" id="accommodationtype" required>
                                                     <option value="" selected>Choose...</option>
                                                     <option value="Self contain">Self contain</option>
@@ -1187,6 +1187,27 @@
 
 
     <script>
+
+        // check if it's empty i.e. the person is the first to register in the state
+            /** tell the user they are the first to show up from their state and they should start using the platform, basically give them a tour */
+            var tell = function() {
+                if (!document.getElementById( "1or0msg" )) { // if it isn't there before
+                    console.log( 'teeeeelllllllllllll' );
+                // create a new div element 
+                var newDiv = document.createElement( "div" );
+                newDiv.id = '1or0msg'
+                newDiv.className = 'pt-4 pb-2 display-2';
+                newDiv.style.fontSize = '1.5rem';
+                // and give it some content 
+                var newContent = document.createTextNode( "Either you're the first here or no one has posted anything... yet! Either way, welcome. Now tell others what you want to sell or sublease. Post something!" );
+                // add the text node to the newly created div
+                newDiv.appendChild( newContent );
+
+                // add the newly created element and its content into the DOM
+                document.getElementById( "1or0" )
+                    .appendChild( newDiv );
+                }
+            };
         // Replace source
         // to replace that with a "missing image" graphic that you are sure exists so there is better visual feedback that something is wrong
         $( 'img' )
@@ -1203,11 +1224,15 @@
 
         // for loader
         window.onload = function() {
-            // document.getElementById('loader').style.display = 'none' ;
+            /* if (!document.getElementById( "tl" ).contains(document.getElementsByClassName('list-group-item')[0])) {
+                tell();
+                document.getElementById('loader').style.display = 'none' ;
+                console.log('nothing in here ...')
+            }   */          
         }
         // we'll be doing loader alot ...for when socket.io is still fetching data... and the timeline is empty... for when user drags page down too like android app maybe
 
-
+        
 
 
         /**
@@ -1248,9 +1273,6 @@
           })
 
         */
-
-
-
 
         /***
          * 
@@ -1316,6 +1338,7 @@
 
         } );
         socket.on( 'reconnect', ( attemptNumber ) => {
+            console.log('connetce again')
 
             console.log( attemptNumber, 'reconnection, re-connected :', new Date( Date.now() )
                 .toLocaleString() );
@@ -1394,26 +1417,6 @@
             document.getElementById( 'loader' )
                 .style.display = 'none';
 
-            // check if it's empty i.e. the person is the first to register in the state
-            /** tell the user they are the first to show up from their state and they should start using the platform, basically give them a tour */
-            var tell = function() {
-                if (!document.getElementById( "1or0msg" )) { // if it isn't there before
-                    console.log( 'teeeeelllllllllllll' );
-                // create a new div element 
-                var newDiv = document.createElement( "div" );
-                newDiv.id = '1or0msg'
-                newDiv.className = 'pt-4 pb-2 display-2';
-                newDiv.style.fontSize = '1.5rem';
-                // and give it some content 
-                var newContent = document.createTextNode( "Either you're the first or no one has posted stuffs... yet! Either ways, welcome. Now Tell others what you want to sell. Post something!" );
-                // add the text node to the newly created div
-                newDiv.appendChild( newContent );
-
-                // add the newly created element and its content into the DOM
-                document.getElementById( "1or0" )
-                    .appendChild( newDiv );
-                }
-            };
             // know when they are the first user in their state or if no one has posted on their state
             if ( typeof data.post === 'object' ) {
                 console.log( 'wahat w egogt', data );
@@ -1432,10 +1435,7 @@
                         .hasChildNodes() && document.getElementById( "tl" ).contains(document.getElementsByClassName('list-group-item')[0])) {
                             document.getElementById( "1or0" ).removeChild(document.getElementById('1or0msg'));
                     }
-
-                        
                 }
-
             }
 
             // sales have post_time while accommodations have input_time [time stamp format]

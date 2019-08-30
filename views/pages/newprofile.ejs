@@ -40,7 +40,7 @@
         <!-- a map of their serive state or their profile picture -->
         <img class="d-block mx-auto mb-4" src="https://getbootstrap.com/assets/brand/bootstrap-solid.svg" alt=""
           width="72" height="72">
-        <h2>Profile edit <%= statecode %></h2>
+        <h2><%= statecode %></h2>
         <p class="lead">Update profile.</p>
       </div>
 
@@ -140,54 +140,29 @@
               <div class="col-md-6 mb-3">
                 <label for="servicestate">Service state</label>
                 <!-- <input type="text" class="form-control" id="firstName" placeholder="" value="" required> -->
-                <select id="servicestate" name="servicestate" class="custom-select d-block w-100" required>
+                <select id="servicestate" name="ss" class="custom-select" disabled required>
                   <!-- use server side to render all this list and choose the one the user is from -->
-                  <option value="Abia">Abia</option>
-                  <option value="Adamawa">Adamawa</option>
-                  <option value="Akwa Ibom">Akwa Ibom</option>
-                  <option value="Anambra">Anambra</option>
-                  <option value="Bauchi">Bauchi</option>
-                  <option value="Bayelsa">Bayelsa</option>
-                  <option value="Benue">Benue</option>
-                  <option value="Borno">Borno</option>
-                  <option value="Cross River">Cross River</option>
-                  <option value="Delta">Delta</option>
-                  <option value="Ebonyi">Ebonyi</option>
-                  <option value="Enugu">Enugu</option>
-                  <option value="Edo">Edo</option>
-                  <option value="Ekiti">Ekiti</option>
-                  <option value="Gombe">Gombe</option>
-                  <option value="Imo">Imo</option>
-                  <option value="Jigawa">Jigawa</option>
-                  <option value="Kaduna">Kaduna</option>
-                  <option value="Kano">Kano</option>
-                  <option value="Kastina">Kastina</option>
-                  <option value="Kebbi">Kebbi</option>
-                  <option value="Kogi">Kogi</option>
-                  <option value="Kwara">Kwara</option>
-                  <option value="Lagos">Lagos</option>
-                  <option value="Nasarawa">Nasarawa</option>
-                  <option value="Niger">Niger</option>
-                  <option value="Ogun">Ogun</option>
-                  <option value="Ondo">Ondo</option>
-                  <option value="Osun">Osun</option>
-                  <option value="Oyo">Oyo</option>
-                  <option value="Plateau">Plateau</option>
-                  <option value="Rivers">Rivers</option>
-                  <option value="Sokoto">Sokoto</option>
-                  <option value="Taraba">Taraba</option>
-                  <option value="Yobe">Yobe</option>
-                  <option value="Zamfara">Zamfara</option>
+                  <% for (i = 0; i < states.length; i++) { %>
+                    <option value="<%= states[i] %>" <%= (servicestate == states[i] ? 'selected="true"' : '') %>><%= states[i] %></option>
+                  <% } %>
                 </select>
                 <div class="invalid-feedback">
-                  Valid first name is required.
+                  Uhmm, I think we've got this handled
                 </div>
+                <div class="custom-control custom-checkbox">
+                  <input name="relocated" type="checkbox" class="custom-control-input" id="relocated" value="relocated">
+                  <label class="custom-control-label" style="line-height: normal;" for="relocated">Relocated ?</label>
+              </div>
               </div>
               <div class="col-md-6 mb-3">
-                <label for="lga">LGA</label>
-                <input type="text" class="form-control" id="lga" name="lga" placeholder="" value="" required>
+                <label for="lgas">LGA</label>
+                <select name="lga" id="lgas" class="custom-select">
+                  <% for (i = 0; i < lgas.length; i++) { %>
+                    <option value="<%= lgas[i] %>"><%= lgas[i] %></option>
+                  <% } %>
+                </select>
                 <div class="invalid-feedback">
-                  Valid last name is required.
+                  Just choose a LGA please
                 </div>
               </div>
             </div>
@@ -195,14 +170,14 @@
             <div class="row">
               <div class="col-md-3 mb-3">
                 <label for="city_town">City or Town</label>
-                <input type="text" class="form-control" name="city_town" id="city_town" placeholder="" required>
+                <input type="text" class="form-control" name="city_town" id="city_town" placeholder=""> <!--not really required-->
                 <div class="invalid-feedback">
-                  Please select a valid country.
+                  Please select a valid city or town.
                 </div>
               </div>
               <div class="col-md-3 mb-3">
-                <label for="region_street">Street<!-- or Region --></label>
-                <input type="text" class="form-control" name="region_street" id="region_street" placeholder="" required>
+                <label for="region_street">Street<!-- or Region --> <span class="text-muted">(Optional)</span></label>
+                <input type="text" class="form-control" name="region_street" id="region_street" placeholder="">
                 <div class="invalid-feedback">
                   Please provide a valid region or street name.
                 </div>
@@ -216,6 +191,42 @@
                 </div> -->
             </div>
 
+            <div class="row">
+              <div class="col-md-3 mb-3">
+                <label for="stream">Stream</label>
+                <input type="number" min="1" max="3" list="stream" class="form-control" name="stream" id=""
+                  placeholder="1, 2 or 3">
+                <datalist id="stream">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                </datalist>
+                <div class="invalid-feedback">
+                  Your stream is either 1, 2 or 3. Are you sure you're a corper?
+                </div>
+              </div>
+              <div class="col-md-3 mb-3" id="newss" style="display: none">
+                <label for="region_street">New state code</label>
+                <input type="text" class="form-control" name="region_street" id="region_street" placeholder="">
+                <div class="invalid-feedback">
+                  Please provide a valid statecode.
+                </div>
+              </div>
+            </div>
+
+            <script>
+              document.getElementById('relocated').addEventListener('change', (e) => {
+                console.log(e)
+                if (e.target.checked) {
+                  console.log('yess')
+                  document.getElementById('servicestate').disabled = false;
+                  document.getElementById('newss').style.display = 'block';
+                } else {
+                  document.getElementById('servicestate').disabled = true;
+                  document.getElementById('newss').style.display = 'none';
+                }
+              }, false)
+            </script>
             <hr class="mb-4">
 
             <h4 class="mb-3">PPA details</h4>
@@ -243,14 +254,14 @@
 
                 <small class="text-muted">Help other corpers find it too.</small>
                 <div class="invalid-feedback">
-                  Name on card is required
+                  Please provide us with the name of your PPA
                 </div>
               </div>
               <div class="col-md-6 mb-3">
                 <label for="type_of_ppa">Type of Institution</label>
                 <input type="text" class="form-control" name="type_of_ppa" id="type_of_ppa" placeholder="" required>
                 <div class="invalid-feedback">
-                  Credit card number is required
+                  It's important we know this too.
                 </div>
               </div>
             </div>
@@ -630,19 +641,7 @@
                   <b>S</b>econdary <b>P</b>lace of
                   <b>A</b>ssignment.</small>
               </div>
-              <div class="col-md-6 mb-3">
-                <label for="stream">Your stream</label>
-                <input type="number" min="1" max="3" list="stream" class="form-control" name="stream" id=""
-                  placeholder="Stream 1, 2 or 3?">
-                <datalist id="stream">
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </datalist>
-                <div class="invalid-feedback">
-                  Your stream is either 1, 2 or 3. Are you sure you're a corper?
-                </div>
-              </div>
+              
             </div>
 
             <!--             <div class="mb-3">
