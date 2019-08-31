@@ -356,6 +356,105 @@ app.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT
   }
 });
 
+app.get('/newsearch', function (req, res) {
+  // maybe make use of [req.originalUrl .baseUrl .path] later. req.params too
+
+  // "/search?type=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address + "&top=" + item.type_of_ppa; // nop type pa
+
+  // "/search?type=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" + item.statecode; // sn sc it
+  res.set('Content-Type', 'text/html');
+  // res.sendFile(__dirname + '/search and places/index.html');
+  console.log('req.query:', req.query); // find every thing that is req.query.search.query
+
+  // if we know where the ppa is, get the geo data and show it on the map
+  if (req.query.nop) {
+    // we have req.query.nop=name_of_ppa + req.query.pa=ppa_address + req.query.top=type_of_ppa // also select ppa closer to it and other relevant info we'll find later
+    pool.query("SELECT name_of_ppa, ppa_address, type_of_ppa, ppa_geodata FROM info WHERE name_of_ppa = '" + req.query.nop + "'", function (error, results, fields) { // bring the results in ascending order
+
+      if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
+        console.log(error);
+        throw error;
+      }
+
+      else if (!isEmpty(results)) {
+        for (index = 0; index < results.length; index++) {
+          // unstringify the ppa_geodata entry
+          // results[index]['ppa_geodata'] = JSON.parse(results[index].ppa_geodata);
+
+          // re-arrange to GeoJSON Format
+          results[index].type = "Feature";
+
+          results[index].properties = {};
+          results[index].properties.ppa_geodata = JSON.parse(results[index].ppa_geodata);
+          results[index].properties.ppa_address = results[index].ppa_address;
+          results[index].properties.type_of_ppa = results[index].type_of_ppa;
+
+          results[index].geometry = {};
+          results[index].geometry.type = "Point";
+          results[index].geometry.coordinates = [JSON.parse(results[index].ppa_geodata).longitude, JSON.parse(results[index].ppa_geodata).latitude];
+
+          console.log(JSON.parse(results[index].ppa_geodata).latlng, '======++++++++====', JSON.parse(results[index]['ppa_geodata']).longitude, JSON.parse(results[index]['ppa_geodata']).latitude);
+
+          delete results[index]['ppa_geodata'];
+          delete results[index]['type_of_ppa'];
+          delete results[index]['ppa_address'];
+
+          // delete redundate data like longitude, latitude, and latlng in ppa_geodata after reassigning values
+        }
+      }
+
+      ppa_details = {};
+
+      if (req.session.statecode) {
+        ppa_details.user.statecode = req.session.statecode.toUpperCase();
+      }
+      if (req.session.servicestate) {
+        ppa_details.user.servicestate = req.session.servicestate;
+      }
+      if (req.session.batch) {
+        ppa_details.user.batch = req.session.batch;
+      }
+      if (req.session.name_of_ppa) {
+        ppa_details.user.name_of_ppa = req.session.name_of_ppa;
+      }
+      ppa_details.nop = JSON.stringify(results);
+
+      console.log('let\'s see nop', ppa_details.nop);
+      // having it named 'pages/account.2' returns error cannot find module '2'
+      res.render('pages/newsearch', ppa_details /* {
+        statecode: req.session.statecode.toUpperCase(),
+        servicestate: req.session.servicestate,
+        batch: req.session.batch,
+        name_of_ppa: req.session.name_of_ppa,
+        nop: JSON.stringify(results)
+      } */);
+
+    });
+  } else if (req.query.rr) { // if it's an accomodation
+    // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
+    pool.query("SELECT * FROM accommodations WHERE rentrange = '" + req.query.rr + "' AND input_time = '" + req.query.it + "'", function (error, results, fields) {
+
+      accommodation_details = {};
+      accommodation_details.nop = '[]'; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
+      res.render('pages/newsearch', accommodation_details /* {
+      statecode: req.session.statecode.toUpperCase(),
+      servicestate: req.session.servicestate,
+      batch: req.session.batch,
+      name_of_ppa: req.session.name_of_ppa,
+      nop: JSON.stringify(results)
+    } */);
+    })
+
+  }
+
+  else {
+    res.render('pages/newsearch');
+  }
+
+
+
+});
+
 app.get('/search', function (req, res) {
   // maybe make use of [req.originalUrl .baseUrl .path] later. req.params too
 

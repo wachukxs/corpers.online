@@ -1,19 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Maybe no need</title>
     <script src="/socket.io/socket.io.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin="" />
+
+    <!-- ask questions about places on maps! -->
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
+
+    <style>
+        body {
+            font-size: 1.5rem;
+            font-family: arial, helvetica;
+        }
+
+        @media (min-width: 576px) {
+            .parent {
+                grid-template-columns: 2fr 3fr;
+            }
+        }
+
+        .parent {
+            display: grid;
+            padding: 30px;
+            justify-content: center;
+            
+            grid-column-gap: 20px;
+            height: 100vh;
+        }
+
+        .item:nth-child(1) {
+            order: -1;
+        }
+
+        .item:nth-child(2) {
+            order: 1;
+        }
+
+        @media (max-width: 576px) {
+            .parent {
+                grid-template-rows: 2fr 3fr;
+            }
+
+            .item:nth-child(1) {
+                order: 1;
+            }
+
+            .item:nth-child(2) {
+                order: -1;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <form action="/fa" method="post">
-    <input type="text" name="n" id="a" required pattern="(BN|AB|ab)\/\d\d[abcACB]\/\d\d\d\d">
-    <input type="submit" value="submit">
-    </form>
-<script>
-  
-</script>
+    <div class="parent">
+        <div class="section-one item">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quasi placeat voluptatum aspernatur aliquam tempora qui esse, sit similique vitae officiis aut ex neque dicta. Quas commodi sit itaque doloremque neque.
+        </div>
+        <div class="section-two item" id="mapid">
+
+        </div>
+    </div>
+
+    <script>
+        var mymap = L.map( 'mapid', {
+                tilt: true,
+                zoomControl: false
+            } )
+            .setView( [ 5.5216578, 7.5066884 ], 16 );
+
+
+        L.tileLayer(
+                'https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg', {
+                    attribution: '<a href="https://www.openstreetmap.org/">OpenStreetMap</a>, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, <a href="https://www.mapbox.com/">Mapbox</a>',
+                    maxZoom: 18,
+                    id: 'mapbox.streets',
+                    accessToken: 'pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg'
+                } )
+            .addTo( mymap );
+
+        // A simple scale control that shows the scale of the current center of screen in metric (m/km) and imperial (mi/ft) systems
+        L.control.scale()
+            .addTo( mymap );
+    </script>
 </body>
+
 </html>
