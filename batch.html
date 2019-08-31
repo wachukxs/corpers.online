@@ -23,24 +23,25 @@
         @media (min-width: 576px) {
             .parent {
                 grid-template-columns: 2fr 3fr;
+                padding: 30px;
+            }
+
+            .item:nth-child(1) {
+                order: -1;
+            }
+
+            .item:nth-child(2) {
+                order: 1;
             }
         }
 
         .parent {
             display: grid;
-            padding: 30px;
-            justify-content: center;
             
+            justify-content: center;
+
             grid-column-gap: 20px;
             height: 100vh;
-        }
-
-        .item:nth-child(1) {
-            order: -1;
-        }
-
-        .item:nth-child(2) {
-            order: 1;
         }
 
         @media (max-width: 576px) {
@@ -50,6 +51,7 @@
 
             .item:nth-child(1) {
                 order: 1;
+                padding: 5px;
             }
 
             .item:nth-child(2) {
