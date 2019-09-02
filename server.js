@@ -448,7 +448,9 @@ app.get('/newsearch', function (req, res) {
   }
 
   else {
-    res.render('pages/newsearch');
+    res.render('pages/newsearch', {
+      nop: undefined
+    });
   }
 
 

@@ -114,14 +114,29 @@
             color: #000;
         }
 
-        .wrapper {
+        @media (min-width: 576px) {
+            .wrapper {
             /* width: 600px; */
             display: grid;
             grid-gap: 10px;
             grid-template-columns: 45%;
             grid-auto-flow: column;
-            grid-auto-columns: 45%;
+            grid-auto-columns: 80%;
         }
+        }
+
+        @media (max-width: 576px) {
+            .wrapper {
+            /* width: 600px; */
+            display: grid;
+            grid-gap: 10px;
+            grid-template-columns: 80%;
+            grid-auto-flow: column;
+            grid-auto-columns: 80%;
+        }
+        }
+
+        
     </style>
     
 </head>
@@ -196,10 +211,10 @@
 
             //---
 
-            here = <%- nop %> ;
+            here = <%= ( nop !== undefined ? nop : 'undefined') %> ;
             console.log( 'here.length', here, here.length );
-            if ( here.length > 0 ) { // if the array is not empty...
-                console.log( 'creating popup:', <%- nop %> );
+            if ( here !== undefined & here.length > 0 ) { // if the array is not empty...
+                console.log( 'creating popup:', <%-  nop  %> );
 
                 /* var popup = L.popup()
                   .setLatLng(<%- nop %>[0].properties.ppa_geodata.latlng)

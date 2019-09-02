@@ -9,14 +9,16 @@
     <script src="/socket.io/socket.io.js"></script>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin="" />
+    <link rel="stylesheet" href="css/bootstrap.css">
 
+    <script src="jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
     <!-- ask questions about places on maps! -->
     <!-- Make sure you put this AFTER Leaflet's CSS -->
     <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
 
     <style>
         body {
-            font-size: 1.5rem;
             font-family: arial, helvetica;
         }
 
@@ -37,11 +39,16 @@
 
         .parent {
             display: grid;
-            
+
             justify-content: center;
 
             grid-column-gap: 20px;
             height: 100vh;
+        }
+
+        .shw{
+            max-width: 100%;
+	height: auto;
         }
 
         @media (max-width: 576px) {
@@ -64,6 +71,94 @@
 <body>
     <div class="parent">
         <div class="section-one item">
+            <div class="thelist" id="tl">
+                <div class="" id="accordionExample">
+                    <div class="card">
+                        <div class="card-header" id="headingOne">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Collapsible Group Item #1
+                                </button>
+                            </h5>
+                        </div>
+
+                        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                            <div class="card-body">
+                                    <div class="card flex-md-row mb-4 box-shadow h-md-250">
+                                            <div class="card-body d-flex flex-column align-items-start hover">
+                                                <strong class="d-inline-block mb-2 text-primary">World</strong>
+                                                <h3 class="mb-0">
+                                                    <a class="text-dark" href="#!">Featured post</a>
+                                                </h3>
+                                                <div class="mb-1 text-muted">Nov 12</div>
+                                                <p class="card-text mb-auto">This is a wider card with supporting text below as a natural lead-in to
+                                                    additional content.</p>
+                                                <a href="#!">Continue reading</a>
+                                            </div>
+                                            <img class="card-img-right flex-auto d-none d-lg-block shw" src="img/1000x1000.png" data-holder-rendered="true">
+                                        </div>
+                                        <div class="card flex-md-row mb-4 box-shadow h-md-250">
+                                            <div class="card-body d-flex flex-column align-items-start hover">
+                                                <strong class="d-inline-block mb-2 text-primary">World</strong>
+                                                <h3 class="mb-0">
+                                                    <a class="text-dark" href="#!">Featured post</a>
+                                                </h3>
+                                                <div class="mb-1 text-muted">Nov 12</div>
+                                                <p class="card-text mb-auto">This is a wider card with supporting text below as a natural lead-in to
+                                                    additional content.</p>
+                                                <a href="#!">Continue reading</a>
+                                            </div>
+                                            <img class="card-img-right flex-auto d-none d-lg-block shw" alt="Thumbnail [200x250]" src="img/1564743287029.png"  data-holder-rendered="true">
+                                        </div>
+                                        <div class="card flex-md-row mb-4 box-shadow h-md-250">
+                                            <div class="card-body d-flex flex-column align-items-start hover">
+                                                <strong class="d-inline-block mb-2 text-primary">World</strong>
+                                                <h3 class="mb-0">
+                                                    <a class="text-dark" href="#!">Featured post</a>
+                                                </h3>
+                                                <div class="mb-1 text-muted">Nov 12</div>
+                                                <p class="card-text mb-auto">This is a wider card with supporting text below as a natural lead-in to
+                                                    additional content.</p>
+                                                <a href="#!">Continue reading</a>
+                                            </div>
+                                            <img class="card-img-right flex-auto d-none d-lg-block shw" alt="Thumbnail [200x250]" src="img/1564743087802.png" data-holder-rendered="true">
+                                        </div>
+                            </div>
+                            <div class="card-body">
+                                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="headingTwo">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    Collapsible Group Item #2
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                            <div class="card-body">
+                                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="headingThree">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    Collapsible Group Item #3
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                            <div class="card-body">
+                                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quasi placeat voluptatum aspernatur aliquam tempora qui esse, sit similique vitae officiis aut ex neque dicta. Quas commodi sit itaque doloremque neque.
         </div>
         <div class="section-two item" id="mapid">
@@ -91,6 +186,25 @@
         // A simple scale control that shows the scale of the current center of screen in metric (m/km) and imperial (mi/ft) systems
         L.control.scale()
             .addTo( mymap );
+    </script>
+
+    <script>
+        document.querySelectorAll( '.hover' )
+            .forEach( item => {
+                item.addEventListener( "mouseenter", function( event ) {
+
+                    // highlight the mouseenter target
+                    event.target.style.color = "purple";
+                    console.log( 'kjj' );
+
+
+
+                    // reset the color after a short delay
+                    setTimeout( function() {
+                        event.target.style.color = "";
+                    }, 500 );
+                }, false );
+            } );
     </script>
 </body>
 
