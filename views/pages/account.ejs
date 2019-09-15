@@ -18,12 +18,12 @@
 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
-    <!-- <script src="jquery-3.3.1.min.js"></script>
-    <script src="bootstrap.min.js"></script>
-    <link rel="stylesheet" href="bootstrap.css">
+    <!-- <script src="/jquery-3.3.1.min.js"></script>
+    <script src="/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/bootstrap.css">
 
-    <script src="typeahead.bundle.js"></script>
-     -->
+    <script src="/typeahead.bundle.js"></script> -->
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
     crossorigin="anonymous"></script> -->
@@ -546,20 +546,35 @@
 
                                         <div class="mx-1">
                                             <h2>Precise location</h2>
-                                            <small>Click geo to locate the accommodation in maps, corpers can use this to compare a number of
-                                                options.</small>
+                                            <!-- <small>.</small> -->
                                             <!-- //  -->
                                             <div class="form-group">
                                                 <label for="streetname">Street name</label>
                                                 <input type="text" name="streetname" class="form-control" id="streetname" placeholder="No. 17B, Room 5.">
                                             </div>
+
+                                            <div class="form-group d-none" style="display: none">
+                                                <label for="ppa_geodata">Geo data <span class="text-muted">(Optional, but kinda important)</span></label>
+                                                <input type="text" name="acc_geodata" class="form-control" id="acc_geodata"
+                                                  placeholder="What part of town is it?">
+                                                <small class="text-muted">We are trying to get an accurate as possible data, so we might ask you to try again if what we got won't be of help to other corpers.</small>
+                                              </div>
+
                                             <div class="form-group">
-                                                <label for="address">Address</label>
-                                                <input type="text" name="address" class="form-control" id="address" placeholder="Adeleke Street">
+                                                <label for="address">Address <span class="text-muted">(If you're there right now click 'Geo' to locate in maps)</span> </label>
+                                                <div class="input-group">
+                                                    <input type="text" name="address" class="form-control" id="address" placeholder="Adeleke Street">
+                                                    <div class="input-group-append">
+                                                        <a id="geo" class="btn btn-secondary">Geo</a>
+                                                    </div>
+                                                </div>
+
+                                                <small id="accinfo"></small>
+
                                             </div>
                                             <div class="form-group">
                                                 <label for="directions">Directions</label>
-                                                <textarea class="form-control" name="directions" id="directions" placeholder="Give directions to the accommodation from a popular nearby junction or how-to-miss building"></textarea>
+                                                <textarea class="form-control" name="directions" id="directions" placeholder="Give directions to the accommodation from a popular nearby junction or hard-to-miss building"></textarea>
                                             </div>
                                             <!-- 
       maybe a little map area to pin the location of the place if they're currently there
@@ -864,7 +879,6 @@
 
             // append post_time
             FD.append( 'post_time', Date.now() ); // data type number
-            console.log( 'post_time', Date.now() );
 
             // append post type
             FD.append( 'type', 'sale' );
@@ -878,11 +892,11 @@
                     .modal( 'hide' );
                 document.forms[ 'postform' ].reset();
                 // also clear the append image in the document body if it exists
-                if (document.getElementById( 'previewParent' ).hasChildNodes()) {
+                if ( document.getElementById('previewParent').children.length > 0 ) { // what does hasChildNodes actually do? and why does it return this error: TypeError: Argument 1 of Node.removeChild is not an object. when there is no previewParent
                     document.getElementById( 'previewParent' )
-                    .removeChild( document.getElementById( 'preview' ) );
+                        .removeChild( document.getElementById( 'preview' ) );
                 }
-                
+
 
                 document.getElementById( 'postsubmit' )
                     .disabled = true;
@@ -1187,27 +1201,26 @@
 
 
     <script>
-
         // check if it's empty i.e. the person is the first to register in the state
-            /** tell the user they are the first to show up from their state and they should start using the platform, basically give them a tour */
-            var tell = function() {
-                if (!document.getElementById( "1or0msg" )) { // if it isn't there before
-                    console.log( 'teeeeelllllllllllll' );
+        /** tell the user they are the first to show up from their state and they should start using the platform, basically give them a tour */
+        var tell = function() {
+            if ( !document.getElementById( "1or0msg" ) ) { // if it isn't there before
+                console.log( 'teeeeelllllllllllll' );
                 // create a new div element 
                 var newDiv = document.createElement( "div" );
                 newDiv.id = '1or0msg'
                 newDiv.className = 'pt-4 pb-2 display-2';
                 newDiv.style.fontSize = '1.5rem';
                 // and give it some content 
-                var newContent = document.createTextNode( "Either you're the first here or no one has posted anything... yet! Either way, welcome. Now tell others what you want to sell or sublease. Post something!" );
+                var newContent = document.createTextNode( "You're either the first here or no one has posted anything... yet! Either way, welcome. Now tell others what you want to sell or sublease. Post something!" );
                 // add the text node to the newly created div
                 newDiv.appendChild( newContent );
 
                 // add the newly created element and its content into the DOM
                 document.getElementById( "1or0" )
                     .appendChild( newDiv );
-                }
-            };
+            }
+        };
         // Replace source
         // to replace that with a "missing image" graphic that you are sure exists so there is better visual feedback that something is wrong
         $( 'img' )
@@ -1228,11 +1241,11 @@
                 tell();
                 document.getElementById('loader').style.display = 'none' ;
                 console.log('nothing in here ...')
-            }   */          
+            }   */
         }
         // we'll be doing loader alot ...for when socket.io is still fetching data... and the timeline is empty... for when user drags page down too like android app maybe
 
-        
+
 
 
         /**
@@ -1338,7 +1351,7 @@
 
         } );
         socket.on( 'reconnect', ( attemptNumber ) => {
-            console.log('connetce again')
+            console.log( 'connetce again' )
 
             console.log( attemptNumber, 'reconnection, re-connected :', new Date( Date.now() )
                 .toLocaleString() );
@@ -1363,11 +1376,15 @@
             console.log( 'disconnected!', reason );
 
             // show only in small screens.
-            $( "#tl" )
-                .before( '<div class="alert alert-danger mt-3" role="alert">Seems you\'re offline!</div>' );
+            
+
+                setTimeout(() => {
+                    $( "#tl" )
+                .before( '<div class="alert alert-danger mt-3" role="alert">Seems you\'re offline!</div>' )
+                }, 2000) // add 2 sec delay so the alert doesn't show incase it's a page reload. this logic can be better, we can check if the page was reload of something like the reason the transport closed. or go through the official doc to find out other reasons and use the best
 
             // incase their tl is empty and hasn't connected
-            // remove the loader --this is a not so awesom logic
+            // remove the loader --this is a not so much an awesome logic
             document.getElementById( 'loader' )
                 .style.display = 'none';
 
@@ -1421,19 +1438,24 @@
             if ( typeof data.post === 'object' ) {
                 console.log( 'wahat w egogt', data );
 
-                if ( (JSON.stringify( data.post ) === '{}' || JSON.stringify( data.post ) === '[]') && !document.getElementById( "tl" ).contains(document.getElementsByClassName('list-group-item')[0]) ) {
+                if ( ( JSON.stringify( data.post ) === '{}' || JSON.stringify( data.post ) === '[]' ) && !document.getElementById( "tl" )
+                    .contains( document.getElementsByClassName( 'list-group-item' )[ 0 ] ) ) {
                     // return true; // give them a tour guide
                     console.log( 'got heree e ;' )
                     tell();
-                } else if ( !data.post && !document.getElementById( "tl" ).contains(document.getElementsByClassName('list-group-item')[0]) ) {
+                } else if ( !data.post && !document.getElementById( "tl" )
+                    .contains( document.getElementsByClassName( 'list-group-item' )[ 0 ] ) ) {
                     // return true; // give them a tour guide
                     console.log( 'got heree e ;==' )
                     tell();
                 } else {
                     // return false; // remove the element div that tells them they are the first if the div exists
-                    if (document.getElementById( "1or0" )
-                        .hasChildNodes() && document.getElementById( "tl" ).contains(document.getElementsByClassName('list-group-item')[0])) {
-                            document.getElementById( "1or0" ).removeChild(document.getElementById('1or0msg'));
+                    
+                    if ( document.getElementById( "1or0" ).hasChildNodes() ) { // checking just to be extra sure
+
+                        document.getElementById( "1or0" )
+                            .removeChild( document.getElementById( '1or0msg' ) );
+                            // congratulate them for being the first to post
                     }
                 }
             }
@@ -1992,10 +2014,14 @@
         // work on this bit alot
 
         var findBtn = document.getElementById( "findme" );
+        var findBtn2 = document.getElementById( "geo" );
 
-        function locate() {
+        function locate( ev ) {
+            // [ev.target.id == 'findme' ev.target.nodeName == 'SPAN'] [ev.target.nodeName == 'A' ev.target.id == 'geo']
+            var infoElement = ( ev.target.nodeName == 'SPAN' ? 'locinfo' : ev.target.nodeName == 'A' ? 'accinfo' : 'default' ); // the variable that decides where the geolocation errors are displayed, this is getting the id of the element and passing it to the variable so we can reference the div element and display error messages
+            
 
-            console.log( 'Retriving location...' );
+            console.log( 'Retriving location...', '' );
             var savePoint = {
                 "type": "Feature",
                 "properties": {},
@@ -2005,7 +2031,7 @@
                 }
             };
 
-            //empty the savePoint variable before use not after success anymore
+            //empty the savePoint variable before use [i think because of previous usage] not after success anymore
             savePoint.geometry.coordinates.pop();
             savePoint.geometry.coordinates.pop();
             savePoint.properties = {};
@@ -2029,7 +2055,7 @@
                     case error.TIMEOUT:
                         //try again with a longer timeout
 
-                        document.getElementById( 'locinfo' )
+                        document.getElementById( infoElement )
                             .innerText =
                             'TIMEOUT Error. We\'re trying again...'; //add or 'never mind?' option in the sentence so corper can quit
                         if ( one <= 1 ) {
@@ -2039,10 +2065,9 @@
                         }
 
                         break;
-                    case error
-                    .PERMISSION_DENIED: // it could be the user denied permission by not accpting location prompt and that the browser denied because of http and not https
+                    case error.PERMISSION_DENIED: // it could be the user denied permission by not accpting location prompt and that the browser denied because of http and not https
                         // The user didn't accept the callout //showNudgeBanner();
-                        document.getElementById( 'locinfo' )
+                        document.getElementById( infoElement )
                             .innerText =
                             'Please you\'d need to allow location on your broswer. Let\'s do this again';
                         // (put loc function in showNudgeBanner() callback) ?, so when corper click ok\close for the banner, we get loc
@@ -2050,7 +2075,7 @@
                         break;
                     case error.POSITION_UNAVAILABLE:
                         //say there's no network n try again when there is ?!!!?
-                        document.getElementById( 'locinfo' )
+                        document.getElementById( infoElement )
                             .innerText =
                             'You seem to be offline. Try again when you\'re online.'; //maybe find how we can auto get the user's location after telling them they're offline
                         //google said : [Violation] Only request geolocation information in response to a user gesture.
@@ -2058,7 +2083,7 @@
                         break;
                     case 0: //unknown error
                         //just try again
-                        document.getElementById( 'locinfo' )
+                        document.getElementById( infoElement )
                             .innerText =
                             'Something went wrong and we don\'t know what. We\'ll just try again.';
                         locate();
@@ -2067,8 +2092,15 @@
             };
 
             var geoPoint = function( position ) {
-
                 // Do magic with location
+
+                //inform the corper we got the location, and then suggests streets name for them in the input box, also if the geolocation isn't accurate enough, tell them to try again
+                document.getElementById( infoElement ).innerText = 'We got it.';
+
+                // not removing these cause Uncaught TypeError: Converting circular structure to JSON, Thank God we don't need them to begin with
+                // delete e.sourceTarget;
+                // delete e.target;
+                // delete e.type;
                 console.log( 'normal position', position );
                 savePoint.properties.geo = position;
 
@@ -2078,7 +2110,11 @@
 
                 //savePoint.geometry.coordinates[0] = position.coords.longitude.toString() ;
                 //savePoint.geometry.coordinates[1] = position.coords.latitude.toString() ;
-                console.log( 'savePoint', savePoint );
+                console.log( 'savePoint', savePoint, JSON.stringify(savePoint).length );
+
+                document.forms[1].elements["acc_geodata"].value = JSON.stringify(savePoint);
+
+
                 // how can I know if and when the fetch api was aborted https://developers.google.com/web/updates/2017/09/abortable-fetch
                 const controller = new AbortController();
                 const signal = controller.signal;
@@ -2127,11 +2163,13 @@
                 preview.setAttribute( 'id', 'preview' );
                 preview.setAttribute( 'class', 'cnt mb-2' ); // TODO, align item in middle
                 // preview.setAttribute('class', 'app');
-                document.getElementById( 'locinfo' )
+                document.getElementById( infoElement )
                     .innerText = '';
                 preview.appendChild( img );
                 //previewParent.firstChild = preview ;
                 previewParent.appendChild( preview );
+
+                
                 msg.images.push( img.src );
                 msg.type = 'location';
                 msg.geo = savePoint;
@@ -2165,11 +2203,12 @@
             };
 
             navigator.geolocation.getCurrentPosition( geoPoint, geoPointError, geo_options );
-            document.getElementById( 'locinfo' )
+            document.getElementById( infoElement )
                 .innerText = 'Retrieving location...';
         };
 
         findBtn.addEventListener( "click", locate, false );
+        findBtn2.addEventListener( "click", locate, false );
     </script>
 
     <script>

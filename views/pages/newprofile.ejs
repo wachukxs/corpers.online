@@ -206,8 +206,8 @@
                 </div>
               </div>
               <div class="col-md-3 mb-3" id="newss" style="display: none">
-                <label for="region_street">New state code</label>
-                <input type="text" class="form-control" name="region_street" id="region_street" placeholder="">
+                <label for="newstatecode">New state code</label>
+                <input type="text" class="form-control" name="newstatecode" id="nsc" placeholder="">
                 <div class="invalid-feedback">
                   Please provide a valid statecode.
                 </div>
@@ -224,6 +224,16 @@
                 } else {
                   document.getElementById('servicestate').disabled = true;
                   document.getElementById('newss').style.display = 'none';
+
+                  var years = parseInt( new Date( Date.now() ).getFullYear().toFixed().slice( 2, 4 ) );
+		var yearrange = '(' + ( years - 1 ).toString() + '|' + years.toString() + ')';
+		
+		document.forms[ 0 ].elements[ 6 ].pattern = 'AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm\\/'+yearrange+'[abcACB]\\/\\d\\d\\d\\d'; // extra escaping probably because we're setting with string from here and not directly from the pattern attribute
+
+        document.getElementById( 'nsc' )
+            .oninvalid = function( event ) {
+                event.target.setCustomValidity("State code should start with a valid state abbrevation, have forward slashes, appropriate batch, and four trailing digits. Right?");
+            }
                 }
               }, false)
             </script>
@@ -266,11 +276,11 @@
               </div>
             </div>
 
-            <div class="mb-3 d-none">
+            <div class="mb-3 d-none" style="display: none">
               <label for="ppa_geodata">Geo data <span class="text-muted">(Optional, but kinda important)</span></label>
               <input type="text" name="ppa_geodata" class="form-control" id="ppa_geodata"
                 placeholder="What part of town is it?">
-              <small class="text-muted">We are trying to get an accurate as possible data, so we might ask you to try again if it won't be of help to other corpers.</small>
+              <small class="text-muted">We are trying to get an accurate as possible data, so we might ask you to try again if what we got won't be of help to other corpers.</small>
             </div>
 
             <div class="mb-3">
@@ -291,7 +301,7 @@
                 <% } %>
               </datalist>
               <% } %>
-              <small class="text-muted">Help other corpers find it! Click the 'Geo' button to locate your PPA on the
+              <small class="text-muted">If you're there right now, help other corpers find it! Click the 'Geo' button to locate your PPA on the
                 map.</small>
               <!-- if we already have a very accurate location of the ppa, we don't need geo, but if we don't have then we can show geo and ask the user to help us locate it -->
               <!-- <div class="input-group">
@@ -339,6 +349,14 @@
                 });
               </script>
             </div>
+
+
+            <div class=" mb-3">
+              <label for="lgas">Directions</label>
+              <textarea class="form-control" name="ppadirections" id="pd" placeholder="Please give directions to the PPA from a popular nearby junction or hard-to-miss building"></textarea>
+              
+            </div>
+
             <script>
               /* // ---geo
               document.getElementById('geo').onclick = function () {
@@ -455,7 +473,7 @@
                   delete e.sourceTarget;
                   delete e.target;
                   delete e.type;
-                  console.log('saving', e, JSON.stringify(e).length);
+                  console.log('saving after deleting', e, JSON.stringify(e).length);
 
                   document.forms[0].elements["ppa_geodata"].value = JSON.stringify(e);
                   
@@ -536,8 +554,10 @@
 
                 // error ?
                 function onLocationError(e) {
-                  document.getElementById('AddError').innerHTML = e.message;
-                  $("#LocationError").modal();
+                  console.log('nah', e.message, e)
+                  // uncomment this later
+                  // document.getElementById('AddError').innerHTML = e.message;
+                  // $("#LocationError").modal();
                 }
 
                 mymap.on('locationerror', onLocationError);

@@ -434,6 +434,11 @@ app.get('/newsearch', function (req, res) {
     // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
     pool.query("SELECT * FROM accommodations WHERE rentrange = '" + req.query.rr + "' AND input_time = '" + req.query.it + "'", function (error, results, fields) {
 
+      if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
+        console.log(error);
+        throw error;
+      }
+
       accommodation_details = {};
       accommodation_details.nop = '[]'; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
       res.render('pages/newsearch', accommodation_details /* {
@@ -448,9 +453,21 @@ app.get('/newsearch', function (req, res) {
   }
 
   else {
-    res.render('pages/newsearch', {
-      nop: undefined
-    });
+    // SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address,ppa_geodata FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null)
+    pool.query("SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null); SELECT * FROM accommodations WHERE expire > UTC_DATE", function (error, results, fields) {
+      
+      if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
+        console.log(error);
+        throw error;
+      }
+      console.log('looking for ooo', results)
+      _details = {};
+      _details.ppas = results[0];
+      _details.accommodations = results[1];
+      _details.nop = undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
+      res.render('pages/newsearch2', _details);
+    })
+    
   }
 
 
@@ -1044,11 +1061,14 @@ app.post('/profile', bodyParser.urlencoded({ extended: true/* , type: 'applicati
   console.log('\n\nthe req.body for /newprofile', req.body, '\n\n', req.body.statecode);
   // console.log('\n\n', req);
   var sqlquery = "UPDATE info SET accommodation_location = '" + (req.body.accommodation_location ? req.body.accommodation_location : '') +
-    "', servicestate = '" + req.body.ss + "', name_of_ppa = '" + req.body.name_of_ppa +
+    ( req.body.ss ? "', servicestate = '" + req.body.ss : '' ) // if there's service state(i.e. corper changed service state in real life and from front end), insert it.
+    + "', name_of_ppa = '" + req.body.name_of_ppa +
+    "', ppa_directions = '" + req.body.ppadirections +
     "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" +
     req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" +
-    req.body.type_of_ppa + "', ppa_geodata = '" + (req.body.ppa_geodata ? req.body.ppa_geodata : null) + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" +
+    req.body.type_of_ppa + "', ppa_geodata = '" + (req.body.ppa_geodata ? req.body.ppa_geodata : '') + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" +
     req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city +
+     ( req.body.newstatecode ? "', statecode = '" + req.body.newstatecode : '' ) + // if there's a new statecode ...
     /* "', accommodationornot = '" + (req.body.accommodationornot ? req.body.accommodationornot : 'yes') + */ "', wantspaornot = '" +
     req.body.wantspaornot + "' WHERE statecode = '" + req.session.statecode.toUpperCase() + "' "; // always change state code to uppercase, that's how it is in the db
 
@@ -1221,10 +1241,10 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
           console.log('COMPARING key and req.files.length', key + 1, req.files.length, ((parseInt(key) + 1) === req.files.length)); // key is a number with string data type,
           if (((parseInt(key) + 1) === req.files.length)) {
             console.log('media array null ?', arraymedia);
-            var sqlquery = "INSERT INTO accommodations( statecode, streetname, type, price, media, rentrange, rooms, address, directions, tenure, expire, post_location, post_time) VALUES ('" +
+            var sqlquery = "INSERT INTO accommodations( statecode, streetname, type, price, media, rentrange, rooms, address, directions, tenure, expire, post_location, post_time, acc_geodata) VALUES ('" +
               req.session.statecode + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
               arraymedia + "', '" + req.body.rentrange + "', '" + req.body.rooms + "','" + req.body.address + "','" + req.body.directions + "','" +
-              req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : null /**or '' */) + "', " + pool.escape(req.session.location) + ", " + pool.escape(req.body.post_time) + ")";
+              req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : '') + "', " + pool.escape(req.session.location) + ", " + pool.escape(req.body.post_time) +",'" + (req.body.acc_geodata ? req.body.acc_geodata : '') + "')";
 
             pool.query(sqlquery, function (error, results, fields) {
               console.log('inserted data from: ', results);
