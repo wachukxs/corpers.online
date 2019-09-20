@@ -267,6 +267,13 @@ app.get('/', function (req, res) {
 
 // https://blog.daftcode.pl/how-to-make-uploading-10x-faster-f5b3f9cfcd52
 
+app.get('/allstateslgas', function (req, res) {
+  
+    res.set('Content-Type', 'application/json');
+    let whatwewant = fs.readFileSync('moreplaces.json'); // maybe use the async .readFile('', (err, data) => {})
+    let jkl = JSON.parse(whatwewant);
+    res.send(jkl);
+});
 
 app.get(['/AB', '/AD', '/AK', '/AN', '/BA', '/BY', '/BN', '/BO', '/CR', '/DT', '/EB', '/ED', '/EK', '/EN', '/FC', '/GM', '/IM', '/JG', '/KD', '/KN', '/KT', '/KB', '/KG', '/KW', '/LA', '/NS', '/NG', '/OG', '/OD', '/OS', '/OY', '/PL', '/RV', '/SO', '/TR', '/YB', '/ZM'], function (req, res) {
   // console.log('tryna login ', req.session.id, req.session.loggedin);

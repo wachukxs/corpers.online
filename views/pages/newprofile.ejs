@@ -41,7 +41,7 @@
         <!-- <img class="d-block mx-auto mb-4" src="https://getbootstrap.com/assets/brand/bootstrap-solid.svg" alt=""
           width="72" height="72"> -->
         <h2><%= statecode %></h2>
-        <p class="lead">Update profile.</p>
+        <p class="lead">Profile update.</p>
       </div>
 
       <div class="row">
@@ -168,14 +168,14 @@
             </div>
 
             <div class="row">
-              <div class="col-md-3 mb-3">
+              <div class="col-md-6 mb-3">
                 <label for="city_town">City or Town</label>
                 <input type="text" class="form-control" name="city_town" id="city_town" placeholder=""> <!--not really required-->
                 <div class="invalid-feedback">
                   Please select a valid city or town.
                 </div>
               </div>
-              <div class="col-md-3 mb-3">
+              <div class="col-md-6 mb-3">
                 <label for="region_street">Street<!-- or Region --> <span class="text-muted">(Optional)</span></label>
                 <input type="text" class="form-control" name="region_street" id="region_street" placeholder="">
                 <div class="invalid-feedback">
@@ -192,7 +192,7 @@
             </div>
 
             <div class="row">
-              <div class="col-md-3 mb-3">
+              <div class="col-md-6 mb-3">
                 <label for="stream">Stream</label>
                 <input type="number" min="1" max="3" list="stream" class="form-control" name="stream" id=""
                   placeholder="1, 2 or 3">
@@ -205,16 +205,16 @@
                   Your stream is either 1, 2 or 3. Are you sure you're a corper?
                 </div>
               </div>
-              <div class="col-md-3 mb-3" id="newss" style="display: none">
+              <div class="col-md-6 mb-3" id="newss" style="display: none">
                 <label for="newstatecode">New state code</label>
-                <input type="text" class="form-control" name="newstatecode" id="nsc" placeholder="">
+                <input type="text" class="form-control" name="newstatecode" id="nsc" placeholder="TR/18A/1234">
                 <div class="invalid-feedback">
                   Please provide a valid statecode.
                 </div>
               </div>
             </div>
 
-            <script>
+            <script> // if the relocated check box is checked, and the page is reoladed, the check box remains checked but the new state code input is invisible
               document.getElementById('relocated').addEventListener('change', (e) => {
                 console.log(e)
                 if (e.target.checked) {
@@ -235,6 +235,58 @@
                 event.target.setCustomValidity("State code should start with a valid state abbrevation, have forward slashes, appropriate batch, and four trailing digits. Right?");
             }
                 }
+
+                // make this call once!
+                // how can I know if and when the fetch api was aborted https://developers.google.com/web/updates/2017/09/abortable-fetch
+                const controller = new AbortController();
+                const signal = controller.signal;
+
+                setTimeout(() => controller.abort(), 5000);
+                //once we get the geo coordinates, first we get the name of the place., nominatium isn't perfect yet, will just be saving data from it to compare the accuracy we get
+                fetch('/allstateslgas', { signal })
+                    .then(function (response) {
+                            if (response.status !== 200) {
+                                console.log('Looks like there was a problem. Status Code: ' +
+                                    response.status);
+                                return;
+                            }
+
+                            // Examine the text in the response AND WHY IS CORDINATES NOT SAVING TO savePoint variable
+                            response.json().then(function (data) {
+                                console.log('stateslgas', data);
+                                // add event listner to service state input
+                                document.getElementById('servicestate').addEventListener('change', (e) => {
+                                    console.log('changed state', e.target.value)
+                                    console.log(data.states) //[e.target.value]
+                                    var it = e.target.value;
+                                    var thestate = data.states.find((eachElement, index)=>{
+                                      return eachElement[it];
+                                    })
+
+                                    console.log('it', thestate[it])
+
+                                    var thelgas = thestate[it];
+
+                                    theLGAsInputElement = document.getElementById('lgas');
+                                    theLGAsInputElement.options.length = 0; // removes all options
+
+                                    // starts creating the new LGAs options for the lga select input
+                                    for (let index = 0; index < thelgas.length; index++) {
+                                      const element = thelgas[index];
+                                      theLGAsInputElement.options[index] = new Option(element, element) // new Option(text, value)
+                                    }
+
+                                }, false);
+                            });
+                        }
+                    ).catch(function (err) {
+                        //console.log('Fetch Error :-S', err);
+                        if (err.name === 'AbortError') {
+                            console.log('Fetch aborted');
+                        } else {
+                            console.error('Uh oh, an error! Fetch Error :-S', err);
+                        }
+                    });
               }, false)
             </script>
             <hr class="mb-4">

@@ -1920,8 +1920,6 @@
             for ( var i = 0; i < fileList.length; i++ ) {
                 var file = fileList[ i ];
 
-
-
                 if ( file.type.startsWith( 'image/' ) ) {
                     var contain = document.createElement( 'div' );
                     contain.setAttribute( 'class', 'image-wrapper' );
@@ -2171,8 +2169,9 @@
 
                 
                 msg.images.push( img.src );
-                msg.type = 'location';
-                msg.geo = savePoint;
+                document.forms[2].elements[2].value = img; // works ?
+                msg.type = 'location'; // add this to the forms
+                msg.geo = savePoint; // add to the forms, i think it's done already
                 //sendMsg();
                 /*
 
@@ -2197,7 +2196,7 @@
                       };
 
                         https://stackoverflow.com/questions/27526281/websockets-and-apache-proxy-how-to-configure-mod-proxy-wstunnel/27534443#27534443
-                       */
+                */
 
 
             };
@@ -2251,12 +2250,10 @@
                     },
                     ajax: {
                         url: "/posts",
-
                         data: { // set url query parameter if we want to do backend/query search
                             q: '{{query}}',
                             s: window.location.pathname.substring( 1, 12 ) // '<%= statecode %>'
                         },
-
                         path: 'data.accommodations'
                     }
                 },
@@ -2305,14 +2302,12 @@
 
                         resultList.scrollTop( offsetTop );
                     }
-
                 },
                 onMouseEnter: function( node, a, item, event ) {
                     console.log( 'enter key on search' );
                     /* if (item.group === "country") {
                         $(a).append('<span class="flag-chart flag-' + item.display.replace(' ', '-').toLowerCase() + '"></span>')
                     } */
-
                 }
             },
             debug: true
