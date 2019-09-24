@@ -793,9 +793,7 @@
 
                         <small id="locinfo"></small>
 
-                        <div id="previewParent">
-                            <!--<div id="preview"></div>-->
-                        </div>
+                        <div id="previewParent"></div>
 
                         <div class="d-flex align-items-center">
                             <div class="mr-auto">
@@ -897,10 +895,8 @@
                         .removeChild( document.getElementById( 'preview' ) );
                 }
 
-
                 document.getElementById( 'postsubmit' )
                     .disabled = true;
-
 
                 // some times there are cases where posts happen immediately after each other 
                 // and there would then be more than one notifications on the user tl...
@@ -1896,6 +1892,13 @@
                 txtFld.focus();
             } );
 
+            $( '#postModalSale' )
+            .on( 'hidden.bs.modal', function( e ) {
+                document.getElementById( 'previewParent' )
+                        .removeChild( document.getElementById( 'preview' ) );
+                        document.getElementById( 'locinfo' ).innerHTML = '';
+            } );
+
 
 
         /*
@@ -2110,9 +2113,14 @@
                 //savePoint.geometry.coordinates[1] = position.coords.latitude.toString() ;
                 console.log( 'savePoint', savePoint, JSON.stringify(savePoint).length );
 
-                document.forms[1].elements["acc_geodata"].value = JSON.stringify(savePoint);
+                // do this only if the event came from accommodation form
+                if (infoElement == 'accinfo') {
+                    document.forms[1].elements["acc_geodata"].value = JSON.stringify(savePoint);
+                }
 
-
+                // only do that image thinghy if the request came from the share location button
+                if (infoElement == 'locinfo') {
+                    console.log('weeeee;');
                 // how can I know if and when the fetch api was aborted https://developers.google.com/web/updates/2017/09/abortable-fetch
                 const controller = new AbortController();
                 const signal = controller.signal;
@@ -2164,14 +2172,23 @@
                 document.getElementById( infoElement )
                     .innerText = '';
                 preview.appendChild( img );
-                //previewParent.firstChild = preview ;
-                previewParent.appendChild( preview );
+                
+
+                var anythere = document.getElementById( 'previewParent' ).hasChildNodes();
+                if (anythere) { // replace the first element
+                    previewParent.replaceChild(preview, document.getElementById('preview'))
+                } else {
+                    // just append
+                    previewParent.appendChild( preview );
+                }
 
                 
                 msg.images.push( img.src );
-                document.forms[2].elements[2].value = img; // works ?
+                // document.forms[2].elements[2].value = img; // works ?
                 msg.type = 'location'; // add this to the forms
-                msg.geo = savePoint; // add to the forms, i think it's done already
+                msg.geo = savePoint; // add to the forms, i think it's done already, it isn't mehnnnnn
+
+                }
                 //sendMsg();
                 /*
 

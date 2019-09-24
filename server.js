@@ -118,9 +118,9 @@ var connection = mysql.createConnection(mysqloptions); // declare outside connec
 var pool = mysql.createPool({
   connectionLimit: 15, // Default: 0
   host: 'localhost', // def change to connarts.com.ng before deployment
-  user: 'connarts_ossai',
+  user: 'fotoloya_ossai',
   password: "ossai'spassword",
-  database: 'connarts_nysc',
+  database: 'fotoloya_nysc',
   acquireTimeout: 1800000, // 10000 is 10 secs
   multipleStatements: true // it allows for SQL injection attacks if values are not properly escaped
 });
@@ -270,9 +270,11 @@ app.get('/', function (req, res) {
 app.get('/allstateslgas', function (req, res) {
   
     res.set('Content-Type', 'application/json');
-    let whatwewant = fs.readFileSync('moreplaces.json'); // maybe use the async .readFile('', (err, data) => {})
-    let jkl = JSON.parse(whatwewant);
-    res.send(jkl);
+    fs.readFile('moreplaces.json', (err, data) => {
+      let jkl = JSON.parse(data);
+      // let's hope there's no err
+      res.send(jkl);
+    })
 });
 
 app.get(['/AB', '/AD', '/AK', '/AN', '/BA', '/BY', '/BN', '/BO', '/CR', '/DT', '/EB', '/ED', '/EK', '/EN', '/FC', '/GM', '/IM', '/JG', '/KD', '/KN', '/KT', '/KB', '/KG', '/KW', '/LA', '/NS', '/NG', '/OG', '/OD', '/OS', '/OY', '/PL', '/RV', '/SO', '/TR', '/YB', '/ZM'], function (req, res) {
@@ -1021,38 +1023,44 @@ app.get('/profile', function (req, res) {
 // do a function or end point that returns all the LGAs of a state (that it collects as )
 
 app.get('/newprofile', function (req, res) {
-  let allslga = fs.readFileSync('moreplaces.json'); // maybe use the async .readFile('', (err, data) => {})
-  let fjk = JSON.parse(allslga);
-  
-  if (req.session.loggedin) {
-    var jn = req.session.statecode.toUpperCase()
+  fs.readFile('moreplaces.json', (err, data) => {
+    let jkl = JSON.parse(data);
+    // let's hope there's no err
     
-    /**an array of all the local government in the state */
-    var lgas = fjk.states[states_short.indexOf(jn.slice(0, 2))][ states_long[states_short.indexOf(jn.slice(0, 2))] ] ;
-    // use the ones from their service state // AND servicestate = '" + req.session.servicestate + "'
-    pool.query("SELECT name_of_ppa FROM info WHERE name_of_ppa != '' ; SELECT ppa_address from info WHERE ppa_address != '' AND servicestate = '" + req.session.servicestate + "'; SELECT city_town FROM info WHERE city_town != '' AND servicestate = '" + req.session.servicestate + "'; SELECT region_street FROM info WHERE region_street != '' AND servicestate = '" + req.session.servicestate + "'", function (error2, results2, fields2) {
-
-      if (error2) throw error2;
-      // console.log('PPAs', results2);
-
-      res.set('Content-Type', 'text/html');
-      // res.sendFile(__dirname + '/new profile/index.html');
-      res.render('pages/newprofile', {
-        statecode: req.session.statecode.toUpperCase(),
-        servicestate: req.session.servicestate.toUpperCase(),
-        batch: req.session.batch,
-        names_of_ppas: results2[0], // array of objects ie names_of_ppas[i].name_of_ppa
-        ppa_addresses: results2[1],
-        cities_towns: results2[2],
-        regions_streets: results2[3],
-        states: states_long,
-        lgas: lgas
-        // select all distinct ppa type / address / name and send it to the front end as suggestions for the input when the corpers type
+    
+    if (req.session.loggedin) {
+      var jn = req.session.statecode.toUpperCase()
+      
+      /**an array of all the local government in the state */
+      var lgas = jkl.states[states_short.indexOf(jn.slice(0, 2))][ states_long[states_short.indexOf(jn.slice(0, 2))] ] ;
+      // use the ones from their service state // AND servicestate = '" + req.session.servicestate + "'
+      pool.query("SELECT name_of_ppa FROM info WHERE name_of_ppa != '' ; SELECT ppa_address from info WHERE ppa_address != '' AND servicestate = '" + req.session.servicestate + "'; SELECT city_town FROM info WHERE city_town != '' AND servicestate = '" + req.session.servicestate + "'; SELECT region_street FROM info WHERE region_street != '' AND servicestate = '" + req.session.servicestate + "'", function (error2, results2, fields2) {
+  
+        if (error2) throw error2;
+        // console.log('PPAs', results2);
+  
+        res.set('Content-Type', 'text/html');
+        // res.sendFile(__dirname + '/new profile/index.html');
+        res.render('pages/newprofile', {
+          statecode: req.session.statecode.toUpperCase(),
+          servicestate: req.session.servicestate.toUpperCase(),
+          batch: req.session.batch,
+          names_of_ppas: results2[0], // array of objects ie names_of_ppas[i].name_of_ppa
+          ppa_addresses: results2[1],
+          cities_towns: results2[2],
+          regions_streets: results2[3],
+          states: states_long,
+          lgas: lgas
+          // select all distinct ppa type / address / name and send it to the front end as suggestions for the input when the corpers type
+        });
       });
-    });
-  } else {
-    res.render('pages/login');
-  }
+    } else {
+      res.render('pages/login');
+    }
+
+  })
+  
+  
 
 });
 
