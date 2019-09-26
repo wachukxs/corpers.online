@@ -4,7 +4,7 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <title>
-            Corpers Online \ MAP
+            Corpers Online - Search for PPA, Offices, Find yourself if you're feeling lost!
         </title>
 
         <link rel="icon" type="image/png" href="logo/new/logo32x32.png" />
@@ -233,21 +233,20 @@
                                 </datalist>
                             </div>
 
-
-
                             <label for="lga">Area</label>
                             <div class="input-group">
-                                <input type="text" list="lga" name="lga" id="lga1" class="form-control" id="lga"
-                                    placeholder="LGA" value="" required>
-
-                                <datalist id="lga">
-
-                                </datalist>
-                                <input type="text" list="district" name="district" id="district1" class="form-control"
+                                    <input type="text" list="district" name="district" id="district1" class="form-control"
                                     id="district" placeholder="District" value="" required>
                                 <datalist id="district">
 
                                 </datalist>
+                                <input type="text" list="lga" name="lga" id="lga1" class="form-control" id="lga"
+                                    placeholder="LGA" value="" required>
+                                <!-- we should be able to automatically draw up their LGA for them -->
+                                <datalist id="lga">
+
+                                </datalist>
+                                
                             </div>
                             <div class="valid-feedback">
                                 Looks good!
@@ -418,8 +417,7 @@
                 iconUrl: 'https://icon.now.sh/local_printshop',
                 iconSize: [30, 30],
                 iconAnchor: [22, 94],
-                popupAnchor: [-7, -
-                85], // documentation used [-3, -76], it wasn't exactly properly aligned to the icon, maybe it's directly on the latlng point but ...no
+                popupAnchor: [-7, -85], // documentation used [-3, -76], it wasn't exactly properly aligned to the icon, maybe it's directly on the latlng point but ...no
                 shadowUrl: null,
                 shadowSize: [68, 95],
                 shadowAnchor: [22, 94],
@@ -552,13 +550,11 @@
             // add new toolbar
             L.Control.Toolbar = L.Control.extend({
                 options: {
-                    position: 'bottomright'
-                    // control position - allowed: 'topleft', 'topright', 'bottomleft', 'bottomright'
+                    position: 'bottomright' // control position - allowed: 'topleft', 'topright', 'bottomleft', 'bottomright'
                 },
 
                 onAdd: function (mymap) {
-                    var container = L.DomUtil.create('div',
-                        'leaflet-bar leaflet-control leaflet-control-custom makehand');
+                    var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom makehand');
                     var position = L.DomUtil.create('a', '', container);
                     position.title = 'Get current position';
                     // position.innerHTML = '&#10991;' ; // &#x1f518;
@@ -580,7 +576,7 @@
                     });
 
                     function imgErr() {
-                        console.log('which');
+                        console.log('seems there is an error');
                     }
 
                     positionImg.src = 'https://icon.now.sh/my_location';
@@ -589,8 +585,7 @@
 
                     trackImg.src = 'https://icon.now.sh/navigation';
                     trackImg.alt = '&'; // it distructs the icon
-                    trackImg.onerror =
-                    "imgErr()"; // seems the browser ignores doing the onerror if there's an alt attr.
+                    trackImg.onerror = "imgErr()"; // seems the browser ignores doing the onerror if there's an alt attr.
 
 
                     // https://icon.now.sh/add_location
@@ -774,11 +769,125 @@
                 return new L.Control.Toolbar(opts);
             }
 
-            L.control.toolbar().addTo(mymap);
+            L.control.toolbar({ position: 'bottomright' }).addTo(mymap);
+
+
+            // ------ add a new place
+
+            L.Control.AddPlace = L.Control.extend({
+                onAdd: function(map) {
+                    var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom makehand');
+                    var addplace = L.DomUtil.create('a', '', container);
+                    addplace.title = 'Add current location to map' // or 'Add this place'; // if our map is used to get current location (and we don't have that place in our database) we can show the corper/user a pop up so they add the place to our records (for other corpers at least/for sure)
+                    // position.innerHTML = '&#10991;' ; // &#x1f518;
+                    
+                    var addplaceImg = L.DomUtil.create('img', '', addplace);
+
+
+                    // Stop the given event from propagation to parent element(s)
+                    L.DomEvent.on(container, 'click dblclick', function (ev) {
+                        L.DomEvent.stopPropagation(ev);
+                    });
+
+                    addplaceImg.src = 'https://icon.now.sh/local_offer';
+                    addplaceImg.alt = '#'; // it distructs the icon
+
+                    addplace.onclick = function () {
+                        console.log('addplace button clicked');
+                        // first find the user's current location
+
+                        function onLocationFound(e) {
+
+                            var radius = e.accuracy / 2; // measurement in meters
+                            console.log(e);
+
+                            function onClk(e) {
+                                console.log('clicked addPlace Marker!');
+                            }
+
+                            function onPO() {
+                                // c.addTo(mymap);
+                                if (document.getElementById('baptm')) {
+                                    console.log('we wanna add a place');
+                                }
+                            }
+                            // if user within 5 meters from location, add it. AND IF LOCATION ACCURACY IS NOT SO CORRECT THEN DON'T SHOW IT IN THE MAP !!! NOT EVERYONE IS IN LAGOS, ALSO SHOW THEM THE STATE THEY'RE IN AND THE lga FIRST
+                            // Only display those icons when the user is in a good enough zoom level
+                            var p = L.marker(e.latlng).on({
+                                    click: onClk
+                                }).addTo(mymap)
+                                .bindPopup('You\'re within ' +
+                                    radius.toFixed(2) +
+                                    ' meters from this point.' +
+                                    (radius.toFixed(2) <= 10.00 ?
+                                        '' :
+                                        ' You need to be within 10 meters to add a location to map')) // ask them if they want to try again ...maybe two more times (and probably reward their efforts if the location is getting better... by telling them to stop and try another time or they can continue trying if they want)
+                                .openPopup().on({
+                                    popupopen: onPO
+                                });
+                                if (radius.toFixed(2) <= 10.00) { // if they are within 10 meters, show the popup // don't forget to change >= to <=
+                                    $("#AddPlace").modal();
+                                }
+                            // after 5 sec closePopup(), 5 sec so we give enough time to read the message
+                            setTimeout(() => {
+                                p.closePopup();
+                            }, 5000);
+                            // if we couldn't get a so accurate location but got a resonable accurate info, then user can drag the marker to point. means we have to then make marker draggable
+
+                            var c = L.circle(e.latlng, {
+                                radius: radius,
+                                stroke: false
+                            }).addTo(mymap);
+                            // after 3.5 sec remove circle
+                            setTimeout(() => c.remove(), 3500);
+
+                            // p.on('popupopen', c.addTo(mymap) );
+
+                            // make it so that when ever the popUP is open, the event listerner is added ... also (if it doesn't work so that the app place button works even if it has been dismissed because of clicking the marker (to show the popUp) again n again.)
+
+                            //then save it.
+
+                            //then get the altitude and it's accuracy and determine if the apartment is an upstairs
+                            //then point the map in the direction of movement var e.heading
+                        }
+
+                        mymap.on('locationfound', onLocationFound);
+
+                        // error ?
+                        function onLocationError(e) {
+                            document.getElementById('AddError').innerHTML = e.message;
+                            $("#LocationError").modal();
+                        }
+
+                        mymap.on('locationerror', onLocationError);
+
+                        // acutally finding it
+                        mymap.locate({
+                            setView: true,
+                            enableHighAccuracy: true,
+                            timeout: 5000,
+                            maximumAge: 0
+                        });
+
+                        // then save it.
+                    }
+
+                    return container;
+                },
+
+                onRemove: function(map) {
+                    // Nothing to do here
+                }
+            });
+
+            L.control.addplace = function(opts) {
+                return new L.Control.AddPlace(opts);
+            }
+
+            L.control.addplace({ position: 'bottomright' }).addTo(mymap);
 
 
             /*when user logs in, and owns an account. we can keep record of their data like PPA, SPA and whatever they want to save.*/
-
 
             /**
 

@@ -7,7 +7,7 @@ LESS, BUT BETTER https://uxdesign.cc/great-products-do-less-things-but-better-5d
 
 
 
-
+>>> so what happens to all your previous data (posts and chats and how you can be reached) when you change statecode ?
 we couldn't find any apartment/household goods relating to your search? want to be notified when something comes up?
 
 how does stack overflow results pop up on google search? if someone googles "apartments in ikeja", results from corpers.online should pop up
