@@ -1110,9 +1110,13 @@ app.post('/profile', bodyParser.urlencoded({ extended: true/* , type: 'applicati
 
 });
 
-app.post('/addplace', function (req, res) {
+app.post('/addplace', upload.none(), function (req, res) {
   // handle post request, add data to database.
-  console.log('came here /addplace');
+  console.log('came here /addplace', req.body);
+  if (!isEmpty(req.body)) {
+    console.log('we are returning a respoinse')
+    res.status(200).send('OK'); // the 'OK' is what the front end sees as event.target.responseText
+  }
 });
 
 app.post('/posts', upload.array('see', 12), function (req, res, next) {
@@ -1430,7 +1434,7 @@ var ioindex = io.of('/').on('connection', function (socket) { // when a new user
 var iomap = io.of('/map').on('connection', function (socket) { // when a new user connects to the map
 
   socket.on('addplace', function (data) {
-
+    console.log('got some info', data)
   });
 
   socket.on('gotposition', function (data) {
