@@ -1122,7 +1122,7 @@ app.post('/addplace', upload.none(), function (req, res) {
 app.post('/posts', upload.array('see', 12), function (req, res, next) {
   // handle post request, add data to database... do more
 
-  var sqlquery = "INSERT INTO posts( media, statecode, type, text, price, location, post_time) VALUES ('" + (req.files.length > 0 ? [...new Set(req.files.map(x => x.filename))] : '') + "','" + req.session.statecode + "', '" + (req.body.type ? req.body.type : "sale") + "', " + pool.escape(req.body.text) + ", " + pool.escape((req.body.price ? req.body.price : "")) + ", " + pool.escape(req.session.location) + ",'" + req.body.post_time + "')"
+  var sqlquery = "INSERT INTO posts( media, statecode, type, text, price, location, post_time) VALUES ('" + (req.files.length > 0 ? [...new Set(req.files.map(x => x.filename))] : req.mapimage ? req.mapimage : '') + "','" + req.session.statecode + "', '" + (req.body.type ? req.body.type : "sale") + "', " + pool.escape(req.body.text) + ", " + pool.escape((req.body.price ? req.body.price : "")) + ", " + pool.escape(req.session.location) + ",'" + req.body.post_time + "')"
 
   pool.query(sqlquery, function (error, results, fields) {
     console.log('inserted data from: ', results);
@@ -1140,6 +1140,7 @@ app.post('/posts', upload.array('see', 12), function (req, res, next) {
           media: (req.files.length > 0 ? [...new Set(req.files.map(x => x.filename))] : false),
           post_time: req.body.post_time,
           type: req.body.type,
+          mapdata: (req.body.mapimage ? req.body.mapimage: ''),
           text: req.body.text,
           age: moment(Number(req.body.post_time)).fromNow(),
           price: (req.body.price ? req.body.price : '')
@@ -1163,7 +1164,7 @@ app.post('/signup', bodyParser.urlencoded({ extended: true }), function (req, re
   // we can find the service state with req.body.statecode.slice(0, 2) which gives the first two letters
 
   /**
-  *   Either one of 
+  *   one of 
   *   ['AB', 'AD', 'AK', 'AN', 'BA', 'BY', 'BN', 'BO', 'CR', 'DT', 'EB', 'ED', 'EK', 'EN', 'FC', 'GM', 'IM', 'JG', 'KD', 'KN', 'KT', 'KB', 'KG', 'KW', 'LA', 'NS', 'NG', 'OG', 'OD', 'OS', 'OY', 'PL', 'RV', 'SO', 'TR', 'YB', 'ZM'] ;
       
       ['ABIA', 'ADAMAWA', 'AKWA IBOM', 'ANAMBRA', 'BAUCHI', 'BAYELSA', 'BENUE', 'BORNO', 'CROSS RIVER', 'DELTA', 'EBONYI', 'EDO', 'EKITI', 'ENUGU', 'FCT - ABUJA', 'GOMBE', 'IMO', 'JIGAWA', 'KADUNA', 'KANO', 'KASTINA', 'KEBBI', 'KOGI', 'KWARA', 'LAGOS', 'NASSARAWA', 'NIGER', 'OGUN', 'ONDO', 'OSUN', 'OYO', 'PLATEAU', 'RIVERS', 'SOKOTO', 'TARABA', 'YOBE', 'ZAMFARA'] ;
