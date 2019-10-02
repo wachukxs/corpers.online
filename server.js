@@ -837,7 +837,9 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
     else if (!isEmpty(results[0]) || !isEmpty(results[1])) { // formerly !isEmpty(results) but results is [[...], [...]]
       // console.log('posts', results);
 
-      // FOR THE POSTS - sales
+      
+
+      // FOR THE POSTS - sales just converting their post time value to a worded age & making the media value okay
       Object.entries(results[0]).forEach(
         ([key, value]) => {
           //console.log( 'post number ' + key, value.text);
@@ -853,7 +855,7 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
 
             // console.log('? ', (value.media.substring(0, 23) === "https://api.mapbox.com/"),(value.media.substring(0, 23) === "https://api.mapbox.com/" ? value.media : value.media.split(',')) );
 
-            value.media = (value.media.substring(0, 23) === "https://api.mapbox.com/" ? [value.media] : value.media.split(',')); // make only the url be in the array && we can't use .split(',') because there's ','s in the url
+            value.media = (value.media.substring(0, 23) === "https://api.mapbox.com/" ? value.media : value.media.split(',')); // make only the url be in the array && we can't use .split(',') because there's ','s in the url
 
             // ---this logic is expensive and buggy
             /* // if what we stored is a map link, ie. a url...
@@ -867,22 +869,48 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
 
           // send the posts little by little, or in batches so it'll be faster.
 
-          socket.emit('boardcast message', { to: 'be received by everyoneELSE', post: value });
+          // --socket.emit('boardcast message', { to: 'be received by everyoneELSE', post: value });
 
           // console.log('sent BCs'); // commented here out so we don't flood the output with too much data, uncomment when you're doing testing.
         }
       );
 
 
-      // FOR THE ACCOMMODATIONS - accommodations
+      // FOR THE ACCOMMODATIONS - accommodations -- just converting their post time value to a worded age
       Object.entries(results[1]).forEach(
         ([key, value]) => {
 
           //fix the time here too by converting the retrieved post_time colume value to number because SQL converts the value to string when saving (because we are using type varchar to store the data-number value)
 
           // value.age = moment(new Date(value.input_time)).fromNow();
-          value.age = moment(value.post_time || new Date(value.input_time)) // remove new Date(value.input_time) later
+          value.age = moment(value.post_time) // remove new Date(value.input_time) later
             .fromNow();
+          // console.log('acc v:', value);
+          // --socket.emit('boardcast message', { to: 'be received by everyoneELSE', post: value });
+
+        }
+      );
+
+      var allposts = results[0].concat(results[1]);
+      
+      /**
+       * "It's also worth noting that unlike many other JavaScript array functions, 
+       * Array.sort actually changes, or mutates the array it sorts.
+       * To avoid this, you can create a new instance of the array to be sorted and modify that instead."
+       * This sorting function/algorithm and the comment above came from 
+       * https://www.sitepoint.com/sort-an-array-of-objects-in-javascript/ 
+       * I don't really understand it 
+       * (read: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#Description)
+       * */
+      function compareFun_to_sort(a, b){
+          return a.post_time - b.post_time; // sort according to post time
+      }
+      
+      allposts.sort(compareFun_to_sort);
+      // FOR THE ACCOMMODATIONS - accommodations
+      Object.entries(allposts).forEach(
+        ([key, value]) => {
+
           // console.log('acc v:', value);
           socket.emit('boardcast message', { to: 'be received by everyoneELSE', post: value });
 
@@ -1122,7 +1150,7 @@ app.post('/addplace', upload.none(), function (req, res) {
 app.post('/posts', upload.array('see', 12), function (req, res, next) {
   // handle post request, add data to database... do more
 
-  var sqlquery = "INSERT INTO posts( media, statecode, type, text, price, location, post_time) VALUES ('" + (req.files.length > 0 ? [...new Set(req.files.map(x => x.filename))] : req.mapimage ? req.mapimage : '') + "','" + req.session.statecode + "', '" + (req.body.type ? req.body.type : "sale") + "', " + pool.escape(req.body.text) + ", " + pool.escape((req.body.price ? req.body.price : "")) + ", " + pool.escape(req.session.location) + ",'" + req.body.post_time + "')"
+  var sqlquery = "INSERT INTO posts( media, statecode, type, text, price, location, post_time) VALUES ('" + (req.files.length > 0 ? [...new Set(req.files.map(x => x.filename))] : req.body.mapimage ? req.body.mapimage : '') + "','" + req.session.statecode + "', '" + (req.body.type ? req.body.type : "sale") + "', " + pool.escape(req.body.text) + ", " + pool.escape((req.body.price ? req.body.price : "")) + ", " + pool.escape(req.session.location) + ",'" + req.body.post_time + "')"
 
   pool.query(sqlquery, function (error, results, fields) {
     console.log('inserted data from: ', results);

@@ -1518,13 +1518,6 @@
                         ii = document.createElement( 'img' );
                         ii.setAttribute( 'class', 'img-fluid border' );
 
-                        // if what's coming is already a url (like our mapbox pictures) // change later maybe...
-                        try {
-                            var a = new URL( data.post.media[ i ] )
-                                .toString();
-                        } catch ( error ) { // if it's not already a url
-                            // console.log(error);
-
                             try {
                                 // if localhost
                                 if ( window.location.hostname == "localhost" ) {
@@ -1546,7 +1539,6 @@
                                 // initialise var a to a placeholder image
                             }
 
-                        }
 
                         ii.setAttribute( 'src', a ); // add the trailing slash for normal images that was uploaded.
                         ii.setAttribute( 'alt', 'user\'s posted image' ); // do better
@@ -1796,7 +1788,7 @@
                 newFeed.appendChild( b );
 
                 //right now, we'll append every post together
-                feeds.insertBefore( newFeed, feeds.children[ 0 ] );
+                feeds.insertBefore( newFeed, feeds.children[ 0 ] ); // we need to append chronologically
             } else if (data.post.type == 'location'){
                 console.info( 'got a location', data );
                 if ( true ) {
@@ -1809,16 +1801,17 @@
                         
                         // if what's coming is already a url (like our mapbox pictures) // change later maybe...
                         try {
-                            var a = new URL( data.post.mapdata )
+                            var a = new URL( data.post.media )
                                 .toString();
                                 console.log('good url')
-                                ii.setAttribute( 'src', data.post.mapdata );
+                                ii.setAttribute( 'src', data.post.media );
                         } catch ( error ) { // if it's not already a url
-                            console.log('err image map', error);
+                            console.log(data.post.media, 'err image map', error);
+                            // with holder.js set the src attr of the image to display an appropriate err msg
                         }
                     
                     
-                        ii.setAttribute( 'alt', 'user\'s posted image' ); // do better
+                        ii.setAttribute( 'alt', 'map image' ); // do better
                     gg.appendChild( ii );
                     g.appendChild( gg );
                 }
