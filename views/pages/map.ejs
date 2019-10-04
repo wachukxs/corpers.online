@@ -159,6 +159,11 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="geodata">Name of Place:</label>
+                            <input type="text" name="geodata" id="geo" class="form-control" aria-describedby="geo data" placeholder="e.g. {..., lat: 989834.32}" required>
+                        </div>
+
+                        <div class="form-group">
                             <label for="street">Street:</label>
                             <input type="text" name="street" id="Street" class="form-control" aria-describedby="streetHelp" placeholder="e.g. Benson Road, D Line, Road D7, Nwachukwu Drive">
                         </div>
@@ -298,9 +303,11 @@
             .setView( [ 5.5216578, 7.5066884 ], 16 );
 
             // https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
+
+            // https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg
         var basemap = L.tileLayer(
-            'https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg', {
-                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: 'Imagery & Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>', // Imagery © <a href="https://www.mapbox.com/">Mapbox</a>
                 maxZoom: 18,
                 id: 'mapbox.streets',
                 accessToken: 'pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg'
@@ -845,6 +852,28 @@
                                 popupopen: onPO
                             } );
                         if ( radius.toFixed( 2 ) >= 10.00 ) { // if they are within 10 meters, show the popup // don't forget to change >= to <= // >= for testing
+                            // add geodata to the form
+
+                            // Access the form element...
+                        var form = document.getElementById( "addplaceform" );
+
+                        var savePoint = {
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": []
+                }
+            };
+            console.log('the e', e);
+                        document.forms[0].elements['geodata'].value = JSON.stringify(e);
+
+                        // Bind the FormData object and the form element
+                        var FD = new FormData( form );
+
+                            // append post_time
+                            FD.append( 'post_time', Date.now() ); // data type number
+
                             $( "#AddPlace" )
                                 .modal();
                         }
@@ -974,16 +1003,12 @@
         // GENERAL RULES: THE popupAnchor for fas fa-[amenity] is [5, -2] for when it's big and [0, 0] (we're gonna try to find a middle ground) for when it's small and for icon.now.sh is [-7, -85]
         var school = L.divIcon( {
             className: 'custom-icons fas fa-school fa-2x',
-            popupAnchor: [ 9,
-                1
-            ], // was and [3, 0], documentation used [-3, -76], it wasn't exactly properly aligned to the icon, maybe it's directly on the latlng point but ...no
+            popupAnchor: [9 ,1], // was and [3, 0], documentation used [-3, -76], it wasn't exactly properly aligned to the icon, maybe it's directly on the latlng point but ...no
         } );
 
         var hospital = L.divIcon( {
             className: 'custom-icons fas fa-hospital fa-2x',
-            popupAnchor: [ 5, -
-                2
-            ], // was [5, -2] for smaller width icons documentation used [-3, -76], it wasn't exactly properly aligned to the icon, maybe it's directly on the latlng point but ...no
+            popupAnchor: [5 ,-2], // was [5, -2] for smaller width icons documentation used [-3, -76], it wasn't exactly properly aligned to the icon, maybe it's directly on the latlng point but ...no
         } );
 
         // you can set .my-div-icon styles in CSS
