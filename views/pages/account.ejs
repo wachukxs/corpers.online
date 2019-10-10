@@ -443,7 +443,8 @@
                                         </div>
                                         <div class="mx-1">
 
-                                            <h2>Accommodation size</h2>
+                                            <fieldset>
+                                                <h2>Accommodation size</h2>
                                             <!-- // form for accommodation -->
 
                                             <div class="form-group">
@@ -456,7 +457,7 @@
                                                     <option value="1 bedroom flat">1 bedroom flat</option>
                                                 </select>
                                                 <small id="" class="form-text text-muted">Choose the category that best describes it.</small>
-                                            </div>
+                                            
 
                                             <!-- //test -->
                                             <div class="custom-control custom-checkbox">
@@ -486,7 +487,8 @@
                                             <!-- // // test -->
                                             <!-- the check box should change based on the accommodation type choosen -->
 
-
+                                        </div>
+                                            </fieldset>
                                             <!-- // -->
                                         </div>
                                     </div>
@@ -496,9 +498,10 @@
                                         </div>
 
                                         <div class="mx-1">
-                                            <h2>Metrics about the rent</h2>
+                                            <fieldset>
+                                                <h2>Metrics about the rent</h2>
                                             <!-- //form for accommodation -->
-
+                                            <div class="form-group">
 
                                             <!--//testing-->
                                             <div class="d-block my-3">
@@ -518,7 +521,7 @@
                                             <!-- / // / testing -->
 
                                             <!-- this should be disabled until the person chooses either per month or quarter or year then we say price per whatever the person chose -->
-                                            <div class="form-group">
+                                            
                                                 <label for="price">Price per month/quater/year</label>
 
                                                 <div class="input-group">
@@ -532,6 +535,7 @@
                                                 </div>
 
                                             </div>
+                                            </fieldset>
 
 
                                             <!-- // -->
@@ -545,23 +549,24 @@
                                         </div>
 
                                         <div class="mx-1">
-                                            <h2>Precise location</h2>
+                                            <fieldset>
+                                                <h2>Precise location</h2>
                                             <!-- <small>.</small> -->
                                             <!-- //  -->
                                             <div class="form-group">
                                                 <label for="streetname">Street name</label>
                                                 <input type="text" name="streetname" class="form-control" id="streetname" placeholder="No. 17B, Room 5.">
-                                            </div>
+                                            
 
-                                            <div class="form-group d-none" style="display: none">
+                                            <div class=" d-none" style="display: none">
                                                 <label for="ppa_geodata">Geo data <span class="text-muted">(Optional, but kinda important)</span></label>
                                                 <input type="text" name="acc_geodata" class="form-control" id="acc_geodata"
                                                   placeholder="What part of town is it?">
                                                 <small class="text-muted">We are trying to get an accurate as possible data, so we might ask you to try again if what we got won't be of help to other corpers.</small>
                                               </div>
 
-                                            <div class="form-group">
-                                                <label for="address">Address <span class="text-muted">(If you're there right now click 'Geo' to locate in maps)</span> </label>
+                                            <div class="">
+                                                <label for="address">Address <small class="form-text text-muted">(If you're there right now click 'Geo' to locate in maps)</small> </label>
                                                 <div class="input-group">
                                                     <input type="text" name="address" class="form-control" id="address" placeholder="Adeleke Street">
                                                     <div class="input-group-append">
@@ -572,10 +577,12 @@
                                                 <small id="accinfo"></small>
 
                                             </div>
-                                            <div class="form-group">
+                                            <div class="">
                                                 <label for="directions">Directions</label>
                                                 <textarea class="form-control" name="directions" id="directions" placeholder="Give directions to the accommodation from a popular nearby junction or hard-to-miss building"></textarea>
                                             </div>
+                                        </div>
+                                            </fieldset>
                                             <!-- 
       maybe a little map area to pin the location of the place if they're currently there
 
@@ -591,7 +598,8 @@
                                         </div>
 
                                         <div class="mx-1">
-                                            <h2>Let's see it</h2>
+                                            <fieldset>
+                                                <h2>Let's see it</h2>
                                             <!-- //form for accommodation -->
 
                                             <!-- 
@@ -601,17 +609,20 @@
     </div> 
   -->
 
-                                            <!-- thatInput -->
-                                            <div class="box">
-                                                <input type="file" name="roomsmedia" id="roomsmedia" accept="image/*,video/*" class="inputfile inputfile-2" data-multiple-caption="{count} files selected" multiple />
-                                                <label for="roomsmedia"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
-                                                        <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
-                                                    </svg> <span>Choose a file&hellip;</span></label>
-                                            </div>
+                                            <div class="form-group">
+                                                <!-- thatInput -->
+                                                <div class="box">
+                                                    <input type="file" name="roomsmedia" id="roomsmedia" accept="image/*,video/*" class="inputfile inputfile-2" data-multiple-caption="{count} files selected" multiple="multiple" />
+                                                    <label for="roomsmedia"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
+                                                            <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
+                                                        </svg> <span>Choose a file&hellip;</span></label>
+                                                </div>
 
-                                            <!-- this script must come after the input -->
-                                            <script src="/jsForThatInput/custom-file-input.js"></script>
-                                            <!-- //thatInput -->
+                                                <!-- this script must come after the input -->
+                                                <script src="/jsForThatInput/custom-file-input.js"></script>
+                                                <!-- //thatInput -->
+                                            </div>
+                                            </fieldset>
 
                                             <!-- 
     the images and/or videos they'll put up will be based on the checked box under accommodation type
@@ -629,31 +640,35 @@
                                         </div>
 
                                         <div class="mx-1">
-                                            <h2>Current Status</h2>
-                                            <small id="" class="form-text text-muted">Are you leasing out your active rent tenure or is this a
-                                                new rent?</small>
-                                            <!-- //form for accommodation -->
-
-                                            <!-- 
-      we already have price per month or quater or year, we just need to know when it'll expire
-      &
-      we'd compute how much the corper is expecting from whoever will take over from the rent.
-  -->
-                                            <div class="d-block my-3">
-                                                <div class="custom-control custom-radio">
-                                                    <input id="newrent" name="tenure" type="radio" class="custom-control-input" value="Lease" required>
-                                                    <label class="custom-control-label" for="newrent">New rent (No present occupant)</label>
+                                            <fieldset>
+                                                <h2>Current Status</h2>
+                                            <div class="form-group">
+                                                <small id="" class="form-text text-muted">Are you leasing out your active rent tenure or is this a
+                                                    new rent?</small>
+                                                <!-- //form for accommodation -->
+    
+                                                <!-- 
+          we already have price per month or quater or year, we just need to know when it'll expire
+          &
+          we'd compute how much the corper is expecting from whoever will take over from the rent.
+      -->
+                                                <div class="d-block my-3">
+                                                    <div class="custom-control custom-radio">
+                                                        <input id="newrent" name="tenure" type="radio" class="custom-control-input" value="Lease" required>
+                                                        <label class="custom-control-label" for="newrent">New rent (No present occupant)</label>
+                                                    </div>
+                                                    <div class="custom-control custom-radio">
+                                                        <input id="oldrent" name="tenure" type="radio" class="custom-control-input" value="Sublease" checked required>
+                                                        <label class="custom-control-label" for="oldrent">Leasing out an active rent</label>
+                                                    </div>
                                                 </div>
-                                                <div class="custom-control custom-radio">
-                                                    <input id="oldrent" name="tenure" type="radio" class="custom-control-input" value="Sublease" checked required>
-                                                    <label class="custom-control-label" for="oldrent">Leasing out an active rent</label>
+    
+                                                <div id="expirediv" class="mb-4">
+                                                    <label for="bday">When does your rent expires:</label>
+                                                    <input type="date" id="expire" min="" max="" name="expiredate" required>
                                                 </div>
                                             </div>
-
-                                            <div id="expirediv" class="mb-4">
-                                                <label for="bday">When does your rent expires:</label>
-                                                <input type="date" id="expire" min="" max="" name="expiredate" required>
-                                            </div>
+                                            </fieldset>
 
                                             <script>
                                                 var minmax = new Date();
@@ -869,6 +884,10 @@
         // script for submitting posts (not accommodation).
         function sendPost() {
 
+            // close the modal first. this makes the site look 
+            $( '#postModalSale' )
+                    .modal( 'hide' );
+
             // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
             var XHR = new XMLHttpRequest();
 
@@ -895,9 +914,8 @@
             XHR.addEventListener( "load", function( event ) {
                 // alert(event.target.responseText);
                 console.log( event.target.responseText );
-                // close the modal and reset the form
-                $( '#postModalSale' )
-                    .modal( 'hide' );
+                
+                // and reset the form
                 document.forms[ 'postform' ].reset();
                 // also clear the append image in the document body if it exists
                 if ( document.getElementById('previewParent').children.length > 0 ) { // what does hasChildNodes actually do? and why does it return this error: TypeError: Argument 1 of Node.removeChild is not an object. when there is no previewParent
@@ -949,6 +967,10 @@
         // script for submitting posts (not accommodation).
         function sendAccommodation() {
 
+            // close the accommodation modal form
+            $( '#accommodationModal' )
+                    .modal( 'hide' );
+
             // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
             var XHR1 = new XMLHttpRequest();
 
@@ -962,9 +984,8 @@
             XHR1.addEventListener( "load", function( event ) {
                 // alert(event.target.responseText);
                 console.log( event.target.responseText );
-                // close the modal and reset the form
-                $( '#accommodationModal' )
-                    .modal( 'hide' );
+                
+                    // and reset the form
                 document.forms[ "accommodationform" ].reset();
 
                 // rest the carousel too

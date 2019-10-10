@@ -15,6 +15,7 @@ this is what ran the server BEFORE on corpers.online subdomain in connarts.com.n
  * former nameservers for corpers.online are ns14.whogohost.com and ns13.whogohost.com
  */
 
+// something to look in to incase we are just told to stop running https://github.com/nodejs/node-v0.x-archive/issues/1172#issuecomment-1401906
 var express = require('express');
 var http = require('http');
 //var https = require('https');

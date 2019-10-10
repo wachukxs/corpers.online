@@ -154,11 +154,11 @@
                     <div class="modal-body">
 
                         <div class="form-group">
-                            <label for="nameOfPlace">Name of Place:</label>
-                            <input type="text" name="nameOfPlace" id="nameOfPlace" class="form-control" aria-describedby="nameOfPlace" placeholder="e.g. Ikeja City Mall, Federal High Court Abuja" required>
+                            <label for="nameOfPlace">Name of place:</label>
+                            <input type="text" name="nameOfPlace" id="nameOfPlace" class="form-control" aria-describedby="nameOfPlace" placeholder="e.g. OBMS Secondary School, Ikeja City Mall, Federal High Court Abuja" required>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group d-none">
                             <label for="geodata">Name of Place:</label>
                             <input type="text" name="geodata" id="geo" class="form-control" aria-describedby="geo data" placeholder="e.g. {..., lat: 989834.32}" required>
                         </div>
@@ -245,8 +245,8 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <input type="submit" value="Save Changes" id="spd" class="btn btn-primary">
+                        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                        <input type="submit" value="Save" id="spd" class="btn btn-primary">
                     </div>
 
                 </form>
@@ -844,7 +844,7 @@
                             .bindPopup( 'You\'re within ' +
                                 radius.toFixed( 2 ) +
                                 ' meters from this point.' +
-                                ( radius.toFixed( 2 ) <= 10.00 ?
+                                ( radius.toFixed( 2 ) <= 10.00 ? // ought to be <=
                                     '' :
                                     ' You need to be within 10 meters to add a location to map' ) ) // ask them if they want to try again ...maybe two more times (and probably reward their efforts if the location is getting better... by telling them to stop and try another time or they can continue trying if they want)
                             .openPopup()
@@ -866,13 +866,21 @@
                 }
             };
             console.log('the e', e);
+
+                        // remove sourceTarget and target from e
+                        delete e.sourceTarget;
+                            delete e.target;
                         document.forms[0].elements['geodata'].value = JSON.stringify(e);
 
                         // Bind the FormData object and the form element
-                        var FD = new FormData( form );
+                        // var FD = new FormData( form );
+
+                            
+                            // then append geo data to form
+                            // FD.append( 'geodata', JSON.stringify(e) );
 
                             // append post_time
-                            FD.append( 'post_time', Date.now() ); // data type number
+                            // FD.append( 'post_time', Date.now() ); // data type number
 
                             $( "#AddPlace" )
                                 .modal();
@@ -1177,8 +1185,12 @@
 
 
         
-        // script for submitting posts (not accommodation).
+        // script for submitting 
         function sendPost() {
+
+            // close the modal 
+            $( '#AddPlace' )
+                    .modal( 'hide' );
 
             // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
             var XHR = new XMLHttpRequest();
@@ -1190,9 +1202,9 @@
             XHR.addEventListener( "load", function( event ) {
                 // alert(event.target.responseText);
                 console.log( 'event.target.responseText', event.target.responseText );
-                // close the modal and reset the form
-                $( '#AddPlace' )
-                    .modal( 'hide' );
+                
+                    // and reset the form
+                    document.forms[0].reset();
 
             } );
 
@@ -1252,6 +1264,7 @@
         v.addEventListener('click', function () {
             var life = {
                 nameOfPlace: document.forms[0][1].value,
+                geodata: document.forms[0][2].value,
                 street: document.forms[0][2].value,
                 category: document.forms[0][3].value,
                 lga: document.forms[0][4].value,
