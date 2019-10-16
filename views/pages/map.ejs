@@ -3,9 +3,7 @@
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>
-        Corpers Online - Search for PPA, Offices, Find yourself if you're feeling lost!
-    </title>
+    <title>Corpers Online - Search for PPA, Offices, Find yourself, explore</title>
 
     <link rel="icon" type="image/png" href="logo/new/logo32x32.png" />
 
@@ -144,7 +142,7 @@
 
                     <div class="modal-header">
                         <div>
-                            <h5 class="modal-title">Add [location : accomodation/PPA/SPA]</h5>
+                            <h5 class="modal-title">Add a place : accomodation/PPA/SPA</h5>
                             <small>Try to fill out all feilds</small>
                         </div>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -155,84 +153,42 @@
 
                         <div class="form-group">
                             <label for="nameOfPlace">Name of place:</label>
-                            <input type="text" name="nameOfPlace" id="nameOfPlace" class="form-control" aria-describedby="nameOfPlace" placeholder="e.g. OBMS Secondary School, Ikeja City Mall, Federal High Court Abuja" required>
+                            <input type="text" name="nameOfPlace" id="nameOfPlace" class="form-control" aria-describedby="nameOfPlace" placeholder="e.g. OBMS Secondary School, Federal High Court Abuja" required>
                         </div>
 
                         <div class="form-group d-none">
-                            <label for="geodata">Name of Place:</label>
-                            <input type="text" name="geodata" id="geo" class="form-control" aria-describedby="geo data" placeholder="e.g. {..., lat: 989834.32}" required>
+                            <label for="geodata">Geo data:</label>
+                            <input type="text" name="geodata" id="geo" class="form-control" aria-describedby="geo data" placeholder="e.g. {..., lat: 989834.32}"> <!--required or not ??-->
                         </div>
 
                         <div class="form-group">
-                            <label for="street">Street:</label>
-                            <input type="text" name="street" id="Street" class="form-control" aria-describedby="streetHelp" placeholder="e.g. Benson Road, D Line, Road D7, Nwachukwu Drive">
+                            <label for="address">Address:</label>
+                            <input type="text" name="address" id="address" class="form-control" aria-describedby="address" placeholder="e.g. Benson Road, D Line, Road D7, Nwachukwu Drive" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="category">Category:</label>
-                            <input type="text" name="category" list="category" id="Category" class="form-control" aria-describedby="categoryHelp" placeholder="School, Hospital, Corporate office, ATM" required>
+                            <label for="categorylist">Category:</label>
+                            <input type="text" name="categorylist" list="category" id="categoryinput" class="form-control" aria-describedby="category" placeholder="School, Hospital, Corporate office, ATM" required>
 
                             <datalist id="category">
-                                <option value="School">
-                                <option value="Hospital">
-                                <option value="Corporate office">
-                                <option value="ATM">
-                                <option value="Bank">
-                                <option value="School">
-                                <option value="Hospital">
-                                <option value="Corporate office">
-                                <option value="ATM">
-                                <option value="Bank">
-                                <option value="School">
-                                <option value="Hospital">
-                                <option value="Corporate office">
-                                <option value="ATM">
-                                <option value="Bank">
-                                <option value="School">
-                                <option value="Hospital">
-                                <option value="Corporate office">
-                                <option value="ATM">
-                                <option value="Bank">
-                                <option value="School">
-                                <option value="Hospital">
-                                <option value="Corporate office">
-                                <option value="ATM">
-                                <option value="Bank">
-                                <option value="School">
-                                <option value="Hospital">
-                                <option value="Corporate office">
-                                <option value="ATM">
-                                <option value="Bank">
-                                <option value="School">
-                                <option value="Hospital">
-                                <option value="Corporate office">
-                                <option value="ATM">
-                                <option value="Bank">
-                                <option value="School">
-                                <option value="Hospital">
-                                <option value="Corporate office">
-                                <option value="ATM">
-                                <option value="Bank">
-                                <option value="Industory">
-                                <option value="Mosque">
-                                <option value="Bus stop">
-                                <option value="Shop">
-                                <option value="Stadium">
-                                <option value="Airport">
-                                <option value="Market">
-                                <option value="Church">
-                                <option value="Hotel">
-                                <option value="University">
+                                    <% for (i = 0; i < types.length; i++) { %>
+                                        <option value="<%= types[i] %>">
+                                    <% } %>
                             </datalist>
                         </div>
 
-                        <label for="lga">Area</label>
+                        <label for="town">
+                            Town or area
+                            <small class="text-muted form-text">Leave Town blank if the address is specific enough</small><!--needs better description, it's for places where it's best know be a name-->
+                        </label>
+                        
                         <div class="input-group">
-                            <input type="text" list="district" name="district" id="district1" class="form-control" id="district" placeholder="District" value="" required>
-                            <datalist id="district">
+                                
+                            <input type="text" list="town" name="town" class="form-control" id="towninput" placeholder="Town" value="">
+                            <datalist id="town">
 
                             </datalist>
-                            <input type="text" list="lga" name="lga" id="lga1" class="form-control" id="lga" placeholder="LGA" value="" required>
+                            <input type="text" list="lga" name="lga" class="form-control" id="lga" placeholder="LGA" value="" required>
                             <!-- we should be able to automatically draw up their LGA for them -->
                             <datalist id="lga">
 
@@ -305,8 +261,7 @@
             // https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
 
             // https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg
-        var basemap = L.tileLayer(
-            'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        var basemap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: 'Imagery & Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>', // Imagery © <a href="https://www.mapbox.com/">Mapbox</a>
                 maxZoom: 18,
                 id: 'mapbox.streets',
@@ -670,8 +625,7 @@
                     function onLocationError( e ) {
                         document.getElementById( 'AddError' )
                             .innerHTML = e.message;
-                        $( "#LocationError" )
-                            .modal();
+                        $( "#LocationError" ).modal();
                     }
 
                     mymap.on( 'locationerror', onLocationError );
@@ -852,11 +806,7 @@
                                 popupopen: onPO
                             } );
                         if ( radius.toFixed( 2 ) >= 10.00 ) { // if they are within 10 meters, show the popup // don't forget to change >= to <= // >= for testing
-                            // add geodata to the form
-
-                            // Access the form element...
-                        var form = document.getElementById( "addplaceform" );
-
+                            
                         var savePoint = {
                 "type": "Feature",
                 "properties": {},
@@ -870,20 +820,11 @@
                         // remove sourceTarget and target from e
                         delete e.sourceTarget;
                             delete e.target;
+
+                            // add geodata to the form
                         document.forms[0].elements['geodata'].value = JSON.stringify(e);
 
-                        // Bind the FormData object and the form element
-                        // var FD = new FormData( form );
-
-                            
-                            // then append geo data to form
-                            // FD.append( 'geodata', JSON.stringify(e) );
-
-                            // append post_time
-                            // FD.append( 'post_time', Date.now() ); // data type number
-
-                            $( "#AddPlace" )
-                                .modal();
+                            $( "#AddPlace" ).modal();
                         }
                         // after 5 sec closePopup(), 5 sec so we give enough time to read the message
                         setTimeout( () => {
@@ -915,8 +856,7 @@
                     function onLocationError( e ) {
                         document.getElementById( 'AddError' )
                             .innerHTML = e.message;
-                        $( "#LocationError" )
-                            .modal();
+                        $( "#LocationError" ).modal();
                     }
 
                     mymap.on( 'locationerror', onLocationError );
@@ -990,7 +930,7 @@
             "properties": {
                 "name": "Coors Field",
                 "amenity": "School",
-                "popupContent": "What kind of content show we show?"
+                "popupContent": "What kind of content should we show?"
             },
             "geometry": {
                 "type": "Point",
@@ -1011,12 +951,12 @@
         // GENERAL RULES: THE popupAnchor for fas fa-[amenity] is [5, -2] for when it's big and [0, 0] (we're gonna try to find a middle ground) for when it's small and for icon.now.sh is [-7, -85]
         var school = L.divIcon( {
             className: 'custom-icons fas fa-school fa-2x',
-            popupAnchor: [9 ,1], // was and [3, 0], documentation used [-3, -76], it wasn't exactly properly aligned to the icon, maybe it's directly on the latlng point but ...no
+            popupAnchor: [9 , 1], // was and [3, 0], documentation used [-3, -76], it wasn't exactly properly aligned to the icon, maybe it's directly on the latlng point but ...no
         } );
 
         var hospital = L.divIcon( {
             className: 'custom-icons fas fa-hospital fa-2x',
-            popupAnchor: [5 ,-2], // was [5, -2] for smaller width icons documentation used [-3, -76], it wasn't exactly properly aligned to the icon, maybe it's directly on the latlng point but ...no
+            popupAnchor: [5 , -2], // was [5, -2] for smaller width icons documentation used [-3, -76], it wasn't exactly properly aligned to the icon, maybe it's directly on the latlng point but ...no
         } );
 
         // you can set .my-div-icon styles in CSS
@@ -1051,17 +991,16 @@
         L.geoJSON( <%- mapdata %> , {
                 pointToLayer: function( feature, latlng ) {
                     console.log( 'from server', feature, latlng );
-                    switch ( feature.properties.type_of_ppa ) {
+                    switch ( feature.properties.type ) {
                         case 'Hospital':
                             return L.marker( latlng, {
                                 icon: hospital,
-                                title: feature.properties.popupContent
+                                title: feature.properties.address + ' (' + feature.properties.type + ')' // feature.properties.popupContent
                             } );
                         case 'School':
                             return L.marker( latlng, {
                                 icon: school,
-                                title: feature.properties.ppa_address + ' (' + feature.properties
-                                    .type_of_ppa + ')'
+                                title: feature.properties.address + ' (' + feature.properties.type + ')'
                             } );
                     }
                 }
@@ -1070,7 +1009,7 @@
                 console.log( 'layer', layer.defaultOptions.icon.options.className.includes( 'fa-sm' ), layer
                     .defaultOptions.icon.options.className.includes( 'fa-xs' ), layer
                 ); // layer.defaultOptions.icon.options.popupAnchor = [0, 0] if layer.defaultOptions.icon.options.className.has()
-                return layer.feature.properties.ppa_address + ' (' + layer.feature.properties.type_of_ppa + ')';
+                return layer.feature.properties.address + ' (' + layer.feature.properties.type + ')';
             } )
             .addTo( mymap );
 
@@ -1112,7 +1051,6 @@
           }).addTo(mymap);
         */
 
-
         /*-------------------------------- add place -------------------------------------------------*/
         // name a road feature too. there must be restrictions, like you can only name a [relatively] straight road, cause if it's bemt then th ebent road has a different name. you can only name roads. [[[[how can we even add roads????]]]]
 
@@ -1120,14 +1058,14 @@
         // as user leaves from one field to another, add it to the geojson
         // use socket.io to send data to db
 
-        var street = document.getElementById( 'Street' );
+        var street = document.getElementById( 'town' );
 
         function st() {
 
         }
         street.addEventListener( 'keyup', st, false );
 
-        var category = document.getElementById( 'Category' );
+        var category = document.getElementById( 'category' );
 
         function cs() {
             // offer suggetions and validate input
@@ -1196,15 +1134,23 @@
             var XHR = new XMLHttpRequest();
 
             // Bind the FormData object and the form element
-            var FD = new FormData( form );
+            var FD = new FormData( document.forms[0] );
 
             // Define what happens on successful data submission
             XHR.addEventListener( "load", function( event ) {
                 // alert(event.target.responseText);
                 console.log( 'event.target.responseText', event.target.responseText );
                 
-                    // and reset the form
-                    document.forms[0].reset();
+                // alert that the place has been added, then add the place to the map
+                L.marker( latlng, { // "latlng":{"lat":7.413782299999999,"lng":3.9155568}
+                                icon: hospital,
+                                title: feature.properties.popupContent
+                            } );
+
+                // and reset the form
+                document.forms[0].reset();
+
+                
 
             } );
 
@@ -1221,14 +1167,15 @@
         }
 
         // Access the form element...
-        var form = document.forms[0]; // document.getElementById( "addplaceform" );
+        // var form = document.forms[0]; // document.getElementById( "addplaceform" );
 
         // ...and take over its submit event.
-        form.addEventListener( "submit", function( event ) {
+        console.log('adding sth')
+        document.forms[0].addEventListener( "submit", function( event ) {
             event.preventDefault(); // the default behaviour is refreshing the page and adding search params to the url
             console.log('k')
             sendPost();
-        }, false, true ); // https://developer.mozilla.org/en-US/docs/Web/Events/submit
+        }, false ); // https://developer.mozilla.org/en-US/docs/Web/Events/submit
     </script>
 
 
@@ -1274,6 +1221,60 @@
                 data: life
             });
         }, false);
+    </script>
+
+    <script>
+        document.onload = function (params) {
+            console.log('loaded', params)
+            // make this call once! how ? by putting it outside the change event listener, and always using it's results once we notice a change
+            // how can I know if and when the fetch api was aborted https://developers.google.com/web/updates/2017/09/abortable-fetch
+            const controller = new AbortController();
+            const signal = controller.signal;
+
+            setTimeout(() => controller.abort(), 5000);
+            //once we get the geo coordinates, first we get the name of the place., nominatium isn't perfect yet, will just be saving data from it to compare the accuracy we get
+            fetch('/allppas', {
+            signal
+            })
+            .then(function (response) {
+                if (response.status !== 200) {
+                    console.log('Looks like there was a problem. Status Code: ' + response.status);
+                    return;
+                }
+                console.log('what we want', response.body)
+                console.log('the response', response)
+                
+            })
+        }
+/* 
+            /// - delete later
+            const controller = new AbortController();
+            const signal = controller.signal;
+
+            setTimeout(() => controller.abort(), 5000);
+            //once we get the geo coordinates, first we get the name of the place., nominatium isn't perfect yet, will just be saving data from it to compare the accuracy we get
+            fetch('/allppas', {
+            signal
+            })
+            .then(function (response) {
+                if (response.status !== 200) {
+                    console.log('Looks like there was a problem. Status Code: ' + response.status);
+                    return;
+                }
+                response.json()
+                        .then(function (data) {
+                          console.log('ppa', data);
+                          thePPAsInputElement = document.getElementById('category');
+                          thePPAsInputElement.options.length = 0; // removes all options
+
+                              // starts creating the new LGAs options for the lga select input
+                              for (let index = 0; index < data.length; index++) {
+                                const element = data[index];
+                                thePPAsInputElement.options[index] = new Option(element, element) // new Option(text, value)
+                              }
+                        });
+                console.log('the response', response)
+            }) */
     </script>
 
 </body>

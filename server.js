@@ -278,6 +278,35 @@ app.get('/allstateslgas', function (req, res) {
     })
 });
 
+app.get('/allppas', function (req, res) {
+  res.set('Content-Type', 'application/json');
+      // JSON.parse(['4','3','2','3','2','4'])
+      // JSON.parse([4,3,2,3,2,4])
+      // JSON.stringify([4,3,2,3,2,4]) JSON.parse(JSON.stringify([4,3,2,3,2,4]))
+      // JSON.stringify(['4','3','2','3','2','4']) // JSON.parse(JSON.stringify(['4','3','2','3','2','4']))
+      var query = "SELECT type_of_ppa FROM info WHERE type_of_ppa != ''";
+      pool.query(query, function (error, results, fields) {
+
+      if (error) throw error;
+      console.log('it', results)
+      var listoftypesofppas = [];
+      for (let index = 0; index < results.length; index++) {
+        const element = results[index].type_of_ppa;
+        listoftypesofppas.push(element);
+        
+      }
+      /**
+       *  [ RowDataPacket { type_of_ppa: 'Radio Station' },
+  RowDataPacket { type_of_ppa: 'School' },
+  RowDataPacket { type_of_ppa: 'rew qrqew' } ]
+       */
+      let jkl = JSON.parse(JSON.stringify(listoftypesofppas));
+      // let's hope there's no err
+      res.send(jkl);
+    });
+  
+});
+
 app.get(['/AB', '/AD', '/AK', '/AN', '/BA', '/BY', '/BN', '/BO', '/CR', '/DT', '/EB', '/ED', '/EK', '/EN', '/FC', '/GM', '/IM', '/JG', '/KD', '/KN', '/KT', '/KB', '/KG', '/KW', '/LA', '/NS', '/NG', '/OG', '/OD', '/OS', '/OY', '/PL', '/RV', '/SO', '/TR', '/YB', '/ZM'], function (req, res) {
   // console.log('tryna login ', req.session.id, req.session.loggedin);
   if (req.session.loggedin) {
@@ -376,38 +405,59 @@ app.get('/newsearch', function (req, res) {
   // res.sendFile(__dirname + '/search and places/index.html');
   console.log('req.query:', req.query); // find every thing that is req.query.search.query
 
+  var mustquery = "SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null); SELECT * FROM accommodations WHERE expire > UTC_DATE ; SELECT geo_data, name, address, street, type_of_place FROM places WHERE lga = '' AND geo_data != '' ;"; // AND `acc_geodata` != '' \\ [for the 2nd query] // we should be selecting accommodations with geo data, so we have to nudge the corpers to provide geodata
+
   // if we know where the ppa is, get the geo data and show it on the map
   if (req.query.nop) {
+    // should we only be getting data from info ? how about [ppas in] places table ?????????????
     // we have req.query.nop=name_of_ppa + req.query.pa=ppa_address + req.query.top=type_of_ppa // also select ppa closer to it and other relevant info we'll find later
-    pool.query("SELECT name_of_ppa, ppa_address, type_of_ppa, ppa_geodata FROM info WHERE name_of_ppa = '" + req.query.nop + "'", function (error, results, fields) { // bring the results in ascending order
+    pool.query(mustquery + "SELECT name_of_ppa, ppa_address, type_of_ppa, ppa_geodata FROM info WHERE name_of_ppa = '" + req.query.nop + "'", function (error, results, fields) { // bring the results in ascending order
 
       if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
         console.log(error);
         throw error;
       }
 
-      else if (!isEmpty(results)) {
-        for (index = 0; index < results.length; index++) {
+      else if (!isEmpty(results) && results[3].ppa_geodata != '') {
+        // we're not adding the GeoJSON results to an array because it's only one result
+        for (index = 0; index < results[3].length; index++) {
+          /**
+           * {
+                  "type": "Feature",
+                  "properties": {
+                      "name": "Coors Field",
+                      "amenity": "Hospital",
+                      "popupContent": "The Amenity [Hospital], then the location/street name."
+                  },
+                  "geometry": {
+                      "type": "Point",
+                      "coordinates": [ 7.5098633766174325, 5.515524804961825 ]
+                  }
+              }
+           */
           // unstringify the ppa_geodata entry
           // results[index]['ppa_geodata'] = JSON.parse(results[index].ppa_geodata);
 
           // re-arrange to GeoJSON Format
-          results[index].type = "Feature";
+          results[3][index].type = "Feature";
 
-          results[index].properties = {};
-          results[index].properties.ppa_geodata = JSON.parse(results[index].ppa_geodata);
-          results[index].properties.ppa_address = results[index].ppa_address;
-          results[index].properties.type_of_ppa = results[index].type_of_ppa;
+          results[3][index].properties = {};
+          results[3][index].properties.ppa_geodata = JSON.parse(results[3][index].ppa_geodata);
+          results[3][index].properties.ppa_address = results[3][index].ppa_address;
+          results[3][index].properties.type_of_ppa = results[3][index].type_of_ppa;
+          results[3][index].properties.name_of_ppa = results[3][index].name_of_ppa;
 
-          results[index].geometry = {};
-          results[index].geometry.type = "Point";
-          results[index].geometry.coordinates = [JSON.parse(results[index].ppa_geodata).longitude, JSON.parse(results[index].ppa_geodata).latitude];
+          // shouldn't we add name of PPA and other details as well ?!?!?
 
-          console.log(JSON.parse(results[index].ppa_geodata).latlng, '======++++++++====', JSON.parse(results[index]['ppa_geodata']).longitude, JSON.parse(results[index]['ppa_geodata']).latitude);
+          results[3][index].geometry = {};
+          results[3][index].geometry.type = "Point";
+          results[3][index].geometry.coordinates = [JSON.parse(results[3][index].ppa_geodata).longitude, JSON.parse(results[3][index].ppa_geodata).latitude];
 
-          delete results[index]['ppa_geodata'];
-          delete results[index]['type_of_ppa'];
-          delete results[index]['ppa_address'];
+          console.log(JSON.parse(results[3][index].ppa_geodata).latlng, '======++++++++====', JSON.parse(results[3][index]['ppa_geodata']).longitude, JSON.parse(results[3][index]['ppa_geodata']).latitude);
+
+          delete results[3][index]['ppa_geodata'];
+          delete results[3][index]['type_of_ppa'];
+          delete results[3][index]['ppa_address'];
 
           // delete redundate data like longitude, latitude, and latlng in ppa_geodata after reassigning values
         }
@@ -427,22 +477,19 @@ app.get('/newsearch', function (req, res) {
       if (req.session.name_of_ppa) {
         ppa_details.user.name_of_ppa = req.session.name_of_ppa;
       }
-      ppa_details.nop = JSON.stringify(results);
+      ppa_details.theppa = results[3]; // JSON.stringify(results);
+      ppa_details.ppas = results[0];
+      ppa_details.accommodations = results[1];
+      ppa_details.places = results[2];
 
-      console.log('let\'s see nop', ppa_details.nop);
+      console.log('let\'s see nop that was searched for', ppa_details.theppa);
       // having it named 'pages/account.2' returns error cannot find module '2'
-      res.render('pages/newsearch', ppa_details /* {
-        statecode: req.session.statecode.toUpperCase(),
-        servicestate: req.session.servicestate,
-        batch: req.session.batch,
-        name_of_ppa: req.session.name_of_ppa,
-        nop: JSON.stringify(results)
-      } */);
+      res.render('pages/newsearch2', ppa_details);
 
     });
   } else if (req.query.rr) { // if it's an accomodation
     // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
-    pool.query("SELECT * FROM accommodations WHERE rentrange = '" + req.query.rr + "' AND input_time = '" + req.query.it + "'", function (error, results, fields) {
+    pool.query(mustquery + "SELECT * FROM accommodations WHERE rentrange = '" + req.query.rr + "' AND input_time = '" + req.query.it + "'", function (error, results, fields) {
 
       if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
         console.log(error);
@@ -450,21 +497,18 @@ app.get('/newsearch', function (req, res) {
       }
 
       accommodation_details = {};
-      accommodation_details.nop = '[]'; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
-      res.render('pages/newsearch', accommodation_details /* {
-      statecode: req.session.statecode.toUpperCase(),
-      servicestate: req.session.servicestate,
-      batch: req.session.batch,
-      name_of_ppa: req.session.name_of_ppa,
-      nop: JSON.stringify(results)
-    } */);
+      accommodation_details.ppas = results[0];
+      accommodation_details.accommodations = results[1];
+      accommodation_details.places = results[2];
+      accommodation_details.theacc = results[3];
+      accommodation_details.nop = '[]' // || undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
+      res.render('pages/newsearch2', accommodation_details);
     })
 
-  }
-
-  else {
+  } else {
     // SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address,ppa_geodata FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null)
-    pool.query("SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null); SELECT * FROM accommodations WHERE expire > UTC_DATE", function (error, results, fields) {
+    
+    pool.query("SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null); SELECT * FROM accommodations WHERE expire > UTC_DATE ; SELECT geo_data, name, address, street, type_of_place FROM places WHERE lga = '' AND geo_data != '' ;", function (error, results, fields) {
       
       if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
         console.log(error);
@@ -474,6 +518,8 @@ app.get('/newsearch', function (req, res) {
       _details = {};
       _details.ppas = results[0];
       _details.accommodations = results[1];
+      _details.places = results[2];
+      _details.theppa = undefined;
       _details.nop = undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
       res.render('pages/newsearch2', _details);
     })
@@ -495,17 +541,37 @@ app.get('/search', function (req, res) {
   console.log('req.query:', req.query); // find every thing that is req.query.search.query
 
   // if we know where the ppa is, get the geo data and show it on the map
+  // if we don't know where the ppa is, ask the corper to show us on the map, we can even do this from the front end
   if (req.query.nop) {
-    // we have req.query.nop=name_of_ppa + req.query.pa=ppa_address + req.query.top=type_of_ppa // also select ppa closer to it and other relevant info we'll find later
+    // should we only be getting data from info ? how about [ppas in] places table ?????????????
+    // we have req.query.nop=name_of_ppa + req.query.pa=ppa_address + req.query.top=type_of_ppa
+    // also select ppa closer to it and other relevant info we'll find later
+    // also if we don't have the geo data for a school, we can try searching else where for it...
+    // also we should track where the search is from coming from
     pool.query("SELECT name_of_ppa, ppa_address, type_of_ppa, ppa_geodata FROM info WHERE name_of_ppa = '" + req.query.nop + "'", function (error, results, fields) { // bring the results in ascending order
-
+      console.log(results[0].ppa_geodata != '', 'we want to check', results)
       if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
         console.log(error);
         throw error;
       }
-
-      else if (!isEmpty(results)) {
+      
+      else if (!isEmpty(results) && results[0].ppa_geodata != '') {
+        // we're not adding the GeoJSON results to an array because it's only one result
         for (index = 0; index < results.length; index++) {
+          /**
+           * {
+                  "type": "Feature",
+                  "properties": {
+                      "name": "Coors Field",
+                      "amenity": "Hospital",
+                      "popupContent": "The Amenity [Hospital], then the location/street name."
+                  },
+                  "geometry": {
+                      "type": "Point",
+                      "coordinates": [ 7.5098633766174325, 5.515524804961825 ]
+                  }
+              }
+           */
           // unstringify the ppa_geodata entry
           // results[index]['ppa_geodata'] = JSON.parse(results[index].ppa_geodata);
 
@@ -516,6 +582,9 @@ app.get('/search', function (req, res) {
           results[index].properties.ppa_geodata = JSON.parse(results[index].ppa_geodata);
           results[index].properties.ppa_address = results[index].ppa_address;
           results[index].properties.type_of_ppa = results[index].type_of_ppa;
+          results[index].properties.name_of_ppa = results[index].name_of_ppa;
+
+          // shouldn't we add name of PPA and other details as well ?!?!?
 
           results[index].geometry = {};
           results[index].geometry.type = "Point";
@@ -545,17 +614,11 @@ app.get('/search', function (req, res) {
       if (req.session.name_of_ppa) {
         ppa_details.user.name_of_ppa = req.session.name_of_ppa;
       }
-      ppa_details.nop = JSON.stringify(results);
+      ppa_details.theppa = results[0]; // JSON.stringify(results);
 
-      console.log('let\'s see nop', ppa_details.nop);
+      console.log('let\'s see nop that was searched for', ppa_details.theppa);
       // having it named 'pages/account.2' returns error cannot find module '2'
-      res.render('pages/search', ppa_details /* {
-        statecode: req.session.statecode.toUpperCase(),
-        servicestate: req.session.servicestate,
-        batch: req.session.batch,
-        name_of_ppa: req.session.name_of_ppa,
-        nop: JSON.stringify(results)
-      } */);
+      res.render('pages/search', ppa_details);
 
     });
   } else if (req.query.rr) { // if it's an accomodation
@@ -564,15 +627,27 @@ app.get('/search', function (req, res) {
 
       accommodation_details = {};
       accommodation_details.nop = '[]'; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
-      res.render('pages/search', accommodation_details /* {
-      statecode: req.session.statecode.toUpperCase(),
-      servicestate: req.session.servicestate,
-      batch: req.session.batch,
-      name_of_ppa: req.session.name_of_ppa,
-      nop: JSON.stringify(results)
-    } */);
+      res.render('pages/search', accommodation_details);
     })
 
+  } else {
+    // SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address,ppa_geodata FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null)
+    
+    pool.query("SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null); SELECT * FROM accommodations WHERE expire > UTC_DATE", function (error, results, fields) {
+      
+      if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
+        console.log(error);
+        throw error;
+      }
+      console.log('looking for ooo', results)
+      _details = {};
+      _details.ppas = results[0];
+      _details.accommodations = results[1];
+      _details.theppa = [];
+      _details.nop = undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
+      res.render('pages/search', _details);
+    })
+    
   }
 
 
@@ -682,11 +757,14 @@ app.get('/chat', function (req, res) {
 
 });
 
-app.get(['/map', '/maps'], function (req, res) {
+app.get(['/map', '/maps'], function (req, res) { // try to infer their location from their IP Address then send to the front end
   res.set('Content-Type', 'text/html');
   // res.sendFile(__dirname + '/map.html');
+  
 
-  pool.query("SELECT ppa_address, ppa_geodata, type_of_ppa FROM info WHERE ppa_address != '' AND ppa_geodata != '' AND type_of_ppa != ''", function (error, results, fields) { // bring the results in ascending order
+  // what about name of the ppa ? this way of selecting might prove inefficient when we have large data set from all the states meanwhile this corper just need data from within a particular state.
+  // also select ppa_directions from info and it should be like a reveal, corpers would click 'read directions' and it'll show them
+  pool.query("SELECT ppa_address, ppa_geodata, type_of_ppa FROM info WHERE ppa_address != '' AND ppa_geodata != '' AND type_of_ppa != '' ; SELECT geo_data, name, address, lga, street, type_of_place, region FROM places ; SELECT type_of_ppa FROM info WHERE type_of_ppa != '' ", function (error, results, fields) { // bring the results in ascending order
 
     if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
       console.log(error);
@@ -695,49 +773,85 @@ app.get(['/map', '/maps'], function (req, res) {
 
     else if (!isEmpty(results)) {
       console.log('geo data for map', results);
+      
 
       // JSON.parse(JSON.stringify([{ g: 'g', l: 'l' }, { g: 'g', l: 'l' }, { g: 'g', l: { g: 'g', l: { g: 'g', l: 'l' } } }]))
 
       // JSON.parse(JSON.stringify(results));
 
-      /* for (let index = 0; index < results.length; index++) {
-        // unstringify the ppa_geodata entry
-        results[index]['ppa_geodata'] = JSON.parse(results[index].ppa_geodata);
+      // for the results from places table
+      for (let index = 0; index < results[1].length; index++) {
+        // re-arrange to GeoJSON Format
+        results[1][index].type = "Feature";
 
-      } */
+        results[1][index].properties = {};
+        results[1][index].properties.geodata = JSON.parse(results[1][index].geo_data); // we're always expecting a json here else err
+        results[1][index].properties.address = results[1][index].address;
+        results[1][index].properties.type = results[1][index].type_of_place;
 
+        // we can add lga, name, and maybe region
+
+        results[1][index].geometry = {};
+        results[1][index].geometry.type = "Point";
+        results[1][index].geometry.coordinates = [JSON.parse(results[1][index].geo_data).longitude, JSON.parse(results[1][index].geo_data).latitude];
+
+        console.log(JSON.parse(results[1][index].geo_data).latlng, '/////', JSON.parse(results[1][index]['geo_data']).longitude, JSON.parse(results[1][index]['geo_data']).latitude);
+
+        delete results[1][index]['geo_data'];
+        delete results[1][index]['type_of_place'];
+        delete results[1][index]['address'];
+
+        // delete redundate data like longitude, latitude, and latlng in ppa_geodata after reassigning values
+
+      }
+
+      // for the results from info table
       // format to GeoJSON Format https://tools.ietf.org/html/rfc7946
-      for (index = 0; index < results.length; index++) {
-        // unstringify the ppa_geodata entry
-        // results[index]['ppa_geodata'] = JSON.parse(results[index].ppa_geodata);
+      for (index = 0; index < results[0].length; index++) {
 
         // re-arrange to GeoJSON Format
-        results[index].type = "Feature";
+        results[0][index].type = "Feature";
 
-        results[index].properties = {};
-        results[index].properties.ppa_geodata = JSON.parse(results[index].ppa_geodata);
-        results[index].properties.ppa_address = results[index].ppa_address;
-        results[index].properties.type_of_ppa = results[index].type_of_ppa;
+        results[0][index].properties = {};
+        results[0][index].properties.geodata = JSON.parse(results[0][index].ppa_geodata);
+        results[0][index].properties.address = results[0][index].ppa_address;
+        results[0][index].properties.type = results[0][index].type_of_ppa;
 
-        results[index].geometry = {};
-        results[index].geometry.type = "Point";
-        results[index].geometry.coordinates = [JSON.parse(results[index].ppa_geodata).longitude, JSON.parse(results[index].ppa_geodata).latitude];
+        results[0][index].geometry = {};
+        results[0][index].geometry.type = "Point";
+        results[0][index].geometry.coordinates = [JSON.parse(results[0][index].ppa_geodata).longitude, JSON.parse(results[0][index].ppa_geodata).latitude];
 
-        console.log(JSON.parse(results[index].ppa_geodata).latlng, '======++++++++====', JSON.parse(results[index]['ppa_geodata']).longitude, JSON.parse(results[index]['ppa_geodata']).latitude);
+        console.log(JSON.parse(results[0][index].ppa_geodata).latlng, '======++++++++====', JSON.parse(results[0][index]['ppa_geodata']).longitude, JSON.parse(results[0][index]['ppa_geodata']).latitude);
 
-        delete results[index]['ppa_geodata'];
-        delete results[index]['type_of_ppa'];
-        delete results[index]['ppa_address'];
+        delete results[0][index]['ppa_geodata'];
+        delete results[0][index]['type_of_ppa'];
+        delete results[0][index]['ppa_address'];
 
         // delete redundate data like longitude, latitude, and latlng in ppa_geodata after reassigning values
       }
 
+      var listoftypesofppas = ["ATM","Bank","School","Hospital","Corporate office","Industory","Mosque","Bus stop","Shop","Stadium","Airport","Market","Church","Hotel","University"];
+      
+      
+      /**
+       * add ppas that weren't in listoftypesofppas but other corpers have added them, 
+       * over time, when some types of ppas become common, we add them to listoftypesofppas
+       * 
+       * we'd make this better so that 'school' and 'School' isn't in the array
+       */
+      for (let index = 0; index < results[2].length; index++) {
+        const element = results[2][index].type_of_ppa;
+        if (!results[2][element]) {
+          listoftypesofppas.push(element)
+        }
+      }
     }
 
     res.render('pages/map', {
       statecode: req.session.statecode,
       servicestate: req.session.servicestate,
-      mapdata: JSON.stringify(results)
+      mapdata: JSON.stringify(results[0].concat(results[1])),
+      types: listoftypesofppas
     });
   });
 
@@ -1112,7 +1226,7 @@ app.post('/profile', bodyParser.urlencoded({ extended: true/* , type: 'applicati
     req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" +
     req.body.type_of_ppa + "', ppa_geodata = '" + (req.body.ppa_geodata ? req.body.ppa_geodata : '') + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" +
     req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city +
-     ( req.body.newstatecode ? "', statecode = '" + req.body.newstatecode : '' ) + // if there's a new statecode ...
+     ( req.body.newstatecode ? "', statecode = '" + req.body.newstatecode.toUpperCase() : '' ) + // if there's a new statecode ...
     /* "', accommodationornot = '" + (req.body.accommodationornot ? req.body.accommodationornot : 'yes') + */ "', wantspaornot = '" +
     req.body.wantspaornot + "' WHERE statecode = '" + req.session.statecode.toUpperCase() + "' "; // always change state code to uppercase, that's how it is in the db
 
@@ -1122,14 +1236,83 @@ app.post('/profile', bodyParser.urlencoded({ extended: true/* , type: 'applicati
     if (error) throw error;
     // go back to the user's timeline
     if (results.changedRows === 1 && !isEmpty(req.body)) {
+      if (req.body.name_of_ppa) {
+        req.session.name_of_ppa = req.body.name_of_ppa;
+      }
       /* 
       // todo later...
 
       statecode: req.session.statecode.toUpperCase(),
       servicestate: req.session.servicestate,
       batch: req.session.batch, */
-      req.session.name_of_ppa = req.body.name_of_ppa;
-      res.status(200).redirect(req.session.statecode.toUpperCase() /* + '?e=y' */); // [e]dit=[y]es|[n]o
+
+      if (req.body.newstatecode) { // if they are changing statecode to a different state, then their service state in the db should change and their ppa details too should change, tell them to change the ppa details if they don't change it
+        // change statecode in other places too
+        // this works because rooms only have one instance for every two corpers or statecode, so there's no DD/17B/7778-AB/17B/2334 and AB/17B/2334-DD/17B/7778 only one of it, same reason why there's no LIMIT 1 in the SELECT statement in REPLACE function
+        var updatequery = "UPDATE chats SET room = (SELECT REPLACE( ( SELECT DISTINCT room WHERE room LIKE '%"+req.session.statecode.toUpperCase()+"%' ) ,'"+req.session.statecode.toUpperCase()+"','"+req.body.newstatecode.toUpperCase()+"')) ; "+
+        " UPDATE chats SET message_from = '"+req.body.newstatecode.toUpperCase()+"' WHERE message_from = '"+req.session.statecode.toUpperCase()+"' ; "+
+        " UPDATE chats SET message_to = '"+req.body.newstatecode.toUpperCase()+"' WHERE message_to = '"+req.session.statecode.toUpperCase()+"' ;"+
+        " UPDATE posts SET statecode = '"+req.body.newstatecode.toUpperCase()+"' WHERE statecode = '"+req.session.statecode.toUpperCase()+"' ; "+
+        " UPDATE accommodations SET statecode = '"+req.body.newstatecode.toUpperCase()+"' WHERE statecode = '"+req.session.statecode.toUpperCase()+"' ";
+        pool.query(updatequery, function (error, results, fields) {
+          console.log('updated statecode ', results);
+          if (error) throw error;
+          // connected!
+          // at least ONE or ALL of these MUST update, not necessarily all that why we are using || and NOT && because it could be possible they've not chatted or posted anything at all, but they must have at least registered!
+          if (results[0].affectedRows > 0 || results[1].affectedRows > 0 || results[2].affectedRows > 0 || results[3].affectedRows > 0 || results[4].affectedRows > 0 ) {
+            // then status code is good
+            console.log('we\'re really good with the update')
+
+            // then change the session statecode
+            req.session.statecode = req.body.newstatecode.toUpperCase();
+
+            res.status(200).redirect(req.body.newstatecode.toUpperCase()); // if there's new statecode
+          } else {
+            console.log('we\'re bad with the update') // we should find out what went wrong
+            /**
+             * 
+             * 
+             * results looks like:
+             * 
+             * OkPacket {
+                fieldCount: 0,
+                affectedRows: 1,
+                insertId: 0,
+                serverStatus: 2,
+                warningCount: 1,
+                message: '',
+                protocol41: true,
+                changedRows: 0 
+              }
+
+              so we'd want to check out message attribute
+             */
+
+             // we should redirect to somewhere and not just block the whole system!!!!!!!!!!
+          }
+        });
+        // should we save every change of statecode that ever occured ?
+        // SELECT room FROM `chats` WHERE message_from = 'AB/17B/1234' or message_to = 'AB/17B/1234'
+
+        // UPDATE `chats` SET `room`=[value-1],`message_from`=[value-3],`message_to`=[value-4] WHERE message_from = 'AB/17B/1234' or message_to = 'AB/17B/1234'
+        //- UPDATE `chats` SET `message_from`=[value-3] WHERE message_from = 'AB/17B/1234'
+        //- UPDATE `chats` SET `message_to`=[value-4] WHERE message_to = 'AB/17B/1234'
+
+        // SELECT room from chats WHERE message_from = 'AB/17B/1234' or message_to = 'AB/17B/1234'
+        // SELECT `room` FROM `chats` WHERE room LIKE '%AB/17B/1234%'
+            
+        // should know when who they are chatting with is online and when they are typing
+
+        // for room change, consider using REPLACE('str', 'str_to_replace', 'replacement_str')
+        // for room change, consider using REPLACE(SELECT `room` FROM `chats` WHERE room LIKE '%AB/17B/1234%', 'AB/17B/1234', 'OD/19B/7778')
+        //- REPLACE(SELECT `room` FROM `chats` WHERE room LIKE '%AB/17B/1234%', 'AB/17B/1234', 'OD/19B/7778')
+
+        // for room formation, concat('str1', 'str2', ..., 'strN'), or concat_ws('seperator', 'str1', 'str2', ..., 'strN')
+
+        
+      } else { // if no newstatecode
+        res.status(200).redirect(req.session.statecode.toUpperCase() /* + '?e=y' */); // [e]dit=[y]es|[n]o
+      }
       // res.sendStatus(200);
     } else {
       // res.sendStatus(500);
@@ -1143,8 +1326,24 @@ app.post('/addplace', upload.none(), function (req, res) {
   // handle post request, add data to database.
   console.log('came here /addplace', req.body);
   if (!isEmpty(req.body)) {
-    console.log('we are returning a respoinse')
-    res.status(200).send('OK'); // the 'OK' is what the front end sees as event.target.responseText
+    console.log('we are returning a response')
+    var sqlquery = "INSERT INTO places( geo_data, name, address, lga, street, type_of_place, region ) VALUES ('" + req.body.geodata + "','" + req.body.nameOfPlace + "', '" + req.body.address + "', " + pool.escape(req.body.lga) + ", " + pool.escape('') + ", " + pool.escape(req.body.category) + ",'" + req.body.town + "')"
+
+  pool.query(sqlquery, function (error, results, fields) {
+    console.log('inserted data from: ', results);
+    if (error) throw error;
+    // connected!
+    if (results.affectedRows === 1) {
+      // then status code is good
+      res.status(200).send('OK'); // the 'OK' is what the front end sees as event.target.responseText
+
+    } else {
+      // this is really important for the form to get response
+      res.sendStatus(500);
+      // === res.status(500).send('Internal Server Error')
+    }
+  });
+    
   }
 });
 
@@ -1156,6 +1355,7 @@ app.post('/posts', upload.array('see', 12), function (req, res, next) {
   pool.query(sqlquery, function (error, results, fields) {
     console.log('inserted data from: ', results);
     if (error) throw error;
+    // ER_BAD_NULL_ERROR: Column 'location' cannot be null
     // connected!
     if (results.affectedRows === 1) {
       // then status code is good
@@ -1348,6 +1548,49 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
       }
     );
 
+  } else {
+    var sqlquery = "INSERT INTO accommodations( statecode, streetname, type, price, media, rentrange, rooms, address, directions, tenure, expire, post_location, post_time, acc_geodata) VALUES ('" +
+              req.session.statecode + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
+              ''/**media is empty */ + "', '" + req.body.rentrange + "', '" + req.body.rooms + "','" + req.body.address + "','" + req.body.directions + "','" +
+              req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : '') + "', " + pool.escape(req.session.location) + ", " + pool.escape(req.body.post_time) +",'" + (req.body.acc_geodata ? req.body.acc_geodata : '') + "')";
+
+            pool.query(sqlquery, function (error, results, fields) {
+              console.log('inserted data from: ', results);
+              if (error) throw error;
+              // connected!
+              if (results.affectedRows === 1) {
+                // then status code is good
+                res.sendStatus(200);
+
+                console.log('me before you', moment(Number(req.body.post_time)).fromNow(), req.body.post_time);
+                console.log('price', req.body.price);
+
+                // once it saves in db them emit to other users
+                iouser.emit('boardcast message', { // or 'accommodation'
+                  to: 'be received by everyoneELSE', post: {
+                    statecode: req.session.statecode,
+                    streetname: req.body.streetname,
+                    rentrange: req.body.rentrange,
+                    rooms: req.body.rooms,
+                    tenure: req.body.tenure,
+                    expiredate: (req.body.expiredate ? req.body.expiredate : ''),
+                    post_location: req.session.location,
+                    media: [], // make an empty array or sth else ...just make it empty
+                    post_time: new Date().toLocaleString(), // not sure we need and make use of post time
+                    type: req.body.accommodationtype,
+                    address: req.body.address,
+                    directions: req.body.directions,
+                    age: moment(Date.now()).fromNow(),
+                    price: req.body.price
+                  }
+                });
+              } else {
+
+                // this is really important for the form to get response
+                res.sendStatus(500);
+                // === res.status(500).send('Internal Server Error')
+              }
+            });
   }
   // ----------------------------------------------- delete this later. not yet, until we so if else for when there are no files.
   /* pool.query("INSERT INTO accommodations( statecode, streetname, type, price, media, rentrange, rooms, address, tenure, expire) VALUES ('" +
@@ -1751,7 +1994,6 @@ var chat = io
     //everyone, including self, in /chat will get it
     chat.emit('hi!', { test: 'from chat', '/chat': 'will get, it ?' });
 
-    // should know when who they are chatting with is online and when they are typing
   });
 
 var news = io

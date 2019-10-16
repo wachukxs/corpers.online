@@ -1,8 +1,6 @@
-const arr = [1, 2, 43, 43543, 453342, 4, 4223, 76, 30, 4];
-
-function compare(a, b){
-    return a - b;
-}
-
-arr.sort(compare);
-console.log(arr)
+var years = parseInt(new Date(Date.now())
+                      .getFullYear()
+                      .toFixed()
+                      .slice(2, 4));
+                    var yearrange = '(' + (years - 1) + '|' + years + ')';
+console.log(yearrange)

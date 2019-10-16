@@ -898,7 +898,9 @@
             FD.append( 'post_time', Date.now() ); // data type number
 
             // append post type
-            if (document.getElementById( 'previewParent' ).hasChildNodes()) {
+
+            // checks if there are preview picture and the mapboximage exists
+            if (document.getElementById( 'previewParent' ).hasChildNodes() & $( "#mapboximage" ).length ) {
                 FD.append( 'type', 'location' );
                 
                 // get the image loaded from mapbox here.
@@ -1646,7 +1648,20 @@
             } else if ( data.post.rentrange && data.post.rooms ) {
                 console.log( 'accommodation', data );
 
-                // the carousel  
+                // rooms is an array already!! how and when ?
+                // check if it's an array, else split
+                // because when a post is made, it is immediately sent to others before saving to db
+                // so in that state of being sent to others, it is an array, but from db, it's a string
+
+
+                var rms = ( Array.isArray( data.post.rooms ) ? data.post.rooms : data.post.rooms.split( ',' ) );
+
+                // var jk = ( Array.isArray( data.post.media ) ? data.post.media : data.post.media.split( ',' ) );
+                // if there are no rooms, no need to split, it causes an array to be made regardless
+                var jk = ( Array.isArray( data.post.media ) ? data.post.media : data.post.media == '' ? data.post.media : data.post.media.split( ',' ) );
+
+                if (jk.length > 0) {
+                    // the carousel  
                 var gg = document.createElement( 'div' );
                 gg.setAttribute( 'id', 'carousel' + Date.parse( data.post.input_time ) ); // each carousel has unique id with input time maybe new Date(data.post.input_time)
                 gg.setAttribute( 'class', 'carousel slide carousel-fade' );
@@ -1661,16 +1676,6 @@
                 cinn.setAttribute( 'class', 'carousel-inner' );
 
 
-                // rooms is an array already!! how and when ?
-                // check if it's an array, else split
-                // because when a post is made, it is immediately sent to others before saving to db
-                // so in that state of being sent to others, it is an array, but from db, it's a string
-
-
-                var rms = ( Array.isArray( data.post.rooms ) ? data.post.rooms : data.post.rooms.split( ',' ) );
-
-                var jk = ( Array.isArray( data.post.media ) ? data.post.media : data.post.media.split( ',' ) );
-
                 // var jk = data.post.media.split(',');
                 for ( var i = 0; i < jk.length; i++ ) {
 
@@ -1683,17 +1688,14 @@
 
                     // the carousel items
                     var ci = document.createElement( 'div' );
-                    ci.setAttribute( 'class', 'carousel-item' + ( i == 0 ? ' active' :
-                        '' ) ); // the first carousel item must be active
+                    ci.setAttribute( 'class', 'carousel-item' + ( i == 0 ? ' active' : '' ) ); // the first carousel item must be active
 
                     cinn.appendChild( ci );
-
 
                     cimg = document.createElement( 'img' );
                     cimg.setAttribute( 'class', 'd-block img-fluid mx-auto' );
                     cimg.setAttribute( 'src', ( window.location.hostname == "localhost" ? 'http://localhost:8081/' : 'https://corpers.online/' ) + jk[ i ] );
-                    cimg.setAttribute( 'alt',
-                        `Might be a picture of a ${(rms[i] == undefined ? rms[0] : rms[i])}` ); // this is not exactly correct, needs more work
+                    cimg.setAttribute( 'alt', `Might be a picture of a ${(rms[i] == undefined ? rms[0] : rms[i])}` ); // this is not exactly correct, needs more work
 
 
                     // for each carousel item, append to it the image and explanatory/description div
@@ -1743,6 +1745,8 @@
 
                 g.appendChild( gg );
 
+                }
+
                 var e = document.createElement( 'div' );
                 e.setAttribute( 'class', 'd-flex w-100 justify-content-between' );
 
@@ -1759,8 +1763,9 @@
                 var k = document.createElement( "p" );
                 // k.classList(["maintext"]);
                 k.setAttribute( 'class', 'maintext' );
+                // to make the sentence thingy ['ggff','gfff'].toString().replace(',', ', ').replace(['ggff','gfff'][['ggff','gfff'].length - 1], 'and ' + ['ggff','gfff'][['ggff','gfff'].length - 1]) gives "ggff, and gfff" // there is a little edit with the ,
                 k.innerHTML =
-                    `<address><span class='font-italic text-muted'>Address</span>: <a href="#!">${data.post.address} </a> </address> <p><span class='font-italic text-muted'>Details</span>: ${data.post.type}, &#8358;${data.post.price} ${data.post.rentrange}. ${(data.post.tenure == 'Sublease.' ? 'Sublease (expires ' + new Date(Date.parse(data.post.expire)).toDateString().italics().bold() + ').'  : 'New lease.' )}</p> <p><span class='font-italic text-muted'>Directions</span>: ${data.post.directions}</p>`;
+                    `<address><span class='font-italic text-muted'>Address</span>: <a href="#!">${data.post.address} </a> </address> <p><span class='font-italic text-muted'>Details</span>: ${data.post.type} ${(Array.isArray( rms ) ? 'with ' + rms.toString().replace(',', ', ').replace(', ' + rms[rms.length - 1], ', and ' + rms[rms.length - 1]) : '' )} at &#8358;${data.post.price} ${data.post.rentrange}. ${(data.post.tenure == 'Sublease.' ? 'Sublease (expires ' + new Date(Date.parse(data.post.expire)).toDateString().italics().bold() + ').'  : 'New lease.' )}</p> <p><span class='font-italic text-muted'>Directions</span>: ${data.post.directions}</p>`;
                 var d = document.createElement( 'div' );
                 d.setAttribute( 'class', 'media-body' );
                 d.appendChild( e );
@@ -1777,7 +1782,6 @@
                 // c.setAttribute('src', 'holder.js/45x45');
                 c.setAttribute( 'alt', data.post.statecode );
                 c.setAttribute( 'style', 'font-size: 8px;' );
-
 
                 var b = document.createElement( 'div' );
                 b.setAttribute( 'class', 'mt-2 row' );

@@ -137,7 +137,7 @@
         <!-- main form -->
 
         <div class="col-md-8 order-md-1">
-          <h4 class="mb-3">Service details</h4>
+          <h4 class="mb-3">Service details</h4><!--fill the form values if the corper has filled them before-->
           <form class="needs-validation" action="/profile" method="POST" enctype="application/x-www-form-urlencoded"
             novalidate>
             <div class="row">
@@ -214,7 +214,7 @@
               </div>
               <div class="col-md-6 mb-3" id="newss" style="display: none">
                 <label for="newstatecode">New state code</label>
-                <input type="text" class="form-control" name="newstatecode" id="nsc" placeholder="TR/18A/1234">
+                <input type="text" class="form-control text-uppercase" name="newstatecode" id="nsc" placeholder="TR/18A/1234">
                 <div class="invalid-feedback">
                   Please provide a valid statecode.
                 </div>
@@ -235,19 +235,13 @@
                       .disabled = false;
                     document.getElementById('newss')
                       .style.display = 'block';
-                  } else {
-                    document.getElementById('servicestate')
-                      .disabled = true;
-                    document.getElementById('newss')
-                      .style.display = 'none';
 
-                    var years = parseInt(new Date(Date.now())
+                      var years = parseInt(new Date(Date.now())
                       .getFullYear()
                       .toFixed()
                       .slice(2, 4));
-                    var yearrange = '(' + (years - 1)
-                      .toString() + '|' + years.toString() + ')';
-
+                    var yearrange = '(' + (years - 1).toString() + '|' + years.toString() + ')';
+                    console.log('the year range', yearrange)
                     document.forms[0].elements[6].pattern = uppercaseStates+'|'+lowercaseStetes+'\\/' + yearrange + '[abcACB]\\/\\d\\d\\d\\d'; // extra escaping probably because we're setting with string from here and not directly from the pattern attribute
                     // document.forms[0].elements[6].pattern = 'AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm\\/' + yearrange + '[abcACB]\\/\\d\\d\\d\\d'; // extra escaping probably because we're setting with string from here and not directly from the pattern attribute
 
@@ -255,9 +249,15 @@
                       .oninvalid = function (event) {
                         event.target.setCustomValidity("State code should start with a valid state abbrevation, have forward slashes, appropriate batch, and four trailing digits. Right?");
                       }
+                  } else {
+                    document.getElementById('servicestate')
+                      .disabled = true;
+                    document.getElementById('newss')
+                      .style.display = 'none';
+
                   }
 
-                  // make this call once!
+                  // make this call once! how ? by putting it outside the change event listener, and always using it's results once we notice a change
                   // how can I know if and when the fetch api was aborted https://developers.google.com/web/updates/2017/09/abortable-fetch
                   const controller = new AbortController();
                   const signal = controller.signal;
