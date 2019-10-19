@@ -2232,7 +2232,9 @@
                 // delete e.target;
                 // delete e.type;
                 console.log( 'normal position', position );
-                savePoint.properties.geo = position;
+                savePoint.properties.geo = position.coords;
+
+                // the position object from the geolocation doens't save to froms, so you have to clone it
 
                 // cordinates don't save unless you turn them to strings
                 savePoint.geometry.coordinates.push( position.coords.longitude );
