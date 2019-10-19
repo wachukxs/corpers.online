@@ -35,7 +35,18 @@
 
     
     <style>
-        
+        .section-one.item{
+            /* background: linear-gradient(#93323200, #44151500), url('../logo/new/logo.png'); */
+
+            background-size: 80%;
+            background-image: url('../logo/new/logo.png');
+            background-position: 50% 50%;
+            background-repeat: no-repeat;
+
+            /* filter: blur(8px);
+            -webkit-filter: blur(8px);
+            transform: scale(1.1); */
+        }
 
         body {
             font-family: arial, helvetica;
@@ -43,13 +54,13 @@
 
         @media (min-width: 576px) {
 
-            .collapse>.card-body {
-                height: 65vh;
+            .collapse > .card-body {
+                height: calc(100vh - 140px); /* formerly 65vh; *//*todo, find a defininte value for this (for all screen height or sth) so we don't make the browser calculate the value every time an accordion is expanded */
                 overflow-y: scroll;
             }
 
             .parent {
-                grid-template-columns: 2fr 3fr;
+                grid-template-columns: 2fr 3fr; /* formerly 2fr 3fr;  */
                 padding: 5px;
             }
 
@@ -79,7 +90,7 @@
 
         @media (max-width: 576px) {
             .parent {
-                grid-template-rows: 2fr 3fr;
+                grid-template-rows: 2fr auto; /* formerly 2fr 3fr;  */
             }
 
             .item:nth-child(1) {
@@ -194,7 +205,7 @@
                                                     </h3>
                                                     <% var therooms = accommodations[i].rooms.split(','); %>
                                                     <%= therooms %>
-                                                    <div class="mb-1 text-muted">with <%= therooms.toString().replace(',', ', ').replace(', ' + therooms[therooms.length - 1], ', and ' + therooms[therooms.length - 1]) %></div>
+                                                    <div class="mb-1 text-muted">with <%= therooms.toString().replace(/,/g, ', ').replace(', ' + therooms[therooms.length - 1], ', and ' + therooms[therooms.length - 1]) %></div>
                                                     <p class="card-text mb-auto"> &#8358;<%= accommodations[i].price%> <%= accommodations[i].rentrange %></p>
 
                                                     <% if ( accommodations[i].directions != ('' || null ) ) { %>
@@ -229,11 +240,12 @@
 
                                                             var _acc_type = event.originalTarget.children[0].innerText;
                                                             var _acc_rooms = event.originalTarget.children[2].innerText;
+                                                            var _acc_price = event.originalTarget.children[3].innerText;
                                                             // "latlng":{"lat":7.413782299999999,"lng":3.9155568}
                                                             var latlng = {"lat":event.originalTarget.previousElementSibling.attributes['data-lat'].nodeValue,"lng":event.originalTarget.previousElementSibling.attributes['data-lng'].nodeValue}
                                                             L.marker( latlng )
                                                                 .addTo( mymap )
-                                                                .bindPopup( _acc_type + '<br> <i class="text-muted">' + _acc_rooms + '</i> ' )
+                                                                .bindPopup( _acc_type.bold() + '<br> <i class="text-muted">' + _acc_rooms + '</i> <br>' + ' at ' +  _acc_price )
                                                                 .openPopup();
                                                             mymap.setView( latlng ); // we need to show corpers the accuracy of our marker, like show the circular range like we normally do in you're within
                                                         } 
@@ -304,7 +316,7 @@
                                 </div>
                             <% } %>
 
-                        <div class="card">
+                        <!-- <div class="card">
                             <div class="card-header" id="headingOne">
                                 <h5 class="mb-0">
                                     <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
@@ -314,7 +326,7 @@
                             </div>
                             <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
                                 <div class="card-body">
-                                    <div class="wrapper"><!-- removed class 'd-none d-lg-block' from images -->
+                                    <div class="wrapper">
                                         <div class="card flex-md-row mb-4 box-shadow h-md-250">
                                             <div class="card-body d-flex flex-column align-items-start hover">
                                                 <strong class="d-inline-block mb-2 text-primary">World</strong>
@@ -395,7 +407,7 @@
                                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quasi therooms = = voluptatum aspernatur aliquam tempora qui esse, sit similique vitae officiis aut ex neque dicta. Quas commodi sit itaque doloremque neque.
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
     
@@ -461,62 +473,6 @@
                 // if users leave where their marker is, show a control that can go back there
             }
         </script>
-
-        <% if (ppas.length > 0) { %>
-        <%# {"latlng":{"lat":7.413782299999999,"lng":3.9155568},"bounds":{"_southWest":{"lat":7.413342125514235,"lng":3.915112914700764},"_northEast":{"lat":7.414222474485764,"lng":3.916000685299236}},"timestamp":1556785354604,"latitude":7.413782299999999,"longitude":3.9155568,"accuracy":49} %>
-        <% for (newweri = 0; newweri < ppas.length; newweri++) { %>
-
-        <a data-statecode="<%= ppas[newweri] %>" data-toggle="pill">
-
-            <div>
-                <small class="text-muted"><%= ppas[newweri].name_of_ppa %> </small>
-                <small class="text-muted"><%= ppas[newweri].type_of_ppa %> </small>
-                <small class="text-muted"><%= ppas[newweri].ppa_address %> </small>
-
-                <% if ( ppas[newweri].ppa_geodata != ('' | null )  ) { %>
-                <% var geo = JSON.parse(ppas[newweri].ppa_geodata) %>
-                <small class="text-muted">lng is <%= geo.latlng.lng  %> and lat is <%= geo.latlng.lat %></small>
-                <% } %>
-
-                <% if ( ppas[newweri].ppa_directions != ('' | null ) ) { %>
-                <small class="text-muted">the direction is <%= ppas[newweri].ppa_directions %></small>
-                <% } %>
-                <br>
-            </div>
-        </a>
-
-        <% } %>
-
-        <% } else { %>
-        <a>uhmmm... nothing ... just for the mean time</a>
-        <% } %>
-
-
-        <% if (accommodations.length > 0) { %>
-            <%# {"latlng":{"lat":7.413782299999999,"lng":3.9155568},"bounds":{"_southWest":{"lat":7.413342125514235,"lng":3.915112914700764},"_northEast":{"lat":7.414222474485764,"lng":3.916000685299236}},"timestamp":1556785354604,"latitude":7.413782299999999,"longitude":3.9155568,"accuracy":49} %>
-            <% for (newweri = 0; newweri < accommodations.length; newweri++) { %>
-    
-            <a data-statecode="<%= accommodations[newweri] %>" data-toggle="pill">
-    
-                <div>
-    
-                    <%# if ( accommodations[newweri].acc_geodata != ('' | null | undefined )  ) { %>
-                    <%# var acc_geo = JSON.parse(accommodations[newweri].acc_geodata) %>
-                    <!-- <small class="text-muted">lng is <%#= acc_geo.latlng.lng  %> and lat is <%#= acc_geo.latlng.lat %></small> -->
-                    <%# } %>
-    
-                    <% if ( accommodations[newweri].directions != ('' | null ) ) { %>
-                    <small class="text-muted">direction is <%= accommodations[newweri].directions %></small>
-                    <% } %>
-                    <br>
-                </div>
-            </a>
-    
-            <% } %>
-    
-            <% } else { %>
-                <a>uhmmm... nothing ... just for the mean time</a>
-            <% } %>
 
     </main>
 </body>

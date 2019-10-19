@@ -874,7 +874,19 @@ app.post('/contact', function (req, res) {
   res.render('pages/contact');
 });
 
-app.get('/signup', function (req, res) {
+app.post('/sayhi', upload.none(), function (req, res) {
+  console.log('the message', req.body);
+  if (isEmpty(req.body.message)) {
+    console.log('empthy');
+    // res.status(406).send('Not Acceptable').render('pages/404'); // returns Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+    res.render('pages/404');
+  } else {
+    console.log('NOT empthy');
+    res.status(200).send('OK').render('pages/404');
+  }
+});
+
+app.get('/signup', upload.none(), function (req, res) {
   res.set('Content-Type', 'text/html');
   // res.sendFile(__dirname + '/register.html');
   res.render('pages/register');
@@ -2028,5 +2040,9 @@ socket.binary(false).emit('an event', { some: 'data' });
 
 // --- always last
 app.use(function (req, res, next) {
-  res.status(404).send("Sorry can't find that! If you could just go back, please, or go <a href='/'>home</a>. Thank You.")
+  // res.status(404).send("Sorry can't find that! If you could just go back, please, or go <a href='/'>home</a>. Thank You.")
+
+  res.render('pages/404', { // check the url they navigated to that got them lost, and try to offer suggestions in the front end that'll match why they got lost... maybe they missed a letter in their statecode url
+
+  });
 });

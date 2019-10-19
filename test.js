@@ -1,6 +1,5 @@
-var years = parseInt(new Date(Date.now())
-                      .getFullYear()
-                      .toFixed()
-                      .slice(2, 4));
-                    var yearrange = '(' + (years - 1) + '|' + years + ')';
-console.log(yearrange)
+var therooms = 'kitchen,Bedroom,Toilet,Bathroom'.split(',');
+
+var o = therooms.toString().replace(/,/g, ', ').replace(', ' + therooms[therooms.length - 1], ', and ' + therooms[therooms.length - 1]);
+console.log('it', therooms, o)
+

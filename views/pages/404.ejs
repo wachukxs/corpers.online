@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google" content="notranslate">
+    <meta name="description" content="Get connected with other corpers.">
+    <meta name="keywords" content="Corpers. Information. PPAs. Accommodation. Routes. Directions. Landmarks.">
+    <meta name="author" content="corpers">
+    <link rel="icon" type="image/png" href="/logo/new/logo32x32.png" />
+
+    <title>We're still online</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js" integrity="sha384-pjaaA8dDz/5BgdFUPX6M/9SUZv4d12SUPF0axWc+VRZkx5xU3daN+lYb49+Ax+Tl" crossorigin="anonymous">
+    </script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <!-- <script src="/jquery-3.3.1.min.js"></script>
+    <script src="/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/bootstrap.css"> -->
+
+    <style>
+        body {
+            padding-top: 5rem;
+        }
+        .starter-template {
+            padding: 2rem 1.5rem;
+            text-align: center;
+        }
+
+    </style>
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+      <a class="navbar-brand" href="/">Home</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="/"> You can always go Home, safely</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/login">Or Log in</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/signup">Sign up, if you aren't a corper online</a>
+          </li>
+        </ul>
+        <!-- <form class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form> -->
+      </div>
+    </nav>
+
+    <main role="main" class="container">
+
+      <div class="starter-template">
+        <h1>Uhmm... Hi, we're still <a href="/">online</a>!</h1>
+        <p class="lead">But we're worried how you got here...
+            <br> cause we're sure it's not where you want to be. <!-- What were you trying to find or get to ? --><!-- makes us look like we don't know what we're doing -->
+        </p>
+        <div class="text-center mt-2 align-middle">
+                            <div class="">
+                                <img src="/404/undraw_page_not_found_su7k.png" alt="chat icon" width="250" height="250" srcset="/404/undraw_page_not_found_su7k.svg">
+                            </div>
+
+                            
+                            <div class="">
+                                <form id="sayhi">
+                            <div class="form-row align-items-center">
+                                <div class="col-1"></div>
+                                <div class="col-8">
+                                <label class="sr-only" for="message">Name</label>
+                                <input type="text" name="message" class="form-control mb-2" id="inlineFormInput" placeholder="What's up?">
+                                </div>
+                                <div class="col-2">
+                                    <input type="submit" class="btn btn-primary mb-2" value="Submit">
+                                </div>
+                                <div class="col-1"></div>
+                            </div>
+                            </form>
+                            </div>
+                            <p class="font-weight-light mt-1" id="ui" style="display: none;">
+                                We got your message. Wanna go to the <a href="/">home page</a> now ?
+                            </p>
+            </div>
+      </div>
+
+    </main><!-- /.container -->
+
+    <script>
+        // script for saying hi
+        function sayHi() {
+
+            // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
+            var XHR = new XMLHttpRequest();
+
+            // Bind the FormData object and the form element
+        var FD = new FormData( form );
+            
+
+            // Define what happens on successful data submission
+            XHR.addEventListener( "load", function( event ) {
+                // alert(event.target.responseText);
+                console.log( event.target.responseText );
+
+                if (event.target.responseText == 'OK') {
+                    document.getElementById('ui').style.display = 'block';
+                } else {
+                    
+                }
+                // say thank you
+
+            } );
+
+            // Define what happens in case of error
+            XHR.addEventListener( "error", function( event ) {
+                alert( 'Oops! Something went wrong.' );
+            } );
+
+            // Set up our request
+            XHR.open( 'POST', '/sayhi', true ); // true makes it async request
+
+            // The data sent is what the user provided in the form
+            XHR.send( FD );
+        }
+
+        // Access the form element...
+        var form = document.getElementById( "sayhi" );
+        
+        // ...and take over its submit event.
+        form.addEventListener( "submit", function( event ) {
+            event.preventDefault(); // the default behaviour is refreshing the page and adding search params to the url
+
+            sayHi();
+        }, false, true ); // https://developer.mozilla.org/en-US/docs/Web/Events/submit
+    </script>
+  </body>
+</html>
