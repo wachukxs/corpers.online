@@ -805,7 +805,7 @@
                             .on( {
                                 popupopen: onPO
                             } );
-                        if ( radius.toFixed( 2 ) >= 10.00 ) { // if they are within 10 meters, show the popup // don't forget to change >= to <= // >= for testing
+                        if ( radius.toFixed( 2 ) <= 10.00 ) { // if they are within 10 meters, show the popup // don't forget to change >= to <= // >= for testing
                             
                         var savePoint = {
                 "type": "Feature",
