@@ -546,15 +546,16 @@
                             <!-- give alot of metrics, prices of routes from different bus parks to the other. tell them about SPAs, get affiliated with companies willing to hire corpers. tell them about Government Laws, new, old and the ones under delibrations and how it affects them, tell them to give their input. what's happening to them, they can leave reviews about their lodges and the area they lived/ served in/at. park the newsletter with graphics. relevent graphics. just tell them alot. worthwhile stuffs. -->
                             Subscribe! Be in the know on stuffs that definately benefits you and gives you insight during your service year. And also if you're intrested in mediocre print, presentations and graphic output relevant for your Service Year, things you can understand. We'd also tell you what we're up to.
                         </p>
-                        <div id="mc_embed_signup">
-                            <form target="_blank" action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01" method="post" class="subscription relative">
+                        <div >
+                            <form  id="sublist" >
                                 <div class="input-group d-flex flex-row">
-                                    <input name="email" placeholder="Email Address" autocomplete="email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email Address '" required="" type="email">
+                                    <input name="email" placeholder="Email Address" autocomplete="email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email Address '" required="true" type="email">
                                     <button class="btn bb-btn" type="submit"><span class="fas fa-paper-plane"></span></button>
                                     <!-- <input type="submit" class="btn bb-btn" value=""> -->
                                 </div>
                                 <div class="mt-10 info"></div>
                             </form>
+                            <div id="submsg"></div>
                         </div>
                     </div>
                 </div>
@@ -595,6 +596,64 @@
         </div>
     </footer>
     <!-- ================ End footer Area ================= -->
+
+    <script>
+        // script for saying hi
+        function sublist() {
+
+            // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
+            var XHR = new XMLHttpRequest();
+
+            // Bind the FormData object and the form element
+        var FD = new FormData( form );
+            
+
+            // Define what happens on successful data submission
+            XHR.addEventListener( "load", function( event ) {
+                // alert(event.target.responseText);
+                console.log( event.target.responseText );
+
+                if (event.target.responseText == 'OK') {
+                    document.getElementById('submsg').innerHTML = 'You\'ve subscribed and rock too.';
+                    document.getElementById( "sublist" ).reset();
+                    // tell them to send another message again
+                    setTimeout( function() {
+                        document.getElementById('submsg').innerHTML = "";
+                    }, 4000 );
+                } else { // 'Not Acceptable'
+                    document.getElementById('submsg').innerHTML = 'We have you in our list already. Boss.';
+                     // clear the message
+                    setTimeout( function() {
+                        document.getElementById('submsg').innerHTML = "";
+                    }, 4000 );
+                }
+                // say thank you
+
+            } );
+
+            // Define what happens in case of error
+            XHR.addEventListener( "error", function( event ) {
+                alert( 'Oops! Something went wrong.' );
+            } );
+
+            // Set up our request
+            XHR.open( 'POST', '/subscribe', true ); // true makes it async request
+
+            // The data sent is what the user provided in the form
+            XHR.send( FD );
+        }
+
+        // Access the form element...
+        var form = document.getElementById( "sublist" );
+        
+        // ...and take over its submit event.
+        form.addEventListener( "submit", function( event ) {
+            event.preventDefault(); // the default behaviour is refreshing the page and adding search params to the url
+
+            sublist();
+        }, false, true ); // https://developer.mozilla.org/en-US/docs/Web/Events/submit
+    </script>
+
     <script src="jquery-3.3.1.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.10.6/jquery.typeahead.min.js" integrity="sha256-W+Cxk9exgjON2p73M4RcoKvCpQUZ+IjXhEzZk6rlg9M=" crossorigin="anonymous"></script>

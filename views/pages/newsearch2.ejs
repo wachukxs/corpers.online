@@ -33,6 +33,9 @@
     <script src="jquery-3.3.1.min.js"></script>
     <script src="bootstrap.min.js"></script>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css" integrity="sha256-BJ/G+e+y7bQdrYkS2RBTyNfBHpA9IuGaPmf9htub5MQ=" crossorigin="anonymous" />
+
+
     
     <style>
         .section-one.item{
@@ -50,6 +53,10 @@
 
         body {
             font-family: arial, helvetica;
+        }
+
+        div .hover:hover {
+            background: rgb(236, 236, 236);
         }
 
         @media (min-width: 576px) {
@@ -120,6 +127,26 @@
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+      <a class="navbar-brand" href="/">Corpers Online</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="/"> You can always go Home, safely</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/login">Or Log in</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/signup">Sign up, if you aren't a corper online</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
 
     <main role="main">
         <div class="parent">
@@ -142,7 +169,7 @@
                                                     
                                                     <% var containsPPA = ppas.filter((value, index, array) => { return value.name_of_ppa == theppa[0].name_of_ppa && value.ppa_address == theppa[0].ppa_address }) ; %>
                                                     <% if ( containsPPA.lenght > 0 ) { // %>
-                                                        <%= "it's in it" %>
+                                                        <%#= "it's in it" %>
                                                     <% } %>
 
                                                 <% } %>
@@ -157,7 +184,7 @@
                                                             </h3>
                                                             <div class="mb-1 text-muted"><%= ppas[i].ppa_address %></div>
                                                             <p class="card-text mb-auto"><%= ppas[i].ppa_directions %></p>
-                                                            <a href="#!">Continue reading</a>
+                                                            <!-- <a href="#!">Continue reading</a> -->
                                                         </div>
                                                         <img id="hide" class="card-img-right flex-auto  shw" src="1000x1000.png" data-holder-rendered="true">
                                                     </div>
@@ -188,8 +215,6 @@
 
                                         <%# '{"type":"Feature","properties":{"geo":{}},"geometry":{"type":"Point","coordinates":[3.3792057,6.5243793]}}' %>
                                         
-                                
-                                                
                                                 
                                         <div class="card flex-md-row mb-4 box-shadow h-md-250" >
                                                 
@@ -199,13 +224,16 @@
                                                 <% } %>
 
                                             <div class="card-body d-flex flex-column align-items-start hover">
-                                                    <strong class="d-inline-block mb-2 text-primary"><%= accommodations[i].type %></strong>
+                                                    
+                                                        <strong class="d-inline-block mb-2 text-primary mr-auto"><%= accommodations[i].type %></strong>
+                                                        
                                                     <h3 class="mb-0">
                                                         <a class="text-dark" href="#!"><%= accommodations[i].address %></a>
+                                                        <% if ( accommodations[i].acc_geodata != '' ) { %>
+                                                            <span class="oi oi-map-marker" title="accommodation map marker" aria-hidden="true"></span>
+                                                        <% } %>
                                                     </h3>
-                                                    <% var therooms = accommodations[i].rooms.split(','); %>
-                                                    <%= therooms %>
-                                                    <div class="mb-1 text-muted">with <%= therooms.toString().replace(/,/g, ', ').replace(', ' + therooms[therooms.length - 1], ', and ' + therooms[therooms.length - 1]) %></div>
+                                                    <div class="mb-1 text-muted">with <%= accommodations[i].rooms.replace('', 'and ').split(',').reverse().toString().replace(/,/g, ', ') %></div>
                                                     <p class="card-text mb-auto"> &#8358;<%= accommodations[i].price%> <%= accommodations[i].rentrange %></p>
 
                                                     <% if ( accommodations[i].directions != ('' || null ) ) { %>
@@ -226,23 +254,24 @@
 
                                                         // highlight the mouseenter target
                                                         event.target.style.color = "purple";
-                                                        if ( event.originalTarget.previousElementSibling != null) {
-                                                            console.log( 'kjj' , event.originalTarget.previousElementSibling.attributes['data-lat'].nodeValue);
+                                                        if ( event.target.previousElementSibling != null) {
+                                                            
+                                                            // console.log( 'kjj' , event.target.previousElementSibling.attributes['data-lat'].nodeValue);
 
-                                                            // event.originalTarget.previousElementSibling.attributes['data-lat'].nodeValue // lat
-                                                            // event.originalTarget.previousElementSibling.attributes['data-lng'].nodeValue // lng
+                                                            // event.target.previousElementSibling.attributes['data-lat'].nodeValue // lat
+                                                            // event.target.previousElementSibling.attributes['data-lng'].nodeValue // lng
 
-                                                            // event.originalTarget.children[0].innerText; // accommodation type
-                                                            // event.originalTarget.children[1].innerText; // location
-                                                            // event.originalTarget.children[2].innerText; // rooms in it
-                                                            // event.originalTarget.children[3].innerText; // rent price
-                                                            // console.log(event.originalTarget.children[0].innerText,event.originalTarget.children[1].innerText,event.originalTarget.children[2].innerText,event.originalTarget.children[3].innerText);
+                                                            // event.target.children[0].innerText; // accommodation type
+                                                            // event.target.children[1].innerText; // location
+                                                            // event.target.children[2].innerText; // rooms in it
+                                                            // event.target.children[3].innerText; // rent price
+                                                            // console.log(event.target.children[0].innerText,event.target.children[1].innerText,event.target.children[2].innerText,event.target.children[3].innerText);
 
-                                                            var _acc_type = event.originalTarget.children[0].innerText;
-                                                            var _acc_rooms = event.originalTarget.children[2].innerText;
-                                                            var _acc_price = event.originalTarget.children[3].innerText;
+                                                            var _acc_type = event.target.children[0].innerText;
+                                                            var _acc_rooms = event.target.children[2].innerText;
+                                                            var _acc_price = event.target.children[3].innerText;
                                                             // "latlng":{"lat":7.413782299999999,"lng":3.9155568}
-                                                            var latlng = {"lat":event.originalTarget.previousElementSibling.attributes['data-lat'].nodeValue,"lng":event.originalTarget.previousElementSibling.attributes['data-lng'].nodeValue}
+                                                            var latlng = {"lat":event.target.previousElementSibling.attributes['data-lat'].nodeValue, "lng":event.target.previousElementSibling.attributes['data-lng'].nodeValue}
                                                             L.marker( latlng )
                                                                 .addTo( mymap )
                                                                 .bindPopup( _acc_type.bold() + '<br> <i class="text-muted">' + _acc_rooms + '</i> <br>' + ' at ' +  _acc_price )
@@ -436,7 +465,7 @@
             L.control.scale()
                 .addTo( mymap );
 
-            here = <%= ( nop !== undefined ? nop : 'undefined' ) %> ;
+            here = <%- ( nop !== undefined ? nop : 'undefined' ) %> ;
             
             if ( here !== undefined && here.length > 0 ) { // if the array is not empty...
             console.log( 'here.length', here, here.length );
@@ -458,16 +487,33 @@
                     className: 'custom-icons' // no space between class name
                 } );
 
-                console.log( here[ 0 ], here[ 0 ].properties.ppa_geodata.latlng );
+                if (here[ 0 ].properties.ppa_geodata) { // if it's ppa
+                    var it = here[ 0 ].properties;
+                    L.marker( (it.ppa_geodata.latlng   ) ) // name_of_ppa || price
+                    .addTo( mymap )
+                    .bindPopup( (it.ppa_address  ) + '<br> <i class="text-muted">' + (it.type_of_ppa  ) + '</i> ' )
+                    .openPopup();
+                mymap.setView( (it.ppa_geodata.latlng   ) );
+                } else { // if it's an accommodation
+                [{"statecode":"TR/19A/1234","price":43,"rooms":"Bedroom,Toilet","rentrange":"monthly","streetname":"43","media":"","tenure":"Sublease","input_time":"2019-10-19T21:14:19.000Z","expire":"2019-10-29T23:00:00.000Z","directions":"fdas","post_location":"TARABA, fdwadsdf","post_time":1571519658976,"properties":{"acc_geodata":{"type":"Feature","properties":{"geo":{"accuracy":510314}},"geometry":{"type":"Point","coordinates":[3.3792057,6.5243793]},"latlng":{"lat":6.5243793,"lng":3.3792057}},"address":"asd","type":"Feature","price":43},"geometry":{"type":"Point","coordinates":[null,null]}}] ;
+                    var it = here[ 0 ];
+                    L.marker( (it.properties.acc_geodata.latlng  ) ) // name_of_ppa || price
+                    .addTo( mymap )
+                    .bindPopup( it.type + ` at ${it.price} ${it.rentrange} with ${it.rooms.replace('', 'and ').split(',').reverse().toString().replace(/,/g, ', ')}. <br>${(it.tenure == 'Sublease' ? 'A sublease, expires ' + new Date(it.expire).toDateString() : it.tenure )}` + " <br>Address: "+( it.properties.address ) + '<br> <i class="text-muted">' + ( it.directions ) + '</i> ' )
+                    .openPopup();
+                mymap.setView( ( it.properties.acc_geodata.latlng  ) );
+                }
+
                 // [here[0].properties.ppa_geodata.longitude, here[0].properties.ppa_geodata.latitude]
                 /* L.marker(here.properties.ppa_geodata.latlng, { // using image is better, icon changes position on zoom change
                   icon: local_pharmacyIcon
                 }).addTo(mymap).bindPopup("A print shop."); */
-                L.marker( here[ 0 ].properties.ppa_geodata.latlng )
+
+                /* L.marker( (it.acc_geodata.latlng  ) ) // name_of_ppa || price
                     .addTo( mymap )
-                    .bindPopup( here[ 0 ].properties.ppa_address + '<br> <i class="text-muted">' + here[ 0 ].properties.type_of_ppa + '</i> ' )
+                    .bindPopup( ( it.address ) + '<br> <i class="text-muted">' + ( it.type ) + '</i> ' )
                     .openPopup();
-                mymap.setView( here[ 0 ].properties.ppa_geodata.latlng );
+                mymap.setView( ( it.acc_geodata.latlng  ) ); */
 
                 // to do show the get direction control when ever a ppa is shown from exteral clicks
                 // if users leave where their marker is, show a control that can go back there

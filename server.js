@@ -478,6 +478,7 @@ app.get('/newsearch', function (req, res) {
         ppa_details.user.name_of_ppa = req.session.name_of_ppa;
       }
       ppa_details.theppa = results[3]; // JSON.stringify(results);
+      ppa_details.nop = results[3]; // this variable is ambigious, nop == name of place, or name of ppa ... but we need it for now, just rush work for now
       ppa_details.ppas = results[0];
       ppa_details.accommodations = results[1];
       ppa_details.places = results[2];
@@ -496,12 +497,127 @@ app.get('/newsearch', function (req, res) {
         throw error;
       }
 
+      else if (!isEmpty(results) && results[3].acc_geodata != '') {
+        // we're not adding the GeoJSON results to an array because it's only one result
+        for (index = 0; index < results[3].length; index++) {
+          /**
+           * {
+                  "type": "Feature",
+                  "properties": {
+                      "name": "Coors Field",
+                      "amenity": "Hospital",
+                      "popupContent": "The Amenity [Hospital], then the location/street name."
+                  },
+                  "geometry": {
+                      "type": "Point",
+                      "coordinates": [ 7.5098633766174325, 5.515524804961825 ]
+                  }
+              }
+           */
+          // unstringify the acc_geodata entry
+          // results[index]['acc_geodata'] = JSON.parse(results[index].acc_geodata);
+
+          // re-arrange to GeoJSON Format
+          // results[3][index].type = "Feature"; // we don't need this for acc, even for ppa
+
+          results[3][index].properties = {};
+          results[3][index].properties.acc_geodata = JSON.parse(results[3][index].acc_geodata);
+          results[3][index].properties.address = results[3][index].address;
+          results[3][index].properties.type = results[3][index].type;
+          results[3][index].properties.price = results[3][index].price;
+
+          // shouldn't we add name of PPA and other details as well ?!?!?
+
+          results[3][index].geometry = {};
+          results[3][index].geometry.type = "Point";
+          results[3][index].geometry.coordinates = [JSON.parse(results[3][index].acc_geodata).longitude, JSON.parse(results[3][index].acc_geodata).latitude];
+
+          console.log(JSON.parse(results[3][index].acc_geodata).latlng, '======++++++++====', JSON.parse(results[3][index]['acc_geodata']).longitude, JSON.parse(results[3][index]['acc_geodata']).latitude);
+
+          delete results[3][index]['acc_geodata'];
+          // delete results[3][index]['type'];
+          // delete results[3][index]['address'];
+
+          // delete redundate data like longitude, latitude, and latlng in acc_geodata after reassigning values
+        }
+      }
+
       accommodation_details = {};
       accommodation_details.ppas = results[0];
       accommodation_details.accommodations = results[1];
       accommodation_details.places = results[2];
       accommodation_details.theacc = results[3];
-      accommodation_details.nop = '[]' // || undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
+      accommodation_details.nop = JSON.stringify(results[3]); // this variable is ambigious, nop == name of place, or name of ppa ... but we need it for now, just rush work for now
+      accommodation_details.theppa = undefined;
+      // accommodation_details.nop = '[]' // || undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
+      res.render('pages/newsearch2', accommodation_details);
+    })
+
+  } else if (req.query.type == 'accommodations') { // if it's an accomodation
+    // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
+    // inputing time from js to sql causes ish
+    pool.query(mustquery + "SELECT * FROM accommodations WHERE statecode = '" + req.query.sc + "' AND input_time = '" + moment(new Date(req.query.it)).format('YYYY-MM-DD HH:mm:ss') + "' AND streetname = '" + req.query.sn + "'", function (error, results, fields) {
+      console.log('should be here', results[3])
+      if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
+        console.log(error);
+        throw error;
+      }
+
+      else if (!isEmpty(results) && results[3].acc_geodata != '') {
+        // we're not adding the GeoJSON results to an array because it's only one result
+        for (index = 0; index < results[3].length; index++) {
+          /**
+           * {
+                  "type": "Feature",
+                  "properties": {
+                      "name": "Coors Field",
+                      "amenity": "Hospital",
+                      "popupContent": "The Amenity [Hospital], then the location/street name."
+                  },
+                  "geometry": {
+                      "type": "Point",
+                      "coordinates": [ 7.5098633766174325, 5.515524804961825 ]
+                  }
+              }
+           */
+          // unstringify the acc_geodata entry
+          // results[index]['acc_geodata'] = JSON.parse(results[index].acc_geodata);
+
+          // re-arrange to GeoJSON Format
+          // results[3][index].type = "Feature"; // we don't need this for acc, even for ppa
+          // here needs work
+          results[3][index].properties = {};
+          results[3][index].properties.acc_geodata = JSON.parse(results[3][index].acc_geodata);
+          results[3][index].properties.acc_geodata.latlng = {"lat":results[3][index].properties.acc_geodata.geometry.coordinates[1], "lng":results[3][index].properties.acc_geodata.geometry.coordinates[0]}
+          results[3][index].properties.address = results[3][index].address;
+          results[3][index].properties.type = results[3][index].type;
+          results[3][index].properties.price = results[3][index].price;
+
+          // shouldn't we add name of PPA and other details as well ?!?!?
+
+          results[3][index].geometry = {};
+          results[3][index].geometry.type = "Point";
+          results[3][index].geometry.coordinates = [JSON.parse(results[3][index].acc_geodata).longitude, JSON.parse(results[3][index].acc_geodata).latitude];
+
+          console.log(JSON.parse(results[3][index].acc_geodata).latlng, '======++++++++====', JSON.parse(results[3][index]['acc_geodata']).longitude, JSON.parse(results[3][index]['acc_geodata']).latitude);
+
+          delete results[3][index]['acc_geodata'];
+          // delete results[3][index]['type'];
+          // delete results[3][index]['address'];
+
+          // delete redundate data like longitude, latitude, and latlng in acc_geodata after reassigning values
+        }
+      }
+
+      accommodation_details = {};
+      accommodation_details.ppas = results[0];
+      accommodation_details.accommodations = results[1];
+      accommodation_details.places = results[2];
+      accommodation_details.theacc = results[3];
+      accommodation_details.nop = JSON.stringify(results[3]); // this variable is ambigious, nop == name of place, or name of ppa ... but we need it for now, just rush work for now
+      accommodation_details.theppa = undefined;
+      // accommodation_details.nop = '[]' // || undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
+      console.log('what we shold see', )
       res.render('pages/newsearch2', accommodation_details);
     })
 
@@ -520,6 +636,7 @@ app.get('/newsearch', function (req, res) {
       _details.accommodations = results[1];
       _details.places = results[2];
       _details.theppa = undefined;
+      accommodation_details.theacc = undefined;
       _details.nop = undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
       res.render('pages/newsearch2', _details);
     })
@@ -623,7 +740,7 @@ app.get('/search', function (req, res) {
     });
   } else if (req.query.rr) { // if it's an accomodation
     // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
-    pool.query("SELECT * FROM accommodations WHERE rentrange = '" + req.query.rr + "' AND input_time = '" + req.query.it + "'", function (error, results, fields) {
+    pool.query("SELECT * FROM accommodations WHERE rentrange = '" + req.query.rr + "' AND input_time = '" + moment(new Date(req.query.it)).format('YYYY-MM-DD HH:mm:ss') + "'", function (error, results, fields) {
 
       accommodation_details = {};
       accommodation_details.nop = '[]'; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
@@ -869,20 +986,67 @@ app.get('/contact', function (req, res) {
   res.render('pages/contact');
 });
 
-app.post('/contact', function (req, res) {
+app.get('/count', function (req, res) {
+  res.set('Content-Type', 'text/html');
+  res.render('pages/count'); // show number of people online, then per state. something nice and interactive and definately real time too
+});
+
+app.post('/contact', upload.none(), function (req, res) {
   console.log('the message', req.body);
-  res.render('pages/contact');
+  // console.log('NOT empthy');
+    pool.query("INSERT INTO feedbacks ( name, subject, email, message ) VALUES (" + pool.escape(req.body.name) +','+ pool.escape(req.body.subject) +','+ pool.escape(req.body.email) +',' + pool.escape(req.body.message) +  ")", function (error, results, fields) {
+
+      if (error) throw error;
+
+      if (results.affectedRows === 1) {
+        res.status(200).send('OK'); //.render('pages/404');
+      }
+    });
 });
 
 app.post('/sayhi', upload.none(), function (req, res) {
   console.log('the message', req.body);
   if (isEmpty(req.body.message)) {
-    console.log('empthy');
-    // res.status(406).send('Not Acceptable').render('pages/404'); // returns Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
-    res.render('pages/404');
+    // console.log('empty');
+    res.status(406).send('Not Acceptable'); //.render('pages/404'); // returns Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+    // res.render('pages/404');
   } else {
-    console.log('NOT empthy');
-    res.status(200).send('OK').render('pages/404');
+    // console.log('NOT empthy');
+    pool.query("INSERT INTO feedbacks ( message ) VALUES (" + pool.escape(req.body.message) +  ")", function (error, results, fields) {
+
+      if (error) throw error;
+
+      if (results.affectedRows === 1) {
+        res.status(200).send('OK'); //.render('pages/404');
+      }
+    });
+    
+  }
+});
+
+app.post('/subscribe', upload.none(), function (req, res) {
+  console.log('the sublist', req.body);
+  if (isEmpty(req.body.email)) {
+    res.status(406).send('Not Acceptable');
+  } else {
+    // console.log('NOT empthy');
+    pool.query("INSERT INTO subscribers ( email ) VALUES (" + pool.escape(req.body.email) +  ")", function (error, results, fields) {
+
+      if (error) {
+      console.log('the error code:', error.code)
+      switch (error.code) { // do more here
+        case 'ER_DUP_ENTRY': // ER_DUP_ENTRY if an email exists already
+          res.status(406).send('Not Acceptable');
+          break;
+      }
+      // throw error;
+    }
+
+     else if (results.affectedRows === 1) {
+        res.status(200).send('OK');
+      }
+    });
+    
   }
 });
 
@@ -899,7 +1063,7 @@ app.get('/signup', upload.none(), function (req, res) {
 var iouser = io.of('/user').on('connection', function (socket) { // when a new user is in the TIMELINE
 
   socket.join(socket.handshake.query.statecode.substring(0, 2));
-  // console.log('how many', users.connected);
+  console.log('how many', io.sockets.clients.length , iouser.clients.length);
   socket.on('ferret', (asf, name, fn) => {
     // this funtion will run in the client to show/acknowledge the server has gotten the message.
     fn('woot ' + name + asf);
@@ -1745,8 +1909,31 @@ var iologin = io.of('/login').on('connection', function (socket) { // when a new
   socket.on('login request', function (data) {
     console.log(data);
   });
+  
 
 
+});
+
+var iocount = io.of('/count').on('connection', function (countsocket) {
+  // once you connect, send the number
+  countsocket.emit('count', { number: io.sockets.clients.length });
+
+  // while, you're connected, if someone else logs in or comes 'online', sent the number
+  io.on('connection', function (socket) {
+    console.log(io.sockets.clients.length, typeof io.sockets.clients.length); // clients counts the different ipaddresses connected
+    console.log('+1')
+    countsocket.emit('count', { number: io.sockets.clients.length });
+    
+    // if someone goes offline or dissconnects, send the number
+    socket.on('disconnect', function() {
+      console.log(io.sockets.clients.length, typeof io.sockets.clients.length);
+      console.log('-1')
+      countsocket.emit('count', { number: io.sockets.clients.length });
+    });
+
+  })
+
+ 
 });
 
 // truly only save rooms when a message has started in that room. 

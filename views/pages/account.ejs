@@ -396,7 +396,7 @@
               </div>
             </form> -->
 
-            <form id="form-search" action="/search" name="form-search" class="mr-md-3">
+            <form id="form-search" action="/newsearch" name="form-search" class="mr-md-3">
                 <div class="typeahead__container">
                     <div class="typeahead__field">
                         <div class="typeahead__query">
@@ -785,6 +785,13 @@
                 // also reset if all fields are empty when corper closes the carousel
                 // if the form is not completely filled, disable the submit/put up for rent button
             } );
+
+            $( '#accommodationModal' )
+            .on( 'hidden.bs.modal', function( e ) {
+                console.info( 'acc modal hidden' );
+                // document.getElementById('ap').disabled = true;
+
+            } );
     </script>
 
 
@@ -993,7 +1000,14 @@
                 // rest the carousel too
                 $( '#accommodationFormCarousel' )
                     .carousel( 0 );
+                
+                // make the previous and next buttons as they were
+                $( "#accsub" )
+                        .replaceWith( '<button class="btn btn-primary" id="an" href="#accommodationFormCarousel" data-slide="next">Next</button>' );
+                $( "#ap" )
+                        .replaceWith( '<button class="btn btn-outline-primary" id="ap" href="#accommodationFormCarousel" disabled="true" data-slide="prev">Previous</button>' );
 
+                // add successful alert 
                 $( "#tl" )
                     .before(
                         '<div class="alert alert-success mt-3 fade show" id="accommodationposted" role="alert">Accommodation space was posted successfully.</div>'
@@ -1050,7 +1064,7 @@
                                     <span class=""></span>Batch <a href="#!"> <%= batch %> </a>
                                 </li>
                                 <li>
-                                    <span class=""></span>PPA at <a href="<%= ( name_of_ppa ? '/search?nop=' + name_of_ppa : '/newprofile' ) %>">
+                                    <span class=""></span>PPA at <a href="<%= ( name_of_ppa ? '/newsearch?nop=' + name_of_ppa : '/newprofile' ) %>">
                                         <%= ( name_of_ppa ? name_of_ppa : '?' ) %> </a>
                                 </li>
                                 <li style="display:none;">
@@ -2232,7 +2246,15 @@
                 // delete e.target;
                 // delete e.type;
                 console.log( 'normal position', position );
-                savePoint.properties.geo = position.coords;
+                // savePoint.properties.geo = position.coords;
+                // savePoint.properties.geo = JSON.parse(JSON.stringify(position.coords));
+
+                savePoint.properties.geo = {
+                    accuracy: position.coords.accuracy,
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                    timestamp: position.timestamp
+                }
 
                 // the position object from the geolocation doens't save to froms, so you have to clone it
 
@@ -2386,7 +2408,7 @@
             template: "{{group}}"
             }, */
             // template: "{{streetname}} {{ppa_address}} <br> <small class='text-muted text-uppercase'>{{group}}</small>",
-            // href: "/search?title={{display}}",
+            // href: "/newsearch?title={{display}}",
 
             // Typeahead can also search deep inside an object, just separate the keys with "." like display: ['string', 'deeper.key.level']
             // display: ["streetname", "ppa_address"], // or be specific in the group objects
@@ -2400,7 +2422,7 @@
                     // Be careful as item properties might contain Url-unsafe characters
                     href: function( item ) {
                         // console.log('acc href', item);
-                        return "/search?type=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                        return "/newsearch?type=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
                             item.statecode; // sn sc it
                     },
                     ajax: {
@@ -2419,7 +2441,7 @@
                     // Be careful as item properties might contain Url-unsafe characters
                     href: function( item ) {
                         // console.log('ppa href', item);
-                        return "/search?type=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                        return "/newsearch?type=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                             "&top=" + item.type_of_ppa; // nop type pa
                     },
                     ajax: {

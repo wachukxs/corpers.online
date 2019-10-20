@@ -48,7 +48,7 @@ $.typeahead({
         template: "{{group}} STATE"
     },
     // template: "{{streetname}} {{ppa_address}} <br> <small class='text-muted text-uppercase'>{{group}}</small>",
-    // href: "/search?title={{display}}",
+    // href: "/newsearch?title={{display}}",
 
     // Typeahead can also search deep inside an object, just separate the keys with "." like display: ['string', 'deeper.key.level']
     // display: ["streetname", "ppa_address"], // or be specific in the group objects
@@ -75,10 +75,10 @@ $.typeahead({
             href: function (item) {
                 // console.log('acc href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/search?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
 
@@ -101,7 +101,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
-                return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                     "&top=" + item.type_of_ppa; // nop type pa
             },
             ajax: {
@@ -120,7 +120,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/search?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -141,7 +141,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
-                return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                     "&top=" + item.type_of_ppa; // nop type pa
             },
             ajax: {
@@ -160,7 +160,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/search?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -181,7 +181,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
-                return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                     "&top=" + item.type_of_ppa; // nop type pa
             },
             ajax: {
@@ -200,7 +200,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/search?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -221,7 +221,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
-                return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                     "&top=" + item.type_of_ppa; // nop type pa
             },
             ajax: {
@@ -240,7 +240,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/search?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -261,7 +261,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
-                return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                     "&top=" + item.type_of_ppa; // nop type pa
             },
             ajax: {
@@ -280,7 +280,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/search?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -301,7 +301,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
-                return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                     "&top=" + item.type_of_ppa; // nop type pa
             },
             ajax: {
@@ -320,7 +320,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/search?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -341,7 +341,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
-                return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                     "&top=" + item.type_of_ppa; // nop type pa
             },
             ajax: {
@@ -360,7 +360,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/search?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -381,7 +381,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
-                return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                     "&top=" + item.type_of_ppa; // nop type pa
             },
             ajax: {
@@ -400,7 +400,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/search?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -421,7 +421,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
-                return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                     "&top=" + item.type_of_ppa; // nop type pa
             },
             ajax: {
@@ -440,7 +440,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/search?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -461,7 +461,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
-                return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                     "&top=" + item.type_of_ppa; // nop type pa
             },
             ajax: {
@@ -480,7 +480,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/search?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -501,7 +501,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
-                return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                     "&top=" + item.type_of_ppa; // nop type pa
             },
             ajax: {
@@ -520,7 +520,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/search?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -541,7 +541,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
-                return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                     "&top=" + item.type_of_ppa; // nop type pa
             },
             ajax: {
@@ -560,7 +560,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/search?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -581,7 +581,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
-                return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                     "&top=" + item.type_of_ppa; // nop type pa
             },
             ajax: {
@@ -600,7 +600,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/search?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -621,7 +621,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
-                return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                     "&top=" + item.type_of_ppa; // nop type pa
             },
             ajax: {
@@ -640,7 +640,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/search?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -661,7 +661,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
-                return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                     "&top=" + item.type_of_ppa; // nop type pa
             },
             ajax: {
@@ -680,7 +680,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/search?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -701,7 +701,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
-                return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                     "&top=" + item.type_of_ppa; // nop type pa
             },
             ajax: {
@@ -720,7 +720,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/search?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -741,7 +741,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
-                return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                     "&top=" + item.type_of_ppa; // nop type pa
             },
             ajax: {
@@ -760,7 +760,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/search?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -781,7 +781,7 @@ $.typeahead({
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
-                return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                     "&top=" + item.type_of_ppa; // nop type pa
             },
             ajax: {
