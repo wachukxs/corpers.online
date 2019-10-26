@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,175 +8,343 @@
         <link rel="stylesheet" href="">
 
         <style>
-            #stripes {
-                width: 100%;
-                height: 100%;
-                overflow: hidden;
-                -webkit-transform: skewY(-12deg);
-                transform: skewY(-12deg);
-                -webkit-transform-origin: 0;
-                transform-origin: 0;
-                background: linear-gradient(150deg,#53f 15%,#05d5ff 70%,#a6ffcb 94%);
-            }
+            html, body{
+  min-height: 100%;
+}
 
-            #stripes, #stripes span {
-                position: absolute;
-            }
-        </style>
-        <style>
-            #stripes :first-child {
-                width: 50%;
-                left: 50%;
-                top: 40px;
-                background: #4c29ff;
-            }
-            @media (min-width: 670px)
-            {#stripes span {
-                height: 150px;
-            }}
+body{
+  margin: 0;
+  padding: 0;
+  background: #228daa; /* Old browsers */
+background: -moz-linear-gradient(top, #228daa 0%, #6cc9bd 50%, #c8ea7e 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#228daa), color-stop(50%,#6cc9bd), color-stop(100%,#c8ea7e)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top, #228daa 0%,#6cc9bd 50%,#c8ea7e 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top, #228daa 0%,#6cc9bd 50%,#c8ea7e 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top, #228daa 0%,#6cc9bd 50%,#c8ea7e 100%); /* IE10+ */
+background: linear-gradient(to bottom, #228daa 0%,#6cc9bd 50%,#c8ea7e 100%); /* W3C */
+  font-family:"Helvetica Neue",sans-serif;
+  font-weight: 300;
+  color: #404040;
+}
 
-            #stripes span {
-                height: 40px;
-            }
-            #stripes, #stripes span {
-                position: absolute;
-            }
-            * {
-                -webkit-box-sizing: border-box;
-                box-sizing: border-box;
-            }
-        </style>
-        <style>
-            @media (min-width: 670px)
-            {#stripes :nth-child(2) {
-                width: 16.66667%;
-                width: calc(100% / 6);
-                top: 300px;
-                top: calc(150px * 2);
-                bottom: auto;
-                background: #0dcfff;
-            }}
+.clear-both{clear:both;}
 
-            #stripes :nth-child(2) {
-                width: 14%;
-                right: 0;
-                bottom: 40px;
-                background: #2be7ff;
-            }
-            @media (min-width: 670px)
-            {#stripes span {
-                height: 150px;
-            }}
-            #stripes span {
-                height: 40px;
-            }
-            #stripes, #stripes span {
-                position: absolute;
-            }
-            * {
-                -webkit-box-sizing: border-box;
-                box-sizing: border-box;
-            }
-        </style>
-        <style>
-            @media (min-width: 670px)
-            {#stripes :nth-child(3) {
-                width: 33.33333%;
-                width: calc(100% / 3);
-                right: auto;
-                background: #11bdff;
-            }}
+h1{
+  color: #FFFFFF;
+  font-weight: 300;
+  margin: 0;
+  padding: 30px;
+  text-align: center;
+}
 
-            #stripes :nth-child(3) {
-                width: 25%;
-                bottom: 0;
-                right: 0;
-                background: #a1ffc8;
-            }
-            @media (min-width: 670px)
-            {#stripes span {
-                height: 150px;
-            }}
-            #stripes span {
-                height: 40px;
-            }
-            #stripes, #stripes span {
-                position: absolute;
-            }
-            * {
-                -webkit-box-sizing: border-box;
-                box-sizing: border-box;
-            }
-        </style>
-        <style>
-            @media (min-width: 670px)
-            {#stripes span {
-                height: 150px;
-            }}
+.block{
+  background-color: rgba(255, 255, 255, 0.5);
+  width: 60%;
+  margin:0 auto;
+  margin-bottom: 30px;
+  padding: 10px;
+  text-align: center;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
 
-            #stripes span {
-                height: 40px;
-            }
-            #stripes, #stripes span {
-                position: absolute;
-            }
-            * {
-                -webkit-box-sizing: border-box;
-                box-sizing: border-box;
-            }
-        </style>
-        <style>
-            @media (min-width: 670px)
-            {#stripes span {
-                height: 150px;
-            }}
+label.button{
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  background-color: #FFFFFF;
+  border: 1px solid #6C6C6C;
+  color: #6C6C6C;
+  padding: 5px 10px;
+  margin: 5px 0;
+  display: inline-block;
+  -webkit-transition: all 200ms linear;
+  -moz-transition: all 200ms linear;
+  -ms-transition: all 200ms linear;
+  -o-transition: all 200ms linear;
+  transition: all 200ms linear;
+}
 
-            #stripes span {
-                height: 40px;
-            }
-            #stripes, #stripes span {
-                position: absolute;
-            }
-            * {
-                -webkit-box-sizing: border-box;
-                box-sizing: border-box;
-            }
+label.button:hover{
+  background-color:#F0F0F0;
+  cursor: pointer;
+  -webkit-transition: all 200ms linear;
+  -moz-transition: all 200ms linear;
+  -ms-transition: all 200ms linear;
+  -o-transition: all 200ms linear;
+  transition: all 200ms linear;
+}
+
+input#images{display: none;}
+
+#multiple-file-preview{border-top: 1px solid rgba(0, 0, 0, 0.11); margin-top: 10px; padding: 10px;}
+
+#sortable {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  min-height: 300px;
+}
+
+  #sortable li {
+    margin: 3px 3px 3px 0;
+    float: left;
+    width: 100px;
+    text-align: center;
+    position: relative;
+    background-color: #FFFFFF;
+  }
+
+    #sortable li, #sortable li img
+    {
+          -webkit-border-radius: 4px;
+          -moz-border-radius: 4px;
+          border-radius: 4px;
+    }
+
+    #sortable li div.order-number{
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 15px;
+      height: 15px;
+      background-color: #2B91E3;
+      color: #FFFFFF;
+      font-size: 12px;
+      -webkit-border-radius: 20px;
+      -moz-border-radius: 20px;
+      border-radius: 20px;
+    }
         </style>
+
+        <script src="js/jquery-3.3.1.min.js"></script>
+        <script src="js/jquery-ui.js"></script>
+
+        <link rel="stylesheet" href="css/bootstrap.css">
     </head>
     <body>
-        <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#!">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
+
+        <div>
+            <label class="btn btn-default">
+                Browse files <input type="file" hidden>
+            </label>
+        </div>
+
+        <div class="block">
+            <form action="post">
+                    <label class="button" for="images">Upload Images</label>
+                    <input type="file" id="images" multiple="multiple"/>
+                    <div id="multiple-file-preview">
+                      <ul id="sortable">
+                        <div class="clear-both"></div>
+                      </ul>
+                    </div>
+            </form>
+
+            <div>
+                    <div class="" id="here">
+                          </div>
+            </div>
+
+            <div class="card" style="width: 18rem;">
+                    <img src="img/1564742888187.png" class="card-img-top" alt="...">
+                    <div class="">
+                            
+                            <select class="custom-select" id="" style="border-radius: 0rem;">
+                              <option selected>Choose...</option>
+                              <option value="1">Bathroom</option>
+                              <option value="2">Toilet</option>
+                              <option value="3">Kitchen</option>
+                            </select>
+                          </div>
+                    
+                  </div>
+
+
+        <div>
+
+                <div class="card-columns">
+                        <div class="card">
+                          <div class="">
+                                <img src="img/work on/CORPERSHaus.jpg" class="card-img-top" alt="...">
+                          </div>
+                          <div class="">
+                                <select class="custom-select" id="" style="border-radius: 0rem;">
+                                  <option selected>Choose...</option>
+                                  <option value="1">Bathroom</option>
+                                  <option value="2">Toilet</option>
+                                  <option value="3">Kitchen</option>
+                                </select>
+                              </div>
+                        </div>
+                        <div class="card">
+                          <img src="img/busy knowing & doing (1).png" class="card-img-top" alt="...">
+                          <div class="">
+                                <select class="custom-select" id="" style="border-radius: 0rem;">
+                                  <option selected>Choose...</option>
+                                  <option value="1">Bathroom</option>
+                                  <option value="2">Toilet</option>
+                                  <option value="3">Kitchen</option>
+                                </select>
+                              </div>
+                        </div>
+                        <div class="card">
+                          <img src="img/001.jpg" class="card-img-top" alt="...">
+                          <div class="">
+                                <select class="custom-select" id="" style="border-radius: 0rem;">
+                                  <option selected>Choose...</option>
+                                  <option value="1">Bathroom</option>
+                                  <option value="2">Toilet</option>
+                                  <option value="3">Kitchen</option>
+                                </select>
+                              </div>
+                        </div>
+                        <div class="card">
+                          <img src="img/busy knowing & doing (1).png" class="card-img-top" alt="...">
+                          <div class="">
+                                <select class="custom-select" id="" style="border-radius: 0rem;">
+                                  <option selected>Choose...</option>
+                                  <option value="1">Bathroom</option>
+                                  <option value="2">Toilet</option>
+                                  <option value="3">Kitchen</option>
+                                </select>
+                              </div>
+                        </div>
+                        <div class="card">
+                          <img src="img/001.jpg" class="card-img-top" alt="...">
+                          <div class="">
+                                <select class="custom-select" id="" style="border-radius: 0rem;">
+                                  <option selected>Choose...</option>
+                                  <option value="1">Bathroom</option>
+                                  <option value="2">Toilet</option>
+                                  <option value="3">Kitchen</option>
+                                </select>
+                              </div>
+                        </div>
+                        <div class="card">
+                          <img src="img/busy knowing & doing (1).png" class="card-img-top" alt="...">
+                          <div class="">
+                                <select class="custom-select" id="" style="border-radius: 0rem;">
+                                  <option selected>Choose...</option>
+                                  <option value="1">Bathroom</option>
+                                  <option value="2">Toilet</option>
+                                  <option value="3">Kitchen</option>
+                                </select>
+                              </div>
+                        </div>
+                        <div class="card">
+                          <img src="img/001.jpg" class="card-img-top" alt="...">
+                          <div class="">
+                                <select class="custom-select" id="" style="border-radius: 0rem;">
+                                  <option selected>Choose...</option>
+                                  <option value="1">Bathroom</option>
+                                  <option value="2">Toilet</option>
+                                  <option value="3">Kitchen</option>
+                                </select>
+                              </div>
+                        </div>
+                      </div>
+
+                      <hr>
+                <div class="card-deck">
+                        <div class="card">
+                          <img src="..." class="card-img-top" alt="...">
+                          <div class="card-body">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                          </div>
+                        </div>
+                        <div class="card">
+                          <img src="..." class="card-img-top" alt="...">
+                          <div class="card-body">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
+                            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                          </div>
+                        </div>
+                        <div class="card">
+                          <img src="..." class="card-img-top" alt="...">
+                          <div class="card-body">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
+                            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                          </div>
+                        </div>
+                      </div>
+        </div>
+          </div>
+
+          <script>
+              $(function(){
+  
+  $('#images').change(function(e) {
+    var files = e.target.files;
+		for (var i = 0; i <= files.length; i++) {
+      
+      // when i == files.length reorder and break
+      if(i==files.length){
+        // need timeout to reorder beacuse prepend is not done
+        setTimeout(function(){ reorderImages(); }, 100);
+        break;
+      }
+      
+      var file = files[i];
+      var reader = new FileReader();
+      
+      reader.onload = (function(file) {
+        return function(event){
+          $('#sortable').prepend('<li class="ui-state-default" data-order=0 data-id="'+file.lastModified+'"><img src="' + event.target.result + '" style="width:100%;" /> <div class="order-number">0</div></li>');
+
+          $('#here').prepend('<img src="' + event.target.result + '" class="rounded img-thumbnail img-fluid" style="max-width: 100%; height: auto;" data-order=0 data-id="'+file.lastModified+'" />');
+
+        };
+      })(file);
+      
+      reader.readAsDataURL(file);
+    }// end for;
+    
+  });
+  
+  $('#sortable').sortable();
+  $('#sortable').disableSelection();
+  
+  //sortable events
+  $('#sortable').on('sortbeforestop',function(event){
+    
+    reorderImages();
+    
+  });
+  
+  
+  function reorderImages(){
+    // get the items
+    var images = $('#sortable li');
+    
+    var i=0, nrOrder=0;
+    for(i;i<images.length;i++){
+      
+      var image = $(images[i]);
+      
+      if( image.hasClass('ui-state-default') && !image.hasClass('ui-sortable-placeholder') ){
+        image.attr('data-order', nrOrder);
+        var orderNumberBox = image.find('.order-number');
+        orderNumberBox.html(nrOrder+1);
+        nrOrder++;
+      }// end if;
+      
+    }// end for;
+  }
+  
+ });
+          </script>
+
+        <!-- https://stackoverflow.com/questions/11235206/twitter-bootstrap-form-file-element-upload-button
         
-        <script src="" async defer></script>
-
-        <div id="stripes" aria-hidden="true">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-
-        <div id="q" class="as sd df jk kl lli">
-            ikjoidf
-        </div>
-
-        <script>
-            var k = document.getElementById('q').hasChildNodes();
-            console.log(k)
-
-            console.log(document.getElementById('q').childNodes);
-        </script>
-
-        <form action="/acc" method="POST" enctype="application/x-www-form-urlencoded">
-            <input type="checkbox" name="this" value="ajdkfj ddssd" id="this1">
-            <label for="this1">1</label>
-
-            <input type="checkbox" name="this" value="Toilet&Bathroom" id="this2">
-            <label for="this2">2</label>
-
-            <input type="submit" value="submit">
-        </form>
+        https://codepen.io/ricardoandronico/pen/NqdoxE 
+    
+    
+    object fit: cover https://codepen.io/Webslinger_J/pen/OmdWqo-->
     </body>
 </html>

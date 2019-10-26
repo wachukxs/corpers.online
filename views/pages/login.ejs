@@ -144,7 +144,7 @@
 		var years = parseInt( new Date( Date.now() ).getFullYear().toFixed().slice( 2, 4 ) );
 		var yearrange = '(' + ( years - 1 ).toString() + '|' + years.toString() + ')';
 		
-		// document.forms[ 0 ].elements[ 0 ].pattern = '(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\\/'+yearrange+'[abcACB]\\/\\d\\d\\d\\d';
+		document.forms[ 0 ].elements[ 0 ].pattern = '(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\\/'+yearrange+'[abcACB]\\/\\d\\d\\d\\d';
 		document.forms[ 0 ].elements[ 0 ]
             .oninvalid = function( event ) {
                 event.target.setCustomValidity("State code should start with a valid state abbrevation, have forward slashes, appropriate batch, and four trailing digits. Right? And are you currently serving?");

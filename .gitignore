@@ -145,3 +145,6 @@ $RECYCLE.BIN/
 
 # eslint config file
 eslintrc.json
+
+# no more test images, they're becoming too much (done 25-10-2019)
+/img

@@ -107,6 +107,23 @@
             margin-top: 50px;
         }
 
+        @media (max-width: 576px) {
+        .card-columns {
+            -webkit-column-count: 2;
+            -moz-column-count: 2;
+            column-count: 2;
+            -webkit-column-gap: 0.5rem;
+            -moz-column-gap: 0.5rem;
+            column-gap: 0.5rem;
+            orphans: 1;
+            widows: 1;
+        }
+        .card-columns .card {
+            display: inline-block;
+            width: 100%;
+        }
+        }
+
 
         @-webkit-keyframes spin {
             0% {
@@ -174,6 +191,24 @@
 
         }
 
+        @media (max-width: 576px) {
+            #hereNow {
+                overflow-y: scroll;
+                height: 40vh;
+            }
+        }
+        
+
+        @media (max-width: 576px) {
+            .app {
+                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            }
+        }
+        @media ( max-width: 768px) {
+            .app {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+        }
         ul .list-group-item:hover {
             background: rgb(236, 236, 236);
         }
@@ -528,7 +563,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">&#8358;</span>
                                                     </div>
-                                                    <input name="price" type="number" class="form-control" id="price" placeholder="Recurring price" required>
+                                                    <input name="price" type="number" inputmode="numeric" class="form-control" id="price" placeholder="Recurring price" required>
                                                     <div class="invalid-feedback" style="width: 100%;">
                                                         The recurring price for the rent is required.
                                                     </div>
@@ -613,9 +648,7 @@
                                                 <!-- thatInput -->
                                                 <div class="box">
                                                     <input type="file" name="roomsmedia" id="roomsmedia" accept="image/*,video/*" class="inputfile inputfile-2" data-multiple-caption="{count} files selected" multiple="multiple" />
-                                                    <label for="roomsmedia"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
-                                                            <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
-                                                        </svg> <span>Choose a file&hellip;</span></label>
+                                                    <label for="roomsmedia"><span>Upload media&hellip;</span></label>
                                                 </div>
 
                                                 <!-- this script must come after the input -->
@@ -630,8 +663,8 @@
     ( doing this might be stressful, we show a bit of their gallary as a nudge when we do our app)
     or they can just do a short 15 seconds video of everywhere
   -->
-
-                                            <!-- //end form for accommodation -->
+                                            <div class="card-columns" id="hereNow">
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="carousel-item" style="height: 400px;">
@@ -801,6 +834,8 @@
             <div class="modal-content">
                 <form id="postform" name="postform">
                     <!-- a very good form -->
+                    <input type="text" name="mapimage" id="mapimg" hidden>
+                    <input type="text" name="type" id="ptype" value="sale" hidden>
 
                     <div class="modal-header">
                         <h5 class="modal-title" id="">Create post</h5>
@@ -815,7 +850,11 @@
 
                         <small id="locinfo"></small>
 
-                        <div id="previewParent"></div>
+                        <div id="previewParent">
+                            <div id="previewPostPics" class="app"></div>
+                        </div>
+
+                        
 
                         <div class="d-flex align-items-center">
                             <div class="mr-auto">
@@ -907,7 +946,7 @@
             // append post type
 
             // checks if there are preview picture and the mapboximage exists
-            if (document.getElementById( 'previewParent' ).hasChildNodes() & $( "#mapboximage" ).length ) {
+            /* if (document.getElementById( 'previewParent' ).hasChildNodes() & $( "#mapboximage" ).length ) {
                 FD.append( 'type', 'location' );
                 
                 // get the image loaded from mapbox here.
@@ -916,7 +955,7 @@
 
             } else {
                 FD.append( 'type', 'sale' );
-            }
+            } */
             
 
             // Define what happens on successful data submission
@@ -927,10 +966,15 @@
                 // and reset the form
                 document.forms[ 'postform' ].reset();
                 // also clear the append image in the document body if it exists
-                if ( document.getElementById('previewParent').children.length > 0 ) { // what does hasChildNodes actually do? and why does it return this error: TypeError: Argument 1 of Node.removeChild is not an object. when there is no previewParent
+                /* if ( document.getElementById('previewParent').children.length > 0 ) { // what does hasChildNodes actually do? and why does it return this error: TypeError: Argument 1 of Node.removeChild is not an object. when there is no previewParent
                     document.getElementById( 'previewParent' )
                         .removeChild( document.getElementById( 'preview' ) );
-                }
+                } */
+
+                $('#previewPostPics').html('');
+
+                // if there were location info, clear it
+                document.getElementById( 'locinfo' ).innerHTML = '';
 
                 document.getElementById( 'postsubmit' )
                     .disabled = true;
@@ -945,7 +989,7 @@
 
                 setTimeout( function() {
                     $( 'div.alert.alert-success.mt-3.fade.show' )
-                        .alert( 'close' ); // Closes an (now all) alert by removing it from the DOM
+                        .alert( 'close' ); // Closes an alert (for now all) by removing it from the DOM
                 }, 2000 );
             } );
 
@@ -996,6 +1040,12 @@
                 
                     // and reset the form
                 document.forms[ "accommodationform" ].reset();
+
+                // remove the appended room images
+                $('#hereNow').html('');
+
+                // set the input button to 'Upload media...'
+                document.forms[1].elements["roomsmedia"].labels[0].children[0].innerText = "Upload media...";
 
                 // rest the carousel too
                 $( '#accommodationFormCarousel' )
@@ -1667,7 +1717,6 @@
                 // because when a post is made, it is immediately sent to others before saving to db
                 // so in that state of being sent to others, it is an array, but from db, it's a string
 
-
                 var rms = ( Array.isArray( data.post.rooms ) ? data.post.rooms : data.post.rooms.split( ',' ) );
 
                 // var jk = ( Array.isArray( data.post.media ) ? data.post.media : data.post.media.split( ',' ) );
@@ -1719,14 +1768,17 @@
                     thed.setAttribute( 'class', 'carousel-caption d-none d-md-block' );
 
                     var hh5 = document.createElement( 'h3' );
-                    hh5.innerText = ( rms[ i ] == undefined ? rms[ 0 ] : rms[ i ] ); // this is not exactly correct, needs more work
+                    // jk[i].includes(rms[ i ]);
+                    var tr = jk[i].slice(parseInt(jk[i]).toString().length, jk[i].lastIndexOf('.'));
+                    hh5.innerText = ( (tr == ('' || undefined) ? '[][]][]][]' : tr ) );
+                    // hh5.innerText = ( rms[ i ] == undefined ? rms[ 0 ] : rms[ i ] ); // this is not exactly correct, needs more work
 
-                    var ppp = document.createElement( 'p' );
-                    ppp.innerText = `Maybe some metric about ${(rms[i] == undefined ? rms[0] : rms[i])}`; // this is not exactly correct, needs more work
+                    // var ppp = document.createElement( 'p' );
+                    // ppp.innerText = `Maybe some metric about ${(rms[i] == undefined ? rms[0] : rms[i])}`; // this is not exactly correct, needs more work
 
                     // append h5 and p to description div
                     thed.appendChild( hh5 );
-                    thed.appendChild( ppp );
+                    // thed.appendChild( ppp );
 
                     // then ...
                     ci.appendChild( thed );
@@ -1783,7 +1835,7 @@
                 var d = document.createElement( 'div' );
                 d.setAttribute( 'class', 'media-body' );
                 d.appendChild( e );
-                d.appendChild( k ); //the text from sender
+                d.appendChild( k ); // the text from sender
                 d.appendChild( h );
 
                 var c = document.createElement( 'img' );
@@ -2033,15 +2085,17 @@
 
             $( '#postModalSale' )
             .on( 'hidden.bs.modal', function( e ) {
-                if (document.getElementById( 'previewParent' ).hasChildNodes()) {
+                /* if (document.getElementById( 'previewParent' ).hasChildNodes()) {
                     document.getElementById( 'previewParent' )
                         .removeChild( document.getElementById( 'preview' ) );
                         document.getElementById( 'locinfo' ).innerHTML = '';
-                }
+                } */
+
+                // if we want to clear what they were gonna post, uncomment. but we don't !
+                /* $('#previewPostPics').html('');
+                document.getElementById( 'locinfo' ).innerHTML = ''; */
                 
             } );
-
-
 
         /*
           WE'LL LAZY LOAD ALL CONTENT, FIND A WAY TO COMPRESS IMAGES, TRY TO FIND WHATSAPP COMPRESSION ALGORITHM (CAUSE THEY'RE REALLY GOOD) - ONCE WE DO THIS, MAYBE WE CAN DO VIDEO TOO
@@ -2049,24 +2103,33 @@
 
         /* Dynamically adding a change listener to the img input button */
         var imgBtn = document.getElementById( "IMG" );
-        imgBtn.addEventListener( "change", handleImages, false );
+        
 
         function handleImages() {
+            // remove location image from DOM ... and clear map data ???? yes for now, later we'd be saving it, more info
+            $('#preview').html('');
+            $('#locinfo').html('');
+            document.getElementById("mapimg").value = '';
+            // set post type to sale
+            document.getElementById("ptype").value = 'sale';
             //var preview = document.getElementById('preview');
-            var preview = document.createElement( 'div' );
-            preview.setAttribute( 'id', 'preview' );
-            preview.setAttribute( 'class', 'app' );
-            console.log( 'created!' );
+            // var preview = document.createElement( 'div' );
+            // preview.setAttribute( 'id', 'preview' );
+            // preview.setAttribute( 'class', 'app' );
+            // console.log( 'created!' );
 
             var fileList = this.files; /* now you can work with the file list */
             console.log( 'picture(s) picked!' );
+
+            // remove what was there (pics to post) before
+            $('#previewPostPics').html('');
 
 
             for ( var i = 0; i < fileList.length; i++ ) {
                 var file = fileList[ i ];
 
                 if ( file.type.startsWith( 'image/' ) ) {
-                    var contain = document.createElement( 'div' );
+                    /* var contain = document.createElement( 'div' );
                     contain.setAttribute( 'class', 'image-wrapper' );
                     contain.setAttribute( 'id', 'image-to-post' + i );
                     var b = document.createElement( 'button' );
@@ -2088,11 +2151,11 @@
                     var img = document.createElement( "img" );
 
                     contain.appendChild( img );
-                    contain.appendChild( b ); // or ico
+                    contain.appendChild( b ); */ // or ico
                     // contain.appendChild(ico); // we'd add icon later
                     // img.classList.add("img-fluid", "border"); //add classes 'img-fluid' and 'border' // let's not add it 1stly
 
-                    preview.appendChild( contain );
+                    // preview.appendChild( contain );
                     /*Next, we establish the FileReader to handle asynchronously
                     loading the image and attaching it to the img element.
                     After creating the new FileReader object, we set up its
@@ -2104,7 +2167,7 @@
                     src attribute to the loaded image which results in the image
                     appearing in the thumbnail on the user's screen.*/
                     var reader = new FileReader();
-                    reader.onload = (
+                    /* reader.onload = (
                         function( aImg ) {
                             return function( e ) {
                                 aImg.src = e.target.result;
@@ -2115,7 +2178,27 @@
                                 console.log( msg );
                             };
                         } )( img );
-                    reader.readAsDataURL( file );
+                    reader.readAsDataURL( file ); */
+
+
+                    // -----
+
+                    // var file = files[i];
+                    // var reader = new FileReader();
+                    
+                    reader.onload = (function(file) {
+                        return function(event){
+                        $('#previewPostPics').append('<img src="' + event.target.result + '" class="rounded img-thumbnail img-fluid" style="max-width: 100%; height: auto;" data-order=0 data-id="'+file.lastModified+'" />');
+
+                        };
+                    })(file);
+
+                    // document.forms[2].elements[3].files
+                    /* Object.entries(document.forms[2].elements[3].files).forEach( f => {
+                        console.log('f', f)
+                    }); */
+                    
+                    reader.readAsDataURL(file);
                 }
 
 
@@ -2123,9 +2206,57 @@
 
 
             // append the div tag with id=preview
-            previewParent.appendChild( preview );
+            // previewParent.appendChild( preview );
         }
+        imgBtn.addEventListener( "change", handleImages, false );
 
+        $('#roomsmedia').change(function(e) {
+            var files = e.target.files;
+            for (var i = 0; i <= files.length; i++) {
+            
+            var file = files[i];
+            var reader = new FileReader();
+            
+            reader.onload = (function(file) {
+                
+                return function(event){
+                    $('#hereNow').prepend(`<div class="card">
+                                                <div class="">
+                                                    <img src="${event.target.result}" class="card-img-top" alt="..." data-order=0 data-id="${file.lastModified}" />
+                                                </div>
+                                                <div class="">
+                                                        <select class="accviews custom-select" id="${file.lastModified}" name="${file.size}" style="border-radius: 0rem;">
+                                                            <option selected>Choose...</option>
+                                                            <option value="Bathroom">Bathroom</option>
+                                                            <option value="Toilet">Toilet</option>
+                                                            <option value="Kitchen">Kitchen</option>
+                                                            <option value="Bathroom & Toilet">Bathroom & Toilet</option>
+                                                        </select>
+                                                    </div>
+                                                </div>`);
+                    $('.accviews').change(function (evt) {
+                        console.log('name of change', evt, evt.target.attributes['id'].value)
+                        // the picture choosen
+                        var farr = document.forms[1].elements["roomsmedia"].files;
+                        for (let index = 0; index < farr.length; index++) {
+                            const f = farr[index];
+                            console.log('fname', f.name, f.lastModified)
+                            if (f.lastModified == evt.target.attributes['id'].value) {
+                                console.log('changed name')
+                                // get extenstion s.substring(s.lastIndexOf('.'), s.length);
+                                f.name = evt.target.value + f.name.substring(f.name.lastIndexOf('.'), f.name.length);
+                            }
+                        }
+                    })
+                    
+                };
+            })(file);
+            
+            reader.readAsDataURL(file);
+            }; // end for
+        });
+
+        
         // to do recording of video https://ourcodeworld.com/articles/read/671/how-to-record-a-video-with-audio-in-the-browser-with-javascript-webrtc
 
         //maybe later ? https://ourcodeworld.com/articles/read/518/how-to-create-a-360-video-player-with-javascript-using-clappr
@@ -2140,7 +2271,7 @@
 
         $( '[data-spy="scroll"]' )
             .on( 'activate.bs.scrollspy', function() {
-                // do something…
+                // do something
                 console.log( 'passed' );
             } );
     </script>
@@ -2160,11 +2291,15 @@
         var findBtn2 = document.getElementById( "geo" );
 
         function locate( ev ) {
+            // if it's for a location, remove sales pic from DOM and input
+            $('#previewPostPics').html('');
+            document.forms[2].elements[4].value = '';
+            // set post type to location
+            document.getElementById("ptype").value = 'location';
             // [ev.target.id == 'findme' ev.target.nodeName == 'SPAN'] [ev.target.nodeName == 'A' ev.target.id == 'geo']
             // if the screen is small, then ev.target.nodeName == 'I', the icon tag <i></i> so we use locinfo as infoElement
             var infoElement = ( ev.target.nodeName == 'SPAN' ? 'locinfo' : ev.target.nodeName == 'A' ? 'accinfo' : 'locinfo' ); // the variable that decides where the geolocation errors are displayed, this is getting the id of the element and passing it to the variable so we can reference the div element and display error messages
             
-
             console.log( 'Retriving location...', infoElement, ev.target.nodeName);
             var savePoint = {
                 "type": "Feature",
@@ -2318,7 +2453,12 @@
                 // get map if location is accurate enough, but if it isn't then ask user where they are. | Retrieve a map at gotten longitude and latitude, with zoom 14.24, bearing 0, and pitch 60. The map will be 460 pixels wide and 460 pixels high (for mobile screen, 310px by 290px)
                 img.src = "https://api.mapbox.com/styles/v1/mapbox/streets-v10/static/pin-l(" + position.coords.longitude +
                     "," + position.coords.latitude + ")/" + position.coords.longitude + "," + position.coords.latitude +
-                    ",14.25,0,60/310x290?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg";
+                    ",14.25,0,60/310x290?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg"
+                ;
+                
+                // set the form property for the img
+                document.getElementById("mapimg").value = img.src;
+
                 var preview = document.createElement( 'div' );
                 preview.setAttribute( 'id', 'preview' );
                 preview.setAttribute( 'class', 'cnt mb-2' ); // TODO, align item in middle
@@ -2334,9 +2474,11 @@
                 // note: there's img.complete;
                 
 
-                var anythere = document.getElementById( 'previewParent' ).hasChildNodes();
+                var anythere = document.getElementById( 'previewPostPics' ).hasChildNodes();
                 if (anythere) { // replace the first element
-                    previewParent.replaceChild(preview, document.getElementById('preview'))
+                    // previewParent.replaceChild(preview, document.getElementById('previewPostPics'));
+                    $('#previewPostPics').html('');
+                    previewParent.appendChild( preview );
                 } else {
                     // just append
                     previewParent.appendChild( preview );

@@ -32,8 +32,14 @@
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="/<%= statecode2 %>">
+         
+        <div> <div class="carousel-control-prev-icon"></div> Home</div>
+    </a>
+    </nav>
 
-    <div class="d-flex" id="wrapper">
+    <div class="d-flex" id="wrapper" style="padding-top: 55px;">
 
         <!-- Sidebar -->
         <div class="bg-light border-right" id="sidebar-wrapper">
@@ -502,8 +508,7 @@
                         </div>
                     </a>`;
 
-                $( d )
-                    .insertBefore( '#v-pills-tab > a:nth-child(2)' );
+                $( d ).insertBefore( '#v-pills-tab > a:nth-child(2)' );
 
                 // the chatting tab
                 $( `<div class="tab-pane fade" id="v-pills-${data.from.statecode.replace(/\//g, '-')}" role="tabpanel"
@@ -514,8 +519,7 @@
 
                                 </div>
                             </div>
-                        </div>` )
-                    .insertBefore( '#v-pills-tabContent > div:nth-child(2)' );
+                        </div>` ).insertBefore( '#v-pills-tabContent > div:nth-child(2)' );
             }
 
             // add the .bg-warning class to the sidebar tab of the [receiving] account [if it isn't the active tab] to show there's a new message

@@ -1,3 +1,5 @@
+// NEVER THROW ERR, INSTEAD, SEND A RESPONSE TO THE FRONT END, OR PERFORM THE ACTION AGAIN (TRYING TO CORRECT AS MUCH AS POSSIBLE, AFTER INFERRING THE CAUSE OF THE ERROR)
+// I need to use env for passwords too, and make sure previous commits of corpers.online repo doesn't show the password and username for ...
 //https://github.com/Connarts/corpers.online.git
 /*
 this is what ran the server BEFORE on corpers.online subdomain in connarts.com.ng terminal:
@@ -254,7 +256,7 @@ app.locals.email = 'nwachukwuossai@gmail.com';
 // before any route method, declare session variable // WHY ?
 // var _session;
 
-app.get('/', function (req, res) {
+app.get(['/', '/home', '/index', '/homepage'], function (req, res) {
   /* _session = req.session;
   _session.d = 'k'; */
   res.type('html');
@@ -1640,6 +1642,9 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
       ([key, value]) => {
         // console.log('key:', key, 'value:', value);
 
+        // rename/change the file name appropriately // Date.now() part of name + get what's in the pic + file extension
+        value.filename = value.filename.slice(0, value.filename.lastIndexOf('.')) + req.body[value.size] + value.originalname.slice(value.originalname.lastIndexOf('.'));
+
         /** When using the "single"
          data come in "req.file" regardless of the attribute "name". 
         **/
@@ -1648,7 +1653,8 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
         /** The original name of the uploaded file
             stored in the variable "originalname".
         **/
-        var target_path = 'img/' + value.originalname;
+        // var target_path = 'img/' + value.originalname;
+        var target_path = 'img/' + value.filename;
 
         /** A better way to copy the uploaded file. **/
         var src = fs.createReadStream(tmp_path);
@@ -1657,9 +1663,9 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
 
         src.on('end', function () {
           // res.render('complete');
-          console.log('complete, pushing', value.originalname);
+          console.log('complete, pushing', value.originalname, value.filename);
 
-          arraymedia.push(value.originalname); // returns a number!
+          arraymedia.push(value.filename); // returns a number!
 
           // when we're done, insert in db and emit to other users
 

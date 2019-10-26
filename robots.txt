@@ -1,0 +1,5 @@
+# Hi
+User-agent: *
+Allow: /
+
+Sitemap: https://corpers.online/sitemap.xml
