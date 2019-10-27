@@ -151,9 +151,37 @@
     <main role="main">
         <div class="parent">
             <div class="section-one item">
+
+                    
+
+                    <% if (theacc.length > 0){ %>
+                        <div class="card flex-md-row mb-4 mt-2 box-shadow h-md-250 border-success">
+                                <div class="card-body d-flex flex-column align-items-start hover">
+                                                    
+                                        <strong class="d-inline-block mb-2 text-primary mr-auto"><%= theacc[0].type %></strong>
+                                        
+                                    <h3 class="mb-0">
+                                        <a class="text-dark" href="#!"><%= theacc[0].address %></a>
+                                        <% if ( theacc[0].acc_geodata != '' ) { %>
+                                            <span class="oi oi-map-marker" title="accommodation map marker" aria-hidden="true"></span>
+                                        <% } %>
+                                    </h3>
+                                    <div class="mb-1 text-muted">with <%= theacc[0].rooms.replace('', 'and ').split(',').reverse().toString().replace(/,/g, ', ') %></div>
+                                    <p class="card-text mb-auto"> &#8358;<%= theacc[0].price%> <%= theacc[0].rentrange %></p>
+            
+                                    <% if ( theacc[0].directions != ('' || null ) ) { %>
+                                        <p class="card-text mb-auto font-italic font-weight-bold" style="display: none;" id="<%= new Date(theacc[0].input_time).getTime() %>"><%= theacc[0].directions %></p>
+                                    <a href="#!" onclick="toggle_visibility('<%= new Date(theacc[0].input_time).getTime() %>')">See directions</a>
+                                    <% } %>
+                                    
+                                </div>
+                        </div>
+                        
+                    <%  }%>
+
                 <div class="thelist" id="tl">
                     <div class="" id="accordionExample">
-                            <% if ( ppas.length > 0 ) { // for when they open up a new chat and if they've never chatted before // i.e. this guy has no old chat AT ALL they possibly couldn't have chatted before %>
+                            <% if ( ppas.length > 0 ) { %>
                             <div class="card">
                                     <div class="card-header" id="headingPPAs">
                                         <h5 class="mb-0"><%#= ( ppas.length > 1 ? 'true' : 'false' ) // what if one or all the sections are empty, then how do we handle which is expanded first %>
@@ -243,7 +271,8 @@
                                                     
                                                     
                                                 </div>
-                                                <img id="hide" class="card-img-right flex-auto  shw" src="1000x1000.png" data-holder-rendered="true">
+                                                <!-- maybe uncomment later -->
+                                                <!-- <img id="hide" class="card-img-right flex-auto  shw" src="1000x1000.png" data-holder-rendered="true"> -->
                                             </div>
                                         <% } %>
 

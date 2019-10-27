@@ -157,7 +157,31 @@ async function main(email, name, state) {
       from: '"Corpers Online 🇳🇬" <hi@corpers.online>', // sender address
       to: email,// 'bar@example.com, baz@example.com', // list of receivers
       subject: 'Welcome to the Network', // Subject line
-      text: 'Hello world?', // plain text body
+      text: `Here's a short introduction! ${name}, we're glad you're now online with us. We are psyched about it. 
+      And we have some information for you. So you'd know what Corpers Online is really about. 
+      Post images of house hold items or anything of value, with appropriate descriptions e.g. price, condition of the item etc., 
+      to other corpers to sell. We imagine these are items you'd no longer need when you're about having your PoP. 
+      Share the location of your PPA. Remember when you first got to ${state} ?
+      How you were probably lost a bit, you most likely didn't know where your PPA was or any other place to begin with!
+      Well, it's the same for most new corpers. 
+      While sharing the location of your PPA, please include directions from a popular landmark 
+      (like a popular junction, or building or name of place).
+      Share accommodation details. We want to make it easy for corpers to find accommodation. 
+      So when you're about having your PoP or leaving an accommodation you acquired during your service year, 
+      share the details online.
+      This is how it works. Your PoP is over and you're leaving your ${state}, 
+      post the accommodation details so a corper can easily find accommodation without the stress of house agents. 
+      Also, if your rent isn't over you can collect the rest from the incoming corper 
+      so the corper just continues using the accommodation.
+      
+      
+      TL;DR
+
+      When ever you're online, think of other corpers in ${state}. 
+      What kind of information would they need. Share valuable information you'd share to your younger self 
+      when you first got to your ${state}. 
+      We call this #Rule28.
+      Of course, mind your language and how you interact online. We trust you've got this.`, // plain text body
       html: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
       <html xmlns="http://www.w3.org/1999/xhtml">
       <head>
@@ -207,8 +231,8 @@ async function main(email, name, state) {
                                                                           </li>
                                                                           <li>
                                                                               <!-- Share the route to your PPA. -->
-                                                                              Share the location of your PPA. Remember when you first got to your service state ?<!-- input the state for them -->
-                                                                              How you were probably lost a bit, you didn't know where your PPA was or any place to begin with!
+                                                                              Share the location of your PPA. Remember when you first got to ${state} ?
+                                                                              How you were probably lost a bit, you most likely didn't know where your PPA was or any place to begin with!
                                                                               Well, it's the same for most new corpers. While sharing the location of your PPA, please include directions from a popular landmark (like a popular junction, or building or name of place)
                                                                           </li>
                                                                       </ul>
@@ -231,7 +255,7 @@ async function main(email, name, state) {
                                                                       <ul>
                                                                           <li>
                                                                               Share accommodation details. We want to make it easy for corpers to find accommodation. So when you're about having your PoP or leaving an accommodation you acquired during your service year, share the details online.
-                                                                              This is how it works. Your PoP is over and you're leaving your service state, post the accommodation details so a corper can easily find accommodation without the stress of house agents. Also, if your rent isn't over you can collect the rest from the incoming corper so the corper just continues using the accommodation. 
+                                                                              This is how it works. Your PoP is over and you're leaving your ${state}, post the accommodation details so a corper can easily find accommodation without the stress of house agents. Also, if your rent isn't over you can collect the rest from the incoming corper so the corper just continues using the accommodation. 
                                                                           </li>
                                                                       </ul>
                                                                       
@@ -246,7 +270,7 @@ async function main(email, name, state) {
                                       <tr>
                                           <td style="padding: 20px 0 30px 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
                                               <h3>TL;DR</h3>
-                                              When ever you're online, think of other corpers in ${state}. What kind of information would they need. Share valuable information you'd share to your younger self when you first got to your service state. We call this <b>#Rule28</b>. <!-- If they click it, they should tweet sth about it -->
+                                              When ever you're online, think of other corpers in ${state}. What kind of information would they need. Share valuable information you'd share to your younger self when you first got to your ${state}. We call this <b>#Rule28</b>. <!-- If they click it, they should tweet sth about it -->
                                               Of course, mind your language and how you interact online. We trust you've got this.
                                           </td>
                                       </tr>
@@ -258,7 +282,7 @@ async function main(email, name, state) {
                                   <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                       <tr>
                                           <td style="color: #ffffff; font-family: Arial, sans-serif; font-size: 14px;" width="75%">
-                                              &reg; Corpers Online 2019
+                                              &reg; Corpers Online ${new Date().getFullYear()}
                                           </td>
                                           <td align="right" width="25%">
                                               <table border="0" cellpadding="0" cellspacing="0">
@@ -321,7 +345,7 @@ async function main(email, name, state) {
           filename: 'instagram.png',
           path: 'https://corpers.online/work on/instagram.png',
           cid: '006@corpers.online' //same cid value as in the html img src
-      }]
+      }] // don't use .svg as attachment to embed in the email, it'll show in the email and still be an attachment (not what we want)
   }, (error, info) => {
       if (error) {
           console.log(error);
@@ -2023,7 +2047,7 @@ app.post('/login', bodyParser.urlencoded({ extended: true }), function (req, res
         case 'ER_ACCESS_DENIED_ERROR':
 
           break;
-        case 'ECONNREFUSED':
+        case 'ECONNREFUSED': // maybe send an email to myself or the delegated developer // try to connect again multiple times first
 
           break;
         case 'PROTOCOL_CONNECTION_LOST':
