@@ -2,7 +2,7 @@
 const nodemailer = require('nodemailer');
 
 // async..await is not allowed in global scope, must use a wrapper
-async function main() {
+async function main(email, name, state) {
     // Generate test SMTP service account from ethereal.email
     // Only needed if you don't have a real mail account for testing
     let testAccount = await nodemailer.createTestAccount();
@@ -20,8 +20,8 @@ async function main() {
 
     // send mail with defined transport object
     let info = await transporter.sendMail({
-        from: '"Corpers Online 👻" <hi@corpers.online>', // sender address
-        to: 'nwachukwuossai@gmail.com',// 'bar@example.com, baz@example.com', // list of receivers
+        from: '"Corpers Online 🇳🇬" <hi@corpers.online>', // sender address
+        to: email,// 'bar@example.com, baz@example.com', // list of receivers
         subject: 'Welcome to the Network', // Subject line
         text: 'Hello world?', // plain text body
         html: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -34,11 +34,11 @@ async function main() {
         <body style="margin: 0; padding: 0;">
             <table border="0" cellpadding="0" cellspacing="0" width="100%">	
                 <tr>
-                    <td style="padding: 10px 0 30px 0;">
+                    <td style="padding: 10px 0 10px 0;">
                         <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border: 1px solid #cccccc; border-collapse: collapse;">
                             <tr>
                                 <td align="center" bgcolor="#70bbd9" >
-                                    <img src="img/work on/CORPERS ONLINE(3).png" alt="Ossai, welcome to corpers.online" style="display: block;width: 100%;height: auto;" />
+                                    <img src="cid:001@corpers.online" alt="${name}, welcome to corpers.online" style="display: block;width: 100%;height: auto;" />
                                 </td>
                             </tr>
                             <tr>
@@ -51,7 +51,7 @@ async function main() {
                                         </tr>
                                         <tr>
                                             <td style="padding: 20px 0 30px 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
-                                                Ossai, we're glad you're now online with us. We are psyched about it. And we have some information for you. So you'd know what Corpers Online is really about.
+                                                <b>${name}</b>, we're glad you're now online with us. We are psyched about it. And we have some information for you. So you'd know what Corpers Online is really about.
                                             </td>
                                         </tr>
                                         <tr>
@@ -62,7 +62,7 @@ async function main() {
                                                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                                                 <tr>
                                                                     <td>
-                                                                        <img src="img/work on/CORPERSONLINE.jpg" alt="" width="100%" height="140" style="display: block;" />
+                                                                        <img src="cid:002@corpers.online" alt="" width="100%" height="140" style="display: block;" />
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -89,7 +89,7 @@ async function main() {
                                                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                                                 <tr>
                                                                     <td>
-                                                                        <img src="img/work on/rule28.png" alt="" width="100%" height="140" style="display: block;" />
+                                                                        <img src="cid:003@corpers.online" alt="" width="100%" height="140" style="display: block;" />
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -112,7 +112,7 @@ async function main() {
                                         <tr>
                                             <td style="padding: 20px 0 30px 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
                                                 <h3>TL;DR</h3>
-                                                When ever you're online, think of other corpers. What kind of information would they need. Share valuable information you'd share to your younger self when you first got to your service state. We call this #Rule28. <!-- If they click it, they should tweet sth about it -->
+                                                When ever you're online, think of other corpers in ${state}. What kind of information would they need. Share valuable information you'd share to your younger self when you first got to your service state. We call this <b>#Rule28</b>. <!-- If they click it, they should tweet sth about it -->
                                                 Of course, mind your language and how you interact online. We trust you've got this.
                                             </td>
                                         </tr>
@@ -131,19 +131,19 @@ async function main() {
                                                     <tr>
                                                         <td style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;">
                                                             <a href="https://twitter.com/OnlineCorpers" style="color: #ffffff;">
-                                                                <img src="https://image.flaticon.com/icons/svg/174/174876.svg" alt="TWTR" width="38" height="38" style="display: block;" border="0" />
+                                                                <img src="cid:004@corpers.online" alt="TWTR" width="38" height="38" style="display: block;" border="0" />
                                                             </a>
                                                         </td>
                                                         <td style="font-size: 0; line-height: 0;" width="20">&nbsp;</td>
                                                         <td style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;">
                                                             <a href="https://www.facebook.com/CorpersOnline/" style="color: #ffffff;">
-                                                                <img src="https://image.flaticon.com/icons/svg/220/220200.svg" alt="FB" width="38" height="38" style="display: block;" border="0" />
+                                                                <img src="cid:005@corpers.online" alt="FB" width="38" height="38" style="display: block;" border="0" />
                                                             </a>
                                                         </td>
                                                         <td style="font-size: 0; line-height: 0;" width="20">&nbsp;</td>
                                                         <td style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;">
                                                             <a href="https://www.instagram.com/corpersonline/" style="color: #ffffff;">
-                                                                <img src="https://image.flaticon.com/icons/svg/174/174855.svg" alt="IG" width="38" height="38" style="display: block;" border="0" />
+                                                                <img src="cid:006@corpers.online" alt="IG" width="38" height="38" style="display: block;" border="0" />
                                                             </a>
                                                         </td>
                                                     </tr>
@@ -158,7 +158,36 @@ async function main() {
                 </tr>
             </table>
         </body>
-        </html>` // html body
+        </html>`, // html body
+        attachments: [{
+            filename: 'CORPERS ONLINE.png',
+            path: 'https://corpers.online/work on/CORPERS ONLINE.png',
+            cid: '001@corpers.online' //same cid value as in the html img src
+        }, {
+            filename: 'CORPERSONLINE.png',
+            path: 'https://corpers.online/work on/CORPERSONLINE.png',
+            cid: '002@corpers.online' //same cid value as in the html img src
+        },
+        {
+            filename: 'rule28.png',
+            path: 'https://corpers.online/work on/rule28.png',
+            cid: '003@corpers.online' //same cid value as in the html img src
+        },
+        {
+            filename: 'twitter.png',
+            path: 'https://corpers.online/work on/twitter.png',
+            cid: '004@corpers.online' //same cid value as in the html img src
+        },
+        {
+            filename: 'facebook.png',
+            path: 'https://corpers.online/work on/facebook.png',
+            cid: '005@corpers.online' //same cid value as in the html img src
+        },
+        {
+            filename: 'instagram.png',
+            path: 'https://corpers.online/work on/instagram.png',
+            cid: '006@corpers.online' //same cid value as in the html img src
+        }]
     }, (error, info) => {
         if (error) {
             console.log(error);
@@ -174,4 +203,4 @@ async function main() {
 
 }
 
-main().catch(console.error);
+main('mayokundaramola@gmail.com', 'Emmanuel', 'ENUGU').catch(console.error);
