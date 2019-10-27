@@ -1,350 +1,135 @@
-<!DOCTYPE html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-
-        <style>
-            html, body{
-  min-height: 100%;
-}
-
-body{
-  margin: 0;
-  padding: 0;
-  background: #228daa; /* Old browsers */
-background: -moz-linear-gradient(top, #228daa 0%, #6cc9bd 50%, #c8ea7e 100%); /* FF3.6+ */
-background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#228daa), color-stop(50%,#6cc9bd), color-stop(100%,#c8ea7e)); /* Chrome,Safari4+ */
-background: -webkit-linear-gradient(top, #228daa 0%,#6cc9bd 50%,#c8ea7e 100%); /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient(top, #228daa 0%,#6cc9bd 50%,#c8ea7e 100%); /* Opera 11.10+ */
-background: -ms-linear-gradient(top, #228daa 0%,#6cc9bd 50%,#c8ea7e 100%); /* IE10+ */
-background: linear-gradient(to bottom, #228daa 0%,#6cc9bd 50%,#c8ea7e 100%); /* W3C */
-  font-family:"Helvetica Neue",sans-serif;
-  font-weight: 300;
-  color: #404040;
-}
-
-.clear-both{clear:both;}
-
-h1{
-  color: #FFFFFF;
-  font-weight: 300;
-  margin: 0;
-  padding: 30px;
-  text-align: center;
-}
-
-.block{
-  background-color: rgba(255, 255, 255, 0.5);
-  width: 60%;
-  margin:0 auto;
-  margin-bottom: 30px;
-  padding: 10px;
-  text-align: center;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-}
-
-label.button{
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-  background-color: #FFFFFF;
-  border: 1px solid #6C6C6C;
-  color: #6C6C6C;
-  padding: 5px 10px;
-  margin: 5px 0;
-  display: inline-block;
-  -webkit-transition: all 200ms linear;
-  -moz-transition: all 200ms linear;
-  -ms-transition: all 200ms linear;
-  -o-transition: all 200ms linear;
-  transition: all 200ms linear;
-}
-
-label.button:hover{
-  background-color:#F0F0F0;
-  cursor: pointer;
-  -webkit-transition: all 200ms linear;
-  -moz-transition: all 200ms linear;
-  -ms-transition: all 200ms linear;
-  -o-transition: all 200ms linear;
-  transition: all 200ms linear;
-}
-
-input#images{display: none;}
-
-#multiple-file-preview{border-top: 1px solid rgba(0, 0, 0, 0.11); margin-top: 10px; padding: 10px;}
-
-#sortable {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  min-height: 300px;
-}
-
-  #sortable li {
-    margin: 3px 3px 3px 0;
-    float: left;
-    width: 100px;
-    text-align: center;
-    position: relative;
-    background-color: #FFFFFF;
-  }
-
-    #sortable li, #sortable li img
-    {
-          -webkit-border-radius: 4px;
-          -moz-border-radius: 4px;
-          border-radius: 4px;
-    }
-
-    #sortable li div.order-number{
-      position: absolute;
-      top: 2px;
-      right: 2px;
-      width: 15px;
-      height: 15px;
-      background-color: #2B91E3;
-      color: #FFFFFF;
-      font-size: 12px;
-      -webkit-border-radius: 20px;
-      -moz-border-radius: 20px;
-      border-radius: 20px;
-    }
-        </style>
-
-        <script src="js/jquery-3.3.1.min.js"></script>
-        <script src="js/jquery-ui.js"></script>
-
-        <link rel="stylesheet" href="css/bootstrap.css">
-    </head>
-    <body>
-
-        <div>
-            <label class="btn btn-default">
-                Browse files <input type="file" hidden>
-            </label>
-        </div>
-
-        <div class="block">
-            <form action="post">
-                    <label class="button" for="images">Upload Images</label>
-                    <input type="file" id="images" multiple="multiple"/>
-                    <div id="multiple-file-preview">
-                      <ul id="sortable">
-                        <div class="clear-both"></div>
-                      </ul>
-                    </div>
-            </form>
-
-            <div>
-                    <div class="" id="here">
-                          </div>
-            </div>
-
-            <div class="card" style="width: 18rem;">
-                    <img src="img/1564742888187.png" class="card-img-top" alt="...">
-                    <div class="">
-                            
-                            <select class="custom-select" id="" style="border-radius: 0rem;">
-                              <option selected>Choose...</option>
-                              <option value="1">Bathroom</option>
-                              <option value="2">Toilet</option>
-                              <option value="3">Kitchen</option>
-                            </select>
-                          </div>
-                    
-                  </div>
-
-
-        <div>
-
-                <div class="card-columns">
-                        <div class="card">
-                          <div class="">
-                                <img src="img/work on/CORPERSHaus.jpg" class="card-img-top" alt="...">
-                          </div>
-                          <div class="">
-                                <select class="custom-select" id="" style="border-radius: 0rem;">
-                                  <option selected>Choose...</option>
-                                  <option value="1">Bathroom</option>
-                                  <option value="2">Toilet</option>
-                                  <option value="3">Kitchen</option>
-                                </select>
-                              </div>
-                        </div>
-                        <div class="card">
-                          <img src="img/busy knowing & doing (1).png" class="card-img-top" alt="...">
-                          <div class="">
-                                <select class="custom-select" id="" style="border-radius: 0rem;">
-                                  <option selected>Choose...</option>
-                                  <option value="1">Bathroom</option>
-                                  <option value="2">Toilet</option>
-                                  <option value="3">Kitchen</option>
-                                </select>
-                              </div>
-                        </div>
-                        <div class="card">
-                          <img src="img/001.jpg" class="card-img-top" alt="...">
-                          <div class="">
-                                <select class="custom-select" id="" style="border-radius: 0rem;">
-                                  <option selected>Choose...</option>
-                                  <option value="1">Bathroom</option>
-                                  <option value="2">Toilet</option>
-                                  <option value="3">Kitchen</option>
-                                </select>
-                              </div>
-                        </div>
-                        <div class="card">
-                          <img src="img/busy knowing & doing (1).png" class="card-img-top" alt="...">
-                          <div class="">
-                                <select class="custom-select" id="" style="border-radius: 0rem;">
-                                  <option selected>Choose...</option>
-                                  <option value="1">Bathroom</option>
-                                  <option value="2">Toilet</option>
-                                  <option value="3">Kitchen</option>
-                                </select>
-                              </div>
-                        </div>
-                        <div class="card">
-                          <img src="img/001.jpg" class="card-img-top" alt="...">
-                          <div class="">
-                                <select class="custom-select" id="" style="border-radius: 0rem;">
-                                  <option selected>Choose...</option>
-                                  <option value="1">Bathroom</option>
-                                  <option value="2">Toilet</option>
-                                  <option value="3">Kitchen</option>
-                                </select>
-                              </div>
-                        </div>
-                        <div class="card">
-                          <img src="img/busy knowing & doing (1).png" class="card-img-top" alt="...">
-                          <div class="">
-                                <select class="custom-select" id="" style="border-radius: 0rem;">
-                                  <option selected>Choose...</option>
-                                  <option value="1">Bathroom</option>
-                                  <option value="2">Toilet</option>
-                                  <option value="3">Kitchen</option>
-                                </select>
-                              </div>
-                        </div>
-                        <div class="card">
-                          <img src="img/001.jpg" class="card-img-top" alt="...">
-                          <div class="">
-                                <select class="custom-select" id="" style="border-radius: 0rem;">
-                                  <option selected>Choose...</option>
-                                  <option value="1">Bathroom</option>
-                                  <option value="2">Toilet</option>
-                                  <option value="3">Kitchen</option>
-                                </select>
-                              </div>
-                        </div>
-                      </div>
-
-                      <hr>
-                <div class="card-deck">
-                        <div class="card">
-                          <img src="..." class="card-img-top" alt="...">
-                          <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                          </div>
-                        </div>
-                        <div class="card">
-                          <img src="..." class="card-img-top" alt="...">
-                          <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-                            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                          </div>
-                        </div>
-                        <div class="card">
-                          <img src="..." class="card-img-top" alt="...">
-                          <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
-                            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                          </div>
-                        </div>
-                      </div>
-        </div>
-          </div>
-
-          <script>
-              $(function(){
-  
-  $('#images').change(function(e) {
-    var files = e.target.files;
-		for (var i = 0; i <= files.length; i++) {
-      
-      // when i == files.length reorder and break
-      if(i==files.length){
-        // need timeout to reorder beacuse prepend is not done
-        setTimeout(function(){ reorderImages(); }, 100);
-        break;
-      }
-      
-      var file = files[i];
-      var reader = new FileReader();
-      
-      reader.onload = (function(file) {
-        return function(event){
-          $('#sortable').prepend('<li class="ui-state-default" data-order=0 data-id="'+file.lastModified+'"><img src="' + event.target.result + '" style="width:100%;" /> <div class="order-number">0</div></li>');
-
-          $('#here').prepend('<img src="' + event.target.result + '" class="rounded img-thumbnail img-fluid" style="max-width: 100%; height: auto;" data-order=0 data-id="'+file.lastModified+'" />');
-
-        };
-      })(file);
-      
-      reader.readAsDataURL(file);
-    }// end for;
-    
-  });
-  
-  $('#sortable').sortable();
-  $('#sortable').disableSelection();
-  
-  //sortable events
-  $('#sortable').on('sortbeforestop',function(event){
-    
-    reorderImages();
-    
-  });
-  
-  
-  function reorderImages(){
-    // get the items
-    var images = $('#sortable li');
-    
-    var i=0, nrOrder=0;
-    for(i;i<images.length;i++){
-      
-      var image = $(images[i]);
-      
-      if( image.hasClass('ui-state-default') && !image.hasClass('ui-sortable-placeholder') ){
-        image.attr('data-order', nrOrder);
-        var orderNumberBox = image.find('.order-number');
-        orderNumberBox.html(nrOrder+1);
-        nrOrder++;
-      }// end if;
-      
-    }// end for;
-  }
-  
- });
-          </script>
-
-        <!-- https://stackoverflow.com/questions/11235206/twitter-bootstrap-form-file-element-upload-button
-        
-        https://codepen.io/ricardoandronico/pen/NqdoxE 
-    
-    
-    object fit: cover https://codepen.io/Webslinger_J/pen/OmdWqo-->
-    </body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Welcome to the Network</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body style="margin: 0; padding: 0;">
+	<table border="0" cellpadding="0" cellspacing="0" width="100%">	
+		<tr>
+			<td style="padding: 10px 0 30px 0;">
+				<table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border: 1px solid #cccccc; border-collapse: collapse;">
+					<tr>
+						<td align="center" bgcolor="#70bbd9" >
+							<img src="img/work on/CORPERS ONLINE(3).png" alt="Ossai, welcome to corpers.online" style="display: block;width: 100%;height: auto;" />
+						</td>
+					</tr>
+					<tr>
+						<td bgcolor="#ffffff" style="padding: 40px 30px 40px 30px;">
+							<table border="0" cellpadding="0" cellspacing="0" width="100%">
+								<tr>
+									<td style="color: #153643; font-family: Arial, sans-serif; font-size: 24px;">
+										<b>Here's a short introduction!</b>
+									</td>
+								</tr>
+								<tr>
+									<td style="padding: 20px 0 30px 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
+										Ossai, we're glad you're now online with us. We are psyched about it. And we have some information for you. So you'd know what Corpers Online is really about.
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<table border="0" cellpadding="0" cellspacing="0" width="100%">
+											<tr>
+												<td width="260" valign="top">
+													<table border="0" cellpadding="0" cellspacing="0" width="100%">
+														<tr>
+															<td>
+																<img src="img/work on/CORPERSONLINE.jpg" alt="" width="100%" height="140" style="display: block;" />
+															</td>
+														</tr>
+														<tr>
+															<td style="padding: 25px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
+																<ul>
+																	<li>
+																		Post images of house hold items or anything of value, with appropriate descriptions e.g. price, condition of the item etc., to other corpers to sell. We imagine these are items you'd no longer need when you're about having your PoP.
+																	</li>
+																	<li>
+																		<!-- Share the route to your PPA. -->
+																		Share the location of your PPA. Remember when you first got to your service state ?<!-- input the state for them -->
+																		How you were probably lost a bit, you didn't know where your PPA was or any place to begin with!
+																		Well, it's the same for most new corpers. While sharing the location of your PPA, please include directions from a popular landmark (like a popular junction, or building or name of place)
+																	</li>
+																</ul>
+															</td>
+														</tr>
+													</table>
+												</td>
+												<td style="font-size: 0; line-height: 0;" width="20">
+													&nbsp;
+												</td>
+												<td width="260" valign="top">
+													<table border="0" cellpadding="0" cellspacing="0" width="100%">
+														<tr>
+															<td>
+																<img src="img/work on/rule28.png" alt="" width="100%" height="140" style="display: block;" />
+															</td>
+														</tr>
+														<tr>
+															<td style="padding: 25px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
+																<ul>
+																	<li>
+																		Share accommodation details. We want to make it easy for corpers to find accommodation. So when you're about having your PoP or leaving an accommodation you acquired during your service year, share the details online.
+																		This is how it works. Your PoP is over and you're leaving your service state, post the accommodation details so a corper can easily find accommodation without the stress of house agents. Also, if your rent isn't over you can collect the rest from the incoming corper so the corper just continues using the accommodation. 
+																	</li>
+																</ul>
+																
+															</td>
+														</tr>
+													</table>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<td style="padding: 20px 0 30px 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
+										<h3>TL;DR</h3>
+										When ever you're online, think of other corpers. What kind of information would they need. Share valuable information you'd share to your younger self when you first got to your service state. We call this #Rule28. <!-- If they click it, they should tweet sth about it -->
+										Of course, mind your language and how you interact online. We trust you've got this.
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td bgcolor="#000000" style="padding: 30px 30px 30px 30px;">
+							<table border="0" cellpadding="0" cellspacing="0" width="100%">
+								<tr>
+									<td style="color: #ffffff; font-family: Arial, sans-serif; font-size: 14px;" width="75%">
+                    					&reg; Corpers Online 2019
+									</td>
+									<td align="right" width="25%">
+										<table border="0" cellpadding="0" cellspacing="0">
+											<tr>
+												<td style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;">
+													<a href="https://twitter.com/OnlineCorpers" style="color: #ffffff;">
+														<img src="https://image.flaticon.com/icons/svg/174/174876.svg" alt="TWTR" width="38" height="38" style="display: block;" border="0" />
+													</a>
+												</td>
+												<td style="font-size: 0; line-height: 0;" width="20">&nbsp;</td>
+												<td style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;">
+													<a href="https://www.facebook.com/CorpersOnline/" style="color: #ffffff;">
+														<img src="https://image.flaticon.com/icons/svg/220/220200.svg" alt="FB" width="38" height="38" style="display: block;" border="0" />
+													</a>
+												</td>
+												<td style="font-size: 0; line-height: 0;" width="20">&nbsp;</td>
+												<td style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;">
+													<a href="https://www.instagram.com/corpersonline/" style="color: #ffffff;">
+														<img src="https://image.flaticon.com/icons/svg/174/174855.svg" alt="IG" width="38" height="38" style="display: block;" border="0" />
+													</a>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</body>
 </html>
