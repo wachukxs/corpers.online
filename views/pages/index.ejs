@@ -59,6 +59,27 @@
   <link rel="stylesheet" href="vendors/nice-select/nice-select.css"> -->
 
     <link rel="stylesheet" href="style.css">
+    <style>
+      
+
+      @media (min-width: 576px) {
+        .typeahead__list{
+        max-height: 500px;
+        overflow-y: scroll;
+      }
+      }
+
+      @media (max-width: 576px) {
+        .typeahead__search-icon{
+          padding: 0 0.5rem !important;
+        }
+        #s{
+          padding-right: 0.75rem;
+        }
+      }
+
+      
+    </style>
 </head>
 
 <body class="bg-shape">
@@ -107,7 +128,7 @@
                                 <div class="typeahead__container">
                                     <div class="typeahead__field">
                                         <div class="typeahead__query">
-                                            <input id="s" style="min-height: 0px;" name="search[query]" type="search" placeholder="Search by locality" autocomplete="off" inputmode="search">
+                                            <input id="s" name="search[query]" type="search" placeholder="Search by states" autocomplete="off" inputmode="search">
                                         </div>
                                         <div class="typeahead__button">
                                             <button type="submit">
