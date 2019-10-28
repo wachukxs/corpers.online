@@ -642,14 +642,14 @@ app.get('/newsearch', function (req, res) {
   if (req.query.nop) {
     // should we only be getting data from info ? how about [ppas in] places table ?????????????
     // we have req.query.nop=name_of_ppa + req.query.pa=ppa_address + req.query.top=type_of_ppa // also select ppa closer to it and other relevant info we'll find later
-    pool.query(mustquery + "SELECT name_of_ppa, ppa_address, type_of_ppa, ppa_geodata FROM info WHERE name_of_ppa = '" + req.query.nop + "'", function (error, results, fields) { // bring the results in ascending order
+    pool.query(mustquery + "SELECT name_of_ppa, ppa_address, type_of_ppa, ppa_geodata, ppa_directions FROM info WHERE name_of_ppa = '" + req.query.nop + "'", function (error, results, fields) { // bring the results in ascending order
 
       if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
         console.log(error);
         throw error;
       }
 
-      else if (!isEmpty(results) && results[3].ppa_geodata != '') {
+      else if (!isEmpty(results) /* && results[3].ppa_geodata != '' */) {
         // we're not adding the GeoJSON results to an array because it's only one result
         for (index = 0; index < results[3].length; index++) {
           /**
@@ -686,15 +686,17 @@ app.get('/newsearch', function (req, res) {
 
           console.log(JSON.parse(results[3][index].ppa_geodata).latlng, '======++++++++====', JSON.parse(results[3][index]['ppa_geodata']).longitude, JSON.parse(results[3][index]['ppa_geodata']).latitude);
 
-          delete results[3][index]['ppa_geodata'];
-          delete results[3][index]['type_of_ppa'];
-          delete results[3][index]['ppa_address'];
+          // delete results[3][index]['ppa_geodata'];
+          // delete results[3][index]['type_of_ppa'];
+          // delete results[3][index]['ppa_address'];
 
           // delete redundate data like longitude, latitude, and latlng in ppa_geodata after reassigning values
         }
       }
 
-      ppa_details = {};
+      ppa_details = {
+        user: {}
+      };
 
       if (req.session.statecode) {
         ppa_details.user.statecode = req.session.statecode.toUpperCase();
@@ -708,6 +710,7 @@ app.get('/newsearch', function (req, res) {
       if (req.session.name_of_ppa) {
         ppa_details.user.name_of_ppa = req.session.name_of_ppa;
       }
+      ppa_details.theacc = []; // make it empty
       ppa_details.theppa = results[3]; // JSON.stringify(results);
       ppa_details.nop = results[3]; // this variable is ambigious, nop == name of place, or name of ppa ... but we need it for now, just rush work for now
       ppa_details.ppas = results[0];
@@ -728,7 +731,7 @@ app.get('/newsearch', function (req, res) {
         throw error;
       }
 
-      else if (!isEmpty(results) && results[3].acc_geodata != '') {
+      else if (!isEmpty(results) /* && results[3].acc_geodata != '' */) {
         // we're not adding the GeoJSON results to an array because it's only one result
         for (index = 0; index < results[3].length; index++) {
           /**
@@ -752,20 +755,28 @@ app.get('/newsearch', function (req, res) {
           // results[3][index].type = "Feature"; // we don't need this for acc, even for ppa
 
           results[3][index].properties = {};
-          results[3][index].properties.acc_geodata = JSON.parse(results[3][index].acc_geodata);
+
+          if (results[3][index].acc_geodata != '') {
+            results[3][index].properties.acc_geodata = JSON.parse(results[3][index].acc_geodata);
+            results[3][index].properties.acc_geodata.latlng = {"lat":results[3][index].properties.acc_geodata.geometry.coordinates[1], "lng":results[3][index].properties.acc_geodata.geometry.coordinates[0]}
+
+            results[3][index].geometry = {};
+            results[3][index].geometry.type = "Point";
+            results[3][index].geometry.coordinates = [JSON.parse(results[3][index].acc_geodata).longitude, JSON.parse(results[3][index].acc_geodata).latitude];
+          } else {
+            // results[3][index].properties.acc_geodata = '';
+          }
+          
           results[3][index].properties.address = results[3][index].address;
           results[3][index].properties.type = results[3][index].type;
           results[3][index].properties.price = results[3][index].price;
 
           // shouldn't we add name of PPA and other details as well ?!?!?
 
-          results[3][index].geometry = {};
-          results[3][index].geometry.type = "Point";
-          results[3][index].geometry.coordinates = [JSON.parse(results[3][index].acc_geodata).longitude, JSON.parse(results[3][index].acc_geodata).latitude];
-
-          console.log(JSON.parse(results[3][index].acc_geodata).latlng, '======++++++++====', JSON.parse(results[3][index]['acc_geodata']).longitude, JSON.parse(results[3][index]['acc_geodata']).latitude);
-
-          delete results[3][index]['acc_geodata'];
+          if (results[3][index].acc_geodata != '') {
+            console.log(JSON.parse(results[3][index].acc_geodata).latlng, '======++++++++====', JSON.parse(results[3][index]['acc_geodata']).longitude, JSON.parse(results[3][index]['acc_geodata']).latitude);
+          }
+          // delete results[3][index]['acc_geodata'];
           // delete results[3][index]['type'];
           // delete results[3][index]['address'];
 
@@ -794,7 +805,7 @@ app.get('/newsearch', function (req, res) {
         throw error;
       }
 
-      else if (!isEmpty(results) && results[3].acc_geodata != '') {
+      else if (!isEmpty(results) /* && results[3].acc_geodata != '' */) {
         // we're not adding the GeoJSON results to an array because it's only one result
         for (index = 0; index < results[3].length; index++) {
           /**
@@ -827,7 +838,7 @@ app.get('/newsearch', function (req, res) {
             results[3][index].geometry.type = "Point";
             results[3][index].geometry.coordinates = [JSON.parse(results[3][index].acc_geodata).longitude, JSON.parse(results[3][index].acc_geodata).latitude];
           } else {
-            results[3][index].properties.acc_geodata = undefined;
+            // results[3][index].properties.acc_geodata = '';
           }
           
           results[3][index].properties.address = results[3][index].address;
@@ -840,7 +851,7 @@ app.get('/newsearch', function (req, res) {
             console.log(JSON.parse(results[3][index].acc_geodata).latlng, '======++++++++====', JSON.parse(results[3][index]['acc_geodata']).longitude, JSON.parse(results[3][index]['acc_geodata']).latitude);
           }
 
-          delete results[3][index]['acc_geodata'];
+          // delete results[3][index]['acc_geodata'];
           // delete results[3][index]['type'];
           // delete results[3][index]['address'];
 

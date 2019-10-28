@@ -41,10 +41,11 @@
         .section-one.item{
             /* background: linear-gradient(#93323200, #44151500), url('../logo/new/logo.png'); */
 
-            background-size: 80%;
+            /* background-size: 80%;
             background-image: url('../logo/new/logo.png');
             background-position: 50% 50%;
-            background-repeat: no-repeat;
+            background-repeat: no-repeat; */
+            /* background: transparent url(pattern.png) repeat top left; */ /* #fffbfb6e url(pattern.png) repeat top left */
 
             /* filter: blur(8px);
             -webkit-filter: blur(8px);
@@ -155,7 +156,13 @@
                     
 
                     <% if (theacc.length > 0){ %>
-                        <div class="card flex-md-row mb-4 mt-2 box-shadow h-md-250 border-success">
+                        <div class="card flex-md-row mb-4 box-shadow h-md-250 border-success">
+
+                                <% if ( theacc[0].acc_geodata != '' ) { %>
+                                    <% console.log('l', theacc[0], theacc[0].acc_geodata); %>
+                                    <% var acc_geo1 = JSON.parse(theacc[0].acc_geodata); %>
+                                        <div data-lat="<%= acc_geo1.geometry.coordinates[1] %>" data-lng="<%= acc_geo1.geometry.coordinates[0] %>" ></div>
+                                    <% } %>
                                 <div class="card-body d-flex flex-column align-items-start hover">
                                                     
                                         <strong class="d-inline-block mb-2 text-primary mr-auto"><%= theacc[0].type %></strong>
@@ -176,6 +183,30 @@
                                     
                                 </div>
                         </div>
+                        
+                    <%  } else if (theppa.length > 0){ %>
+                        <div class="card flex-md-row mb-4 box-shadow h-md-250 border-success">
+
+                                <% if ( theppa[0].ppa_geodata != '' ) { %>
+                                    <% console.log( 'pppa', theppa[0].ppa_geodata  )  %>
+                                    <% var ppa_geo1 = JSON.parse(theppa[0].ppa_geodata); %>
+                                    
+                                        <div data-lat="<%= ppa_geo1.latitude %>" data-lng="<%= ppa_geo1.longitude %>" data-accuracy="<%= ppa_geo1.accuracy %>" ></div>
+                                    <% } %>
+
+                                <div class="card-body d-flex flex-column align-items-start hover">
+                                    <strong class="d-inline-block mb-2 text-primary"><%= theppa[0].type_of_ppa %></strong>
+                                    <h3 class="mb-0">
+                                        <a class="text-dark" href="#!"><%= theppa[0].name_of_ppa %></a>
+                                        <% if ( theppa[0].ppa_geodata != '' ) { %>
+                                            <span class="oi oi-map-marker" title="accommodation map marker" aria-hidden="true"></span>
+                                        <% } %>
+                                    </h3>
+                                    <div class="mb-1 text-muted"><%= theppa[0].ppa_address %></div>
+                                    <p class="card-text mb-auto"><%= theppa[0].ppa_directions %></p>
+                                    <!-- <a href="#!">Continue reading</a> -->
+                                </div>
+                            </div>
                         
                     <%  }%>
 
@@ -205,10 +236,21 @@
 
                                             <% for (i = 0; i < ppas.length; i++) { %>
                                                 <div class="card flex-md-row mb-4 box-shadow h-md-250">
+
+                                                        <% if ( ppas[i].ppa_geodata != '' ) { %>
+                                                            
+                                                            <% var ppa_geo = JSON.parse(ppas[i].ppa_geodata); %>
+                                                            <%#console.log( 'pppa', ppa_geo  )  %>
+                                                                <div data-lat="<%= ppa_geo.latitude %>" data-lng="<%= ppa_geo.longitude %>" data-accuracy="<%= ppa_geo.accuracy %>" ></div>
+                                                            <% } %>
+
                                                         <div class="card-body d-flex flex-column align-items-start hover">
                                                             <strong class="d-inline-block mb-2 text-primary"><%= ppas[i].type_of_ppa %></strong>
                                                             <h3 class="mb-0">
                                                                 <a class="text-dark" href="#!"><%= ppas[i].name_of_ppa %></a>
+                                                                <% if ( ppas[i].ppa_geodata != '' ) { %>
+                                                                    <span class="oi oi-map-marker" title="accommodation map marker" aria-hidden="true"></span>
+                                                                <% } %>
                                                             </h3>
                                                             <div class="mb-1 text-muted"><%= ppas[i].ppa_address %></div>
                                                             <p class="card-text mb-auto"><%= ppas[i].ppa_directions %></p>

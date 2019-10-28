@@ -2531,7 +2531,7 @@
 
     <script>
         // http://www.runningcoder.org/jquerytypeahead/demo/ User v1
-
+        // they should only be able to search their state
         // use grouping from http://www.runningcoder.org/jquerytypeahead/demo/ Advanced demo Beer v1
         $.typeahead( {
             input: '.js-typeahead-search',
@@ -2560,7 +2560,7 @@
                 accommodations: {
                     template: "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}}, &#8358;{{price}} {{rentrange}} by {{statecode}}</small>" +
                         "<br> <small class='text-muted text-uppercase'>{{group}}</small>",
-                    display: [ 'streetname', 'type' ],
+                    display: [ 'streetname', 'type', 'price' ],
                     // Be careful as item properties might contain Url-unsafe characters
                     href: function( item ) {
                         // console.log('acc href', item);
@@ -2579,7 +2579,7 @@
                 ppa: {
                     template: "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-uppercase'>{{group}}</small>",
-                    display: [ "name_of_ppa", "ppa_address" ],
+                    display: [ "name_of_ppa", "ppa_address", "type_of_ppa" ],
                     // Be careful as item properties might contain Url-unsafe characters
                     href: function( item ) {
                         // console.log('ppa href', item);
