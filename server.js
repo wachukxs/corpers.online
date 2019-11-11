@@ -107,6 +107,7 @@ var moment = require('moment');
 // io connects to the server
 var io = require('socket.io')(server);
 var mysql = require('mysql');
+const dotenv = require('dotenv').config();
 /*
 var mysqloptions = {
   host: 'connarts.com.ng',
@@ -121,11 +122,11 @@ var mysqloptions = {
 var connection = mysql.createConnection(mysqloptions); // declare outside connectDB so it's a global variable
 */
 var pool = mysql.createPool({
-  connectionLimit: 15, // Default: 0
-  host: 'localhost', // def change to connarts.com.ng before deployment
-  user: 'fotoloya_ossai',
-  password: "ossai'spassword",
-  database: 'fotoloya_nysc',
+  connectionLimit : process.env.DB_CONLIMIT,
+  host            : process.env.DB_HOST,
+  user            : process.env.DB_USER,
+  password        : process.env.DB_PASSWORD,
+  database        : process.env.DB_DATABASE,
   acquireTimeout: 1800000, // 10000 is 10 secs
   multipleStatements: true // it allows for SQL injection attacks if values are not properly escaped
 });
@@ -169,7 +170,7 @@ async function main(email, name, state) {
       Share accommodation details. We want to make it easy for corpers to find accommodation. 
       So when you're about having your PoP or leaving an accommodation you acquired during your service year, 
       share the details online.
-      This is how it works. Your PoP is over and you're leaving your ${state}, 
+      This is how it works. Your PoP is over and you're leaving ${state} state, 
       post the accommodation details so a corper can easily find accommodation without the stress of house agents. 
       Also, if your rent isn't over you can collect the rest from the incoming corper 
       so the corper just continues using the accommodation.
@@ -179,7 +180,7 @@ async function main(email, name, state) {
 
       When ever you're online, think of other corpers in ${state}. 
       What kind of information would they need. Share valuable information you'd share to your younger self 
-      when you first got to your ${state}. 
+      when you first got to ${state} state. 
       We call this #Rule28.
       Of course, mind your language and how you interact online. We trust you've got this.`, // plain text body
       html: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -231,7 +232,7 @@ async function main(email, name, state) {
                                                                           </li>
                                                                           <li>
                                                                               <!-- Share the route to your PPA. -->
-                                                                              Share the location of your PPA. Remember when you first got to ${state} ?
+                                                                              Share the location of your PPA. Remember when you first got to ${state} state ?
                                                                               How you were probably lost a bit, you most likely didn't know where your PPA was or any place to begin with!
                                                                               Well, it's the same for most new corpers. While sharing the location of your PPA, please include directions from a popular landmark (like a popular junction, or building or name of place)
                                                                           </li>
@@ -270,7 +271,7 @@ async function main(email, name, state) {
                                       <tr>
                                           <td style="padding: 20px 0 30px 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
                                               <h3>TL;DR</h3>
-                                              When ever you're online, think of other corpers in ${state}. What kind of information would they need. Share valuable information you'd share to your younger self when you first got to your ${state}. We call this <b>#Rule28</b>. <!-- If they click it, they should tweet sth about it -->
+                                              When ever you're online, think of other corpers in ${state}. What kind of information would they need. Share valuable information you'd share to your younger self when you first got to ${state}. We call this <b>#Rule28</b>. <!-- If they click it, they should tweet sth about it -->
                                               Of course, mind your language and how you interact online. We trust you've got this.
                                           </td>
                                       </tr>
@@ -885,8 +886,8 @@ app.get('/newsearch', function (req, res) {
       _details.ppas = results[0];
       _details.accommodations = results[1];
       _details.places = results[2];
-      _details.theppa = undefined;
-      accommodation_details.theacc = undefined;
+      _details.theppa = []; // empty
+      _details.theacc = []; // empty
       _details.nop = undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
       res.render('pages/newsearch2', _details);
     })
@@ -2076,6 +2077,7 @@ app.post('/login', bodyParser.urlencoded({ extended: true }), function (req, res
 
       // res.status(403);
       res.status(502).redirect('/login?l=n');
+      // res.status(406).send('Not Acceptable');
     } else if (results1.length === 1) {
 
       // console.log('req.session.id: ', req.session.id);
@@ -2092,7 +2094,7 @@ app.post('/login', bodyParser.urlencoded({ extended: true }), function (req, res
           req.session.name_of_ppa = results1[0].name_of_ppa;
           req.session.location = req.session.servicestate + (results1[0].city_town ? ', ' + results1[0].city_town : '') /* + (results1[0].region_street ? ', ' + results1[0].region_street : '' ) */;
 
-          res.redirect(req.body.statecode.toUpperCase());
+          res.status(200).redirect(req.body.statecode.toUpperCase());
 
         }
 

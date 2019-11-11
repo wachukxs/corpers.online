@@ -154,7 +154,6 @@
             <div class="section-one item">
 
                     
-
                     <% if (theacc.length > 0){ %>
                         <div class="card flex-md-row mb-4 box-shadow h-md-250 border-success">
 
@@ -224,7 +223,7 @@
                                     <div id="collapsePPAs" class="collapse show" aria-labelledby="headingPPAs" data-parent="#accordionExample">
                                         <div class="card-body">
                                             <div class="wrapper"><!-- removed class 'd-none d-lg-block' from images -->
-                                                <% if ( theppa != undefined ) { // %>
+                                                <% if ( theppa.length > 0 ) { // %>
                                                     
                                                     <% var containsPPA = ppas.filter((value, index, array) => { return value.name_of_ppa == theppa[0].name_of_ppa && value.ppa_address == theppa[0].ppa_address }) ; %>
                                                     <% if ( containsPPA.lenght > 0 ) { // %>
@@ -350,8 +349,6 @@
                                                             mymap.setView( latlng ); // we need to show corpers the accuracy of our marker, like show the circular range like we normally do in you're within
                                                         } 
                                                         
-
-
 
                                                         // reset the color after a short delay
                                                         setTimeout( function() {

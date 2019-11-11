@@ -73,7 +73,7 @@ async function main(email, name, state) {
                                                                             </li>
                                                                             <li>
                                                                                 <!-- Share the route to your PPA. -->
-                                                                                Share the location of your PPA. Remember when you first got to your service state ?<!-- input the state for them -->
+                                                                                Share the location of your PPA. Remember when you first got to ${state} ?
                                                                                 How you were probably lost a bit, you didn't know where your PPA was or any place to begin with!
                                                                                 Well, it's the same for most new corpers. While sharing the location of your PPA, please include directions from a popular landmark (like a popular junction, or building or name of place)
                                                                             </li>
@@ -112,7 +112,7 @@ async function main(email, name, state) {
                                         <tr>
                                             <td style="padding: 20px 0 30px 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
                                                 <h3>TL;DR</h3>
-                                                When ever you're online, think of other corpers in ${state}. What kind of information would they need. Share valuable information you'd share to your younger self when you first got to your service state. We call this <b>#Rule28</b>. <!-- If they click it, they should tweet sth about it -->
+                                                When ever you're online, think of other corpers in ${state}. What kind of information would they need. Share valuable information you'd share to your younger self when you first got to ${state}. We call this <b>#Rule28</b>. <!-- If they click it, they should tweet sth about it -->
                                                 Of course, mind your language and how you interact online. We trust you've got this.
                                             </td>
                                         </tr>
@@ -203,4 +203,4 @@ async function main(email, name, state) {
 
 }
 
-main('mayokundaramola@gmail.com', 'Emmanuel', 'ENUGU').catch(console.error);
+main('juliet.mogaba@aiesec.net', 'Juliet', 'ABIA').catch(console.error); // juliet.mogaba@aiesec.net

@@ -149,36 +149,6 @@
             .oninvalid = function( event ) {
                 event.target.setCustomValidity("State code should start with a valid state abbrevation, have forward slashes, appropriate batch, and four trailing digits. Right? And are you currently serving?");
             }
-        /* 	function logit() {
-				var jjk = new FormData(document.getElementById("loginform"));
-				console.log('the form', jjk);
-				// JSON.stringify({ statecode: document.forms['login'].elements[0].value, password: document.forms['login'].elements[1].value })
-				fetch('/login', {
-					method: 'POST',
-					headers: {
-						"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
-					},
-					body: 'statecode='+ document.forms['login'].elements[0].value+'&password=' + document.forms['login'].elements[1].value
-				})
-					.then(response => {
-						console.log(response);
-						if (response.status == 406) {
-							document.getElementsByClassName('invalid-feedback')[0].style.display = 'block';
-							document.getElementsByClassName('invalid-feedback')[1].style.display = 'block';
-						}
-					})
-					.catch(error => console.error('Error:', error))
-					.then(response => console.log('Success:', JSON.stringify(response)));
-			}
-			// ...and take over its submit event.
-		
-
-			document.forms['login'].addEventListener("submit", function (event) {
-				event.preventDefault(); // the default behaviour is refreshing the page and adding search params to the url
-
-				logit();
-			}, false, true);
- */
     </script>
     <script>
         if ( 'URLSearchParams' in window ) {
@@ -213,7 +183,7 @@
                 document.getElementsByClassName( 'wrong' )[ 1 ].removeAttribute( 'hidden' );
             }
         }
-    </script>
+	</script>
 </body>
 
 </html>
