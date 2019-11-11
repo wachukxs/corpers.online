@@ -110,10 +110,10 @@ var mysql = require('mysql');
 const dotenv = require('dotenv').config();
 /*
 var mysqloptions = {
-  host: 'connarts.com.ng',
-  user: 'connarts_ossai',
-  password: "ossai'spassword",
-  database: 'connarts_nysc',
+  host            : process.env.DB_HOST,
+  user            : process.env.DB_USER,
+  password        : process.env.DB_PASSWORD,
+  database        : process.env.DB_DATABASE,
   multipleStatements: true,
   port: 3306,
   connectTimeout: 1800000 // 10000 is 10 secs
