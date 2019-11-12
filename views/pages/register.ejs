@@ -99,7 +99,10 @@
 								</div>
 								<!-- prevent duplicate emails. make by pattern attribute -->
                                 <input type="email" class="form-control" autocomplete="email" name="email" id="email" placeholder="Your email" aria-describedby="inputGroupPrepend" required>
-                            </div>
+							</div>
+							<div hidden class="wrong">
+								Email already registered
+							</div>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="password">Password</label>
@@ -116,7 +119,10 @@
                             <small class="text-muted">This will help verify corpers.</small>
                             <div class="valid-feedback">
                                 Looks good!
-                            </div>
+							</div>
+							<div hidden class="wrong">
+								State code already registered
+							</div>
                         </div>
 
                     </div>
@@ -154,7 +160,42 @@
             .oninvalid = function( event ) {
                 event.target.setCustomValidity("State code should start with a valid state abbrevation, have forward slashes, appropriate batch, and four trailing digits. Right? And are you currently serving?");
             }
-    </script>
+	</script>
+	<script>
+        if ( 'URLSearchParams' in window ) {
+            var urlParams = new URLSearchParams( window.location.search );
+            // URLSearchParams also provides familiar Object methods like keys(), values(), and entries():
+            if ( urlParams.get("m") === "de" ) {
+                document.getElementsByClassName( 'wrong' )[ 0 ].removeAttribute( 'hidden' );
+                document.getElementById( 'email' )
+					.classList.add( 'is-invalid' );
+					
+            } else if ( urlParams.get("m") === "ds" ) {
+                document.getElementsByClassName( 'wrong' )[ 1 ].removeAttribute( 'hidden' );
+                document.getElementById( 'scinput' )
+                    .classList.add( 'is-invalid' );
+            }
+        } else { // While URLSearchParams is ideal, not all browsers support that API.
+            function getUrlParameter( name ) {
+                name = name.replace( /[\[]/, '\\[' )
+                    .replace( /[\]]/, '\\]' );
+                var regex = new RegExp( '[\\?&]' + name + '=([^&#]*)' );
+                var results = regex.exec( location.search );
+                return results === null ? '' : decodeURIComponent( results[ 1 ].replace( /\+/g, ' ' ) );
+            };
+            if ( getUrlParameter( 'm' ) && ( getUrlParameter( 'm' ) == 'de' ) ) {
+                document.getElementsByClassName( 'wrong' )[ 0 ].removeAttribute( 'hidden' );
+                document.getElementById( 'email' )
+                    .classList.add( 'is-invalid' );
+
+            } else if ( getUrlParameter( 'm' ) && ( getUrlParameter( 'de' ) == 'ds' ) ) {
+                document.getElementsByClassName( 'wrong' )[ 1 ].removeAttribute( 'hidden' );
+                document.getElementById( 'scinput' )
+                    .classList.add( 'is-invalid' );
+
+            }
+        }
+	</script>
 
     <footer class="footer text-center pt-3">
         <p>Corpers Online built by <a href="#!">@Corpers</a> for <a href="#!">Corpers</a>.</p>

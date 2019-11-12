@@ -163,9 +163,7 @@
                     .classList.add( 'is-invalid' );
                 document.getElementsByClassName( 'wrong' )[ 1 ].removeAttribute( 'hidden' );
             }
-        } else {
-
-            // While URLSearchParams is ideal, not all browsers support that API.
+        } else { // While URLSearchParams is ideal, not all browsers support that API.
             function getUrlParameter( name ) {
                 name = name.replace( /[\[]/, '\\[' )
                     .replace( /[\]]/, '\\]' );

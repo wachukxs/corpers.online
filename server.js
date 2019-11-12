@@ -22,45 +22,6 @@ var express = require('express');
 var http = require('http');
 //var https = require('https');
 
-
-/*
-var fs = require('fs');
-fs.readFile("641.jpg", function (err, data) {
-    if (err) throw err;
-    fs.writeFile('message.txt', data, (err) => {
-      if (err) throw err;
-      console.log('The file has been saved!');
-    });
-});
-
-var rs = fs.createReadStream('641.jpg', {encoding: 'binary'});
-chunks = [];
-delay = 0;
-
-rs.on('readable', function () {
-  console.log('Image loading');
-})
-
-rs.on('data', function (doing) {
-  chunks.push(doing);
-  console.log(doing, '[][][][][][][][][][]');
-  //socket.emit('img-chunks', doing);
-  fs.writeFile('msg.txt', doing, (err) => {
-    if (err) throw err;
-    console.log('The other file has been saved!');
-  });
-})
-//this doesn't append as they are read, it accumulates read data then sends the overall accumulated data (bad!), so we'll be sending the data as they are read and appending the read ones/data from the client end [with //socket.emit('img-chunks', doing);  ---so we'll uncomment it]
-rs.on('end', function () {
-  console.log('Image loaded');
-  fs.writeFile('msg2.txt', chunks, (err) => {
-    if (err) throw err;
-    console.log('The other file has been saved!');
-  });
-})
-*/
-
-
 //make sure only serving corpers can register!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! from the pattern matching in the sign up page, look for how js can manipulate it to make sure only serving members register!
 var bodyParser = require('body-parser');
 var multer = require('multer');
@@ -144,12 +105,12 @@ async function main(email, name, state) {
 
   // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
-      host: 'mail.corpers.online',
+      host: process.env.CO_EMAIL_SERVER,
       port: 465,
       secure: true, // true for 465, false for other ports
       auth: {
           user: 'hi@corpers.online', // testAccount.user, // generated ethereal user
-          pass: 'B3JyZW?4sz.e'// testAccount.pass // generated ethereal password
+          pass: process.env.CO_EMAIL_PASSWORD // testAccount.pass // generated ethereal password
       }
   });
 
@@ -412,7 +373,7 @@ var url = 'mongodb://localhost:27017/';
 */
 server.listen(8081, function () { // auto change port if port is already in use, handle error gracefully
   console.log('node server listening on port :8081');
-}); //  throw er; // Unhandled 'error' event // Error: listen EADDRINUSE :::8081
+}); //  throw er; // Unhandled 'error' event // Error: listen EADDRINUSE ::8081
 
 // WARNING: app.listen(80) will NOT work here!
 /**
@@ -470,7 +431,7 @@ var isEmpty = function (data) {
 // gracefully hangle 404 errors with express.js ---------------- we shouldn't see CANNOT ger /about or /profile etc.
 
 app.use(session({
-  secret: '"xiooi-=-09R$NDJ&("]]csd90',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true
 }));
@@ -479,7 +440,7 @@ app.use(session({
 app.locals.title = 'Corpers Online';
 // => 'My App'
 
-app.locals.email = 'nwachukwuossai@gmail.com';
+app.locals.email = process.env.THE_EMAIL;
 // => 'me@myapp.com'
 
 
@@ -1819,31 +1780,27 @@ app.post('/signup', bodyParser.urlencoded({ extended: true }), function (req, re
 
   // we can find the service state with req.body.statecode.slice(0, 2) which gives the first two letters
 
-  /**
-  *   one of 
-  *   ['AB', 'AD', 'AK', 'AN', 'BA', 'BY', 'BN', 'BO', 'CR', 'DT', 'EB', 'ED', 'EK', 'EN', 'FC', 'GM', 'IM', 'JG', 'KD', 'KN', 'KT', 'KB', 'KG', 'KW', 'LA', 'NS', 'NG', 'OG', 'OD', 'OS', 'OY', 'PL', 'RV', 'SO', 'TR', 'YB', 'ZM'] ;
-      
-      ['ABIA', 'ADAMAWA', 'AKWA IBOM', 'ANAMBRA', 'BAUCHI', 'BAYELSA', 'BENUE', 'BORNO', 'CROSS RIVER', 'DELTA', 'EBONYI', 'EDO', 'EKITI', 'ENUGU', 'FCT - ABUJA', 'GOMBE', 'IMO', 'JIGAWA', 'KADUNA', 'KANO', 'KASTINA', 'KEBBI', 'KOGI', 'KWARA', 'LAGOS', 'NASSARAWA', 'NIGER', 'OGUN', 'ONDO', 'OSUN', 'OYO', 'PLATEAU', 'RIVERS', 'SOKOTO', 'TARABA', 'YOBE', 'ZAMFARA'] ;
-  */
 
   var theservicestate = states_long[states_short.indexOf(req.body.statecode.slice(0, 2).toUpperCase())];
 
   var thestream = req.body.statecode.slice(5, 6).toUpperCase();
   function getstream(sb) {
-    return sb == 'A' ? 1
-      : sb == 'B' ? 2
-        : sb == 'C' ? 3
-          : 4; // because we're sure it's gonna be 'D'
+    return sb == 'A' ? 1 : sb == 'B' ? 2 : sb == 'C' ? 3 : 4; // because we're sure it's gonna be 'D'
   }
 
   var sqlquery = "INSERT INTO info(email, firstname, middlename, password, lastname, statecode, batch, servicestate, stream) VALUES ('" + req.body.email + "', '" + req.body.firstname + "', '" + req.body.middlename + "', '" + req.body.password + "', '" + req.body.lastname + "', '" + req.body.statecode.toUpperCase() + "', '" + req.body.statecode.slice(3, 6).toUpperCase() + "', '" + theservicestate + "' , '" + getstream(thestream) + "'  )";
   pool.query(sqlquery, function (error, results, fields) {
     console.log('inserted data from: ', results);
     if (error) {
-      console.log('the error code:', error.code)
+      console.log('the error code:', error.code, error.sqlMessage)
       switch (error.code) { // do more here
-        case 'ER_DUP_ENTRY': // ER_DUP_ENTRY if a statecode exists already
-          res.redirect('/signup?m=d'); // [m]essage = [d]uplicate
+        case 'ER_DUP_ENTRY': // ER_DUP_ENTRY if a statecode or email exists already
+          if (error.sqlMessage.includes('PRIMARY', req.body.statecode.toUpperCase())) { // Duplicate entry 'TR/19A/1234' for key 'PRIMARY'
+            res.redirect('/signup?m=ds'); // [m]essage = [d]uplicate [s]tatecode
+          } else if (error.sqlMessage.includes('email', req.body.email)) { // Duplicate entry 'uyu@yud.eww' for key 'email'
+            res.redirect('/signup?m=de'); // [m]essage = [d]uplicate [e]mail
+          }
+          
           break;
       }
       // throw error;
@@ -1866,11 +1823,6 @@ app.post('/signup', bodyParser.urlencoded({ extended: true }), function (req, re
 
 });
 
-/*
-function handleRedirect(req, res) {
-  
-}
-*/
 app.get('/t', function (req, res) {
   res.set('Content-Type', 'text/html');
   res.sendFile(__dirname + '/test.html');
