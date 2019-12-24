@@ -1,10 +1,11 @@
 LESS, BUT BETTER https://uxdesign.cc/great-products-do-less-things-but-better-5dde0ee3fc76
 
+There is an old Peter Drucker quote – "what gets measured gets managed" – 
 
 
+"To give an example, instead of solely giving feedback upon submission of a form, let’s provide feedback along the way on a field per field basis. This can be as simple as showing a list of requirements for a password field: whenever the password meets one of the listed requirements, the requirement gets ticked off; when all requirements are met, the input field turns green indicating the user can move on to the next input field." from https://www.webdesignerdepot.com/2019/03/learnability-in-ux-design/
 
-
-
+USER RETENTIONS ?!?!??!?
 
 
 >>> so what happens to all your previous data (posts and chats and how you can be reached) when you change statecode ?

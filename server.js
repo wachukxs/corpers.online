@@ -18,56 +18,72 @@ this is what ran the server BEFORE on corpers.online subdomain in connarts.com.n
  */
 
 // something to look in to incase we are just told to stop running https://github.com/nodejs/node-v0.x-archive/issues/1172#issuecomment-1401906
-var express = require('express');
-var http = require('http');
+const express = require('express');
+const http = require('http');
 //var https = require('https');
 
 //make sure only serving corpers can register!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! from the pattern matching in the sign up page, look for how js can manipulate it to make sure only serving members register!
-var bodyParser = require('body-parser');
-var multer = require('multer');
+const bodyParser = require('body-parser');
+const multer = require('multer');
 // var upload = multer();
 
 // using path module removes the buffer object from the req.files array of uploaded files,... incase we ever need this... info!
-var path = require('path');
+const path = require('path');
 
 /* list (array) of accepted files */
 const acceptedfiles = ['image/gif', 'image/jpeg', 'image/png', 'image/tiff', 'image/vnd.wap.wbmp', 'image/x-icon', 'image/x-jng', 'image/x-ms-bmp', 'image/svg+xml', 'image/webp', 'video/3gpp', 'video/mpeg', 'video/mp4', 'video/x-msvideo', 'video/x-ms-wmv', 'video/x-ms-asf', 'video/x-mng', 'video/x-flv', 'video/quicktime'];
 
 /* handles SETTING the path for STORAGE and NAMING of files */
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    // console.log('THE FILE', file)
-    if (acceptedfiles.includes(file.mimetype)) {
-      cb(null, './img/')
-    } /* else { // try to catch this error and show it to the user, for now we're just ignoring unacceptable files
-        err = new Error('file not accepted')
-        cb(err, './test/')
-      } */
-
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) { // 1350914 benchmark ?
+    console.log('THE FILE', file)
+    cb(null, './img/')
+    
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + file.originalname.slice(file.originalname.lastIndexOf('.'))) // get the file extension of the file you want to copy plus the '.' char 
+    console.log('the file details:', file)
+    // we're adding a random number between 50 and 99 (to Date.now()) just to make sure no two filenames are thesame
+    // from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+    cb(null, (Math.floor(Math.random() * (100 - 50)) + 50) + Date.now() + file.originalname.slice(file.originalname.lastIndexOf('.'))) // get the file extension of the file you want to copy plus the '.' char 
+  },
+  fileFilter: function fileFilter (req, file, cb) {
+ 
+    // The function should call `cb` with a boolean
+    // to indicate if the file should be accepted
+   
+    // To reject this file pass `false`, like so:
+    // cb(null, false)
+   
+    // To accept the file pass `true`, like so:
+    // cb(null, true)
+   
+    // You can always pass an error if something goes wrong:
+    // cb(new Error('I don\'t have a clue!'))
+
+    // try to catch this error and show it to the user, for now we're just ignoring unacceptable files
+    cb(null, acceptedfiles.includes(file.mimetype))
+   
   }
 })
 
-var upload = multer({ storage: storage })
+const upload = multer({ storage: storage })
 
-var fs = require('fs');
+const fs = require('fs');
 
-var app = express();
-var server = http.Server(app);
+const app = express();
+const server = http.Server(app);
 
 const nodemailer = require('nodemailer');
 
 // var cookieparser = require('cookieparser');
-var session = require('express-session');
-var morgan = require('morgan');
-var moment = require('moment');
+const session = require('express-session');
+const morgan = require('morgan');
+const moment = require('moment');
 // moment().format(); //keeps on showing the current time 
 
 // io connects to the server
-var io = require('socket.io')(server);
-var mysql = require('mysql');
+const io = require('socket.io')(server);
+const mysql = require('mysql');
 const dotenv = require('dotenv').config();
 /*
 var mysqloptions = {
@@ -80,9 +96,9 @@ var mysqloptions = {
   connectTimeout: 1800000 // 10000 is 10 secs
 };
 
-var connection = mysql.createConnection(mysqloptions); // declare outside connectDB so it's a global variable
+const connection = mysql.createConnection(mysqloptions); // declare outside connectDB so it's a global variable
 */
-var pool = mysql.createPool({
+const pool = mysql.createPool({
   connectionLimit : process.env.DB_CONLIMIT,
   host            : process.env.DB_HOST,
   user            : process.env.DB_USER,
@@ -371,9 +387,9 @@ var MongoClient = require('mongodb').MongoClient;
 
 var url = 'mongodb://localhost:27017/';
 */
-server.listen(8081, function () { // auto change port if port is already in use, handle error gracefully
-  console.log('node server listening on port :8081');
-}); //  throw er; // Unhandled 'error' event // Error: listen EADDRINUSE ::8081
+server.listen(process.env.PORT, function () { // auto change port if port is already in use, handle error gracefully
+  console.log('node server listening on port :%s', process.env.PORT);
+}); //  throw er; // Unhandled 'error' event // Error: listen EADDRINUSE ::process.env.PORT
 
 // WARNING: app.listen(80) will NOT work here!
 /**
@@ -385,7 +401,7 @@ app.set('view engine', 'ejs');
 app.use(express.static('node_modules'));
 app.use(express.static('js'));
 app.use(express.static('css'));
-app.use(express.static('img'));
+app.use('/graphic', express.static('img'));
 app.use(express.static('testimg'));
 
 
@@ -401,7 +417,7 @@ app.use(morgan('dev'));
 // for parsing multipart/form-data
 // app.use(upload.array());
 
-
+var compress_images = require('compress-images'), INPUT_path_to_your_images, OUTPUT_path;
 var z;
 /**
  * https://stackoverflow.com/questions/679915/how-do-i-test-for-an-empty-javascript-object
@@ -1738,37 +1754,82 @@ app.post('/addplace', upload.none(), function (req, res) {
 app.post('/posts', upload.array('see', 12), function (req, res, next) {
   // handle post request, add data to database... do more
 
-  var sqlquery = "INSERT INTO posts( media, statecode, type, text, price, location, post_time) VALUES ('" + (req.files.length > 0 ? [...new Set(req.files.map(x => x.filename))] : req.body.mapimage ? req.body.mapimage : '') + "','" + req.session.statecode + "', '" + (req.body.type ? req.body.type : "sale") + "', " + pool.escape(req.body.text) + ", " + pool.escape((req.body.price ? req.body.price : "")) + ", " + pool.escape(req.session.location) + ",'" + req.body.post_time + "')"
+  console.log('it: : :', req.files)
 
-  pool.query(sqlquery, function (error, results, fields) {
-    console.log('inserted data from: ', results);
-    if (error) throw error;
-    // ER_BAD_NULL_ERROR: Column 'location' cannot be null
-    // connected!
-    if (results.affectedRows === 1) {
-      // then status code is good
-      res.sendStatus(200);
+  for (let index = 0; index < req.files.length; index++) {
+    const iimmgg = req.files[index];
 
-      // once it saves in db them emit to other users
-      iouser.to(req.session.statecode.substring(0, 2)).emit('boardcast message', {
-        to: 'be received by everyoneELSE', post: {
-          statecode: req.session.statecode,
-          location: req.session.location,
-          media: (req.files.length > 0 ? [...new Set(req.files.map(x => x.filename))] : false),
-          post_time: req.body.post_time,
-          type: req.body.type,
-          mapdata: (req.body.mapimage ? req.body.mapimage: ''),
-          text: req.body.text,
-          age: moment(Number(req.body.post_time)).fromNow(),
-          price: (req.body.price ? req.body.price : '')
-        }
-      });
-    } else {
-      // this is really important for the form to get response
-      res.sendStatus(500);
-      // === res.status(500).send('Internal Server Error')
-    }
-  });
+    // IMAGE COMPRESSION
+        
+    INPUT_path_to_your_images = iimmgg.path.replace(/\\/g, '/') ; // replaces '\\' to '/' else it sees it as path delimeter (an extra path) and adds it to the output path  // 'images/*.{jpg,JPG,jpeg,JPEG,png,svg,gif}' ;// 'images/me paint.png'; // 'src/img/**/*.{jpg,JPG,jpeg,JPEG,png,svg,gif}'
+    OUTPUT_path = 'img/comp/';
+
+    // there should be an if statement here, so we don't compress files that are already too small... we'd only compress files larger than 1050914, for now we (naively?) believe nobody will upload files that tiny in size
+    compress_images(INPUT_path_to_your_images, OUTPUT_path, {compress_force: false, statistic: true, autoupdate: true}, false, // glob = false if we're converting just one file
+                                                {jpg: {engine: 'mozjpeg', command: ['-quality', '20']}}, // 60
+                                                {png: {engine: 'pngquant', command: ['--iebug', '--quality=65-80']}}, // --quality=30-50
+                                                {svg: {engine: 'svgo', command: '--multipass'}},
+                                                {gif: {engine: 'gifsicle', command: ['--colors', '64', '--use-col=web']}}, function(error, completed, statistic){
+                console.log('-------------');
+                console.log('error?', error);
+                console.log('completed?', completed);
+                console.log('statistics:', statistic);
+                console.log('-------------');
+                
+                if(error === null){ 
+                    //[jpg] ---to---> [jpg(jpegtran)] WARNING!!! autoupdate  - recommended to turn this off, it's not needed here - autoupdate: false
+                    compress_images(INPUT_path_to_your_images, OUTPUT_path, {compress_force: false, statistic: true, autoupdate: false}, false,
+                                                                    {jpg: {engine: 'jpegtran', command: ['-trim', '-progressive', '-copy', 'none', '-optimize'] }},
+                                                                    {png: {engine: 'optipng', command: ['--iebug', '--quality=65-80']}},
+                                                                    {svg: {engine: false, command: false}},
+                                                                    {gif: {engine: 'giflossy', command: ['--lossy=80']}}, function(){
+                    }); 
+                } else { // well, do nothing
+                    // console.error('error?', error);
+                }
+                // -- CALL BACK FUN.
+
+                if (index == req.files.length - 1) { // on last iteration
+                    
+                  var sqlquery = "INSERT INTO posts( media, statecode, type, text, price, location, post_time) VALUES ('" + (req.files.length > 0 ? [...new Set(req.files.map(x => x.filename))] : req.body.mapimage ? req.body.mapimage : '') + "','" + req.session.statecode + "', '" + (req.body.type ? req.body.type : "sale") + "', " + pool.escape(req.body.text) + ", " + pool.escape((req.body.price ? req.body.price : "")) + ", " + pool.escape(req.session.location) + ",'" + req.body.post_time + "')"
+
+                  pool.query(sqlquery, function (error, results, fields) {
+                    console.log('inserted data from: ', results);
+                    if (error) throw error;
+                    // ER_BAD_NULL_ERROR: Column 'location' cannot be null
+                    // connected!
+                    if (results.affectedRows === 1) {
+                      // then status code is good
+                      res.sendStatus(200);
+
+                      // once it saves in db them emit to other users
+                      iouser.to(req.session.statecode.substring(0, 2)).emit('boardcast message', {
+                        to: 'be received by everyoneELSE', post: {
+                          statecode: req.session.statecode,
+                          location: req.session.location,
+                          media: (req.files.length > 0 ? [...new Set(req.files.map(x => x.filename))] : false),
+                          post_time: req.body.post_time,
+                          type: req.body.type,
+                          mapdata: (req.body.mapimage ? req.body.mapimage: ''),
+                          text: req.body.text,
+                          age: moment(Number(req.body.post_time)).fromNow(),
+                          price: (req.body.price ? req.body.price : '')
+                        }
+                      });
+                    } else {
+                      // this is really important for the form to get response
+                      res.sendStatus(500);
+                      // === res.status(500).send('Internal Server Error')
+                    }
+                  });
+                }
+
+                // -- // CALL BACK FUN.
+    
+    });
+  }
+
+  
 
 
 });

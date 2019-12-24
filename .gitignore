@@ -148,3 +148,8 @@ eslintrc.json
 
 # no more test images, they're becoming too much (done 25-10-2019)
 /img
+
+#random files
+test2.js
+Output.txt
+test - Copy.html
