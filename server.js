@@ -475,6 +475,17 @@ app.get(['/', '/home', '/index', '/homepage'], function (req, res) {
   });
 });
 
+app.get(['/about', '/about-us'], function (req, res) {
+  /* _session = req.session;
+  _session.d = 'k'; */
+  res.type('html');
+  // res.contentType('*/*');
+  // res.sendFile(__dirname + '/index.html');
+  res.render('pages/about', {
+    // houses: results1,
+    // pictures: results2
+  });
+});
 // https://blog.daftcode.pl/how-to-make-uploading-10x-faster-f5b3f9cfcd52
 
 app.get('/allstateslgas', function (req, res) {

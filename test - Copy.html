@@ -5,8 +5,89 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>img</title>
+	<style>
+		*,
+*:before, 
+*:after {
+  box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: wrap;
+  background: radial-gradient(circle at center, #0091F8, darken(#0091F8, 10%));
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+.close-icon-container {
+  padding: 40px;
+
+  .close-icon {
+    display: inline-block;
+    height: 40px;
+    width: 40px;
+    cursor: pointer;
+    stroke: #fff;
+  
+      .circle {
+        opacity: 0.1;
+      }
+  
+      .progress {
+        opacity: 0;
+        stroke-dasharray: 0,120;
+        transition: 0.5s cubic-bezier(0.165, 0.775, 0.145, 1.020);
+      }
+    
+  }
+  
+  &:hover {
+    .close-icon {
+      .progress {
+        opacity: 1;
+        stroke-dasharray: 25,120;
+      }
+    }
+  }
+  
+  .close-icon { 
+    &:hover {
+      .progress {
+        opacity: 1;
+        stroke-dasharray: 90,120;
+      }
+    }
+    &:active,
+    &.clicked {
+      .progress {
+        stroke-dasharray:120,120;
+      }
+    }
+    &.clicked {
+      .progress {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+	</style>
 </head>
 <body>
 	<!-- http://jsfiddle.net/cEgRp/ -->
+
+	<div class="close-icon-container">
+		<span class="close-icon">
+		  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" enable-background="new 0 0 40 40">
+			<line x1="15" y1="15" x2="25" y2="25" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-miterlimit="10"></line>
+			<line x1="25" y1="15" x2="15" y2="25" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-miterlimit="10"></line>    
+			<circle class="circle" cx="20" cy="20" r="19" opacity="0" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-miterlimit="10" fill="none"></circle>
+			<path d="M20 1c10.45 0 19 8.55 19 19s-8.55 19-19 19-19-8.55-19-19 8.55-19 19-19z" class="progress" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-miterlimit="10" fill="none"></path>
+		  </svg>
+		</span>
+	  </div>
 </body>
 </html>
