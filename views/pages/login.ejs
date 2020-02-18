@@ -12,12 +12,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="keywords" content="Register on Corper Online and get to safely Buy, Sell, get accomodation and location/route info from Corpers" />
     <script type="application/x-javascript">
-        addEventListener( "load", function() {
-            setTimeout( hideURLbar, 0 );
-        }, false );
+        addEventListener("load", function() {
+            setTimeout(hideURLbar, 0);
+        }, false);
 
         function hideURLbar() {
-            window.scrollTo( 0, 1 );
+            window.scrollTo(0, 1);
         }
     </script>
     <!-- //for-mobile-apps -->
@@ -95,17 +95,17 @@
                     <form id="loginform" class="container" action="/login" method="POST" enctype="application/x-www-form-urlencoded">
                         <div class="form-row">
                             <div class="col-md-4 mb-3">
-                                <label for="statecode">State code</label>
-                                <input name="statecode" type="text" pattern="(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/\d\d[abcACB]\/\d\d\d\d" tabindex="0" class="form-control text-uppercase" autocomplete="" autofocus id="statecode" placeholder="AB/16A/2639" required='true'>
-                                <div hidden class="wrong">
-                                    Wrong state code
+                                <label for="statecode">State code:</label>
+                                <input name="statecode" type="text" pattern="(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/\\d\\d[abcACB]\/\\d\\d\\d\\d" tabindex="0" class="form-control text-uppercase" autocomplete="" autofocus id="statecode" placeholder="AB/16A/2639" required='true'>
+                                <div hidden class="wrong" style="color: red;">
+
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="password">Password</label>
+                                <label for="password">Password:</label>
                                 <input name="password" type="password" tabindex="0" class="form-control" autocomplete="current-password" id="password" placeholder="Password" required='true'>
-                                <div hidden class="wrong">
-                                    or password.
+                                <div hidden class="wrong" style="color: red;">
+
                                 </div>
                             </div>
                         </div>
@@ -133,55 +133,100 @@
         <p>Corpers Online built by <a href="#!">Corpers</a> for <a href="#!">Corpers</a>.</p>
         <p>
             &copy; <script>
-                document.write( new Date()
-                    .getFullYear() )
+                document.write(new Date()
+                    .getFullYear())
             </script>
         </p>
     </footer>
 
 
     <script>
-		var years = parseInt( new Date( Date.now() ).getFullYear().toFixed().slice( 2, 4 ) );
-		var yearrange = '(' + ( years - 1 ).toString() + '|' + years.toString() + ')';
-		
-		document.forms[ 0 ].elements[ 0 ].pattern = '(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\\/'+yearrange+'[abcACB]\\/\\d\\d\\d\\d';
-		document.forms[ 0 ].elements[ 0 ]
-            .oninvalid = function( event ) {
-                event.target.setCustomValidity("State code should start with a valid state abbrevation, have forward slashes, appropriate batch, and four trailing digits. Right? And are you currently serving?");
+        // now if the statecode format is correct but they're no longer serving, the
+        // error message should be different... saying they must be serving...
+        // why does the error message display even after a correct value has been used.
+        var years = parseInt(new Date(Date.now()).getFullYear().toFixed().slice(2, 4));
+        var yearrange = '(' + (years - 1).toString() + '|' + years.toString() + ')';
+
+        document.forms[0].elements[0].pattern = '(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\\/' + yearrange + '[abcACB]\\/\\d\\d\\d\\d';
+        // document.forms[0].elements[0].pattern = '(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/' + yearrange + '[abcACB]\/[0-9]{4}';
+
+        var sc = new RegExp('(ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/' + yearrange + '[abcACB]\/[0-9]{4}', 'i');
+        document.forms[0].elements[0].addEventListener("input", function(event) {
+            event.target.setCustomValidity("");
+            document.getElementsByClassName('wrong')[0].textContent = "";
+            var OK = sc.exec(event.target.value); // OK[0]
+            if (!OK) {
+                document.getElementById('statecode').classList.add('is-invalid');
+                console.error(event.target.value + ' isn\'t a valid state code!', OK);
+            } else {
+                console.log('Thanks, your statecode is ' + OK[0], OK);
+                document.getElementById('statecode').classList.remove('is-invalid');
+                document.getElementsByClassName('wrong')[0].textContent = "";
             }
+        })
+
+        var _sc = new RegExp('(ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/\\d\\d[abc]\/\\d\\d\\d\\d', 'i');
+        document.forms[0].elements[0].oninvalid = function(event) { // when submitting the form
+            console.log('evt', event);
+
+            // document.getElementsByClassName('wrong')[0].textContent = "This doens't look like a statecode";
+            document.getElementsByClassName('wrong')[0].removeAttribute('hidden');
+            document.getElementById('statecode')
+                .classList.add('is-invalid');
+
+            var OKK = _sc.exec(event.target.value); // OKK[0]
+            if (!OKK) { // isn't true... false
+                event.target.setCustomValidity("This doens't look like a statecode");
+            } else {
+                event.target.setCustomValidity("You must be currently serving");
+            }
+
+        }
+
+
+        document.forms[0].elements[1].addEventListener("input", function(event) {
+
+            document.getElementById('password').classList.remove('is-invalid');
+            document.getElementsByClassName('wrong')[1].textContent = "";
+
+        })
     </script>
     <script>
-        if ( 'URLSearchParams' in window ) {
-            var urlParams = new URLSearchParams( window.location.search );
+        if ('URLSearchParams' in window) {
+            var urlParams = new URLSearchParams(window.location.search);
             // URLSearchParams also provides familiar Object methods like keys(), values(), and entries():
-            if ( urlParams.has( 'l' ) ) {
-                document.getElementsByClassName( 'wrong' )[ 0 ].removeAttribute( 'hidden' );
-                document.getElementById( 'statecode' )
-                    .classList.add( 'is-invalid' );
+            if (urlParams.has('l')) {
+                document.getElementsByClassName('wrong')[0].textContent = "Wrong statecode";
+                document.getElementsByClassName('wrong')[0].removeAttribute('hidden');
+                document.getElementById('statecode')
+                    .classList.add('is-invalid');
 
-                document.getElementById( 'password' )
-                    .classList.add( 'is-invalid' );
-                document.getElementsByClassName( 'wrong' )[ 1 ].removeAttribute( 'hidden' );
+                document.getElementById('password')
+                    .classList.add('is-invalid');
+                document.getElementsByClassName('wrong')[1].textContent = "or wrong password";
+                document.getElementsByClassName('wrong')[1].removeAttribute('hidden');
             }
         } else { // While URLSearchParams is ideal, not all browsers support that API.
-            function getUrlParameter( name ) {
-                name = name.replace( /[\[]/, '\\[' )
-                    .replace( /[\]]/, '\\]' );
-                var regex = new RegExp( '[\\?&]' + name + '=([^&#]*)' );
-                var results = regex.exec( location.search );
-                return results === null ? '' : decodeURIComponent( results[ 1 ].replace( /\+/g, ' ' ) );
+            function getUrlParameter(name) {
+                name = name.replace(/[\[]/, '\\[')
+                    .replace(/[\]]/, '\\]');
+                var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+                var results = regex.exec(location.search);
+                return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
             };
-            if ( getUrlParameter( 'l' ) && ( getUrlParameter( 'l' ) == 'n' ) ) {
-                document.getElementsByClassName( 'wrong' )[ 0 ].removeAttribute( 'hidden' );
-                document.getElementById( 'statecode' )
-                    .classList.add( 'is-invalid' );
+            if (getUrlParameter('l') && (getUrlParameter('l') == 'n')) {
+                document.getElementsByClassName('wrong')[0].innerHTML = "Wrong statecode";
+                document.getElementsByClassName('wrong')[0].removeAttribute('hidden');
+                document.getElementById('statecode')
+                    .classList.add('is-invalid');
 
-                document.getElementById( 'password' )
-                    .classList.add( 'is-invalid' );
-                document.getElementsByClassName( 'wrong' )[ 1 ].removeAttribute( 'hidden' );
+                document.getElementById('password')
+                    .classList.add('is-invalid');
+                document.getElementsByClassName('wrong')[1].innerHTML = "or wrong password";
+                document.getElementsByClassName('wrong')[1].removeAttribute('hidden');
             }
         }
-	</script>
+    </script>
 </body>
 
 </html>

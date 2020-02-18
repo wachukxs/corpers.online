@@ -960,14 +960,13 @@
             // Define what happens on successful data submission
             XHR.addEventListener("load", function(event) {
                 // alert(event.target.responseText);
-                console.log(event.target.responseText);
+                console.log(event.target.responseText, event.target, event.timeStamp); // calculate the time a post was clicked, when it was submitted and when the response was given to the user
 
                 // and reset the form
                 document.forms['postform'].reset();
                 // also clear the append image in the document body if it exists
                 /* if ( document.getElementById('previewParent').children.length > 0 ) { // what does hasChildNodes actually do? and why does it return this error: TypeError: Argument 1 of Node.removeChild is not an object. when there is no previewParent
-                    document.getElementById( 'previewParent' )
-                        .removeChild( document.getElementById( 'preview' ) );
+                    document.getElementById('previewParent').removeChild( document.getElementById( 'preview' ) );
                 } */
 
                 $('#previewPostPics').html('');
@@ -975,21 +974,29 @@
                 // if there were location info, clear it
                 document.getElementById('locinfo').innerHTML = '';
 
-                document.getElementById('postsubmit')
-                    .disabled = true;
+                document.getElementById('postsubmit').disabled = true;
 
                 // some times there are cases where posts happen immediately after each other 
                 // and there would then be more than one notifications on the user tl...
-                // how do we ensure they are closed as they come ? A dedicated functions to handle notifications ????/    
-                $("#tl")
+                // how do we ensure they are closed as they come ? A dedicated functions to handle notifications ????/
+                
+                if (event.target.status == 200) {
+                    $("#1or0") // #tl
                     .before(
                         '<div class="alert alert-success mt-3 fade show" id="postposted" role="alert">Post created successfully.</div>'
                     );
 
+                } else {
+                    $("#1or0") // formerly #tl
+                    .before(
+                        '<div class="alert alert-success mt-3 fade show" id="postposted" role="alert">We didn\'t get that. Please post again.</div>'
+                    );
+                }
                 setTimeout(function() {
                     $('div.alert.alert-success.mt-3.fade.show')
                         .alert('close'); // Closes an alert (for now all) by removing it from the DOM
                 }, 2000);
+                
             });
 
             // Define what happens in case of error
@@ -999,6 +1006,8 @@
 
             // Set up our request
             XHR.open('POST', '/posts', true); // true makes it async request
+
+            // XHR.setRequestHeader('Content-Type', 'multipart/form-data'); // causes error Error: Multipart: Boundary not found
 
             // The data sent is what the user provided in the form
             XHR.send(FD);

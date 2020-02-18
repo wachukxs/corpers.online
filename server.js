@@ -38,7 +38,6 @@ const storage = multer.diskStorage({
   destination: function (req, file, cb) { // 1350914 benchmark ?
     console.log('THE FILE', file)
     cb(null, './img/')
-    
   },
   filename: function (req, file, cb) {
     console.log('the file details:', file)
@@ -46,23 +45,23 @@ const storage = multer.diskStorage({
     // from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
     cb(null, (Math.floor(Math.random() * (100 - 50)) + 50) + Date.now() + file.originalname.slice(file.originalname.lastIndexOf('.'))) // get the file extension of the file you want to copy plus the '.' char 
   },
-  fileFilter: function fileFilter (req, file, cb) {
- 
+  fileFilter: function fileFilter(req, file, cb) {
+
     // The function should call `cb` with a boolean
     // to indicate if the file should be accepted
-   
+
     // To reject this file pass `false`, like so:
     // cb(null, false)
-   
+
     // To accept the file pass `true`, like so:
     // cb(null, true)
-   
+
     // You can always pass an error if something goes wrong:
     // cb(new Error('I don\'t have a clue!'))
 
     // try to catch this error and show it to the user, for now we're just ignoring unacceptable files
     cb(null, acceptedfiles.includes(file.mimetype))
-   
+
   }
 })
 
@@ -79,7 +78,7 @@ const nodemailer = require('nodemailer');
 const session = require('express-session');
 const morgan = require('morgan');
 const moment = require('moment');
-// moment().format(); //keeps on showing the current time 
+// moment().format(); // keeps on showing the current time 
 
 // io connects to the server
 const io = require('socket.io')(server);
@@ -99,11 +98,11 @@ var mysqloptions = {
 const connection = mysql.createConnection(mysqloptions); // declare outside connectDB so it's a global variable
 */
 const pool = mysql.createPool({
-  connectionLimit : process.env.DB_CONLIMIT,
-  host            : process.env.DB_HOST,
-  user            : process.env.DB_USER,
-  password        : process.env.DB_PASSWORD,
-  database        : process.env.DB_DATABASE,
+  connectionLimit: process.env.DB_CONLIMIT,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
   acquireTimeout: 1800000, // 10000 is 10 secs
   multipleStatements: true // it allows for SQL injection attacks if values are not properly escaped
 });
@@ -121,21 +120,21 @@ async function main(email, name, state) {
 
   // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
-      host: process.env.CO_EMAIL_SERVER,
-      port: 465,
-      secure: true, // true for 465, false for other ports
-      auth: {
-          user: 'hi@corpers.online', // testAccount.user, // generated ethereal user
-          pass: process.env.CO_EMAIL_PASSWORD // testAccount.pass // generated ethereal password
-      }
+    host: process.env.CO_EMAIL_SERVER,
+    port: 465,
+    secure: true, // true for 465, false for other ports
+    auth: {
+      user: 'hi@corpers.online', // testAccount.user, // generated ethereal user
+      pass: process.env.CO_EMAIL_PASSWORD // testAccount.pass // generated ethereal password
+    }
   });
 
   // send mail with defined transport object
   let info = await transporter.sendMail({
-      from: '"Corpers Online 🇳🇬" <hi@corpers.online>', // sender address
-      to: email,// 'bar@example.com, baz@example.com', // list of receivers
-      subject: 'Welcome to the Network', // Subject line
-      text: `Here's a short introduction! ${name}, we're glad you're now online with us. We are psyched about it. 
+    from: '"Corpers Online 🇳🇬" <hi@corpers.online>', // sender address
+    to: email,// 'bar@example.com, baz@example.com', // list of receivers
+    subject: 'Welcome to the Network', // Subject line
+    text: `Here's a short introduction! ${name}, we're glad you're now online with us. We are psyched about it. 
       And we have some information for you. So you'd know what Corpers Online is really about. 
       Post images of house hold items or anything of value, with appropriate descriptions e.g. price, condition of the item etc., 
       to other corpers to sell. We imagine these are items you'd no longer need when you're about having your PoP. 
@@ -160,7 +159,7 @@ async function main(email, name, state) {
       when you first got to ${state} state. 
       We call this #Rule28.
       Of course, mind your language and how you interact online. We trust you've got this.`, // plain text body
-      html: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    html: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
       <html xmlns="http://www.w3.org/1999/xhtml">
       <head>
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -295,46 +294,46 @@ async function main(email, name, state) {
           </table>
       </body>
       </html>`, // html body
-      attachments: [{
-          filename: 'CORPERS ONLINE.png',
-          path: 'https://corpers.online/work on/CORPERS ONLINE.png',
-          cid: '001@corpers.online' //same cid value as in the html img src
-      }, {
-          filename: 'CORPERSONLINE.png',
-          path: 'https://corpers.online/work on/CORPERSONLINE.png',
-          cid: '002@corpers.online' //same cid value as in the html img src
-      },
-      {
-          filename: 'rule28.png',
-          path: 'https://corpers.online/work on/rule28.png',
-          cid: '003@corpers.online' //same cid value as in the html img src
-      },
-      {
-          filename: 'twitter.png',
-          path: 'https://corpers.online/work on/twitter.png',
-          cid: '004@corpers.online' //same cid value as in the html img src
-      },
-      {
-          filename: 'facebook.png',
-          path: 'https://corpers.online/work on/facebook.png',
-          cid: '005@corpers.online' //same cid value as in the html img src
-      },
-      {
-          filename: 'instagram.png',
-          path: 'https://corpers.online/work on/instagram.png',
-          cid: '006@corpers.online' //same cid value as in the html img src
-      }] // don't use .svg as attachment to embed in the email, it'll show in the email and still be an attachment (not what we want)
+    attachments: [{
+      filename: 'CORPERS ONLINE.png',
+      path: 'https://corpers.online/work on/CORPERS ONLINE.png',
+      cid: '001@corpers.online' //same cid value as in the html img src
+    }, {
+      filename: 'CORPERSONLINE.png',
+      path: 'https://corpers.online/work on/CORPERSONLINE.png',
+      cid: '002@corpers.online' //same cid value as in the html img src
+    },
+    {
+      filename: 'rule28.png',
+      path: 'https://corpers.online/work on/rule28.png',
+      cid: '003@corpers.online' //same cid value as in the html img src
+    },
+    {
+      filename: 'twitter.png',
+      path: 'https://corpers.online/work on/twitter.png',
+      cid: '004@corpers.online' //same cid value as in the html img src
+    },
+    {
+      filename: 'facebook.png',
+      path: 'https://corpers.online/work on/facebook.png',
+      cid: '005@corpers.online' //same cid value as in the html img src
+    },
+    {
+      filename: 'instagram.png',
+      path: 'https://corpers.online/work on/instagram.png',
+      cid: '006@corpers.online' //same cid value as in the html img src
+    }] // don't use .svg as attachment to embed in the email, it'll show in the email and still be an attachment (not what we want)
   }, (error, info) => {
-      if (error) {
-          console.log(error);
-          // res.status(400).send({success: false})
-      } else {
-          console.log(info);
-          // res.status(200).send({success: true});
-          
-          console.log('Message sent: %s', info.messageId);
-          // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-      }
+    if (error) {
+      console.log(error);
+      // res.status(400).send({success: false})
+    } else {
+      console.log(info);
+      // res.status(200).send({success: true});
+
+      console.log('Message sent: %s', info.messageId);
+      // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+    }
   });
 
 }
@@ -387,9 +386,35 @@ var MongoClient = require('mongodb').MongoClient;
 
 var url = 'mongodb://localhost:27017/';
 */
+
 server.listen(process.env.PORT, function () { // auto change port if port is already in use, handle error gracefully
   console.log('node server listening on port :%s', process.env.PORT);
-}); //  throw er; // Unhandled 'error' event // Error: listen EADDRINUSE ::process.env.PORT
+}); //  throw err; // Unhandled 'error' event // Error: listen EADDRINUSE ::process.env.PORT
+
+console.info(`This server's process PID is ${process.pid} running on platform ${process.platform}`);
+fs.writeFile('PID.txt', process.pid, (err) => {
+  if (err) throw err;
+  console.log('New PID gotten!');
+});
+
+function handle(signal) {
+  console.log(`Received ${signal} signal.`);
+  // clear the PID.txt
+  fs.writeFile('PID.txt', '', (err) => {
+    if (err) throw err;
+    console.log('Server Stopped. Cleared PID!');
+  });
+  // process.abort();
+  process.exit(); // later consider process.exitCode
+}
+
+process.on('SIGINT', handle)
+
+process.on('SIGHUP', handle)
+
+process.on('uncaughtException', function (err) {
+  console.warn('\tuncaughtException:\n\t', err);
+});
 
 // WARNING: app.listen(80) will NOT work here!
 /**
@@ -408,21 +433,11 @@ app.use(express.static('testimg'));
 // set morgan to log info about our requests for development use.
 app.use(morgan('dev'));
 
-// for parsing application/json
-// app.use(bodyParser.json());
-
-// for parsing application/xwww-form-urlencoded
-// app.use(bodyParser.urlencoded({ extended: true }));
-
-// for parsing multipart/form-data
-// app.use(upload.array());
-
-var compress_images = require('compress-images'), INPUT_path_to_your_images, OUTPUT_path;
 var z;
 /**
  * https://stackoverflow.com/questions/679915/how-do-i-test-for-an-empty-javascript-object
  * 
- * Meanwhile we can have one function that checks for all 'empties' like null, undefined, '', ' ', {}, [].
+ * This function checks for all 'empties' like null, undefined, '', ' ', {}, [].
  */
 
 var isEmpty = function (data) {
@@ -446,6 +461,7 @@ var isEmpty = function (data) {
 };
 // gracefully hangle 404 errors with express.js ---------------- we shouldn't see CANNOT ger /about or /profile etc.
 
+// express-session deprecated req.secret; provide secret option server.js:449:9
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
@@ -489,42 +505,42 @@ app.get(['/about', '/about-us'], function (req, res) {
 // https://blog.daftcode.pl/how-to-make-uploading-10x-faster-f5b3f9cfcd52
 
 app.get('/allstateslgas', function (req, res) {
-  
-    res.set('Content-Type', 'application/json');
-    fs.readFile('moreplaces.json', (err, data) => {
-      let jkl = JSON.parse(data);
-      // let's hope there's no err
-      res.send(jkl);
-    })
+
+  res.set('Content-Type', 'application/json');
+  fs.readFile('moreplaces.json', (err, data) => {
+    let jkl = JSON.parse(data);
+    // let's hope there's no err
+    res.send(jkl);
+  })
 });
 
 app.get('/allppas', function (req, res) {
   res.set('Content-Type', 'application/json');
-      // JSON.parse(['4','3','2','3','2','4'])
-      // JSON.parse([4,3,2,3,2,4])
-      // JSON.stringify([4,3,2,3,2,4]) JSON.parse(JSON.stringify([4,3,2,3,2,4]))
-      // JSON.stringify(['4','3','2','3','2','4']) // JSON.parse(JSON.stringify(['4','3','2','3','2','4']))
-      var query = "SELECT type_of_ppa FROM info WHERE type_of_ppa != ''";
-      pool.query(query, function (error, results, fields) {
+  // JSON.parse(['4','3','2','3','2','4'])
+  // JSON.parse([4,3,2,3,2,4])
+  // JSON.stringify([4,3,2,3,2,4]) JSON.parse(JSON.stringify([4,3,2,3,2,4]))
+  // JSON.stringify(['4','3','2','3','2','4']) // JSON.parse(JSON.stringify(['4','3','2','3','2','4']))
+  var query = "SELECT type_of_ppa FROM info WHERE type_of_ppa != ''";
+  pool.query(query, function (error, results, fields) {
 
-      if (error) throw error;
-      console.log('it', results)
-      var listoftypesofppas = [];
-      for (let index = 0; index < results.length; index++) {
-        const element = results[index].type_of_ppa;
-        listoftypesofppas.push(element);
-        
-      }
-      /**
-       *  [ RowDataPacket { type_of_ppa: 'Radio Station' },
-  RowDataPacket { type_of_ppa: 'School' },
-  RowDataPacket { type_of_ppa: 'rew qrqew' } ]
-       */
-      let jkl = JSON.parse(JSON.stringify(listoftypesofppas));
-      // let's hope there's no err
-      res.send(jkl);
-    });
-  
+    if (error) throw error;
+    console.log('it', results)
+    var listoftypesofppas = [];
+    for (let index = 0; index < results.length; index++) {
+      const element = results[index].type_of_ppa;
+      listoftypesofppas.push(element);
+
+    }
+    /**
+     *  [ RowDataPacket { type_of_ppa: 'Radio Station' },
+RowDataPacket { type_of_ppa: 'School' },
+RowDataPacket { type_of_ppa: 'rew qrqew' } ]
+     */
+    let jkl = JSON.parse(JSON.stringify(listoftypesofppas));
+    // let's hope there's no err
+    res.send(jkl);
+  });
+
 });
 
 app.get(['/AB', '/AD', '/AK', '/AN', '/BA', '/BY', '/BN', '/BO', '/CR', '/DT', '/EB', '/ED', '/EK', '/EN', '/FC', '/GM', '/IM', '/JG', '/KD', '/KN', '/KT', '/KB', '/KG', '/KW', '/LA', '/NS', '/NG', '/OG', '/OD', '/OS', '/OY', '/PL', '/RV', '/SO', '/TR', '/YB', '/ZM'], function (req, res) {
@@ -582,10 +598,10 @@ app.get(['/AB/:batch', '/AD/:batch', '/AK/:batch', '/AN/:batch', '/BA/:batch', '
 });
 
 /**great resource for express route regex https://www.kevinleary.net/regex-route-express/ & https://forbeslindesay.github.io/express-route-tester/ */
-var years = parseInt( new Date( Date.now() ).getFullYear().toFixed().slice( 2, 4 ) );
-var yearrange = '(' + ( years - 1 ).toString() + '|' + years.toString() + ')';
+var years = parseInt(new Date(Date.now()).getFullYear().toFixed().slice(2, 4));
+var yearrange = '(' + (years - 1).toString() + '|' + years.toString() + ')';
 
-app.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm))/:batch_stream(('+yearrange/**(17|18|19)*/+'([abcACB])))/:lastfour(([0-9]{4}))', function (req, res) { // ['/AB/:batch/:code', '/AD/:batch/:code', '/AK/:batch/:code', '/AN/:batch/:code', '/BA/:batch/:code', '/BY/:batch/:code', '/BN/:batch/:code', '/BO/:batch/:code', '/CR/:batch/:code', '/DT/:batch/:code', '/EB/:batch/:code', '/ED/:batch/:code', '/EK/:batch/:code', '/EN/:batch/:code', '/FC/:batch/:code', '/GM/:batch/:code', '/IM/:batch/:code', '/JG/:batch/:code', '/KD/:batch/:code', '/KN/:batch/:code', '/KT/:batch/:code', '/KB/:batch/:code', '/KG/:batch/:code', '/KW/:batch/:code', '/LA/:batch/:code', '/NS/:batch/:code', '/NG/:batch/:code', '/OG/:batch/:code', '/OD/:batch/:code', '/OS/:batch/:code', '/OY/:batch/:code', '/PL/:batch/:code', '/RV/:batch/:code', '/SO/:batch/:code', '/TR/:batch/:code', '/YB/:batch/:code', '/ZM/:batch/:code']
+app.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm))/:batch_stream((' + yearrange/**(18|19)*/ + '([abcACB])))/:lastfour(([0-9]{4}))', function (req, res) { // ['/AB/:batch/:code', '/AD/:batch/:code', '/AK/:batch/:code', '/AN/:batch/:code', '/BA/:batch/:code', '/BY/:batch/:code', '/BN/:batch/:code', '/BO/:batch/:code', '/CR/:batch/:code', '/DT/:batch/:code', '/EB/:batch/:code', '/ED/:batch/:code', '/EK/:batch/:code', '/EN/:batch/:code', '/FC/:batch/:code', '/GM/:batch/:code', '/IM/:batch/:code', '/JG/:batch/:code', '/KD/:batch/:code', '/KN/:batch/:code', '/KT/:batch/:code', '/KB/:batch/:code', '/KG/:batch/:code', '/KW/:batch/:code', '/LA/:batch/:code', '/NS/:batch/:code', '/NG/:batch/:code', '/OG/:batch/:code', '/OD/:batch/:code', '/OS/:batch/:code', '/OY/:batch/:code', '/PL/:batch/:code', '/RV/:batch/:code', '/SO/:batch/:code', '/TR/:batch/:code', '/YB/:batch/:code', '/ZM/:batch/:code']
   // console.log('tryna login ', req.session.statecode, req.session.id, req.session.loggedin);
   // they should be able to change state code too !!!!!!!!!!!! --later
   console.log('\n\n\nreq.params', req.params.batch, req.params.code) // req.path is shorthand for url.parse(req.url).pathname
@@ -747,7 +763,7 @@ app.get('/newsearch', function (req, res) {
 
           if (results[3][index].acc_geodata != '') {
             results[3][index].properties.acc_geodata = JSON.parse(results[3][index].acc_geodata);
-            results[3][index].properties.acc_geodata.latlng = {"lat":results[3][index].properties.acc_geodata.geometry.coordinates[1], "lng":results[3][index].properties.acc_geodata.geometry.coordinates[0]}
+            results[3][index].properties.acc_geodata.latlng = { "lat": results[3][index].properties.acc_geodata.geometry.coordinates[1], "lng": results[3][index].properties.acc_geodata.geometry.coordinates[0] }
 
             results[3][index].geometry = {};
             results[3][index].geometry.type = "Point";
@@ -755,7 +771,7 @@ app.get('/newsearch', function (req, res) {
           } else {
             // results[3][index].properties.acc_geodata = '';
           }
-          
+
           results[3][index].properties.address = results[3][index].address;
           results[3][index].properties.type = results[3][index].type;
           results[3][index].properties.price = results[3][index].price;
@@ -821,7 +837,7 @@ app.get('/newsearch', function (req, res) {
 
           if (results[3][index].acc_geodata != '') {
             results[3][index].properties.acc_geodata = JSON.parse(results[3][index].acc_geodata);
-            results[3][index].properties.acc_geodata.latlng = {"lat":results[3][index].properties.acc_geodata.geometry.coordinates[1], "lng":results[3][index].properties.acc_geodata.geometry.coordinates[0]}
+            results[3][index].properties.acc_geodata.latlng = { "lat": results[3][index].properties.acc_geodata.geometry.coordinates[1], "lng": results[3][index].properties.acc_geodata.geometry.coordinates[0] }
 
             results[3][index].geometry = {};
             results[3][index].geometry.type = "Point";
@@ -829,7 +845,7 @@ app.get('/newsearch', function (req, res) {
           } else {
             // results[3][index].properties.acc_geodata = '';
           }
-          
+
           results[3][index].properties.address = results[3][index].address;
           results[3][index].properties.type = results[3][index].type;
           results[3][index].properties.price = results[3][index].price;
@@ -856,15 +872,15 @@ app.get('/newsearch', function (req, res) {
       accommodation_details.nop = JSON.stringify(results[3]); // this variable is ambigious, nop == name of place, or name of ppa ... but we need it for now, just rush work for now
       accommodation_details.theppa = undefined;
       // accommodation_details.nop = '[]' // || undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
-      console.log('what we shold see', )
+      // console.log('what we shold see');
       res.render('pages/newsearch2', accommodation_details);
     })
 
   } else {
     // SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address,ppa_geodata FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null)
-    
+
     pool.query("SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null); SELECT * FROM accommodations WHERE expire > UTC_DATE ; SELECT geo_data, name, address, street, type_of_place FROM places WHERE lga = '' AND geo_data != '' ;", function (error, results, fields) {
-      
+
       if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
         console.log(error);
         throw error;
@@ -879,7 +895,7 @@ app.get('/newsearch', function (req, res) {
       _details.nop = undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
       res.render('pages/newsearch2', _details);
     })
-    
+
   }
 
 
@@ -910,7 +926,7 @@ app.get('/search', function (req, res) {
         console.log(error);
         throw error;
       }
-      
+
       else if (!isEmpty(results) && results[0].ppa_geodata != '') {
         // we're not adding the GeoJSON results to an array because it's only one result
         for (index = 0; index < results.length; index++) {
@@ -988,9 +1004,9 @@ app.get('/search', function (req, res) {
 
   } else {
     // SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address,ppa_geodata FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null)
-    
+
     pool.query("SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null); SELECT * FROM accommodations WHERE expire > UTC_DATE", function (error, results, fields) {
-      
+
       if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
         console.log(error);
         throw error;
@@ -1003,7 +1019,7 @@ app.get('/search', function (req, res) {
       _details.nop = undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
       res.render('pages/search', _details);
     })
-    
+
   }
 
 
@@ -1116,7 +1132,7 @@ app.get('/chat', function (req, res) {
 app.get(['/map', '/maps'], function (req, res) { // try to infer their location from their IP Address then send to the front end
   res.set('Content-Type', 'text/html');
   // res.sendFile(__dirname + '/map.html');
-  
+
 
   // what about name of the ppa ? this way of selecting might prove inefficient when we have large data set from all the states meanwhile this corper just need data from within a particular state.
   // also select ppa_directions from info and it should be like a reveal, corpers would click 'read directions' and it'll show them
@@ -1129,7 +1145,7 @@ app.get(['/map', '/maps'], function (req, res) { // try to infer their location 
 
     else if (!isEmpty(results)) {
       console.log('geo data for map', results);
-      
+
 
       // JSON.parse(JSON.stringify([{ g: 'g', l: 'l' }, { g: 'g', l: 'l' }, { g: 'g', l: { g: 'g', l: { g: 'g', l: 'l' } } }]))
 
@@ -1186,9 +1202,9 @@ app.get(['/map', '/maps'], function (req, res) { // try to infer their location 
         // delete redundate data like longitude, latitude, and latlng in ppa_geodata after reassigning values
       }
 
-      var listoftypesofppas = ["ATM","Bank","School","Hospital","Corporate office","Industory","Mosque","Bus stop","Shop","Stadium","Airport","Market","Church","Hotel","University"];
-      
-      
+      var listoftypesofppas = ["ATM", "Bank", "School", "Hospital", "Corporate office", "Industory", "Mosque", "Bus stop", "Shop", "Stadium", "Airport", "Market", "Church", "Hotel", "University"];
+
+
       /**
        * add ppas that weren't in listoftypesofppas but other corpers have added them, 
        * over time, when some types of ppas become common, we add them to listoftypesofppas
@@ -1230,20 +1246,22 @@ app.get('/count', function (req, res) {
   res.render('pages/count'); // show number of people online, then per state. something nice and interactive and definately real time too
 });
 
-app.post('/contact', upload.none(), function (req, res) {
+// 
+// upload.none()
+app.post('/contact', bodyParser.urlencoded({ extended: true, type: 'application/x-www-form-urlencoded' }), function (req, res) {
   console.log('the message', req.body);
-  // console.log('NOT empthy');
-    pool.query("INSERT INTO feedbacks ( name, subject, email, message ) VALUES (" + pool.escape(req.body.name) +','+ pool.escape(req.body.subject) +','+ pool.escape(req.body.email) +',' + pool.escape(req.body.message) +  ")", function (error, results, fields) {
 
-      if (error) throw error;
+  pool.query("INSERT INTO feedbacks ( name, subject, email, message ) VALUES (" + pool.escape(req.body.name) + ',' + pool.escape(req.body.subject) + ',' + pool.escape(req.body.email) + ',' + pool.escape(req.body.message) + ")", function (error, results, fields) {
 
-      if (results.affectedRows === 1) {
-        res.status(200).send('OK'); //.render('pages/404');
-      }
-    });
+    if (error) throw error;
+
+    if (results.affectedRows === 1) {
+      res.status(200).send('OK'); //.render('pages/404');
+    }
+  });
 });
 
-app.post('/sayhi', upload.none(), function (req, res) {
+app.post('/sayhi', bodyParser.urlencoded({ extended: true, type: 'application/x-www-form-urlencoded' }), function (req, res) {
   console.log('the message', req.body);
   if (isEmpty(req.body.message)) {
     // console.log('empty');
@@ -1251,7 +1269,7 @@ app.post('/sayhi', upload.none(), function (req, res) {
     // res.render('pages/404');
   } else {
     // console.log('NOT empthy');
-    pool.query("INSERT INTO feedbacks ( message ) VALUES (" + pool.escape(req.body.message) +  ")", function (error, results, fields) {
+    pool.query("INSERT INTO feedbacks ( message ) VALUES (" + pool.escape(req.body.message) + ")", function (error, results, fields) {
 
       if (error) throw error;
 
@@ -1259,7 +1277,7 @@ app.post('/sayhi', upload.none(), function (req, res) {
         res.status(200).send('OK'); //.render('pages/404');
       }
     });
-    
+
   }
 });
 
@@ -1269,23 +1287,23 @@ app.post('/subscribe', upload.none(), function (req, res) {
     res.status(406).send('Not Acceptable');
   } else {
     // console.log('NOT empthy');
-    pool.query("INSERT INTO subscribers ( email ) VALUES (" + pool.escape(req.body.email) +  ")", function (error, results, fields) {
+    pool.query("INSERT INTO subscribers ( email ) VALUES (" + pool.escape(req.body.email) + ")", function (error, results, fields) {
 
       if (error) {
-      console.log('the error code:', error.code)
-      switch (error.code) { // do more here
-        case 'ER_DUP_ENTRY': // ER_DUP_ENTRY if an email exists already
-          res.status(406).send('Not Acceptable');
-          break;
+        console.log('the error code:', error.code)
+        switch (error.code) { // do more here
+          case 'ER_DUP_ENTRY': // ER_DUP_ENTRY if an email exists already
+            res.status(406).send('Not Acceptable');
+            break;
+        }
+        // throw error;
       }
-      // throw error;
-    }
 
-     else if (results.affectedRows === 1) {
+      else if (results.affectedRows === 1) {
         res.status(200).send('OK');
       }
     });
-    
+
   }
 });
 
@@ -1302,7 +1320,7 @@ app.get('/signup', upload.none(), function (req, res) {
 var iouser = io.of('/user').on('connection', function (socket) { // when a new user is in the TIMELINE
 
   socket.join(socket.handshake.query.statecode.substring(0, 2));
-  console.log('how many', io.sockets.clients.length , iouser.clients.length);
+  console.log('how many', io.sockets.clients.length, iouser.clients.length);
   socket.on('ferret', (asf, name, fn) => {
     // this funtion will run in the client to show/acknowledge the server has gotten the message.
     fn('woot ' + name + asf);
@@ -1367,7 +1385,7 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
     else if (!isEmpty(results[0]) || !isEmpty(results[1])) { // formerly !isEmpty(results) but results is [[...], [...]]
       // console.log('posts', results);
 
-      
+
 
       // FOR THE POSTS - sales just converting their post time value to a worded age & making the media value okay
       Object.entries(results[0]).forEach(
@@ -1422,7 +1440,7 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
       );
 
       var allposts = results[0].concat(results[1]);
-      
+
       /**
        * "It's also worth noting that unlike many other JavaScript array functions, 
        * Array.sort actually changes, or mutates the array it sorts.
@@ -1432,10 +1450,10 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
        * I don't really understand it 
        * (read: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#Description)
        * */
-      function compareFun_to_sort(a, b){
-          return a.post_time - b.post_time; // sort according to post time
+      function compareFun_to_sort(a, b) {
+        return a.post_time - b.post_time; // sort according to post time
       }
-      
+
       allposts.sort(compareFun_to_sort);
       // FOR THE ACCOMMODATIONS - accommodations
       Object.entries(allposts).forEach(
@@ -1584,19 +1602,19 @@ app.get('/newprofile', function (req, res) {
   fs.readFile('moreplaces.json', (err, data) => {
     let jkl = JSON.parse(data);
     // let's hope there's no err
-    
-    
+
+
     if (req.session.loggedin) {
       var jn = req.session.statecode.toUpperCase()
-      
+
       /**an array of all the local government in the state */
-      var lgas = jkl.states[states_short.indexOf(jn.slice(0, 2))][ states_long[states_short.indexOf(jn.slice(0, 2))] ] ;
+      var lgas = jkl.states[states_short.indexOf(jn.slice(0, 2))][states_long[states_short.indexOf(jn.slice(0, 2))]];
       // use the ones from their service state // AND servicestate = '" + req.session.servicestate + "'
       pool.query("SELECT name_of_ppa FROM info WHERE name_of_ppa != '' ; SELECT ppa_address from info WHERE ppa_address != '' AND servicestate = '" + req.session.servicestate + "'; SELECT city_town FROM info WHERE city_town != '' AND servicestate = '" + req.session.servicestate + "'; SELECT region_street FROM info WHERE region_street != '' AND servicestate = '" + req.session.servicestate + "'", function (error2, results2, fields2) {
-  
+
         if (error2) throw error2;
         // console.log('PPAs', results2);
-  
+
         res.set('Content-Type', 'text/html');
         // res.sendFile(__dirname + '/new profile/index.html');
         res.render('pages/newprofile', {
@@ -1617,8 +1635,8 @@ app.get('/newprofile', function (req, res) {
     }
 
   })
-  
-  
+
+
 
 });
 
@@ -1634,14 +1652,14 @@ app.post('/profile', bodyParser.urlencoded({ extended: true/* , type: 'applicati
   console.log('\n\nthe req.body for /newprofile', req.body, '\n\n', req.body.statecode);
   // console.log('\n\n', req);
   var sqlquery = "UPDATE info SET accommodation_location = '" + (req.body.accommodation_location ? req.body.accommodation_location : '') +
-    ( req.body.ss ? "', servicestate = '" + req.body.ss : '' ) // if there's service state(i.e. corper changed service state in real life and from front end), insert it.
+    (req.body.ss ? "', servicestate = '" + req.body.ss : '') // if there's service state(i.e. corper changed service state in real life and from front end), insert it.
     + "', name_of_ppa = '" + req.body.name_of_ppa +
     "', ppa_directions = '" + req.body.ppadirections +
     "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" +
     req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" +
     req.body.type_of_ppa + "', ppa_geodata = '" + (req.body.ppa_geodata ? req.body.ppa_geodata : '') + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" +
     req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city +
-     ( req.body.newstatecode ? "', statecode = '" + req.body.newstatecode.toUpperCase() : '' ) + // if there's a new statecode ...
+    (req.body.newstatecode ? "', statecode = '" + req.body.newstatecode.toUpperCase() : '') + // if there's a new statecode ...
     /* "', accommodationornot = '" + (req.body.accommodationornot ? req.body.accommodationornot : 'yes') + */ "', wantspaornot = '" +
     req.body.wantspaornot + "' WHERE statecode = '" + req.session.statecode.toUpperCase() + "' "; // always change state code to uppercase, that's how it is in the db
 
@@ -1664,17 +1682,17 @@ app.post('/profile', bodyParser.urlencoded({ extended: true/* , type: 'applicati
       if (req.body.newstatecode) { // if they are changing statecode to a different state, then their service state in the db should change and their ppa details too should change, tell them to change the ppa details if they don't change it
         // change statecode in other places too
         // this works because rooms only have one instance for every two corpers or statecode, so there's no DD/17B/7778-AB/17B/2334 and AB/17B/2334-DD/17B/7778 only one of it, same reason why there's no LIMIT 1 in the SELECT statement in REPLACE function
-        var updatequery = "UPDATE chats SET room = (SELECT REPLACE( ( SELECT DISTINCT room WHERE room LIKE '%"+req.session.statecode.toUpperCase()+"%' ) ,'"+req.session.statecode.toUpperCase()+"','"+req.body.newstatecode.toUpperCase()+"')) ; "+
-        " UPDATE chats SET message_from = '"+req.body.newstatecode.toUpperCase()+"' WHERE message_from = '"+req.session.statecode.toUpperCase()+"' ; "+
-        " UPDATE chats SET message_to = '"+req.body.newstatecode.toUpperCase()+"' WHERE message_to = '"+req.session.statecode.toUpperCase()+"' ;"+
-        " UPDATE posts SET statecode = '"+req.body.newstatecode.toUpperCase()+"' WHERE statecode = '"+req.session.statecode.toUpperCase()+"' ; "+
-        " UPDATE accommodations SET statecode = '"+req.body.newstatecode.toUpperCase()+"' WHERE statecode = '"+req.session.statecode.toUpperCase()+"' ";
+        var updatequery = "UPDATE chats SET room = (SELECT REPLACE( ( SELECT DISTINCT room WHERE room LIKE '%" + req.session.statecode.toUpperCase() + "%' ) ,'" + req.session.statecode.toUpperCase() + "','" + req.body.newstatecode.toUpperCase() + "')) ; " +
+          " UPDATE chats SET message_from = '" + req.body.newstatecode.toUpperCase() + "' WHERE message_from = '" + req.session.statecode.toUpperCase() + "' ; " +
+          " UPDATE chats SET message_to = '" + req.body.newstatecode.toUpperCase() + "' WHERE message_to = '" + req.session.statecode.toUpperCase() + "' ;" +
+          " UPDATE posts SET statecode = '" + req.body.newstatecode.toUpperCase() + "' WHERE statecode = '" + req.session.statecode.toUpperCase() + "' ; " +
+          " UPDATE accommodations SET statecode = '" + req.body.newstatecode.toUpperCase() + "' WHERE statecode = '" + req.session.statecode.toUpperCase() + "' ";
         pool.query(updatequery, function (error, results, fields) {
           console.log('updated statecode ', results);
           if (error) throw error;
           // connected!
           // at least ONE or ALL of these MUST update, not necessarily all that why we are using || and NOT && because it could be possible they've not chatted or posted anything at all, but they must have at least registered!
-          if (results[0].affectedRows > 0 || results[1].affectedRows > 0 || results[2].affectedRows > 0 || results[3].affectedRows > 0 || results[4].affectedRows > 0 ) {
+          if (results[0].affectedRows > 0 || results[1].affectedRows > 0 || results[2].affectedRows > 0 || results[3].affectedRows > 0 || results[4].affectedRows > 0) {
             // then status code is good
             console.log('we\'re really good with the update')
 
@@ -1703,7 +1721,7 @@ app.post('/profile', bodyParser.urlencoded({ extended: true/* , type: 'applicati
               so we'd want to check out message attribute
              */
 
-             // we should redirect to somewhere and not just block the whole system!!!!!!!!!!
+            // we should redirect to somewhere and not just block the whole system!!!!!!!!!!
           }
         });
         // should we save every change of statecode that ever occured ?
@@ -1715,7 +1733,7 @@ app.post('/profile', bodyParser.urlencoded({ extended: true/* , type: 'applicati
 
         // SELECT room from chats WHERE message_from = 'AB/17B/1234' or message_to = 'AB/17B/1234'
         // SELECT `room` FROM `chats` WHERE room LIKE '%AB/17B/1234%'
-            
+
         // should know when who they are chatting with is online and when they are typing
 
         // for room change, consider using REPLACE('str', 'str_to_replace', 'replacement_str')
@@ -1724,7 +1742,7 @@ app.post('/profile', bodyParser.urlencoded({ extended: true/* , type: 'applicati
 
         // for room formation, concat('str1', 'str2', ..., 'strN'), or concat_ws('seperator', 'str1', 'str2', ..., 'strN')
 
-        
+
       } else { // if no newstatecode
         res.status(200).redirect(req.session.statecode.toUpperCase() /* + '?e=y' */); // [e]dit=[y]es|[n]o
       }
@@ -1744,104 +1762,65 @@ app.post('/addplace', upload.none(), function (req, res) {
     console.log('we are returning a response')
     var sqlquery = "INSERT INTO places( geo_data, name, address, lga, street, type_of_place, region ) VALUES ('" + req.body.geodata + "','" + req.body.nameOfPlace + "', '" + req.body.address + "', " + pool.escape(req.body.lga) + ", " + pool.escape('') + ", " + pool.escape(req.body.category) + ",'" + req.body.town + "')"
 
+    pool.query(sqlquery, function (error, results, fields) {
+      console.log('inserted data from: ', results);
+      if (error) throw error;
+      // connected!
+      if (results.affectedRows === 1) {
+        // then status code is good
+        res.status(200).send('OK'); // the 'OK' is what the front end sees as event.target.responseText
+
+      } else {
+        // this is really important for the form to get response
+        res.sendStatus(500);
+        // === res.status(500).send('Internal Server Error')
+      }
+    });
+
+  }
+});
+
+app.post('/posts', upload.array('see', 12), function (req, res, next) {
+  // handle post request, add data to database... do more
+  console.log('it: :', req.body)
+  console.log('it: : :', req.files)
+if (!isEmpty(req.body)) { // no need to check for req.files, since that's optional and we must always get req.body
+  
+  var sqlquery = "INSERT INTO posts( media, statecode, type, text, price, location, post_time) VALUES ('" + (req.files.length > 0 ? [...new Set(req.files.map(x => x.filename))] : req.body.mapimage ? req.body.mapimage : '') + "','" + req.session.statecode + "', '" + (req.body.type ? req.body.type : "sale") + "', " + pool.escape(req.body.text) + ", " + pool.escape((req.body.price ? req.body.price : "")) + ", " + pool.escape(req.session.location) + ",'" + req.body.post_time + "')"
+
   pool.query(sqlquery, function (error, results, fields) {
     console.log('inserted data from: ', results);
     if (error) throw error;
+    // ER_BAD_NULL_ERROR: Column 'location' cannot be null
     // connected!
     if (results.affectedRows === 1) {
       // then status code is good
-      res.status(200).send('OK'); // the 'OK' is what the front end sees as event.target.responseText
+      res.sendStatus(200);
 
+      // once it saves in db them emit to other users
+      iouser.to(req.session.statecode.substring(0, 2)).emit('boardcast message', {
+        to: 'be received by everyoneELSE', post: {
+          statecode: req.session.statecode,
+          location: req.session.location,
+          media: (req.files.length > 0 ? [...new Set(req.files.map(x => x.filename))] : false),
+          post_time: req.body.post_time,
+          type: req.body.type,
+          mapdata: (req.body.mapimage ? req.body.mapimage : ''),
+          text: req.body.text,
+          age: moment(Number(req.body.post_time)).fromNow(),
+          price: (req.body.price ? req.body.price : '')
+        }
+      });
     } else {
       // this is really important for the form to get response
       res.sendStatus(500);
       // === res.status(500).send('Internal Server Error')
     }
   });
-    
-  }
-});
 
-app.post('/posts', upload.array('see', 12), function (req, res, next) {
-  // handle post request, add data to database... do more
-
-  console.log('it: : :', req.files)
-
-  for (let index = 0; index < req.files.length; index++) {
-    const iimmgg = req.files[index];
-
-    // IMAGE COMPRESSION
-        
-    INPUT_path_to_your_images = iimmgg.path.replace(/\\/g, '/') ; // replaces '\\' to '/' else it sees it as path delimeter (an extra path) and adds it to the output path  // 'images/*.{jpg,JPG,jpeg,JPEG,png,svg,gif}' ;// 'images/me paint.png'; // 'src/img/**/*.{jpg,JPG,jpeg,JPEG,png,svg,gif}'
-    OUTPUT_path = 'img/comp/';
-
-    // there should be an if statement here, so we don't compress files that are already too small... we'd only compress files larger than 1050914, for now we (naively?) believe nobody will upload files that tiny in size
-    compress_images(INPUT_path_to_your_images, OUTPUT_path, {compress_force: false, statistic: true, autoupdate: true}, false, // glob = false if we're converting just one file
-                                                {jpg: {engine: 'mozjpeg', command: ['-quality', '20']}}, // 60
-                                                {png: {engine: 'pngquant', command: ['--iebug', '--quality=65-80']}}, // --quality=30-50
-                                                {svg: {engine: 'svgo', command: '--multipass'}},
-                                                {gif: {engine: 'gifsicle', command: ['--colors', '64', '--use-col=web']}}, function(error, completed, statistic){
-                console.log('-------------');
-                console.log('error?', error);
-                console.log('completed?', completed);
-                console.log('statistics:', statistic);
-                console.log('-------------');
-                
-                if(error === null){ 
-                    //[jpg] ---to---> [jpg(jpegtran)] WARNING!!! autoupdate  - recommended to turn this off, it's not needed here - autoupdate: false
-                    compress_images(INPUT_path_to_your_images, OUTPUT_path, {compress_force: false, statistic: true, autoupdate: false}, false,
-                                                                    {jpg: {engine: 'jpegtran', command: ['-trim', '-progressive', '-copy', 'none', '-optimize'] }},
-                                                                    {png: {engine: 'optipng', command: ['--iebug', '--quality=65-80']}},
-                                                                    {svg: {engine: false, command: false}},
-                                                                    {gif: {engine: 'giflossy', command: ['--lossy=80']}}, function(){
-                    }); 
-                } else { // well, do nothing
-                    // console.error('error?', error);
-                }
-                // -- CALL BACK FUN.
-
-                if (index == req.files.length - 1) { // on last iteration
-                    
-                  var sqlquery = "INSERT INTO posts( media, statecode, type, text, price, location, post_time) VALUES ('" + (req.files.length > 0 ? [...new Set(req.files.map(x => x.filename))] : req.body.mapimage ? req.body.mapimage : '') + "','" + req.session.statecode + "', '" + (req.body.type ? req.body.type : "sale") + "', " + pool.escape(req.body.text) + ", " + pool.escape((req.body.price ? req.body.price : "")) + ", " + pool.escape(req.session.location) + ",'" + req.body.post_time + "')"
-
-                  pool.query(sqlquery, function (error, results, fields) {
-                    console.log('inserted data from: ', results);
-                    if (error) throw error;
-                    // ER_BAD_NULL_ERROR: Column 'location' cannot be null
-                    // connected!
-                    if (results.affectedRows === 1) {
-                      // then status code is good
-                      res.sendStatus(200);
-
-                      // once it saves in db them emit to other users
-                      iouser.to(req.session.statecode.substring(0, 2)).emit('boardcast message', {
-                        to: 'be received by everyoneELSE', post: {
-                          statecode: req.session.statecode,
-                          location: req.session.location,
-                          media: (req.files.length > 0 ? [...new Set(req.files.map(x => x.filename))] : false),
-                          post_time: req.body.post_time,
-                          type: req.body.type,
-                          mapdata: (req.body.mapimage ? req.body.mapimage: ''),
-                          text: req.body.text,
-                          age: moment(Number(req.body.post_time)).fromNow(),
-                          price: (req.body.price ? req.body.price : '')
-                        }
-                      });
-                    } else {
-                      // this is really important for the form to get response
-                      res.sendStatus(500);
-                      // === res.status(500).send('Internal Server Error')
-                    }
-                  });
-                }
-
-                // -- // CALL BACK FUN.
-    
-    });
-  }
-
-  
-
+} else {
+  res.sendStatus(500);
+}
 
 });
 
@@ -1872,7 +1851,7 @@ app.post('/signup', bodyParser.urlencoded({ extended: true }), function (req, re
           } else if (error.sqlMessage.includes('email', req.body.email)) { // Duplicate entry 'uyu@yud.eww' for key 'email'
             res.redirect('/signup?m=de'); // [m]essage = [d]uplicate [e]mail
           }
-          
+
           break;
       }
       // throw error;
@@ -1950,7 +1929,7 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
             var sqlquery = "INSERT INTO accommodations( statecode, streetname, type, price, media, rentrange, rooms, address, directions, tenure, expire, post_location, post_time, acc_geodata) VALUES ('" +
               req.session.statecode + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
               arraymedia + "', '" + req.body.rentrange + "', '" + req.body.rooms + "','" + req.body.address + "','" + req.body.directions + "','" +
-              req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : '') + "', " + pool.escape(req.session.location) + ", " + pool.escape(req.body.post_time) +",'" + (req.body.acc_geodata ? req.body.acc_geodata : '') + "')";
+              req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : '') + "', " + pool.escape(req.session.location) + ", " + pool.escape(req.body.post_time) + ",'" + (req.body.acc_geodata ? req.body.acc_geodata : '') + "')";
 
             pool.query(sqlquery, function (error, results, fields) {
               console.log('inserted data from: ', results);
@@ -2007,47 +1986,47 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
 
   } else {
     var sqlquery = "INSERT INTO accommodations( statecode, streetname, type, price, media, rentrange, rooms, address, directions, tenure, expire, post_location, post_time, acc_geodata) VALUES ('" +
-              req.session.statecode + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
-              ''/**media is empty */ + "', '" + req.body.rentrange + "', '" + req.body.rooms + "','" + req.body.address + "','" + req.body.directions + "','" +
-              req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : '') + "', " + pool.escape(req.session.location) + ", " + pool.escape(req.body.post_time) +",'" + (req.body.acc_geodata ? req.body.acc_geodata : '') + "')";
+      req.session.statecode + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
+      ''/**media is empty */ + "', '" + req.body.rentrange + "', '" + req.body.rooms + "','" + req.body.address + "','" + req.body.directions + "','" +
+      req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : '') + "', " + pool.escape(req.session.location) + ", " + pool.escape(req.body.post_time) + ",'" + (req.body.acc_geodata ? req.body.acc_geodata : '') + "')";
 
-            pool.query(sqlquery, function (error, results, fields) {
-              console.log('inserted data from: ', results);
-              if (error) throw error;
-              // connected!
-              if (results.affectedRows === 1) {
-                // then status code is good
-                res.sendStatus(200);
+    pool.query(sqlquery, function (error, results, fields) {
+      console.log('inserted data from: ', results);
+      if (error) throw error;
+      // connected!
+      if (results.affectedRows === 1) {
+        // then status code is good
+        res.sendStatus(200);
 
-                console.log('me before you', moment(Number(req.body.post_time)).fromNow(), req.body.post_time);
-                console.log('price', req.body.price);
+        console.log('me before you', moment(Number(req.body.post_time)).fromNow(), req.body.post_time);
+        console.log('price', req.body.price);
 
-                // once it saves in db them emit to other users
-                iouser.emit('boardcast message', { // or 'accommodation'
-                  to: 'be received by everyoneELSE', post: {
-                    statecode: req.session.statecode,
-                    streetname: req.body.streetname,
-                    rentrange: req.body.rentrange,
-                    rooms: req.body.rooms,
-                    tenure: req.body.tenure,
-                    expiredate: (req.body.expiredate ? req.body.expiredate : ''),
-                    post_location: req.session.location,
-                    media: [], // make an empty array or sth else ...just make it empty
-                    post_time: new Date().toLocaleString(), // not sure we need and make use of post time
-                    type: req.body.accommodationtype,
-                    address: req.body.address,
-                    directions: req.body.directions,
-                    age: moment(Date.now()).fromNow(),
-                    price: req.body.price
-                  }
-                });
-              } else {
+        // once it saves in db them emit to other users
+        iouser.emit('boardcast message', { // or 'accommodation'
+          to: 'be received by everyoneELSE', post: {
+            statecode: req.session.statecode,
+            streetname: req.body.streetname,
+            rentrange: req.body.rentrange,
+            rooms: req.body.rooms,
+            tenure: req.body.tenure,
+            expiredate: (req.body.expiredate ? req.body.expiredate : ''),
+            post_location: req.session.location,
+            media: [], // make an empty array or sth else ...just make it empty
+            post_time: new Date().toLocaleString(), // not sure we need and make use of post time
+            type: req.body.accommodationtype,
+            address: req.body.address,
+            directions: req.body.directions,
+            age: moment(Date.now()).fromNow(),
+            price: req.body.price
+          }
+        });
+      } else {
 
-                // this is really important for the form to get response
-                res.sendStatus(500);
-                // === res.status(500).send('Internal Server Error')
-              }
-            });
+        // this is really important for the form to get response
+        res.sendStatus(500);
+        // === res.status(500).send('Internal Server Error')
+      }
+    });
   }
   // ----------------------------------------------- delete this later. not yet, until we so if else for when there are no files.
   /* pool.query("INSERT INTO accommodations( statecode, streetname, type, price, media, rentrange, rooms, address, tenure, expire) VALUES ('" +
@@ -2070,12 +2049,14 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
 
 })
 
+// if someone tries loggin in with a state code that is correct but isn't yet registerd (i.e. hasn't been signed up with in corpers.online), what do we do ?
+// block it? esp if they try more than once... ??
 app.post('/login', bodyParser.urlencoded({ extended: true }), function (req, res/*, handleRedirect*/) {
   // handle post request, validate data with database.
   // how to handle wrong password with right email or more rearly, right password and wrong password.
   var sqlquery = "SELECT name_of_ppa, lga, region_street, city_town, batch, servicestate, statecode FROM info WHERE statecode = '" + req.body.statecode.toUpperCase() + "' AND password = '" + req.body.password + "' ";
   pool.query(sqlquery, function (error1, results1, fields1) {
-    //  console.log(req.body, req.body.statecode, req.body.password);
+    console.log(req.body);
     // console.log('selected data from db, logging In...', results1); // error sometimes, maybe when there's no db conn: ...
     if (error1) {
       console.log('the error code:', error1.code)
@@ -2191,7 +2172,7 @@ var iologin = io.of('/login').on('connection', function (socket) { // when a new
   socket.on('login request', function (data) {
     console.log(data);
   });
-  
+
 
 
 });
@@ -2205,9 +2186,9 @@ var iocount = io.of('/count').on('connection', function (countsocket) {
     console.log(io.sockets.clients.length, typeof io.sockets.clients.length); // clients counts the different ipaddresses connected
     console.log('+1')
     countsocket.emit('count', { number: io.sockets.clients.length });
-    
+
     // if someone goes offline or dissconnects, send the number
-    socket.on('disconnect', function() {
+    socket.on('disconnect', function () {
       console.log(io.sockets.clients.length, typeof io.sockets.clients.length);
       console.log('-1')
       countsocket.emit('count', { number: io.sockets.clients.length });
@@ -2215,7 +2196,7 @@ var iocount = io.of('/count').on('connection', function (countsocket) {
 
   })
 
- 
+
 });
 
 // truly only save rooms when a message has started in that room. 

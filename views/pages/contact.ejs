@@ -142,7 +142,7 @@
           <h2 class="contact-title">Get in Touch</h2>
         </div>
         <div class="col-lg-8">
-          <form class="form-contact contact_form" action="/contact" method="post" id="contactform" novalidate="novalidate">
+          <form class="form-contact contact_form" id="contactform" enctype="application/x-www-form-urlencoded" method="POST" action="/contact">
             <div class="row">
               <div class="col-12">
                 <div class="form-group">
@@ -212,7 +212,9 @@
             var XHR = new XMLHttpRequest();
 
             // Bind the FormData object and the form element
-        var FD = new FormData( form );
+            var FD = new FormData( form );
+
+            console.log('the form', FD)
             
 
             // Define what happens on successful data submission
@@ -241,6 +243,10 @@
 
             // Set up our request
             XHR.open( 'POST', '/contact', true ); // true makes it async request
+
+            
+  // Add the required HTTP header for form data POST requests
+  // XHR.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
 
             // The data sent is what the user provided in the form
             XHR.send( FD );

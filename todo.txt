@@ -125,4 +125,25 @@ Get ideas and insights for achieving delight by watching and responding to your 
 
 Finally, find ways of measuring delight. Quantitatively, you can measure usage and engagement with a product through metrics. However, numbers don’t tell the whole story. Just because people are using a product doesn’t mean it is delightful. Create systems for qualitatively listening to your users and finding out whether your product is meaningful and emotionally impactful.
 
-“I believe that logic + emotion are a winning combination. When useful and useable meet delight—great things happen. It’s about balance.” – David Armano
+"I believe that logic + emotion are a winning combination. When useful and useable meet delight—great things happen. It’s about balance." – David Armano
+
+
+
+
+
+Augmented reality
+
+Using AR within web design is still very much in the beginner stages, but it’s catching on fast. Glasses retailer Specsavers allows viewers to try on different frames using AR, and IKEA has made it possible to view certain pieces of furniture in your own home with its new app called Place. Don’t forget that before the hype cooled down significantly, Pokémon Go was the hottest thing in the world for a while, and it was all because of augmented reality. AR will change a lot in the next 5 years, but expect some more leaps and bounds in 2020, as this is a new and exciting way for viewers to be fully immersed in both the digital and physical worlds.
+
+from http://designbeep.com/2019/12/05/make-sure-youre-aware-of-these-web-design-trends-for-2020/
+
+how about using, AR, once someone rents a place, they take a video, we fill up the rooms with things and house hold items they can get from corpers online, and arrange the items for them using various themes. . . we train our AI from watching decoration videos online a lot
+
+the more we provide the service similar to what Places provide, we can face lift the nation more and more, do away with poor looking designs...
+
+
+
+... look at https://designrfix.com/3d/ways-to-get-a-3d-effect-of-a-product-image
+
+do that for all the people selling clothes and shoes by the road side... make them use the service, find a way to handle packaging and maybe branding (buy using the logo or name of the market they're selling from and the name of his shop/store ... to increase awareness of the dress)... DO ALSO FOR SHOES
+like https://www.core77.com/posts/92783/An-Interview-with-HGTV-Dream-Home-Designer-Brian-Patrick-Flynn?utm_source=core77&utm_medium=from_title do a collection of how the design is acheieved and what inspires the taste of people ...

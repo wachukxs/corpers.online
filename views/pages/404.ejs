@@ -81,7 +81,7 @@
                             <div class="form-row align-items-center">
                                 <div class="col-1"></div>
                                 <div class="col-8">
-                                <label class="sr-only" for="message">Name</label>
+                                <label class="sr-only" for="message">Say something</label>
                                 <input type="text" name="message" class="form-control mb-2" id="inlineFormInput" placeholder="What's up?">
                                 </div>
                                 <div class="col-2">
@@ -114,6 +114,8 @@
             XHR.addEventListener( "load", function( event ) {
                 // alert(event.target.responseText);
                 console.log( event.target.responseText );
+
+                document.getElementById('inlineFormInput').value = '';
 
                 if (event.target.responseText == 'OK') {
                     document.getElementById('ui').style.display = 'block';
