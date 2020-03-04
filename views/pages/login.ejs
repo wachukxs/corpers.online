@@ -157,9 +157,9 @@
             var OK = sc.exec(event.target.value); // OK[0]
             if (!OK) {
                 document.getElementById('statecode').classList.add('is-invalid');
-                console.error(event.target.value + ' isn\'t a valid state code!', OK);
+                // console.error(event.target.value + ' isn\'t a valid state code!', OK);
             } else {
-                console.log('Thanks, your statecode is ' + OK[0], OK);
+                // console.log('Thanks, your statecode is ' + OK[0], OK);
                 document.getElementById('statecode').classList.remove('is-invalid');
                 document.getElementsByClassName('wrong')[0].textContent = "";
             }

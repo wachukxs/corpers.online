@@ -856,12 +856,12 @@
                             <div id="previewPostPics" class="app"></div>
                         </div>
 
-
-
                         <div class="d-flex align-items-center">
                             <div class="mr-auto">
                                 <div class="fileUpload btn btn-outline-dark">
-                                    <span class="d-none d-md-block d-lg-none   d-lg-block d-xl-none   d-xl-block">Image</span>
+                                    <span class="d-none d-md-block d-lg-none   d-lg-block d-xl-none   d-xl-block">
+                                        Image
+                                    </span>
                                     <i class="fas fa-images   d-block d-sm-none  d-none d-sm-block d-md-none"></i>
                                     <input type="file" accept="image/*" name="see" class="upload" multiple id="IMG">
                                 </div>
@@ -1005,7 +1005,7 @@
             });
 
             // Set up our request
-            XHR.open('POST', '/posts', true); // true makes it async request
+            XHR.open('POST', '/posts'); // true makes it async request
 
             // XHR.setRequestHeader('Content-Type', 'multipart/form-data'); // causes error Error: Multipart: Boundary not found
 
@@ -1605,7 +1605,7 @@
             } */
             if (data.post.type == "sale") {
 
-                console.info('got sale');
+                console.info('got sale', data.post.media);
                 if (data.post.media && Array.isArray(data.post.media)) {
                     var gg = document.createElement('div');
                     gg.setAttribute('class', 'app');
@@ -1619,12 +1619,12 @@
                         try {
                             // if localhost
                             if (window.location.hostname == "localhost") {
-                                var a = new URL('graphic/comp/' + data.post.media[i], "http://localhost:8081")
+                                var a = new URL(`/uc?id=${data.post.media[i]}`, "https://drive.google.com/uc?id=")
                                     .toString(); // important: the trailing slash
 
                             } else if (window.location.hostname == "corpers.online") { // if not localhost then get media from live site
                                 // getting media from live site
-                                var a = new URL('/' + data.post.media[i], "https://corpers.online")
+                                var a = new URL(`/uc?id=${data.post.media[i]}`, "https://drive.google.com")
                                     .toString(); // upload images to this url when ever users upload images
                             }
                         } catch (error) {
