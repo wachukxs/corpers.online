@@ -873,7 +873,7 @@ h3, .h3 {
   left: 0;
   width: 595px;
   height: 660px;
-  background: url(../home/bg-shape-left.png) left center no-repeat;
+  background: url(../images/home/bg-shape-left.png) left center no-repeat;
   background-size: cover;
   z-index: -1;
 }
@@ -892,7 +892,7 @@ h3, .h3 {
   right: 0;
   width: 755px;
   height: 860px;
-  background: url(../home/bg-shape-right.png) left center no-repeat;
+  background: url(../images/home/bg-shape-right.png) left center no-repeat;
   background-size: cover;
   z-index: -1;
 }

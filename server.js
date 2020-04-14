@@ -1,3 +1,7 @@
+// https://github.com/goldbergyoni/nodebestpractices
+
+// https://www.codementor.io/@mattgoldspink/nodejs-best-practices-du1086jja
+
 // NEVER THROW ERR, INSTEAD, SEND A RESPONSE TO THE FRONT END, OR PERFORM THE ACTION AGAIN (TRYING TO CORRECT AS MUCH AS POSSIBLE, AFTER INFERRING THE CAUSE OF THE ERROR)
 // I need to use env for passwords too, and make sure previous commits of corpers.online repo doesn't show the password and username for ...
 //https://github.com/Connarts/corpers.online.git
@@ -23,7 +27,6 @@ var Busboy = require('busboy');
 //make sure only serving corpers can register!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! from the pattern matching in the sign up page, look for how js can manipulate it to make sure only serving members register!
 const bodyParser = require('body-parser');
 const multer = require('multer');
-
 
 // using path module removes the buffer object from the req.files array of uploaded files,... incase we ever need this... info!
 const path = require('path');
@@ -152,6 +155,27 @@ function getAccessToken(oAuth2Client) {
 
 const app = express();
 const server = http.Server(app);
+
+/**
+ * If you’re writing a web application,
+ * there are a lot of common best practices
+ * that you should follow to secure your application:
+ * (1)XSS Protection
+ * (2)Prevent Clickingjacking using X-Frame-Options
+ * (3)Enforcing all connections to be HTTPS
+ * (4)Setting a Context-Security-Policy header
+ * 
+ * Disabling the X-Powered-By header
+ * so attackers can’t narrow down their attacks to specific software
+ * 
+ * Instead of remembering to configure all these headers,
+ * Helmet will set them all to sensible defaults for you,
+ * and allow you to tweak the ones that you need.
+ * 
+ * It’s incredibly simple to set up on an Express.js application:
+ */
+var helmet = require('helmet');
+app.use(helmet());
 
 const nodemailer = require('nodemailer');
 
@@ -1748,9 +1772,6 @@ app.get('/newprofile', function (req, res) {
     }
 
   })
-
-
-
 });
 
 app.post('/profile', bodyParser.urlencoded({
@@ -2302,68 +2323,6 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
 
 })
 
-// if someone tries loggin in with a state code that is correct but isn't yet registerd (i.e. hasn't been signed up with in corpers.online), what do we do ?
-// block it? esp if they try more than once... ??
-app.post('/login', bodyParser.urlencoded({
-  extended: true
-}), function (req, res /*, handleRedirect*/) {
-  // handle post request, validate data with database.
-  // how to handle wrong password with right email or more rearly, right password and wrong password.
-  var sqlquery = "SELECT name_of_ppa, lga, region_street, city_town, batch, servicestate, statecode FROM info WHERE statecode = '" + req.body.statecode.toUpperCase() + "' AND password = '" + req.body.password + "' ";
-  pool.query(sqlquery, function (error1, results1, fields1) {
-    console.log(req.body);
-    // console.log('selected data from db, logging In...', results1); // error sometimes, maybe when there's no db conn: ...
-    if (error1) {
-      console.log('the error code:', error1.code)
-      switch (error1.code) { // do more here
-        case 'ER_ACCESS_DENIED_ERROR':
-
-          break;
-        case 'ECONNREFUSED': // maybe send an email to myself or the delegated developer // try to connect again multiple times first
-
-          break;
-        case 'PROTOCOL_CONNECTION_LOST':
-
-          break;
-
-        default:
-          break;
-      }
-      throw error1;
-    }
-    // connected!
-    if (isEmpty(results1)) {
-      // res.sendStatus(406);
-
-      // res.status(403);
-      res.status(502).redirect('/login?l=n');
-      // res.status(406).send('Not Acceptable');
-    } else if (results1.length === 1) {
-
-      // console.log('req.session.id: ', req.session.id);
-      // insert login time and session id into db for usage details
-      pool.query("INSERT INTO session_usage_details( statecode, session_id, user_agent) VALUES ('" + req.body.statecode + "', '" + req.session.id + "', '" + req.headers["user-agent"] + "')", function (error2, results2, fields2) {
-
-        if (error2) throw error2;
-
-        if (results2.affectedRows === 1) {
-          req.session.statecode = req.body.statecode.toUpperCase();
-          req.session.batch = results1[0].batch;
-          req.session.loggedin = true;
-          req.session.servicestate = results1[0].servicestate;
-          req.session.name_of_ppa = results1[0].name_of_ppa;
-          req.session.location = req.session.servicestate + (results1[0].city_town ? ', ' + results1[0].city_town : '') /* + (results1[0].region_street ? ', ' + results1[0].region_street : '' ) */;
-
-          res.status(200).redirect(req.body.statecode.toUpperCase());
-
-        }
-
-      });
-    }
-  });
-
-
-});
 
 app.get('/logout', function (req, res) {
   // add when user logged out to database

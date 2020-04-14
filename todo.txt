@@ -151,3 +151,10 @@ like https://www.core77.com/posts/92783/An-Interview-with-HGTV-Dream-Home-Design
 make corpers do a kind of virtual tour of their accommodation so other corpers can preview it before renting
 using https://blog.mozilla.org/blog/2016/03/12/mozilla-a-frame-powers-new-amnesty-international-virtual-reality-website-syria360/
 like how they did http://www.360syria.com/ making it look so real... we'll do that for rooms and other places... so corpers and probably even more around.
+
+
+use node core module: zlib, for compression
+
+use a lot of promises, turn things into modules
+
+centralize logging (https://dev.to/btsuhako/comment/a9l0)

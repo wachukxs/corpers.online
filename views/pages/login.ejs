@@ -4,9 +4,9 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Log In</title>
+    <title>Log In - Corpers Online</title>
 
-    <link rel="icon" type="image/png" href="logo/new/logo32x32.png" />
+    <link rel="icon" type="image/png" href="assets/images/logo32x32.png" />
     <!-- for-mobile-apps -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -45,7 +45,7 @@
     <script src="/bootstrap.min.js"></script>
     <script src="/holder.min.js"></script> -->
 
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js" crossorigin="anonymous"></script>
     <style>
         html {
             height: 100%;
@@ -167,7 +167,7 @@
 
         var _sc = new RegExp('(ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/\\d\\d[abc]\/\\d\\d\\d\\d', 'i');
         document.forms[0].elements[0].oninvalid = function(event) { // when submitting the form
-            console.log('evt', event);
+            // console.log('evt', event);
 
             // document.getElementsByClassName('wrong')[0].textContent = "This doens't look like a statecode";
             document.getElementsByClassName('wrong')[0].removeAttribute('hidden');

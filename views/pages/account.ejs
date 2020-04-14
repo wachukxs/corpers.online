@@ -56,7 +56,7 @@
     <!-- <script src="/typeahead.bundle.js"></script> -->
 
     <!--forThatInput-->
-    <link rel="stylesheet" href="/cssForThatInput/component.css">
+    <link rel="stylesheet" href="/assets/css/custom-file-input.css">
     <!--//forThatInput-->
 
     <style type="text/css">
@@ -93,7 +93,7 @@
             overflow-x: hidden;
         }
     </style>
-    <script src="/socket.io/socket.io.js"></script>
+    <script crossorigin="anonymous" src="/socket.io/socket.io.js"></script>
     <style>
         #loader {
             border: 5px solid #f3f3f3;
@@ -654,7 +654,7 @@
                                                     </div>
 
                                                     <!-- this script must come after the input -->
-                                                    <script src="/jsForThatInput/custom-file-input.js"></script>
+                                                    <script src="/assets/js/custom-file-input.js"></script>
                                                     <!-- //thatInput -->
                                                 </div>
                                             </fieldset>
@@ -1397,7 +1397,7 @@
          * 
          * READ SOMETHING ABOUT SCOPE WHERE IF YOU CAN MAKE VARIABLES NOT ACCESSIBLE FROM window object
          * 
-         * Apply it to variable bm and bn and EVVVVVEEEEEERRRRRRRRYYYYYYYYYYYYYTTTTTTTTTTTTTTHHHHHHHHHHHHHHHHHHHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIINNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+         * Apply it to variable bm and bn and EVERY OTHER VARIABLE
          */
 
 
@@ -1423,6 +1423,10 @@
                 user: pathArray[2],
                 putl: bm,
                 autl: bn,
+                first_post_pst: bm.length > 0 ? bm[0] : null ,
+                last_post_pst: bm.length > 0 ? bm[bm.length - 1] : null ,
+                first_post_acc: bn.length > 0 ? bn[0] : null ,
+                last_post_acc: bn.length > 0 ? bn[bn.length - 1] : null ,
                 test: 'ertrerer',
                 from: window.location.pathname.substring(1, 12),
                 statecode: '<%= statecode %>' // window.location.pathname.substring( 1, 12 ) // '<%= statecode %>'
