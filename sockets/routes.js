@@ -4,7 +4,8 @@ const query = require('../models/queries');
 const io = require('socket.io')();
 // find a more authentic way to calculate the numbers of corpers online using io(/user) --so even if they duplicate pages, it won't double count
 
-var iouser = io.of('/user').on('connection', function (socket) { // when a new user is in the TIMELINE
+// change all "iouser" to "io.of('/user')" ...?
+const iouser = io.of('/user').on('connection', function (socket) { // when a new user is in the TIMELINE
 
     socket.join(socket.handshake.query.statecode.substring(0, 2));
     console.log('how many:', `total connection on all sockets ${io.sockets.clients.length}`, `& from timeline ${iouser.clients.length}`);
@@ -139,7 +140,7 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
 
         }
 
-        query.InsertRowInPostTable({
+        query.InsertRowInPostsTable({
             sender: data.sender , 
             statecode: data.statecode, 
             type: (data.type ? data.type : ""), 
@@ -174,7 +175,7 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
 
 });
 
-io.of('/chat').on('connection', function (socket) {
+const iochat = io.of('/chat').on('connection', function (socket) {
 
         // get user details...
         query.GetFirstAndLastNameWithStatecode({
@@ -424,9 +425,9 @@ io.of('/chat').on('connection', function (socket) {
             '/chat': 'will get, it ?'
         });
 
-    });
+});
 
-io.of('/map').on('connection', function (socket) { // when a new user connects to the map
+const iomap = io.of('/map').on('connection', function (socket) { // when a new user connects to the map
 
     socket.on('addplace', function (data) {
         console.log('got some info', data)
@@ -443,7 +444,7 @@ io.of('/map').on('connection', function (socket) { // when a new user connects t
     });
 });
 
-io.of('/count').on('connection', function (countsocket) {
+const iocount = io.of('/count').on('connection', function (countsocket) {
     // once you connect, send the number
     countsocket.emit('count', {
         number: io.sockets.clients.length

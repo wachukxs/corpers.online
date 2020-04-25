@@ -1,12 +1,12 @@
 {
   "name": "corpersonline",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "private": true,
   "description": "for corpers by corpers",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "test": "echo \"Error: no test specified... yet\" && exit 1",
+    "start": "nodemon ./index.js"
   },
   "keywords": [
     "corpers",
@@ -14,7 +14,8 @@
     "transportation",
     "PPA",
     "SPA",
-    "know"
+    "know",
+    "places"
   ],
   "author": "@wachukx, Mogaba Juliet, PLACEHOLDER LTD Engineering Team",
   "license": "ISC",

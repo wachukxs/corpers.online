@@ -1,7 +1,14 @@
-var express = require('express');
-
+const express = require('express');
+const Busboy = require('busboy');
 const multer = require('multer');
+inspect = require('util').inspect;
+const helpers = require('../constants/helpers')
+const socket = require('../sockets/routes')
+const ngplaces = require('../constants/ngstates')
+const moment = require('moment');
+const query = require('../models/queries');
 
+const ggle = require('../helpers/uploadgdrive');
 // using path module removes the buffer object from the req.files array of uploaded files,... incase we ever need this... info!
 // const path = require('path');
 
@@ -48,7 +55,7 @@ const upload = multer({
   storage: storage
 })
 
-var router = express.Router();
+let router = express.Router();
 
 router.get('/allstateslgas', function (req, res) {
   res.set('Content-Type', 'application/json');
@@ -105,7 +112,7 @@ router.get('/newsearch', function (req, res) {
       if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
         console.log(error);
         throw error;
-      } else if (!isEmpty(results) /* && results[3].ppa_geodata != '' */) {
+      } else if (!helpers.isEmpty(results) /* && results[3].ppa_geodata != '' */) {
         // we're not adding the GeoJSON results to an array because it's only one result
         for (index = 0; index < results[3].length; index++) {
           /**
@@ -185,7 +192,7 @@ router.get('/newsearch', function (req, res) {
       if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
         console.log(error);
         throw error;
-      } else if (!isEmpty(results) /* && results[3].acc_geodata != '' */) {
+      } else if (!helpers.isEmpty(results) /* && results[3].acc_geodata != '' */) {
         // we're not adding the GeoJSON results to an array because it's only one result
         for (index = 0; index < results[3].length; index++) {
           /**
@@ -260,7 +267,7 @@ router.get('/newsearch', function (req, res) {
       if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
         console.log(error);
         throw error;
-      } else if (!isEmpty(results) /* && results[3].acc_geodata != '' */) {
+      } else if (!helpers.isEmpty(results) /* && results[3].acc_geodata != '' */) {
         // we're not adding the GeoJSON results to an array because it's only one result
         for (index = 0; index < results[3].length; index++) {
           /**
@@ -378,7 +385,7 @@ router.get('/search', function (req, res) {
       if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
         console.log(error);
         throw error;
-      } else if (!isEmpty(results) && results[0].ppa_geodata != '') {
+      } else if (!helpers.isEmpty(results) && results[0].ppa_geodata != '') {
         // we're not adding the GeoJSON results to an array because it's only one result
         for (index = 0; index < results.length; index++) {
           /**
@@ -480,14 +487,33 @@ router.post('/sayhi', /* bodyParser.urlencoded({
   extended: true,
   type: 'application/x-www-form-urlencoded'
 }), */ function (req, res) {
-  console.log('the message', req.body);
-  if (isEmpty(req.body.message)) {
-    // console.log('empty');
-    res.status(406).send('Not Acceptable'); //.render('pages/404'); // returns Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
-    // res.render('pages/404');
-  } else {
-    // console.log('NOT empthy');
-    pool.query("INSERT INTO feedbacks ( message ) VALUES (" + pool.escape(req.body.message) + ")", function (error, results, fields) {
+    console.log('the message', req.body);
+    if (helpers.isEmpty(req.body.message)) {
+      // console.log('empty');
+      res.status(406).send('Not Acceptable'); //.render('pages/404'); // returns Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+      // res.render('pages/404');
+    } else {
+      // console.log('NOT empthy');
+      pool.query("INSERT INTO feedbacks ( message ) VALUES (" + pool.escape(req.body.message) + ")", function (error, results, fields) {
+
+        if (error) throw error;
+
+        if (results.affectedRows === 1) {
+          res.status(200).send('OK'); //.render('pages/404');
+        }
+      });
+
+    }
+  });
+
+// upload.none()
+router.post('/contact', /* bodyParser.urlencoded({ // edited
+  extended: true,
+  type: 'application/x-www-form-urlencoded'
+}), */ function (req, res) {
+    console.log('the message', req.body);
+
+    pool.query("INSERT INTO feedbacks ( name, subject, email, message ) VALUES (" + pool.escape(req.body.name) + ',' + pool.escape(req.body.subject) + ',' + pool.escape(req.body.email) + ',' + pool.escape(req.body.message) + ")", function (error, results, fields) {
 
       if (error) throw error;
 
@@ -495,26 +521,7 @@ router.post('/sayhi', /* bodyParser.urlencoded({
         res.status(200).send('OK'); //.render('pages/404');
       }
     });
-
-  }
-});
-
-// upload.none()
-router.post('/contact', /* bodyParser.urlencoded({ // edited
-  extended: true,
-  type: 'application/x-www-form-urlencoded'
-}), */ function (req, res) {
-  console.log('the message', req.body);
-
-  pool.query("INSERT INTO feedbacks ( name, subject, email, message ) VALUES (" + pool.escape(req.body.name) + ',' + pool.escape(req.body.subject) + ',' + pool.escape(req.body.email) + ',' + pool.escape(req.body.message) + ")", function (error, results, fields) {
-
-    if (error) throw error;
-
-    if (results.affectedRows === 1) {
-      res.status(200).send('OK'); //.render('pages/404');
-    }
   });
-});
 
 router.get('/posts', function (req, res) {
   // set resposnse type to application/json
@@ -529,8 +536,8 @@ router.get('/posts', function (req, res) {
     var q = "SELECT streetname, type, input_time, statecode, price, rentrange FROM accommodations WHERE statecode LIKE '" + req.query.s.substring(0, 2) + "%' ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != '' AND statecode LIKE '" + req.query.s.substring(0, 2) + "%'";
   } else {
     var q = '';
-    for (let index = 0; index < states_short.length; index++) {
-      const element = states_short[index];
+    for (let index = 0; index < 36/* ngplaces.states_short.length */; index++) {
+      const element = ngplaces.states_short[index];
       q += "SELECT streetname, type, input_time, statecode, price, rentrange FROM accommodations WHERE statecode LIKE '" + element + "%' ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != '' AND statecode LIKE '" + element + "%' ;"; // the trailing ';' is very important
     }
     // var q = "SELECT streetname, type, input_time, statecode, price, rentrange FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != ''";
@@ -542,7 +549,7 @@ router.get('/posts', function (req, res) {
     if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
       console.log(error);
       throw error;
-    } else if (!isEmpty(results)) {
+    } else if (!helpers.isEmpty(results)) {
       // res.json({er: 'er'}); // auto sets content-type header with the correct content-type
       // res.send({ user: 'tobi' });
       console.log('\n[=', results.length, results)
@@ -571,8 +578,8 @@ router.get('/posts', function (req, res) {
             
           } */
           console.log('\n', index, k)
-          thisisit.data[states_long[k]] = results[index].concat(results[index + 1])
-          // thisisit.data[states_long[index+1]] = results[index+1]
+          thisisit.data[ngplaces.states_long[k]] = results[index].concat(results[index + 1])
+          // thisisit.data[ngplaces.states_long[index+1]] = results[index+1]
           // the last result of thisisit is undefined because states_long[37 + 1] is above the last index of results
         }
       }
@@ -586,7 +593,7 @@ router.get('/posts', function (req, res) {
 });
 
 router.get('/newprofile', function (req, res) {
-  fs.readFile('moreplaces.json', (err, data) => {
+  fs.readFile('./constants/ngstateslga.json', (err, data) => {
     let jkl = JSON.parse(data);
     // let's hope there's no err
 
@@ -595,7 +602,7 @@ router.get('/newprofile', function (req, res) {
       var jn = req.session.statecode.toUpperCase()
 
       /**an array of all the local government in the state */
-      var lgas = jkl.states[states_short.indexOf(jn.slice(0, 2))][states_long[states_short.indexOf(jn.slice(0, 2))]];
+      var lgas = jkl.states[ngplaces.states_short.indexOf(jn.slice(0, 2))][ngplaces.states_long[ngplaces.states_short.indexOf(jn.slice(0, 2))]];
       // use the ones from their service state // AND servicestate = '" + req.session.servicestate + "'
       pool.query("SELECT name_of_ppa FROM info WHERE name_of_ppa != '' ; SELECT ppa_address from info WHERE ppa_address != '' AND servicestate = '" + req.session.servicestate + "'; SELECT city_town FROM info WHERE city_town != '' AND servicestate = '" + req.session.servicestate + "'; SELECT region_street FROM info WHERE region_street != '' AND servicestate = '" + req.session.servicestate + "'", function (error2, results2, fields2) {
 
@@ -612,7 +619,7 @@ router.get('/newprofile', function (req, res) {
           ppa_addresses: results2[1],
           cities_towns: results2[2],
           regions_streets: results2[3],
-          states: states_long,
+          states: ngplaces.states_long,
           lgas: lgas
           // select all distinct ppa type / address / name and send it to the front end as suggestions for the input when the corpers type
         });
@@ -627,126 +634,126 @@ router.get('/newprofile', function (req, res) {
 router.post('/profile', /* bodyParser.urlencoded({
   extended: true
 }),  */function (req, res) {
-  // cater for fields we already have, so that we don't touch them eg. servicestate
-  // UPDATE 'info' SET 'firstname'=[value-1],'lastname'=[value-2],'accomodation_location'=[value-3],'servicestate'=[value-4],'batch'=[value-5],'name_of_ppa'=[value-6],'statecode'=[value-7],'email'=[value-8],'middlename'=[value-9],'password'=[value-10],'phone'=[value-11],'dateofreg'=[value-12],'lga'=[value-13],'city_town'=[value-14],'region_street'=[value-15],'stream'=[value-16],'type_of_ppa'=[value-17],'ppa_address'=[value-18],'travel_from_state'=[value-19],'travel_from_city'=[value-20],'spaornot'=[value-21] WHERE email = req.body.email
-  // UPDATE info SET 'accomodation_location'=req.body.accomodation_location,'servicestate'=req.body.servicestate,'name_of_ppa'=[value-6],'lga'=req.body.lga,'city_town'=req.body.city_town,'region_street'=req.body.region_street,'stream'=req.body.stream,'type_of_ppa'=req.body.type_of_ppa,'ppa_address'=req.body.ppa_address,'travel_from_state'=req.body.travel_from_state,'travel_from_city'=req.body.travel_from_city,'spaornot'=req.body.spaornot WHERE email = req.body.email
-  // var sqlquery = "INSERT INTO info(servicestate, lga, city_town, region_street, stream, accomodation_location, type_of_ppa, travel_from_state, travel_from_city) VALUES ('" + req.body.servicestate + "', '" + req.body.lga + "', '" + req.body.city_town + "', '" + req.body.region_street + "', '" + req.body.stream + "', '" + req.body.accomodation_location + "', '" + req.body.type_of_ppa + "', '" + req.body.travel_from_state + "', '" + req.body.travel_from_city + "', '" + req.body.spaornot + "' )";
+    // cater for fields we already have, so that we don't touch them eg. servicestate
+    // UPDATE 'info' SET 'firstname'=[value-1],'lastname'=[value-2],'accomodation_location'=[value-3],'servicestate'=[value-4],'batch'=[value-5],'name_of_ppa'=[value-6],'statecode'=[value-7],'email'=[value-8],'middlename'=[value-9],'password'=[value-10],'phone'=[value-11],'dateofreg'=[value-12],'lga'=[value-13],'city_town'=[value-14],'region_street'=[value-15],'stream'=[value-16],'type_of_ppa'=[value-17],'ppa_address'=[value-18],'travel_from_state'=[value-19],'travel_from_city'=[value-20],'spaornot'=[value-21] WHERE email = req.body.email
+    // UPDATE info SET 'accomodation_location'=req.body.accomodation_location,'servicestate'=req.body.servicestate,'name_of_ppa'=[value-6],'lga'=req.body.lga,'city_town'=req.body.city_town,'region_street'=req.body.region_street,'stream'=req.body.stream,'type_of_ppa'=req.body.type_of_ppa,'ppa_address'=req.body.ppa_address,'travel_from_state'=req.body.travel_from_state,'travel_from_city'=req.body.travel_from_city,'spaornot'=req.body.spaornot WHERE email = req.body.email
+    // var sqlquery = "INSERT INTO info(servicestate, lga, city_town, region_street, stream, accomodation_location, type_of_ppa, travel_from_state, travel_from_city) VALUES ('" + req.body.servicestate + "', '" + req.body.lga + "', '" + req.body.city_town + "', '" + req.body.region_street + "', '" + req.body.stream + "', '" + req.body.accomodation_location + "', '" + req.body.type_of_ppa + "', '" + req.body.travel_from_state + "', '" + req.body.travel_from_city + "', '" + req.body.spaornot + "' )";
 
-  // var sqlquery = "UPDATE info SET accomodation_location = '" + req.body.accomodation_location + "', servicestate = '" + req.body.servicestate + "', name_of_ppa = '" + req.body.name_of_ppa + "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" + req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" + req.body.type_of_ppa + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" + req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city + "', spaornot = '" + req.body.spaornot + "' WHERE email = '" + req.body.email + "' " ;
+    // var sqlquery = "UPDATE info SET accomodation_location = '" + req.body.accomodation_location + "', servicestate = '" + req.body.servicestate + "', name_of_ppa = '" + req.body.name_of_ppa + "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" + req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" + req.body.type_of_ppa + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" + req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city + "', spaornot = '" + req.body.spaornot + "' WHERE email = '" + req.body.email + "' " ;
 
-  /*[req.body.accomodation_location, req.body.servicestate, req.body.name_of_ppa, req.body.lga, req.body.city_town, req.body.region_street, req.body.stream, req.body.type_of_ppa, req.body.ppa_address, req.body.travel_from_state, req.body.travel_from_city, req.body.spaornot, req.body.email],*/
-  console.log('\n\nthe req.body for /newprofile', req.body, '\n\n', req.body.statecode);
-  // console.log('\n\n', req);
-  var sqlquery = "UPDATE info SET accommodation_location = '" + (req.body.accommodation_location ? req.body.accommodation_location : '') +
-    (req.body.ss ? "', servicestate = '" + req.body.ss : '') // if there's service state(i.e. corper changed service state in real life and from front end), insert it.
-    +
-    "', name_of_ppa = '" + req.body.name_of_ppa +
-    "', ppa_directions = '" + req.body.ppadirections +
-    "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" +
-    req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" +
-    req.body.type_of_ppa + "', ppa_geodata = '" + (req.body.ppa_geodata ? req.body.ppa_geodata : '') + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" +
-    req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city +
-    (req.body.newstatecode ? "', statecode = '" + req.body.newstatecode.toUpperCase() : '') + // if there's a new statecode ...
-    /* "', accommodationornot = '" + (req.body.accommodationornot ? req.body.accommodationornot : 'yes') + */
-    "', wantspaornot = '" +
-    req.body.wantspaornot + "' WHERE statecode = '" + req.session.statecode.toUpperCase() + "' "; // always change state code to uppercase, that's how it is in the db
+    /*[req.body.accomodation_location, req.body.servicestate, req.body.name_of_ppa, req.body.lga, req.body.city_town, req.body.region_street, req.body.stream, req.body.type_of_ppa, req.body.ppa_address, req.body.travel_from_state, req.body.travel_from_city, req.body.spaornot, req.body.email],*/
+    console.log('\n\nthe req.body for /newprofile', req.body, '\n\n', req.body.statecode);
+    // console.log('\n\n', req);
+    var sqlquery = "UPDATE info SET accommodation_location = '" + (req.body.accommodation_location ? req.body.accommodation_location : '') +
+      (req.body.ss ? "', servicestate = '" + req.body.ss : '') // if there's service state(i.e. corper changed service state in real life and from front end), insert it.
+      +
+      "', name_of_ppa = '" + req.body.name_of_ppa +
+      "', ppa_directions = '" + req.body.ppadirections +
+      "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" +
+      req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" +
+      req.body.type_of_ppa + "', ppa_geodata = '" + (req.body.ppa_geodata ? req.body.ppa_geodata : '') + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" +
+      req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city +
+      (req.body.newstatecode ? "', statecode = '" + req.body.newstatecode.toUpperCase() : '') + // if there's a new statecode ...
+      /* "', accommodationornot = '" + (req.body.accommodationornot ? req.body.accommodationornot : 'yes') + */
+      "', wantspaornot = '" +
+      req.body.wantspaornot + "' WHERE statecode = '" + req.session.statecode.toUpperCase() + "' "; // always change state code to uppercase, that's how it is in the db
 
 
-  pool.query(sqlquery, function (error, results, fields) {
-    console.log('updated user profile data: ', results);
-    if (error) throw error;
-    // go back to the user's timeline
-    if (results.changedRows === 1 && !isEmpty(req.body)) {
-      if (req.body.name_of_ppa) {
-        req.session.name_of_ppa = req.body.name_of_ppa;
+    pool.query(sqlquery, function (error, results, fields) {
+      console.log('updated user profile data: ', results);
+      if (error) throw error;
+      // go back to the user's timeline
+      if (results.changedRows === 1 && !helpers.isEmpty(req.body)) {
+        if (req.body.name_of_ppa) {
+          req.session.name_of_ppa = req.body.name_of_ppa;
+        }
+        /* 
+        // todo later...
+  
+        statecode: req.session.statecode.toUpperCase(),
+        servicestate: req.session.servicestate,
+        batch: req.session.batch, */
+
+        if (req.body.newstatecode) { // if they are changing statecode to a different state, then their service state in the db should change and their ppa details too should change, tell them to change the ppa details if they don't change it
+          // change statecode in other places too
+          // this works because rooms only have one instance for every two corpers or statecode, so there's no DD/17B/7778-AB/17B/2334 and AB/17B/2334-DD/17B/7778 only one of it, same reason why there's no LIMIT 1 in the SELECT statement in REPLACE function
+          var updatequery = "UPDATE chats SET room = (SELECT REPLACE( ( SELECT DISTINCT room WHERE room LIKE '%" + req.session.statecode.toUpperCase() + "%' ) ,'" + req.session.statecode.toUpperCase() + "','" + req.body.newstatecode.toUpperCase() + "')) ; " +
+            " UPDATE chats SET message_from = '" + req.body.newstatecode.toUpperCase() + "' WHERE message_from = '" + req.session.statecode.toUpperCase() + "' ; " +
+            " UPDATE chats SET message_to = '" + req.body.newstatecode.toUpperCase() + "' WHERE message_to = '" + req.session.statecode.toUpperCase() + "' ;" +
+            " UPDATE posts SET statecode = '" + req.body.newstatecode.toUpperCase() + "' WHERE statecode = '" + req.session.statecode.toUpperCase() + "' ; " +
+            " UPDATE accommodations SET statecode = '" + req.body.newstatecode.toUpperCase() + "' WHERE statecode = '" + req.session.statecode.toUpperCase() + "' ";
+          pool.query(updatequery, function (error, results, fields) {
+            console.log('updated statecode ', results);
+            if (error) throw error;
+            // connected!
+            // at least ONE or ALL of these MUST update, not necessarily all that why we are using || and NOT && because it could be possible they've not chatted or posted anything at all, but they must have at least registered!
+            if (results[0].affectedRows > 0 || results[1].affectedRows > 0 || results[2].affectedRows > 0 || results[3].affectedRows > 0 || results[4].affectedRows > 0) {
+              // then status code is good
+              console.log('we\'re really good with the update')
+
+              // then change the session statecode
+              req.session.statecode = req.body.newstatecode.toUpperCase();
+
+              res.status(200).redirect(req.body.newstatecode.toUpperCase()); // if there's new statecode
+            } else {
+              console.log('we\'re bad with the update') // we should find out what went wrong
+              /**
+               * 
+               * 
+               * results looks like:
+               * 
+               * OkPacket {
+                  fieldCount: 0,
+                  affectedRows: 1,
+                  insertId: 0,
+                  serverStatus: 2,
+                  warningCount: 1,
+                  message: '',
+                  protocol41: true,
+                  changedRows: 0 
+                }
+  
+                so we'd want to check out message attribute
+               */
+
+              // we should redirect to somewhere and not just block the whole system!!!!!!!!!!
+            }
+          });
+          // should we save every change of statecode that ever occured ?
+          // SELECT room FROM `chats` WHERE message_from = 'AB/17B/1234' or message_to = 'AB/17B/1234'
+
+          // UPDATE `chats` SET `room`=[value-1],`message_from`=[value-3],`message_to`=[value-4] WHERE message_from = 'AB/17B/1234' or message_to = 'AB/17B/1234'
+          //- UPDATE `chats` SET `message_from`=[value-3] WHERE message_from = 'AB/17B/1234'
+          //- UPDATE `chats` SET `message_to`=[value-4] WHERE message_to = 'AB/17B/1234'
+
+          // SELECT room from chats WHERE message_from = 'AB/17B/1234' or message_to = 'AB/17B/1234'
+          // SELECT `room` FROM `chats` WHERE room LIKE '%AB/17B/1234%'
+
+          // should know when who they are chatting with is online and when they are typing
+
+          // for room change, consider using REPLACE('str', 'str_to_replace', 'replacement_str')
+          // for room change, consider using REPLACE(SELECT `room` FROM `chats` WHERE room LIKE '%AB/17B/1234%', 'AB/17B/1234', 'OD/19B/7778')
+          //- REPLACE(SELECT `room` FROM `chats` WHERE room LIKE '%AB/17B/1234%', 'AB/17B/1234', 'OD/19B/7778')
+
+          // for room formation, concat('str1', 'str2', ..., 'strN'), or concat_ws('seperator', 'str1', 'str2', ..., 'strN')
+
+
+        } else { // if no newstatecode
+          res.status(200).redirect(req.session.statecode.toUpperCase() /* + '?e=y' */); // [e]dit=[y]es|[n]o
+        }
+        // res.sendStatus(200);
+      } else {
+        // res.sendStatus(500);
+        res.status(500).redirect('/newprofile' + '?e=n'); // [e]dit=[y]es|[n]o
       }
-      /* 
-      // todo later...
+    });
 
-      statecode: req.session.statecode.toUpperCase(),
-      servicestate: req.session.servicestate,
-      batch: req.session.batch, */
-
-      if (req.body.newstatecode) { // if they are changing statecode to a different state, then their service state in the db should change and their ppa details too should change, tell them to change the ppa details if they don't change it
-        // change statecode in other places too
-        // this works because rooms only have one instance for every two corpers or statecode, so there's no DD/17B/7778-AB/17B/2334 and AB/17B/2334-DD/17B/7778 only one of it, same reason why there's no LIMIT 1 in the SELECT statement in REPLACE function
-        var updatequery = "UPDATE chats SET room = (SELECT REPLACE( ( SELECT DISTINCT room WHERE room LIKE '%" + req.session.statecode.toUpperCase() + "%' ) ,'" + req.session.statecode.toUpperCase() + "','" + req.body.newstatecode.toUpperCase() + "')) ; " +
-          " UPDATE chats SET message_from = '" + req.body.newstatecode.toUpperCase() + "' WHERE message_from = '" + req.session.statecode.toUpperCase() + "' ; " +
-          " UPDATE chats SET message_to = '" + req.body.newstatecode.toUpperCase() + "' WHERE message_to = '" + req.session.statecode.toUpperCase() + "' ;" +
-          " UPDATE posts SET statecode = '" + req.body.newstatecode.toUpperCase() + "' WHERE statecode = '" + req.session.statecode.toUpperCase() + "' ; " +
-          " UPDATE accommodations SET statecode = '" + req.body.newstatecode.toUpperCase() + "' WHERE statecode = '" + req.session.statecode.toUpperCase() + "' ";
-        pool.query(updatequery, function (error, results, fields) {
-          console.log('updated statecode ', results);
-          if (error) throw error;
-          // connected!
-          // at least ONE or ALL of these MUST update, not necessarily all that why we are using || and NOT && because it could be possible they've not chatted or posted anything at all, but they must have at least registered!
-          if (results[0].affectedRows > 0 || results[1].affectedRows > 0 || results[2].affectedRows > 0 || results[3].affectedRows > 0 || results[4].affectedRows > 0) {
-            // then status code is good
-            console.log('we\'re really good with the update')
-
-            // then change the session statecode
-            req.session.statecode = req.body.newstatecode.toUpperCase();
-
-            res.status(200).redirect(req.body.newstatecode.toUpperCase()); // if there's new statecode
-          } else {
-            console.log('we\'re bad with the update') // we should find out what went wrong
-            /**
-             * 
-             * 
-             * results looks like:
-             * 
-             * OkPacket {
-                fieldCount: 0,
-                affectedRows: 1,
-                insertId: 0,
-                serverStatus: 2,
-                warningCount: 1,
-                message: '',
-                protocol41: true,
-                changedRows: 0 
-              }
-
-              so we'd want to check out message attribute
-             */
-
-            // we should redirect to somewhere and not just block the whole system!!!!!!!!!!
-          }
-        });
-        // should we save every change of statecode that ever occured ?
-        // SELECT room FROM `chats` WHERE message_from = 'AB/17B/1234' or message_to = 'AB/17B/1234'
-
-        // UPDATE `chats` SET `room`=[value-1],`message_from`=[value-3],`message_to`=[value-4] WHERE message_from = 'AB/17B/1234' or message_to = 'AB/17B/1234'
-        //- UPDATE `chats` SET `message_from`=[value-3] WHERE message_from = 'AB/17B/1234'
-        //- UPDATE `chats` SET `message_to`=[value-4] WHERE message_to = 'AB/17B/1234'
-
-        // SELECT room from chats WHERE message_from = 'AB/17B/1234' or message_to = 'AB/17B/1234'
-        // SELECT `room` FROM `chats` WHERE room LIKE '%AB/17B/1234%'
-
-        // should know when who they are chatting with is online and when they are typing
-
-        // for room change, consider using REPLACE('str', 'str_to_replace', 'replacement_str')
-        // for room change, consider using REPLACE(SELECT `room` FROM `chats` WHERE room LIKE '%AB/17B/1234%', 'AB/17B/1234', 'OD/19B/7778')
-        //- REPLACE(SELECT `room` FROM `chats` WHERE room LIKE '%AB/17B/1234%', 'AB/17B/1234', 'OD/19B/7778')
-
-        // for room formation, concat('str1', 'str2', ..., 'strN'), or concat_ws('seperator', 'str1', 'str2', ..., 'strN')
-
-
-      } else { // if no newstatecode
-        res.status(200).redirect(req.session.statecode.toUpperCase() /* + '?e=y' */); // [e]dit=[y]es|[n]o
-      }
-      // res.sendStatus(200);
-    } else {
-      // res.sendStatus(500);
-      res.status(500).redirect('/newprofile' + '?e=n'); // [e]dit=[y]es|[n]o
-    }
   });
-
-});
 
 router.post('/addplace', /* upload.none(), */ function (req, res) {
   // handle post request, add data to database.
   console.log('came here /addplace', req.body);
-  if (!isEmpty(req.body)) {
+  if (!helpers.isEmpty(req.body)) {
     console.log('we are returning a response')
     var sqlquery = "INSERT INTO places( geo_data, name, address, lga, street, type_of_place, region ) VALUES ('" + req.body.geodata + "','" + req.body.nameOfPlace + "', '" + req.body.address + "', " + pool.escape(req.body.lga) + ", " + pool.escape('') + ", " + pool.escape(req.body.category) + ",'" + req.body.town + "')"
 
@@ -811,9 +818,10 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
         body: filestream // fs.createReadStream("C:\\Users\\NWACHUKWU\\Pictures\\ad\\IMG-20180511-WA0001.jpg")
       };
 
-      const drive = google.drive({
+      const gauth = ggle.googleauth;
+      const drive = ggle.google.drive({
         version: 'v3',
-        auth
+        auth: ggle.googleauth
       });
       drive.files.create({
         resource: fileMetadata,
@@ -835,57 +843,17 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
         console.log('some other error ??', err)
       }).finally(() => {
 
-        var sqlquery = "INSERT INTO posts( media, statecode, type, text, price, location, post_time) VALUES ('" + (_media.length > 0 ? _media : _text.mapimage ? _text.mapimage : '') + "','" + req.session.statecode + "', '" + (_text.type ? _text.type : "sale") + "', " + pool.escape(_text.text) + ", " + pool.escape((_text.price ? _text.price : "")) + ", " + pool.escape(req.session.location) + ",'" + _text.post_time + "')"
-
-        pool.query(sqlquery, function (error, results, fields) {
-          console.log('inserted data from: ', results);
-          if (error) throw error;
-          // ER_BAD_NULL_ERROR: Column 'location' cannot be null
-          // connected!
-          if (results.affectedRows === 1) {
-            // then status code is good
-            // res.sendStatus(200);
-
-            // once it saves in db them emit to other users
-            iouser.to(req.session.statecode.substring(0, 2)).emit('boardcast message', {
-              to: 'be received by everyoneELSE',
-              post: {
-                statecode: req.session.statecode,
-                location: req.session.location,
-                media: (_media.length > 0 ? _media : false),
-                post_time: _text.post_time,
-                type: _text.type,
-                mapdata: (_text.mapimage ? _text.mapimage : ''),
-                text: _text.text,
-                age: moment(Number(_text.post_time)).fromNow(),
-                price: (_text.price ? _text.price : '')
-              }
-            });
-          } else {
-            // this is really important for the form to get response
-            res.sendStatus(500);
-            // === res.status(500).send('Internal Server Error')
-          }
-        });
-
-      });
-
-
-
-    } else {
-      var sqlquery = "INSERT INTO posts( media, statecode, type, text, price, location, post_time) VALUES ('" + (_media.length > 0 ? _media : _text.mapimage ? _text.mapimage : '') + "','" + req.session.statecode + "', '" + (_text.type ? _text.type : "sale") + "', " + pool.escape(_text.text) + ", " + pool.escape((_text.price ? _text.price : "")) + ", " + pool.escape(req.session.location) + ",'" + _text.post_time + "')"
-
-      pool.query(sqlquery, function (error, results, fields) {
-        console.log('inserted data from: ', results);
-        if (error) throw error;
-        // ER_BAD_NULL_ERROR: Column 'location' cannot be null
-        // connected!
-        if (results.affectedRows === 1) {
-          // then status code is good
-          res.sendStatus(200);
-
+        query.InsertRowInPostsTable({
+          media: (_media.length > 0 ? _media : _text.mapimage ? _text.mapimage : ''),
+          statecode: req.session.statecode,
+          type: (_text.type ? _text.type : "sale"),
+          text: _text.text,
+          price: (_text.price ? _text.price : ""),
+          location: req.session.location,
+          post_time: _text.post_time,
+        }).then(resolve => {
           // once it saves in db them emit to other users
-          iouser.to(req.session.statecode.substring(0, 2)).emit('boardcast message', {
+          socket.of('/user').to(req.session.statecode.substring(0, 2)).emit('boardcast message', {
             to: 'be received by everyoneELSE',
             post: {
               statecode: req.session.statecode,
@@ -899,18 +867,25 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
               price: (_text.price ? _text.price : '')
             }
           });
-        } else {
+        }, reject => {
           // this is really important for the form to get response
           res.sendStatus(500);
           // === res.status(500).send('Internal Server Error')
-        }
+        }).catch(reason => {
+          res.sendStatus(500);
+        })
+
+
       });
+
+    } else {
+      
     }
 
 
     // https://stackoverflow.com/questions/26859563/node-stream-data-from-busboy-to-google-drive
     // https://stackoverflow.com/a/26859673/9259701
-    filestream.resume() // must always be last in this callback else server HANG
+    filestream.resume() // must always be last in this callback else server HANGS
 
   });
 
@@ -927,13 +902,58 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
     // res.writeHead(303, { Connection: 'close', Location: '/' });
     // res.end();
 
+    /**
+     * if _media is empty & _text is not, just boardcast text,
+     * of course _text is NOT EMPTY, it must never be empty
+     * 
+     * if _media and _text are both not empty, then boardcast accordingly
+     */
+    if (!helpers.isEmpty(_text) && helpers.isEmpty(_media)) {
+      console.log('what\'s _text?', _text)
+      console.log('post_time', _text.post_time)
+      query.InsertRowInPostsTable({
+        media: (_media.length > 0 ? _media : _text.mapimage ? _text.mapimage : ''),
+        statecode: req.session.statecode,
+        type: (_text.type ? _text.type : "sale"),
+        text: _text.text,
+        price: (_text.price ? _text.price : ""),
+        location: req.session.location,
+        post_time: _text.post_time
+      }).then(result => {
+        // then status code is good
+        res.sendStatus(200);
 
+        // once it saves in db them emit to other users
+        socket.of('/user').to(req.session.statecode.substring(0, 2)).emit('boardcast message', {
+          to: 'be received by everyoneELSE',
+          post: {
+            statecode: req.session.statecode,
+            location: req.session.location,
+            media: (_media.length > 0 ? _media : false),
+            post_time: _text.post_time,
+            type: _text.type,
+            mapdata: (_text.mapimage ? _text.mapimage : ''),
+            text: _text.text,
+            age: moment(Number(_text.post_time)).fromNow(),
+            price: (_text.price ? _text.price : '')
+          }
+        });
+      }, reject => {
+        console.log('rejected?', reject)
+        res.sendStatus(500);
+      }).catch(reason => {
+        console.log('insert row failed', reason);
+        // res.sendStatus(500); // Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client // what's setting it first?
+      })
+    } else {
+      
+    }
   });
 
   // handle post request, add data to database... do more
   // console.log('it: :', req.body)
   // console.log('it: : :', req.files)
-  if (!isEmpty(req.body)) { // no need to check for req.files, since that's optional and we must always get req.body
+  if (!helpers.isEmpty(req.body)) { // no need to check for req.files, since that's optional and we must always get req.body
 
   } else {
     // res.sendStatus(500);
@@ -945,176 +965,188 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
 
 
 router.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) {
-    console.log('accommodation', req.body, req.files);
-  
-    // if there are images in the post user boardcasted
-    if (req.files.length > 0) {
-      // save the files in an array
-      var arraymedia = [];
-  
-      /* var l = req.files.length;
-      req.files.forEach(function (item, index, array) {
-        console.log('item:\n', item,'index:\n', index);
-      }); */
-  
-      // insert and work with the media
-      Object.entries(req.files).forEach(
-        ([key, value]) => {
-          // console.log('key:', key, 'value:', value);
-  
-          // rename/change the file name appropriately // Date.now() part of name + get what's in the pic + file extension
-          value.filename = value.filename.slice(0, value.filename.lastIndexOf('.')) + req.body[value.size] + value.originalname.slice(value.originalname.lastIndexOf('.'));
-  
-          /** When using the "single"
-           data come in "req.file" regardless of the attribute "name". 
-          **/
-          var tmp_path = value.path;
-  
-          /** The original name of the uploaded file
-              stored in the variable "originalname".
-          **/
-          // var target_path = 'img/' + value.originalname;
-          var target_path = 'img/' + value.filename;
-  
-          /** A better way to copy the uploaded file. **/
-          var src = fs.createReadStream(tmp_path);
-          var dest = fs.createWriteStream(target_path);
-          src.pipe(dest);
-  
-          src.on('end', function () {
-            // res.render('complete');
-            console.log('complete, pushing', value.originalname, value.filename);
-  
-            arraymedia.push(value.filename); // returns a number!
-  
-            // when we're done, insert in db and emit to other users
-  
-            console.log('COMPARING key and req.files.length', key + 1, req.files.length, ((parseInt(key) + 1) === req.files.length)); // key is a number with string data type,
-            if (((parseInt(key) + 1) === req.files.length)) {
-              console.log('media array null ?', arraymedia);
-              var sqlquery = "INSERT INTO accommodations( statecode, streetname, type, price, media, rentrange, rooms, address, directions, tenure, expire, post_location, post_time, acc_geodata) VALUES ('" +
-                req.session.statecode + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
-                arraymedia + "', '" + req.body.rentrange + "', '" + req.body.rooms + "','" + req.body.address + "','" + req.body.directions + "','" +
-                req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : '') + "', " + pool.escape(req.session.location) + ", " + pool.escape(req.body.post_time) + ",'" + (req.body.acc_geodata ? req.body.acc_geodata : '') + "')";
-  
-              pool.query(sqlquery, function (error, results, fields) {
-                console.log('inserted data from: ', results);
-                if (error) throw error;
-                // connected!
-                if (results.affectedRows === 1) {
-                  // then status code is good
-                  res.sendStatus(200);
-  
-                  console.log('me before you', moment(Number(req.body.post_time)).fromNow(), req.body.post_time);
-                  console.log('price', req.body.price);
-  
-                  // once it saves in db them emit to other users
-                  iouser.emit('boardcast message', { // or 'accommodation'
-                    to: 'be received by everyoneELSE',
-                    post: {
-                      statecode: req.session.statecode,
-                      streetname: req.body.streetname,
-                      rentrange: req.body.rentrange,
-                      rooms: req.body.rooms,
-                      tenure: req.body.tenure,
-                      expiredate: (req.body.expiredate ? req.body.expiredate : ''),
-                      post_location: req.session.location,
-                      media: arraymedia,
-                      post_time: new Date().toLocaleString(), // not sure we need and make use of post time
-                      type: req.body.accommodationtype,
-                      address: req.body.address,
-                      directions: req.body.directions,
-                      age: moment(Date.now()).fromNow(),
-                      price: req.body.price
-                    }
-                  });
-                } else {
-  
-                  // this is really important for the form to get response
-                  res.sendStatus(500);
-                  // === res.status(500).send('Internal Server Error')
-                }
-              });
-  
-            }
-  
-  
-          });
-          src.on('error', function (err) {
-            console.log('error: ', err);
-          });
-  
-          dest.on('close', function () {
-            console.log('dooneeeee\n');
-          })
-  
-        }
-      );
-  
-    } else {
-      var sqlquery = "INSERT INTO accommodations( statecode, streetname, type, price, media, rentrange, rooms, address, directions, tenure, expire, post_location, post_time, acc_geodata) VALUES ('" +
-        req.session.statecode + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
-        '' /**media is empty */ + "', '" + req.body.rentrange + "', '" + req.body.rooms + "','" + req.body.address + "','" + req.body.directions + "','" +
-        req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : '') + "', " + pool.escape(req.session.location) + ", " + pool.escape(req.body.post_time) + ",'" + (req.body.acc_geodata ? req.body.acc_geodata : '') + "')";
-  
-      pool.query(sqlquery, function (error, results, fields) {
-        console.log('inserted data from: ', results);
-        if (error) throw error;
-        // connected!
-        if (results.affectedRows === 1) {
-          // then status code is good
-          res.sendStatus(200);
-  
-          console.log('me before you', moment(Number(req.body.post_time)).fromNow(), req.body.post_time);
-          console.log('price', req.body.price);
-  
-          // once it saves in db them emit to other users
-          iouser.emit('boardcast message', { // or 'accommodation'
-            to: 'be received by everyoneELSE',
-            post: {
+  console.log('accommodation', req.body, req.files);
+
+  // if there are images in the post user boardcasted
+  if (req.files.length > 0) {
+    // save the files in an array
+    var arraymedia = [];
+
+    /* var l = req.files.length;
+    req.files.forEach(function (item, index, array) {
+      console.log('item:\n', item,'index:\n', index);
+    }); */
+
+    // insert and work with the media
+    Object.entries(req.files).forEach(
+      ([key, value]) => {
+        // console.log('key:', key, 'value:', value);
+
+        // rename/change the file name appropriately // Date.now() part of name + get what's in the pic + file extension
+        value.filename = value.filename.slice(0, value.filename.lastIndexOf('.')) + req.body[value.size] + value.originalname.slice(value.originalname.lastIndexOf('.'));
+
+        /** When using the "single"
+         data come in "req.file" regardless of the attribute "name". 
+        **/
+        var tmp_path = value.path;
+
+        /** The original name of the uploaded file
+            stored in the variable "originalname".
+        **/
+        // var target_path = 'img/' + value.originalname;
+        var target_path = 'img/' + value.filename;
+
+        /** A better way to copy the uploaded file. **/
+        var src = fs.createReadStream(tmp_path);
+        var dest = fs.createWriteStream(target_path);
+        src.pipe(dest);
+
+        src.on('end', function () {
+          // res.render('complete');
+          console.log('complete, pushing', value.originalname, value.filename);
+
+          arraymedia.push(value.filename); // returns a number!
+
+          // when we're done, insert in db and emit to other users
+
+          console.log('COMPARING key and req.files.length', key + 1, req.files.length, ((parseInt(key) + 1) === req.files.length)); // key is a number with string data type,
+          if (((parseInt(key) + 1) === req.files.length)) {
+            console.log('media array null ?', arraymedia);
+
+            query.InsertRowInAccommodationsTable({
               statecode: req.session.statecode,
               streetname: req.body.streetname,
+              type: req.body.accommodationtype,
+              price: req.body.price,
+              media: arraymedia,
               rentrange: req.body.rentrange,
               rooms: req.body.rooms,
-              tenure: req.body.tenure,
-              expiredate: (req.body.expiredate ? req.body.expiredate : ''),
-              post_location: req.session.location,
-              media: [], // make an empty array or sth else ...just make it empty
-              post_time: new Date().toLocaleString(), // not sure we need and make use of post time
-              type: req.body.accommodationtype,
               address: req.body.address,
               directions: req.body.directions,
-              age: moment(Date.now()).fromNow(),
-              price: req.body.price
-            }
-          });
-        } else {
-  
-          // this is really important for the form to get response
-          res.sendStatus(500);
-          // === res.status(500).send('Internal Server Error')
+              tenure: req.body.tenure,
+              expire: (req.body.expiredate ? req.body.expiredate : ''),
+              post_location: req.session.location,
+              post_time: req.body.post_time,
+              acc_geodata: (req.body.acc_geodata ? req.body.acc_geodata : '')
+            }).then(result => {
+              res.sendStatus(200);
+
+              console.log('me before you', moment(Number(req.body.post_time)).fromNow(), req.body.post_time);
+              console.log('price', req.body.price);
+
+              // once it saves in db them emit to other users
+              socket.of('/user').emit('boardcast message', { // or 'accommodation'
+                to: 'be received by everyoneELSE',
+                post: {
+                  statecode: req.session.statecode,
+                  streetname: req.body.streetname,
+                  rentrange: req.body.rentrange,
+                  rooms: req.body.rooms,
+                  tenure: req.body.tenure,
+                  expiredate: (req.body.expiredate ? req.body.expiredate : ''),
+                  post_location: req.session.location,
+                  media: arraymedia,
+                  post_time: new Date().toLocaleString(), // not sure we need and make use of post time
+                  type: req.body.accommodationtype,
+                  address: req.body.address,
+                  directions: req.body.directions,
+                  age: moment(Date.now()).fromNow(),
+                  price: req.body.price
+                }
+              });
+            }, reject => {
+              res.sendStatus(500);
+            }).catch(reason => {
+              res.sendStatus(500);
+            })
+
+
+          }
+
+
+        });
+        src.on('error', function (err) {
+          console.log('error: ', err);
+        });
+
+        dest.on('close', function () {
+          console.log('dooneeeee\n');
+        })
+
+      }
+    );
+
+  } else {
+
+    query.InsertRowInAccommodationsTable({
+      statecode: req.session.statecode,
+      streetname: req.body.streetname,
+      type: req.body.accommodationtype,
+      price: req.body.price,
+      media: '',
+      rentrange: req.body.rentrange,
+      rooms: req.body.rooms,
+      address: req.body.address,
+      directions: req.body.directions,
+      tenure: req.body.tenure,
+      expire: (req.body.expiredate ? req.body.expiredate : ''),
+      post_location: req.session.location,
+      post_time: req.body.post_time,
+      acc_geodata: (req.body.acc_geodata ? req.body.acc_geodata : '')
+    }).then(resolve => {
+      // then status code is good
+      res.sendStatus(200);
+
+      console.log('me before you', moment(Number(req.body.post_time)).fromNow(), req.body.post_time);
+
+
+      // once it saves in db them emit to other users
+      socket.of('/user').emit('boardcast message', { // or 'accommodation'
+        to: 'be received by everyoneELSE',
+        post: {
+          statecode: req.session.statecode,
+          streetname: req.body.streetname,
+          rentrange: req.body.rentrange,
+          rooms: req.body.rooms,
+          tenure: req.body.tenure,
+          expiredate: (req.body.expiredate ? req.body.expiredate : ''),
+          post_location: req.session.location,
+          media: [], // make an empty array or sth else ...just make it empty
+          post_time: new Date().toLocaleString(), // not sure we need and make use of post time
+          type: req.body.accommodationtype,
+          address: req.body.address,
+          directions: req.body.directions,
+          age: moment(Date.now()).fromNow(),
+          price: req.body.price
         }
       });
+    }, reject => {
+      res.sendStatus(500);
+    }).catch((reason) => {
+      res.sendStatus(500);
+    })
+
+
+  }
+  // ----------------------------------------------- delete this later. not yet, until we so if else for when there are no files.
+  /* pool.query("INSERT INTO accommodations( statecode, streetname, type, price, media, rentrange, rooms, address, tenure, expire) VALUES ('" +
+    req.session.statecode + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
+    arraymedia + "', '" + req.body.rentrange + "', '" + req.body.rooms + "','" + req.body.address + "','" + req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : '') +
+    "')", function (error, results, fields) {
+ 
+    if (error) {
+      res.sendStatus(404); // handle here effectively, the server should not crash for whatsoever reason!. HANDLE ALL ERROR EFFECTIVELY! We tryna run a business
+      throw error;
     }
-    // ----------------------------------------------- delete this later. not yet, until we so if else for when there are no files.
-    /* pool.query("INSERT INTO accommodations( statecode, streetname, type, price, media, rentrange, rooms, address, tenure, expire) VALUES ('" +
-      req.session.statecode + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
-      arraymedia + "', '" + req.body.rentrange + "', '" + req.body.rooms + "','" + req.body.address + "','" + req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : '') +
-      "')", function (error, results, fields) {
-  
-      if (error) {
-        res.sendStatus(404); // handle here effectively, the server should not crash for whatsoever reason!. HANDLE ALL ERROR EFFECTIVELY! We tryna run a business
-        throw error;
-      }
-  
-      if (results.affectedRows === 1) {
-        console.info('saved post to db successfully');
-        res.sendStatus(200);
-        // iouser.emit('boardcast message', { to: 'be received by everyoneELSE', post: data });
-      }
-    }); */
-  
-  
-  })
+ 
+    if (results.affectedRows === 1) {
+      console.info('saved post to db successfully');
+      res.sendStatus(200);
+      // socket.of('/user').emit('boardcast message', { to: 'be received by everyoneELSE', post: data });
+    }
+  }); */
+
+
+})
 
 module.exports = router;

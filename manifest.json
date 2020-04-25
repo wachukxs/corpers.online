@@ -1,14 +1,14 @@
 {
   "name": "Corpers Online",
   "short_name": "C.Online",
-  "start_url": "index.html",
+  "start_url": "/index",
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#fff",
   "dir": "ltr",
   "lang": "en",
   "background_color": "#fff",
-  "description": "Connecting;Informaing;Serving Corpers.",
+  "description": "Acquire accommodations, sell resale valued items",
   "prefer_related_applications": false,
   "icons": [{
     "src": "img/logo/CORPERSonlineAnd48x48.png",

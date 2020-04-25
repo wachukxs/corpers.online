@@ -22,7 +22,7 @@ exports.isEmpty = function (data) {
     }
 };
 
-/**function to send email */
+/**function to send welcome email after successful user sign up */
 // async..await is not allowed in global scope, must use a wrapper
 exports.email = async function (email, name, state) {
     // Generate test SMTP service account from ethereal.email

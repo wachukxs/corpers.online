@@ -407,7 +407,7 @@ router.post('/login', /* bodyParser.urlencoded({ // edited
           console.log('fail save login session', reason);
         })
       } else {
-        res.status(502).redirect('/login?w=p'); // [w]rong = [p]assword
+        res.status(502).redirect('/login?p=w'); // [p]assword = [w]rong
       }
 
 

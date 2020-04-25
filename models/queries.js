@@ -253,7 +253,8 @@ exports.InsertRowInMediaTable = async (mediaData) => {
     return re;
 }
 
-exports.InsertRowInPostTable = async (postData) => {
+exports.InsertRowInPostsTable = async (postData) => {
+    console.log('we posting now')
     let re = await new Promise((resolve, reject) => {
         connectionPool.query("INSERT INTO posts SET ?", postData, function (error, result, fields) {
             if (error) reject(error)
@@ -332,4 +333,18 @@ exports.UpdateChatReadReceipts = async (chatInfo) => {
                 }
             });
     })
+}
+
+exports.InsertRowInAccommodationsTable = async (postData) => {
+    let re = await new Promise((resolve, reject) => {
+        connectionPool.query("INSERT INTO accommodations SET ?", postData, function (error, result, fields) {
+            if (error) reject(error)
+
+            else if (result.affectedRows === 1) {
+                resolve()
+            }
+        });
+    })
+
+    return re;
 }
