@@ -778,11 +778,12 @@ router.post('/addplace', /* upload.none(), */ function (req, res) {
 router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
   // console.log('req.method', req.method)
   // console.log('req.headers', req.headers)
-  var busboy = new Busboy({
+  let busboy = new Busboy({
     headers: req.headers
   });
-  var _media = []; // good, because we re-initialize on new post
-  var _text = {};
+  let _media = []; // good, because we re-initialize on new post
+  let _text = {};
+  let uploadPromise = [];
 
   busboy.on('file', function (fieldname, filestream, filename, transferEncoding, mimetype) {
 
@@ -818,12 +819,7 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
         body: filestream // fs.createReadStream("C:\\Users\\NWACHUKWU\\Pictures\\ad\\IMG-20180511-WA0001.jpg")
       };
 
-      const gauth = ggle.googleauth;
-      const drive = ggle.google.drive({
-        version: 'v3',
-        auth: ggle.googleauth
-      });
-      drive.files.create({
+      const up = ggle.drive.files.create({
         resource: fileMetadata,
         media: media,
         fields: 'id',
@@ -842,41 +838,10 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
       ).catch(function (err) {
         console.log('some other error ??', err)
       }).finally(() => {
-
-        query.InsertRowInPostsTable({
-          media: (_media.length > 0 ? _media : _text.mapimage ? _text.mapimage : ''),
-          statecode: req.session.statecode,
-          type: (_text.type ? _text.type : "sale"),
-          text: _text.text,
-          price: (_text.price ? _text.price : ""),
-          location: req.session.location,
-          post_time: _text.post_time,
-        }).then(resolve => {
-          // once it saves in db them emit to other users
-          socket.of('/user').to(req.session.statecode.substring(0, 2)).emit('boardcast message', {
-            to: 'be received by everyoneELSE',
-            post: {
-              statecode: req.session.statecode,
-              location: req.session.location,
-              media: (_media.length > 0 ? _media : false),
-              post_time: _text.post_time,
-              type: _text.type,
-              mapdata: (_text.mapimage ? _text.mapimage : ''),
-              text: _text.text,
-              age: moment(Number(_text.post_time)).fromNow(),
-              price: (_text.price ? _text.price : '')
-            }
-          });
-        }, reject => {
-          // this is really important for the form to get response
-          res.sendStatus(500);
-          // === res.status(500).send('Internal Server Error')
-        }).catch(reason => {
-          res.sendStatus(500);
-        })
-
-
+        console.log('upload finally')
       });
+
+      uploadPromise.push(up)
 
     } else {
       
@@ -897,7 +862,7 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
 
   // answer this question: https://stackoverflow.com/questions/26859563/node-stream-data-from-busboy-to-google-drive
 
-  busboy.on('finish', function () {
+  busboy.on('finish', async function () {
     console.log('Done parsing form!', _text, _media);
     // res.writeHead(303, { Connection: 'close', Location: '/' });
     // res.end();
@@ -908,7 +873,7 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
      * 
      * if _media and _text are both not empty, then boardcast accordingly
      */
-    if (!helpers.isEmpty(_text) && helpers.isEmpty(_media)) {
+    if (!helpers.isEmpty(_text) && helpers.isEmpty(uploadPromise)) {
       console.log('what\'s _text?', _text)
       console.log('post_time', _text.post_time)
       query.InsertRowInPostsTable({
@@ -929,7 +894,7 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
           post: {
             statecode: req.session.statecode,
             location: req.session.location,
-            media: (_media.length > 0 ? _media : false),
+            media: false,
             post_time: _text.post_time,
             type: _text.type,
             mapdata: (_text.mapimage ? _text.mapimage : ''),
@@ -945,8 +910,42 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
         console.log('insert row failed', reason);
         // res.sendStatus(500); // Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client // what's setting it first?
       })
-    } else {
+    } else if (!helpers.isEmpty(_text) && !helpers.isEmpty(uploadPromise)) {
+      await Promise.all(uploadPromise);
       
+      query.InsertRowInPostsTable({
+        media: (_media.length > 0 ? _media.toString() : _text.mapimage ? _text.mapimage : ''),
+        statecode: req.session.statecode,
+        type: (_text.type ? _text.type : "sale"),
+        text: _text.text,
+        price: (_text.price ? _text.price : ""),
+        location: req.session.location,
+        post_time: _text.post_time,
+      }).then(resolve => {
+        // once it saves in db them emit to other users
+        socket.of('/user').to(req.session.statecode.substring(0, 2)).emit('boardcast message', {
+          to: 'be received by everyoneELSE',
+          post: {
+            statecode: req.session.statecode,
+            location: req.session.location,
+            media: (_media.length > 0 ? _media : false),
+            post_time: _text.post_time,
+            type: _text.type,
+            mapdata: (_text.mapimage ? _text.mapimage : ''),
+            text: _text.text,
+            age: moment(Number(_text.post_time)).fromNow(),
+            price: (_text.price ? _text.price : '')
+          }
+        });
+      }, reject => {
+        // this is really important for the form to get response
+        console.log('why?', reject)
+        res.sendStatus(500);
+        // === res.status(500).send('Internal Server Error')
+      }).catch(reason => {
+        // res.sendStatus(500); //  Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+        console.log('what happened?', reason)
+      })
     }
   });
 
@@ -1057,7 +1056,7 @@ router.post('/accommodations', upload.array('roomsmedia', 12), function (req, re
             }, reject => {
               res.sendStatus(500);
             }).catch(reason => {
-              res.sendStatus(500);
+              console.log('insert row failed', reason);
             })
 
 

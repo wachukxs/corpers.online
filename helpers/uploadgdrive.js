@@ -16,12 +16,11 @@ const SCOPES = ['https://www.googleapis.com/auth/drive'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
-const TOKEN_PATH = 'google/token.json'; // LINE 3 COMMENT
+const TOKEN_PATH = './google/token.json'; // LINE 3 COMMENT
 
 
-let auth;
 // Load client secrets from a local file.
-fs.readFile('google/credentials.json', (err, content) => { // LINE 3 COMMENT
+fs.readFile('./google/credentials.json', (err, content) => { // LINE 3 COMMENT
   if (err) return console.log('Error loading client secret file:', err);
 
   console.log('GOT GGLE CRED')
@@ -41,10 +40,11 @@ fs.readFile('google/credentials.json', (err, content) => { // LINE 3 COMMENT
   fs.readFile(TOKEN_PATH, (err, token) => {
     if (err) return getAccessToken(oAuth2Client);
     oAuth2Client.setCredentials(JSON.parse(token));
+    console.log('\nare\nwe\neven\ngetting\nhere\n?\n')
 
+    const drive = google.drive({ version: 'v3', auth: oAuth2Client });
+    exports.drive = drive;
   });
-
-  auth = oAuth2Client;
 
 });
 
@@ -79,6 +79,4 @@ function getAccessToken(oAuth2Client) {
   });
 }
 
-exports.google = google;
-
-exports.googleauth = auth;
+// LINE 46
