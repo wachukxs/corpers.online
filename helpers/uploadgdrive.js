@@ -18,7 +18,6 @@ const SCOPES = ['https://www.googleapis.com/auth/drive'];
 // time.
 const TOKEN_PATH = './google/token.json'; // LINE 3 COMMENT
 
-
 // Load client secrets from a local file.
 fs.readFile('./google/credentials.json', (err, content) => { // LINE 3 COMMENT
   if (err) return console.log('Error loading client secret file:', err);
@@ -40,7 +39,6 @@ fs.readFile('./google/credentials.json', (err, content) => { // LINE 3 COMMENT
   fs.readFile(TOKEN_PATH, (err, token) => {
     if (err) return getAccessToken(oAuth2Client);
     oAuth2Client.setCredentials(JSON.parse(token));
-    console.log('\nare\nwe\neven\ngetting\nhere\n?\n')
 
     const drive = google.drive({ version: 'v3', auth: oAuth2Client });
     exports.drive = drive;
@@ -79,4 +77,4 @@ function getAccessToken(oAuth2Client) {
   });
 }
 
-// LINE 46
+// LINE 44

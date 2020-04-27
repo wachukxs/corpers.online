@@ -1,8 +1,8 @@
+const dotenv = require('dotenv'); // safe to call first, before using process.env.*
+dotenv.config();
+
 const app = require('./web/app'); // Express
 const http = require('http');
-
-const dotenv = require('dotenv');
-dotenv.config();
 
 // Get port from environment and store in Express.
 const port = parseInt(process.env.PORT, 10) || 3000;

@@ -346,17 +346,18 @@ router.post('/signup', /* bodyParser.urlencoded({
     query.CorpersSignUp(req.body).then(result => {
       console.log('re:', result);
 
-      switch (result.message) {
-        case true:
-          req.session.statecode = req.body.statecode.toUpperCase();
-          req.session.loggedin = true;
-          req.session.servicestate = result.theservicestate;
-          req.session.batch = req.body.statecode.toUpperCase().slice(3, 6);
-          req.session.loggedin = true;
-          // req.session.location = req.session.servicestate; // really fix this
+      req.session.statecode = req.body.statecode.toUpperCase();
+      req.session.loggedin = true;
+      req.session.servicestate = result.theservicestate;
+      req.session.batch = req.body.statecode.toUpperCase().slice(3, 6);
+      req.session.loggedin = true;
+      req.session.location = req.session.servicestate; // really fix this, we should add some other data if we can
 
-          res.redirect(req.body.statecode.toUpperCase());
-          break;
+      res.redirect(req.body.statecode.toUpperCase());
+
+    }, error => {
+      console.log('well some error happened', error);
+      switch (error.message) {
 
         case 'duplicate statecode':
           res.redirect('/signup?m=ds'); // [m]essage = [d]uplicate [s]tatecode
@@ -370,8 +371,6 @@ router.post('/signup', /* bodyParser.urlencoded({
           res.redirect('/signup?m=ue'); // [m]essage = [u]naccounted [e]rror
           break;
       }
-    }, error => {
-      console.log('well some error happened', error);
     }).catch(reason => {
       console.log('catching this err because:', reason);
     });

@@ -33,12 +33,12 @@ exports.CorpersSignUp = async (signupData) => {
                 console.log('the error code:', error.code, error.sqlMessage)
                 switch (error.code) { // do more here
                     case 'ER_DUP_ENTRY': // ER_DUP_ENTRY if a statecode or email exists already
-                        if (error.sqlMessage.includes('PRIMARY', signupData.statecode.toUpperCase())) { // Duplicate entry 'TR/19A/1234' for key 'PRIMARY'
+                        if (error.sqlMessage.includes(signupData.statecode.toUpperCase())) { // Duplicate entry 'TR/19A/1234' for key 'PRIMARY'
                             // res.redirect('/signup?m=ds'); // [m]essage = [d]uplicate [s]tatecode
                             r = {
                                 message: 'duplicate statecode'
                             };
-                        } else if (error.sqlMessage.includes('email', signupData.email)) { // Duplicate entry 'uyu@yud.eww' for key 'email'
+                        } else if (error.sqlMessage.includes(signupData.email)) { // Duplicate entry 'uyu@yud.eww' for key 'email'
                             // res.redirect('/signup?m=de'); // [m]essage = [d]uplicate [e]mail
                             r = {
                                 message: 'duplicate email'
@@ -46,13 +46,14 @@ exports.CorpersSignUp = async (signupData) => {
                         }
 
                         break;
+                    default:
+                        r = {
+                            message: `${error.code} ${error.sqlMessage}`
+                        };
+                        break;
                     // ER_BAD_FIELD_ERROR
                 }
                 // throw error; // ? // breaks server
-
-                r = {
-                    message: `${error.code} ${error.sqlMessage}`
-                };
 
                 reject(r);
             }
@@ -160,6 +161,9 @@ exports.FetchPostsForTimeLine = async (timeLineInfo) => {
         let getpostsquery = "SELECT * FROM posts WHERE statecode LIKE '%" + timeLineInfo.statecode_substr + "%'" + (timeLineInfo.last_post_time !== null ? ' AND post_time > "' + timeLineInfo.last_post_time + '" ORDER by posts.post_time ASC' : ' ORDER by posts.post_time ASC') +
             "; SELECT * FROM accommodations WHERE statecode LIKE '%" + timeLineInfo.statecode_substr + "%'" + (timeLineInfo.last_input_time !== null ? ' AND input_time > "' + timeLineInfo.last_input_time + '" ORDER by accommodations.input_time ASC' : ' ORDER BY accommodations.input_time ASC');
 
+        /* console.log(getpostsquery)
+        SELECT * FROM posts WHERE statecode LIKE '%DT%' AND post_time > "null" ORDER by posts.post_time ASC; SELECT * FROM accommodations WHERE statecode LIKE '%DT%' AND input_time > "null" ORDER by accommodations.input_time ASC
+         */
         connectionPool.query(getpostsquery, function (error, results, fields) {
             if (error) reject(error);
 
@@ -322,16 +326,16 @@ exports.InsertRowInChatTable = async (chatData) => {
 exports.UpdateChatReadReceipts = async (chatInfo) => {
     let re = await new Promise((resolve, reject) => {
         var q = "UPDATE chats SET message_sent = true WHERE message IS NOT NULL AND message_from = '" + chatInfo.message_from + "' AND message_to = '" + chatInfo.message_to + "'";
-            connectionPool.query(q, function (error, results, fields) {
-                if (error) reject(error);
-                // connected!
-                if (results.changedRows > 0) { // when we've saved it, the corper can now join the room
-                    console.log('\n\nupdated messages delivered');
-                    resolve()
-                    // emit to the message_from if online to know that the message_to has read the message [so double tick on both ends]
-                    
-                }
-            });
+        connectionPool.query(q, function (error, results, fields) {
+            if (error) reject(error);
+            // connected!
+            if (results.changedRows > 0) { // when we've saved it, the corper can now join the room
+                console.log('\n\nupdated messages delivered');
+                resolve()
+                // emit to the message_from if online to know that the message_to has read the message [so double tick on both ends]
+
+            }
+        });
     })
 }
 

@@ -157,3 +157,6 @@ test*.js
 
 # google tokens
 /google
+
+# someone tryna steal? wow
+todo.txt
