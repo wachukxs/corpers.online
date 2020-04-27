@@ -1623,7 +1623,7 @@
                         try {
                             // if localhost
                             if (window.location.hostname == "localhost") {
-                                var a = new URL(`/uc?id=${data.post.media[i]}`, "https://drive.google.com/uc?id=")
+                                var a = new URL(`/uc?id=${data.post.media[i]}`, "https://drive.google.com") // removed /uc?id=
                                     .toString(); // important: the trailing slash
 
                             } else if (window.location.hostname == "corpers.online") { // if not localhost then get media from live site
@@ -1772,7 +1772,8 @@
 
                         cimg = document.createElement('img');
                         cimg.setAttribute('class', 'd-block img-fluid mx-auto');
-                        cimg.setAttribute('src', (window.location.hostname == "localhost" ? 'http://localhost:8081/' : 'https://corpers.online/') + jk[i]);
+                        // cimg.setAttribute('src', (window.location.hostname == "localhost" ? new URL(`/uc?id=${jk[i]}`, "https://drive.google.com").toString() : 'https://corpers.online/') + jk[i]);
+                        cimg.setAttribute('src',  new URL(`/uc?id=${jk[i]}`, "https://drive.google.com").toString() );
                         cimg.setAttribute('alt', `Might be a picture of a ${(rms[i] == undefined ? rms[0] : rms[i])}`); // this is not exactly correct, needs more work
 
 

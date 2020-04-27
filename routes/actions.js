@@ -776,33 +776,69 @@ router.post('/addplace', /* upload.none(), */ function (req, res) {
 });
 
 router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
-  // console.log('req.method', req.method)
-  // console.log('req.headers', req.headers)
-  let busboy = new Busboy({
-    headers: req.headers
+
+  const busboy = new Busboy({
+    headers: req.headers,
+    limits: { // set fields, fieldSize, and fieldNameSize later (security)
+      files: 7, // don't upload more than 7 media files
+      fileSize: 6 * 1024 * 1024 // 6MB
+    }
   });
   let _media = []; // good, because we re-initialize on new post
   let _text = {};
   let uploadPromise = [];
-
+  let get = true;
   busboy.on('file', function (fieldname, filestream, filename, transferEncoding, mimetype) {
 
+    // there's also 'limit' and 'error' events https://www.codota.com/code/javascript/functions/busboy/Busboy/on
+    filestream.on('limit', function () {
+      console.log('the file was too large... nope');
+      get = false;
+      // don't listen to the data event anymore
+      /* filestream.off('data', (data) => { // doesn't work
+        console.log('should do nothing. what\'s data?', data)
+      }) */
+
+      // how should we send a response if one of the files/file is invalid [too big or not an accepted file type]?
+    });
+
+    if (filename !== '' && !helpers.acceptedfiles.includes(mimetype)) { // if mimetype it '' or undefined, it passes
+      console.log('we don\'t accept non-image files... nope');
+      get = false;
+      // don't listen to the data event
+      /* filestream.off('data', (data) => { // DOESN'T WORK!!!
+        console.log('should do nothing. what\'s data?', data)
+      }) */
+    }
+
+    /* filestream.on('readable', (what) => { // don't do this, unless, MABYE filestream.read() is called in the callback
+      console.log('\ncurious what happens here\n', what)
+    }) */
+
+
     filestream.on('data', function (data) {
+      if (!get) {
+
+      }
+
       console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
     });
 
-    filestream.on('end', function () {
+    filestream.on('end', function (err) {
+      // if we listend for 'file', even if there's no file, we still come here
+      // so we're checking if it's empty before doing anything.
+      /* console.log('readabe?///// ?', filestream.read()) // filestram.read() is always null ... */
+
       console.log('File [' + fieldname + '] Finished. Got ' + 'bytes');
+      if (err) { console.log('err in busboy file end', err); }
     });
 
-    // if we listend for 'file', even if there's no file, we still come here
-    // so we're checking if it's empty before doing anything.
 
     // this is not a good method
 
     /**One thing you might be able to try is to read 0 bytes from the stream first and see if you get the appropriate 'end' event or not (perhaps on the next tick) */
 
-    if (filename != '') { // filename: 1848-1844-1-PB.pdf, encoding: 7bit, mimetype: application/pdf
+    if (filename != '' && helpers.acceptedfiles.includes(mimetype)) { // filename: 1848-1844-1-PB.pdf, encoding: 7bit, mimetype: application/pdf
       /* var obj = {
           filestream: file_stream,
           mimetype: mimetype,
@@ -826,6 +862,8 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
       }).then(
         function (file) {
 
+          // maybe send the upload progress to front end with sockets? https://github.com/googleapis/google-api-nodejs-client/blob/7ed5454834b534e2972746b28d0a1e4f332dce47/samples/drive/upload.js#L41
+
           console.log('upload File Id: ', file.data.id); // save to db
           // console.log('File: ', file);
           _media.push(file.data.id)
@@ -843,8 +881,6 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
 
       uploadPromise.push(up)
 
-    } else {
-      
     }
 
 
@@ -912,7 +948,7 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
       })
     } else if (!helpers.isEmpty(_text) && !helpers.isEmpty(uploadPromise)) {
       await Promise.all(uploadPromise);
-      
+
       query.InsertRowInPostsTable({
         media: (_media.length > 0 ? _media.toString() : _text.mapimage ? _text.mapimage : ''),
         statecode: req.session.statecode,
@@ -922,13 +958,17 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
         location: req.session.location,
         post_time: _text.post_time,
       }).then(resolve => {
+
+        // then status code is good
+        res.sendStatus(200);
+
         // once it saves in db them emit to other users
         socket.of('/user').to(req.session.statecode.substring(0, 2)).emit('boardcast message', {
           to: 'be received by everyoneELSE',
           post: {
             statecode: req.session.statecode,
             location: req.session.location,
-            media: (_media.length > 0 ? _media : false),
+            media: (_media.length > 0 ? _media : false), // need to change this, just post _media, if it's empty, we'll check in frontend
             post_time: _text.post_time,
             type: _text.type,
             mapdata: (_text.mapimage ? _text.mapimage : ''),
@@ -950,21 +990,262 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
   });
 
   // handle post request, add data to database... do more
-  // console.log('it: :', req.body)
-  // console.log('it: : :', req.files)
-  if (!helpers.isEmpty(req.body)) { // no need to check for req.files, since that's optional and we must always get req.body
-
-  } else {
-    // res.sendStatus(500);
-  }
 
   return req.pipe(busboy)
 
 });
 
 
-router.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) {
-  console.log('accommodation', req.body, req.files);
+router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (req, res) {
+
+
+  const busboy = new Busboy({
+    headers: req.headers,
+    limits: { // set fields, fieldSize, and fieldNameSize later (security)
+      files: 7, // don't upload more than 7 media files
+      fileSize: 6 * 1024 * 1024 // 6MB
+    }
+  });
+  let _media = []; // good, because we re-initialize on new post
+  let _text = {};
+  let uploadPromise = [];
+  let get = true;
+
+
+
+  busboy.on('file', function (fieldname, filestream, filename, transferEncoding, mimetype) {
+
+    // there's also 'limit' and 'error' events https://www.codota.com/code/javascript/functions/busboy/Busboy/on
+    filestream.on('limit', function () {
+      console.log('the file was too large... nope');
+      get = false;
+      // don't listen to the data event anymore
+      /* filestream.off('data', (data) => { // doesn't work
+        console.log('should do nothing. what\'s data?', data)
+      }) */
+
+      // how should we send a response if one of the files/file is invalid [too big or not an accepted file type]?
+    });
+
+    if (filename !== '' && !helpers.acceptedfiles.includes(mimetype)) { // if mimetype it '' or undefined, it passes
+      console.log('we don\'t accept non-image files... nope');
+      get = false;
+      // don't listen to the data event
+      /* filestream.off('data', (data) => { // DOESN'T WORK!!!
+        console.log('should do nothing. what\'s data?', data)
+      }) */
+    }
+
+    /* filestream.on('readable', (what) => { // don't do this, unless, MABYE filestream.read() is called in the callback
+      console.log('\ncurious what happens here\n', what)
+    }) */
+
+
+    filestream.on('data', function (data) {
+      if (!get) {
+
+      }
+
+      console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
+    });
+
+    filestream.on('end', function (err) {
+      // if we listend for 'file', even if there's no file, we still come here
+      // so we're checking if it's empty before doing anything.
+      /* console.log('readabe?///// ?', filestream.read()) // filestram.read() is always null ... */
+
+      console.log('File [' + fieldname + '] Finished. Got ' + 'bytes');
+      if (err) { console.log('err in busboy file end', err); }
+    });
+
+
+    // this is not a good method
+
+    /**One thing you might be able to try is to read 0 bytes from the stream first and see if you get the appropriate 'end' event or not (perhaps on the next tick) */
+
+    if (filename != '' && helpers.acceptedfiles.includes(mimetype)) { // filename: 1848-1844-1-PB.pdf, encoding: 7bit, mimetype: application/pdf
+      /* var obj = {
+          filestream: file_stream,
+          mimetype: mimetype,
+          filename: filename
+      }; */
+      // var _id = authorize(JSON.parse(cred_content), uploadFile, obj)
+
+      var fileMetadata = {
+        'name': filename, // Date.now() + 'test.jpg',
+        parents: ['15HYR0_TjEPAjBjo_m9g4aR-afULaAzrt'] // upload to folder CorpersOnline-TEST 15HYR0_TjEPAjBjo_m9g4aR-afULaAzrt
+      };
+      var media = {
+        mimeType: mimetype,
+        body: filestream // fs.createReadStream("C:\\Users\\NWACHUKWU\\Pictures\\ad\\IMG-20180511-WA0001.jpg")
+      };
+
+      const up = ggle.drive.files.create({ // up = [u]pload [p]romise
+        resource: fileMetadata,
+        media: media,
+        fields: 'id',
+      }).then(
+        function (file) {
+
+          // maybe send the upload progress to front end with sockets? https://github.com/googleapis/google-api-nodejs-client/blob/7ed5454834b534e2972746b28d0a1e4f332dce47/samples/drive/upload.js#L41
+
+          console.log('upload File Id: ', file.data.id); // save to db
+          // console.log('File: ', file);
+          _media.push(file.data.id)
+
+        }, function (err) {
+          // Handle error
+          console.error(err);
+
+        }
+      ).catch(function (err) {
+        console.log('some other error ??', err)
+      }).finally(() => {
+        console.log('upload finally')
+      });
+
+      uploadPromise.push(up)
+
+    }
+
+
+    // https://stackoverflow.com/questions/26859563/node-stream-data-from-busboy-to-google-drive
+    // https://stackoverflow.com/a/26859673/9259701
+    filestream.resume() // must always be last in this callback else server HANGS
+
+  });
+
+  busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+    console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+    _text[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
+    console.warn('fielddname Truncated:', fieldnameTruncated, valTruncated, transferEncoding, mimetype);
+  });
+
+  // answer this question: https://stackoverflow.com/questions/26859563/node-stream-data-from-busboy-to-google-drive
+
+  busboy.on('finish', async function () {
+    console.log('Done parsing form!', _text, _media);
+    /**should we rename the names of file?
+     * rename/change the file name appropriately // Date.now() part of name + get what's in the pic + file extension
+     * 
+     * value.filename = value.filename.slice(0, value.filename.lastIndexOf('.')) + req.body[value.size] + value.originalname.slice(value.originalname.lastIndexOf('.'));
+     */
+
+    /**
+     * if _media is empty & _text is not, just boardcast text,
+     * of course _text is NOT EMPTY, it must never be empty
+     * 
+     * if _media and _text are both not empty, then boardcast accordingly
+     */
+    if (!helpers.isEmpty(_text) && helpers.isEmpty(uploadPromise)) {
+      console.log('what\'s _text?', _text)
+      console.log('post_time', _text.post_time)
+      query.InsertRowInAccommodationsTable({
+        statecode: req.session.statecode,
+        streetname: req.body.streetname,
+        type: req.body.accommodationtype,
+        price: req.body.price,
+        media: [].toString(), // same as '' but for consitenc sake
+        rentrange: req.body.rentrange,
+        rooms: req.body.rooms,
+        address: req.body.address,
+        directions: req.body.directions,
+        tenure: req.body.tenure,
+        expire: (req.body.expiredate ? req.body.expiredate : ''),
+        post_location: req.session.location,
+        post_time: req.body.post_time,
+        acc_geodata: (req.body.acc_geodata ? req.body.acc_geodata : '')
+      }).then(resolve => {
+        // then status code is good
+        res.sendStatus(200);
+  
+        // console.log('me before you', moment(Number(req.body.post_time)).fromNow(), req.body.post_time);
+  
+        // once it saves in db them emit to other users
+        socket.of('/user').emit('boardcast message', { // or 'accommodation'
+          to: 'be received by everyoneELSE',
+          post: {
+            statecode: req.session.statecode,
+            streetname: req.body.streetname,
+            rentrange: req.body.rentrange,
+            rooms: req.body.rooms,
+            tenure: req.body.tenure,
+            expiredate: (req.body.expiredate ? req.body.expiredate : ''),
+            post_location: req.session.location,
+            media: [], // make an empty array 
+            post_time: new Date().toLocaleString(), // not sure we need and make use of post time
+            type: req.body.accommodationtype,
+            address: req.body.address,
+            directions: req.body.directions,
+            age: moment(Date.now()).fromNow(),
+            price: req.body.price
+          }
+        });
+      }, reject => {
+        res.sendStatus(500);
+      }).catch((reason) => {
+        console.log('what happened?', reason)
+      })
+
+    } else if (!helpers.isEmpty(_text) && !helpers.isEmpty(uploadPromise)) {
+      await Promise.all(uploadPromise);
+
+
+      query.InsertRowInAccommodationsTable({
+        statecode: req.session.statecode,
+        streetname: _text.streetname,
+        type: _text.accommodationtype,
+        price: _text.price,
+        media: _media.toString(), // .toString() only on the query
+        rentrange: _text.rentrange,
+        rooms: _text.rooms,
+        address: _text.address,
+        directions: _text.directions,
+        tenure: _text.tenure,
+        expire: (_text.expiredate ? _text.expiredate : ''),
+        post_location: req.session.location,
+        post_time: _text.post_time,
+        acc_geodata: (_text.acc_geodata ? _text.acc_geodata : '')
+      }).then(result => {
+        res.sendStatus(200);
+
+        console.log('me before you', moment(Number(_text.post_time)).fromNow(), _text.post_time);
+        console.log('price', _text.price);
+
+        // once it saves in db them emit to other users
+        socket.of('/user').emit('boardcast message', { // or 'accommodation'
+          to: 'be received by everyoneELSE',
+          post: {
+            statecode: req.session.statecode,
+            streetname: _text.streetname,
+            rentrange: _text.rentrange,
+            rooms: _text.rooms,
+            tenure: _text.tenure,
+            expiredate: (_text.expiredate ? _text.expiredate : ''),
+            post_location: req.session.location,
+            media: _media,
+            post_time: new Date().toLocaleString(), // not sure we need and make use of post time
+            type: _text.accommodationtype,
+            address: _text.address,
+            directions: _text.directions,
+            age: moment(Date.now()).fromNow(),
+            price: _text.price
+          }
+        });
+      }, reject => {
+        console.log('insert row didn\'t work', reject);
+        res.sendStatus(500);
+      }).catch(reason => {
+        console.log('insert row failed', reason);
+      })
+
+    }
+  });
+
+  // handle post request, add data to database... do more
+
+  return req.pipe(busboy)
+
 
   // if there are images in the post user boardcasted
   if (req.files.length > 0) {
