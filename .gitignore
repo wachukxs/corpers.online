@@ -154,3 +154,6 @@ Output.txt
 test*.html
 throwback.txt
 test*.js
+
+# google tokens
+/google
