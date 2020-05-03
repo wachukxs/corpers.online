@@ -73,7 +73,7 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
+#.env
 .env.test
 
 # parcel-bundler cache (https://parceljs.org/)
@@ -156,7 +156,7 @@ throwback.txt
 test*.js
 
 # google tokens
-/google
+#/google
 
 # someone tryna steal? wow
 todo.txt
