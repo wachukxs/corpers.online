@@ -1283,7 +1283,7 @@ $.typeahead({
     // please put elipses in very long texts, group or add posts type (eg. accommodation, on sale, ppa, etc.)
     callback: {
         onInit: function (node) {
-            console.log('Typeahead Initiated on ', node);
+            // console.log('Typeahead Initiated on ', node);
 
         },
         // the first set of results that comes
