@@ -106,102 +106,16 @@ router.get('/chat', function (req, res) {
    * utc + 1 is our time zone [when converting], or use moment .js
    */
 
-  if (req.session.loggedin && req.query.posts) { // we need to be sure that they clicked from /account
-    var postresult;
-    // console.log('\n\n\n\n\n uhmmmm', req.query.posts.who, req.query.posts.when, req.query.posts.type, moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss'));
-    // console.log( new Date(parseInt(req.query.posts.when)).toISOString().slice(0, 19).replace('T', ' ') ); // typeof req.query.posts.when = string
-
-    // ALSO SELECT OLDMESSAGES THAT ARE NOT SENT... THEN COUNT THEM... 
-    if (req.query.posts.type == 'accommodation') {
-      var query = "SELECT * FROM accommodations WHERE statecode = '" + req.query.posts.who + "' AND input_time = '" + moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss') + "' ; "
-        // + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL ;"
-        +
-        " SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;"
-        // + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL AND message_sent = false ;";
-        +
-        " SELECT * FROM chats WHERE message_to = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
-        " SELECT * FROM chats WHERE message_from = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
-        " SELECT firstname, lastname FROM info WHERE statecode = '" + req.query.posts.who.toUpperCase() + "' ;";
-
-    } else if (req.query.posts.type == 'sale') { // we will only do escrow payments for products sale
-      var query = "SELECT * FROM posts WHERE statecode = '" + req.query.posts.who + "' AND post_time = '" + req.query.posts.when + "' ;"
-        // + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL ;"
-        +
-        " SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;"
-        // + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL AND message_sent = false ;";
-        +
-        " SELECT * FROM chats WHERE message_to = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
-        " SELECT * FROM chats WHERE message_from = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
-        " SELECT firstname, lastname FROM info WHERE statecode = '" + req.query.posts.who.toUpperCase() + "' ;";
-
-    }
-    /**SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%AB/17B/1234%' AND chats.message IS NOT NULL   */
-
-    pool.query(query, function (error, results, fields) {
-
-      if (error) throw error;
-
-      // console.info('\nold chats', results[1], '\nfrom db successfully');
-      // so if the newchat has chatted before, i.e. is in oldchats, then just make it highlighted
-      // then send it to the chat page of the involved parties so they are remainded of what they want to buy
-      res.render('pages/newchat', { // having it named account.2 returns error cannot find module '2'
-        statecode: req.session.statecode.toUpperCase(),
-        statecode2: req.query.s,
-        servicestate: req.session.servicestate,
-        batch: req.session.batch,
-        name_of_ppa: req.session.name_of_ppa,
-        postdetails: (isEmpty(results[0]) ? null : results[0]), // tell user the post no longer exists, maybe it was bought or something, we should delete it if it was bought, we hope not to use this function
-        newchat: {
-          statecode: req.query.posts.who.toUpperCase(),
-          name: results[4][0]
-        },
-        posttime: req.query.posts.when,
-        posttype: req.query.posts.type,
-        oldchats: results[1], // leave it like this!!
-        oldunreadchats: results[2], // messages that was sent to this user but this user hasn't seen them
-        oldunsentchats: results[3], // messages this user sent but hasn't deliver, i.e. the receipent hasn't seen it
-        total_num_unread_msg: results[2].filter((value, index, array) => {
-          return value.message_to == req.query.s && value.message_sent == 0
-        }).length
-      });
-
-
-    });
-
-  } else if (req.session.loggedin) {
-    res.set('Content-Type', 'text/html');
-    // res.sendFile(__dirname + '/account.html');
-    // console.log('wanna chat', req.session.statecode, req.query.s);
-    var query = // "SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL;"
-      " SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;" +
-      " SELECT * FROM chats WHERE message_to = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
-      " SELECT * FROM chats WHERE message_from = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;";
-    pool.query(query, function (error, results, fields) {
-
-      if (error) throw error;
-
-      // console.info('got unread chats from db successfully', results[1]);
-
-      // then send it to the chat page of the involved parties so they are remainded of what they want to buy
-      res.render('pages/newchat', { // having it named account.2 returns error cannot find module '2'
-        statecode: req.session.statecode.toUpperCase(),
-        statecode2: req.query.s,
-        servicestate: req.session.servicestate,
-        batch: req.session.batch,
-        name_of_ppa: req.session.name_of_ppa,
-        oldchats: results[0], // leave it like this!!
-        newchat: null,
-        oldunreadchats: results[1], // (isEmpty(results[1]) ? null : results[1])
-        oldunsentchats: results[2],
-        total_num_unread_msg: results[1].filter((value, index, array) => {
-          return value.message_to == req.query.s && value.message_sent == 0
-        }).length
-      });
-    });
-
-  } else {
+  query.GetChatData(req.session, req.query).then(result => {
+    res.render('pages/newchat', result);
+  }, reject => {
     res.redirect('/login');
-  }
+  }).catch(reason => {
+    // we hope we never get here
+    console.log('what happened at /chat???', reason);
+    res.redirect('/login');
+  })
+
 });
 
 router.get(['/map', '/maps'], function (req, res) { // try to infer their location from their IP Address then send to the front end
@@ -209,7 +123,6 @@ router.get(['/map', '/maps'], function (req, res) { // try to infer their locati
   // res.sendFile(__dirname + '/map.html');
 
   query.GetMapData().then(result => {
-    console.log('hmmm === >>>>', result)
     res.render('pages/map', {
       statecode: req.session.statecode,
       servicestate: req.session.servicestate,
@@ -226,7 +139,7 @@ router.get(['/map', '/maps'], function (req, res) { // try to infer their locati
     });
   }).catch(reason => {
     console.log('do we have a problem?', reason);
-    
+
     res.render('pages/map')
   })
 
@@ -239,26 +152,21 @@ router.get(['/map', '/maps'], function (req, res) { // try to infer their locati
 // edited
 router.post('/subscribe', /* upload.none(), */ function (req, res) {
   console.log('the sublist', req.body);
-  if (isEmpty(req.body.email)) {
-    res.status(406).send('Not Acceptable');
-  } else {
-    // console.log('NOT empthy');
-    pool.query("INSERT INTO subscribers ( email ) VALUES (" + pool.escape(req.body.email) + ")", function (error, results, fields) {
+  query.SubscribeToEmailUpdates(req.body).then(result => {
+    res.status(200).send('OK');
+  }, reject_error => {
+    console.log('the reject error code:', reject_error.code)
+    switch (reject_error.code) { // do more here, but ... this is the only error we're expecting
+      case 'ER_DUP_ENTRY': // ER_DUP_ENTRY if an email exists already
+        res.status(406).send('Not Acceptable');
+        break;
+      default:
+        res.status(500).send('Internal Server Error');
+        break;
+    }
+  })
 
-      if (error) {
-        console.log('the error code:', error.code)
-        switch (error.code) { // do more here
-          case 'ER_DUP_ENTRY': // ER_DUP_ENTRY if an email exists already
-            res.status(406).send('Not Acceptable');
-            break;
-        }
-        // throw error;
-      } else if (results.affectedRows === 1) {
-        res.status(200).send('OK');
-      }
-    });
 
-  }
 });
 
 router.get('/signup', function (req, res) {
@@ -319,7 +227,7 @@ router.post('/login', /* bodyParser.urlencoded({ // edited
     // handle post request, validate data with database.
     // how to handle wrong password with right email or more rearly, right password and wrong password.
 
-    query.CorpersLogin([req.body.statecode.toUpperCase(), req.body.password]).then(result => {
+    query.CorpersLogin(req.body).then(result => {
 
       if (result.response[0].password === req.body.password) { // verify password, crucial step
         req.session.statecode = req.body.statecode.toUpperCase();
@@ -362,8 +270,6 @@ router.post('/login', /* bodyParser.urlencoded({ // edited
     }).catch(reason => {
       console.log('catching this err because:', reason);
     })
-
-
   });
 
 
