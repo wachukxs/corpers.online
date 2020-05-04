@@ -171,6 +171,7 @@
                             <input type="text" name="categorylist" list="category" id="categoryinput" class="form-control" aria-describedby="category" placeholder="School, Hospital, Corporate office, ATM" required>
 
                             <datalist id="category">
+                                <%# console.log('types is not defined??', types); %>
                                     <% for (i = 0; i < types.length; i++) { %>
                                         <option value="<%= types[i] %>">
                                     <% } %>
@@ -966,7 +967,7 @@
 
         L.geoJSON( yes, {
                 pointToLayer: function( feature, latlng ) {
-                    console.log( feature, latlng );
+                    // console.log( feature, latlng );
                     switch ( feature.properties.amenity ) {
                         case 'Hospital':
                             return L.marker( latlng, {
@@ -990,7 +991,7 @@
 
         L.geoJSON( <%- mapdata %> , {
                 pointToLayer: function( feature, latlng ) {
-                    console.log( 'from server', feature, latlng );
+                    // console.log( 'from server', feature, latlng );
                     switch ( feature.properties.type ) {
                         case 'Hospital':
                             return L.marker( latlng, {
@@ -1180,7 +1181,7 @@
 
 
     <!--our icons from font awesome for markers-->
-    <script src="markers.js"></script>
+    <script src="assets/js/markers.js"></script>
     <!-- 
     find out more about the project() method on leaflet 
     getZoomScale() and getScaleZoom() and getZoom()
@@ -1189,10 +1190,10 @@
     <script>
         socket.on( 'connect', function() {
             console.log( 'we\'re connected' );
-        } );
+        });
 
         // when we receive a mapdata message
-        socket.on( 'mapdata', function( data ) {
+        socket.on('mapdata', function( data ) {
             console.log( 'received mapdata', data );
 
             // send 'my other event' to everyone else
@@ -1200,14 +1201,14 @@
             // record the number of people that has seen a particular ad/post(like an accomodation). & show the sender.
             socket.emit( 'seen', {
                 my: 'saw data, because we recieved it'
-            } );
-        } );
+            });
+        });
 
 
 
         // submit form data for add places
 
-        var v = document.getElementById( 'spd' );
+        var v = document.getElementById('spd');
         v.addEventListener('click', function () {
             var life = {
                 nameOfPlace: document.forms[0][1].value,

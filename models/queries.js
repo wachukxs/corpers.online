@@ -155,6 +155,9 @@ exports.UnreadMessages = async (corpersData) => {
     return re;
 }
 
+/**
+ * get post for the timeline
+ */
 exports.FetchPostsForTimeLine = async (timeLineInfo) => {
     let re = new Promise((resolve, reject) => {
         /**there's much work on this section maybe, just to make sure sql sees and calculates the value as they should (or NOT ????) */
@@ -243,6 +246,9 @@ exports.FetchPostsForTimeLine = async (timeLineInfo) => {
     return re;
 }
 
+/**
+ * insert a data in media table
+ */
 exports.InsertRowInMediaTable = async (mediaData) => {
     let re = await new Promise((resolve, reject) => {
         connectionPool.query("INSERT INTO media SET ?", mediaData, function (error, result, fields) {
@@ -257,6 +263,9 @@ exports.InsertRowInMediaTable = async (mediaData) => {
     return re;
 }
 
+/**
+ * insert data in post table
+ */
 exports.InsertRowInPostsTable = async (postData) => {
     console.log('we posting now')
     let re = await new Promise((resolve, reject) => {
@@ -347,6 +356,111 @@ exports.InsertRowInAccommodationsTable = async (postData) => {
             else if (result.affectedRows === 1) {
                 resolve()
             }
+        });
+    })
+
+    return re;
+}
+
+/**
+ * get data we use in map[s] page
+ * we need to re-write the query we use to get data
+ */
+exports.GetMapData = async () => {
+    let re = await new Promise((resolve, reject) => {
+        // what about name of the ppa ? this way of selecting might prove inefficient when we have large data set from all the states meanwhile this corper just need data from within a particular state.
+        // also select ppa_directions from info and it should be like a reveal, corpers would click 'read directions' and it'll show them
+        connectionPool.query("SELECT ppa_address, ppa_geodata, type_of_ppa FROM info WHERE ppa_address != '' AND ppa_geodata != '' AND type_of_ppa != '' ; \
+        SELECT ppa_geodata, name_of_ppa, ppa_address, lga, region_street, type_of_ppa, city_town FROM info WHERE ppa_geodata != '' ; \
+        SELECT DISTINCT type_of_ppa FROM info WHERE type_of_ppa != '' ", function (error, results, fields) { // bring the results in ascending order
+            // we shouldn't be rejecting with empty data
+            // let's either put listoftypesofpas in front end
+            // or reject with it, along with the error, and send to the front end
+            if (error) reject(error)
+
+            // console.log(results.length, 'map result =>', results)
+
+            if (!helpers.isEmpty(results[1])) {
+                // console.log('geo data for map', results);
+
+                // for the results from places table
+                for (let index = 0; index < results[1].length; index++) {
+                    // re-arrange to GeoJSON Format
+                    results[1][index].type = "Feature";
+
+                    results[1][index].properties = {};
+                    results[1][index].properties.geodata = JSON.parse(results[1][index].ppa_geodata); // we're always expecting a json here else err
+                    results[1][index].properties.address = results[1][index].ppa_address;
+                    results[1][index].properties.type = results[1][index].type_of_ppa;
+
+                    // we can add lga, name, and maybe region
+
+                    results[1][index].geometry = {};
+                    results[1][index].geometry.type = "Point";
+                    results[1][index].geometry.coordinates = [JSON.parse(results[1][index].ppa_geodata).longitude, JSON.parse(results[1][index].ppa_geodata).latitude];
+
+                    console.log(JSON.parse(results[1][index].ppa_geodata).latlng, '/////', JSON.parse(results[1][index]['ppa_geodata']).longitude, JSON.parse(results[1][index]['ppa_geodata']).latitude);
+
+                    delete results[1][index]['ppa_geodata'];
+                    delete results[1][index]['type_of_ppa'];
+                    delete results[1][index]['ppa_address'];
+
+                    // delete redundate data like longitude, latitude, and latlng in ppa_geodata after reassigning values
+
+                }
+            } else {
+                results[1] = []
+            }
+
+            if (!helpers.isEmpty(results[0])) {
+                // for the results from info table
+                // format to GeoJSON Format https://tools.ietf.org/html/rfc7946
+                for (index = 0; index < results[0].length; index++) {
+
+                    // re-arrange to GeoJSON Format
+                    results[0][index].type = "Feature";
+
+                    results[0][index].properties = {};
+                    results[0][index].properties.geodata = JSON.parse(results[0][index].ppa_geodata);
+                    results[0][index].properties.address = results[0][index].ppa_address;
+                    results[0][index].properties.type = results[0][index].type_of_ppa;
+
+                    results[0][index].geometry = {};
+                    results[0][index].geometry.type = "Point";
+                    results[0][index].geometry.coordinates = [JSON.parse(results[0][index].ppa_geodata).longitude, JSON.parse(results[0][index].ppa_geodata).latitude];
+
+                    console.log(JSON.parse(results[0][index].ppa_geodata).latlng, '======++++++++====', JSON.parse(results[0][index]['ppa_geodata']).longitude, JSON.parse(results[0][index]['ppa_geodata']).latitude);
+
+                    delete results[0][index]['ppa_geodata'];
+                    delete results[0][index]['type_of_ppa'];
+                    delete results[0][index]['ppa_address'];
+
+                    // delete redundate data like longitude, latitude, and latlng in ppa_geodata after reassigning values
+                }
+            } else {
+                results[0] = []
+            }
+
+            let listoftypesofppas = ["ATM", "Bank", "School", "Hospital", "Corporate office", "Industory", "Mosque", "Bus stop", "Shop", "Stadium", "Airport", "Market", "Church", "Hotel", "University"];
+
+            if (!helpers.isEmpty(results[2])) {
+
+                /**
+                 * add ppas that weren't in listoftypesofppas but other corpers have added them, 
+                 * over time, when some types of ppas become common, we add them to listoftypesofppas
+                 * 
+                 * we'd make this better so that 'school' and 'School' isn't in the array
+                 */
+                listoftypesofppas.concat(results[2])
+            } else {
+                results[2] = []
+            }
+
+            resolve({
+                mapdata: JSON.stringify(results[0].concat(results[1])),
+                types: [...new Set(listoftypesofppas)]
+            })
+
         });
     })
 

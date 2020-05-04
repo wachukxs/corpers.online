@@ -208,97 +208,30 @@ router.get(['/map', '/maps'], function (req, res) { // try to infer their locati
   res.set('Content-Type', 'text/html');
   // res.sendFile(__dirname + '/map.html');
 
-
-  // what about name of the ppa ? this way of selecting might prove inefficient when we have large data set from all the states meanwhile this corper just need data from within a particular state.
-  // also select ppa_directions from info and it should be like a reveal, corpers would click 'read directions' and it'll show them
-  pool.query("SELECT ppa_address, ppa_geodata, type_of_ppa FROM info WHERE ppa_address != '' AND ppa_geodata != '' AND type_of_ppa != '' ; SELECT geo_data, name, address, lga, street, type_of_place, region FROM places ; SELECT type_of_ppa FROM info WHERE type_of_ppa != '' ", function (error, results, fields) { // bring the results in ascending order
-
-    if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
-      console.log(error);
-      throw error;
-    } else if (!isEmpty(results)) {
-      console.log('geo data for map', results);
-
-
-      // JSON.parse(JSON.stringify([{ g: 'g', l: 'l' }, { g: 'g', l: 'l' }, { g: 'g', l: { g: 'g', l: { g: 'g', l: 'l' } } }]))
-
-      // JSON.parse(JSON.stringify(results));
-
-      // for the results from places table
-      for (let index = 0; index < results[1].length; index++) {
-        // re-arrange to GeoJSON Format
-        results[1][index].type = "Feature";
-
-        results[1][index].properties = {};
-        results[1][index].properties.geodata = JSON.parse(results[1][index].geo_data); // we're always expecting a json here else err
-        results[1][index].properties.address = results[1][index].address;
-        results[1][index].properties.type = results[1][index].type_of_place;
-
-        // we can add lga, name, and maybe region
-
-        results[1][index].geometry = {};
-        results[1][index].geometry.type = "Point";
-        results[1][index].geometry.coordinates = [JSON.parse(results[1][index].geo_data).longitude, JSON.parse(results[1][index].geo_data).latitude];
-
-        console.log(JSON.parse(results[1][index].geo_data).latlng, '/////', JSON.parse(results[1][index]['geo_data']).longitude, JSON.parse(results[1][index]['geo_data']).latitude);
-
-        delete results[1][index]['geo_data'];
-        delete results[1][index]['type_of_place'];
-        delete results[1][index]['address'];
-
-        // delete redundate data like longitude, latitude, and latlng in ppa_geodata after reassigning values
-
-      }
-
-      // for the results from info table
-      // format to GeoJSON Format https://tools.ietf.org/html/rfc7946
-      for (index = 0; index < results[0].length; index++) {
-
-        // re-arrange to GeoJSON Format
-        results[0][index].type = "Feature";
-
-        results[0][index].properties = {};
-        results[0][index].properties.geodata = JSON.parse(results[0][index].ppa_geodata);
-        results[0][index].properties.address = results[0][index].ppa_address;
-        results[0][index].properties.type = results[0][index].type_of_ppa;
-
-        results[0][index].geometry = {};
-        results[0][index].geometry.type = "Point";
-        results[0][index].geometry.coordinates = [JSON.parse(results[0][index].ppa_geodata).longitude, JSON.parse(results[0][index].ppa_geodata).latitude];
-
-        console.log(JSON.parse(results[0][index].ppa_geodata).latlng, '======++++++++====', JSON.parse(results[0][index]['ppa_geodata']).longitude, JSON.parse(results[0][index]['ppa_geodata']).latitude);
-
-        delete results[0][index]['ppa_geodata'];
-        delete results[0][index]['type_of_ppa'];
-        delete results[0][index]['ppa_address'];
-
-        // delete redundate data like longitude, latitude, and latlng in ppa_geodata after reassigning values
-      }
-
-      var listoftypesofppas = ["ATM", "Bank", "School", "Hospital", "Corporate office", "Industory", "Mosque", "Bus stop", "Shop", "Stadium", "Airport", "Market", "Church", "Hotel", "University"];
-
-
-      /**
-       * add ppas that weren't in listoftypesofppas but other corpers have added them, 
-       * over time, when some types of ppas become common, we add them to listoftypesofppas
-       * 
-       * we'd make this better so that 'school' and 'School' isn't in the array
-       */
-      for (let index = 0; index < results[2].length; index++) {
-        const element = results[2][index].type_of_ppa;
-        if (!results[2][element]) {
-          listoftypesofppas.push(element)
-        }
-      }
-    }
-
+  query.GetMapData().then(result => {
+    console.log('hmmm === >>>>', result)
     res.render('pages/map', {
       statecode: req.session.statecode,
       servicestate: req.session.servicestate,
-      mapdata: JSON.stringify(results[0].concat(results[1])),
-      types: listoftypesofppas
+      mapdata: result.mapdata,
+      types: result.types
     });
-  });
+  }, error => {
+    console.log('there was an error getting /map', error); // but render regardless
+    res.render('pages/map', {
+      statecode: req.session.statecode,
+      servicestate: req.session.servicestate,
+      mapdata: {},
+      types: []
+    });
+  }).catch(reason => {
+    console.log('do we have a problem?', reason);
+    
+    res.render('pages/map')
+  })
+
+
+
 
 
 });
