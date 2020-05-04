@@ -16,7 +16,7 @@ const connection = mysql.createConnection(mysqloptions); // declare outside conn
 
 const connectionPool = mysql.createPool({
     connectionLimit: process.env.DB_CONN_LIMIT,
-    host: process.env.DB_HOST_LOCAL /* || process.env.DB_HOST_ONLINE */,
+    host: /* process.env.DB_HOST_LOCAL || */ process.env.DB_HOST_ONLINE,
     user: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,

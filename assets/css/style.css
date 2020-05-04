@@ -822,12 +822,12 @@ h3, .h3 {
   }
 }
 
-.hero-banner-sm {
+/* .hero-banner-sm {
   background: url(../img/banner/banner.png) left center no-repeat;
   background-size: cover;
   padding-top: 140px;
-  /* padding-bottom: 90px; */
-}
+  padding-bottom: 90px;
+} */
 
 @media (min-width: 992px) {
   .hero-banner-sm {
