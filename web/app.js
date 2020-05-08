@@ -38,6 +38,11 @@ app.use('/graphic', express.static('img'));
 app.use(actionsRoutes);
 app.use(byeRoutes);
 app.use(welcomeRoutes);
+// --- always last, must be last route because of 404 pages/error
+app.use(function (req, res, next) {
+    res.render('pages/404', { // check the url they navigated to that got them lost, and try to offer suggestions in the front end that'll match why they got lost... maybe they missed a letter in their statecode url
+    });
+});
 
 /**
  * If you’re writing a web application,

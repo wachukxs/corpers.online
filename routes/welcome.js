@@ -198,6 +198,7 @@ router.post('/signup', /* bodyParser.urlencoded({
 
     }, error => {
       console.log('well some error happened', error);
+      // res.send(error.message) // try this & not redirect
       switch (error.message) {
 
         case 'duplicate statecode':
@@ -206,6 +207,10 @@ router.post('/signup', /* bodyParser.urlencoded({
 
         case 'duplicate email':
           res.redirect('/signup?m=de'); // [m]essage = [d]uplicate [e]mail
+          break;
+
+        case 'invalid statecode':
+          res.redirect('/signup?m=is') // [m]essage = [i]nvalid [s]tatecode
           break;
 
         default:

@@ -107,6 +107,11 @@
             margin-top: 50px;
         }
 
+        .card-columns {
+            overflow-y: scroll;
+            height: 40vh;
+        }
+
         @media (max-width: 576px) {
             .card-columns {
                 -webkit-column-count: 2;
@@ -124,7 +129,6 @@
                 width: 100%;
             }
         }
-
 
         @-webkit-keyframes spin {
             0% {
@@ -194,8 +198,6 @@
 
         @media (max-width: 576px) {
             #hereNow {
-                overflow-y: scroll;
-                height: 40vh;
             }
         }
 
@@ -1785,8 +1787,8 @@
 
                         var hh5 = document.createElement('h3');
                         // jk[i].includes(rms[ i ]);
-                        var tr = jk[i].slice(parseInt(jk[i]).toString().length, jk[i].lastIndexOf('.'));
-                        hh5.innerText = ((tr == ('' || undefined) ? '[][]][]][]' : tr));
+                        // var tr = jk[i].slice(parseInt(jk[i]).toString().length, jk[i].lastIndexOf('.'));
+                        hh5.innerText = `${(rms[i] == undefined ? rms[0] : rms[i])}`;
                         // hh5.innerText = ( rms[ i ] == undefined ? rms[ 0 ] : rms[ i ] ); // this is not exactly correct, needs more work
 
                         // var ppp = document.createElement( 'p' );

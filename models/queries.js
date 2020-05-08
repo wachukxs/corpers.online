@@ -13,20 +13,36 @@ exports.CorpersSignUp = async (signupData) => {
 
     var theservicestate = ngstates.states_long[ngstates.states_short.indexOf(signupData.statecode.slice(0, 2).toUpperCase())];
 
+    // we don't need stream, do we? can be inferred! same as batch!
     var thestream = signupData.statecode.slice(5, 6).toUpperCase();
 
     function getstream(sb) {
         return sb == 'A' ? 1 : sb == 'B' ? 2 : sb == 'C' ? 3 : 4; // because we're sure it's gonna be 'D'
     }
+    
+    // 'chuks'.replace(/^[a-z]/, (s) => {return s.toUpperCase()} ) // makes 'chuks' => 'Chuks'
+    signupData.lastname = signupData.lastname.replace(/^[a-z]/, (s) => {return s.toUpperCase()} );
+    signupData.middlename = signupData.middlename.replace(/^[a-z]/, (s) => {return s.toUpperCase()} );
+    signupData.firstname = signupData.firstname.replace(/^[a-z]/, (s) => {return s.toUpperCase()} );
 
     signupData.servicestate = theservicestate;
     signupData.stream = getstream(thestream);
-    signupData.statecode.slice(3, 6).toUpperCase();
+    signupData.statecode = signupData.statecode.toUpperCase(); // convert statecode to uppercase, very important!
+    // signupData.batch = signupData.statecode.slice(3, 6).toUpperCase(); // we don't need batch, can be inferred from statecode
 
     // var sqlquery = "INSERT INTO info(email, firstname, middlename, password, lastname, statecode, batch, servicestate, stream) VALUES ('" + signupData.email + "', '" + signupData.firstname + "', '" + signupData.middlename + "', '" + signupData.password + "', '" + signupData.lastname + "', '" + signupData.statecode.toUpperCase() + "', '" + signupData.statecode.slice(3, 6).toUpperCase() + "', '" + theservicestate + "' , '" + getstream(thestream) + "'  )";
     /**[re]sponse for this funtion CorpersSignUp() */
     let re = await new Promise((resolve, reject) => {
-        let r;
+        let r; // [r]esponse
+
+        // check if statecode is valid
+        const regex = /^(ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/\d\d[abcACB]\/[0-9]{4}$/gi;
+        const valid_statecode = signupData.statecode.match(regex);
+        
+        if (valid_statecode === null) {
+            reject({ message: 'invalid statecode' })
+        }
+
         connectionPool.query('INSERT INTO info SET ?', signupData, function (error, results, fields) {
             console.log('inserted data from: ', results);
             if (error) {

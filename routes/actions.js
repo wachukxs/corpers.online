@@ -504,7 +504,7 @@ router.post('/sayhi', /* bodyParser.urlencoded({
       });
 
     }
-  });
+});
 
 // upload.none()
 router.post('/contact', /* bodyParser.urlencoded({ // edited
@@ -521,7 +521,7 @@ router.post('/contact', /* bodyParser.urlencoded({ // edited
         res.status(200).send('OK'); //.render('pages/404');
       }
     });
-  });
+});
 
 router.get('/posts', function (req, res) {
   // set resposnse type to application/json
@@ -748,7 +748,7 @@ router.post('/profile', /* bodyParser.urlencoded({
       }
     });
 
-  });
+});
 
 router.post('/addplace', /* upload.none(), */ function (req, res) {
   // handle post request, add data to database.
@@ -1003,7 +1003,7 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
     headers: req.headers,
     limits: { // set fields, fieldSize, and fieldNameSize later (security)
       files: 7, // don't upload more than 7 media files
-      fileSize: 6 * 1024 * 1024 // 6MB
+      fileSize: 24 * 1024 * 1024 // 24MB
     }
   });
   let _media = []; // good, because we re-initialize on new post
