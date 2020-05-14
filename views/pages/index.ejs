@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,23 +60,22 @@
 
     <link rel="stylesheet" href="/assets/css/style.css">
     <style>
-      
-      @media (min-width: 576px) {
-        .typeahead__list{
-        max-height: 500px;
-        overflow-y: scroll;
-      }
-      }
-
-      @media (max-width: 576px) {
-        .typeahead__search-icon{
-          padding: 0 0.5rem !important;
+        @media (min-width: 576px) {
+            .typeahead__list {
+                max-height: 500px;
+                overflow-y: scroll;
+            }
         }
-        #s{
-          padding-right: 0.75rem;
-        }
-      }
 
+        @media (max-width: 576px) {
+            .typeahead__search-icon {
+                padding: 0 0.5rem !important;
+            }
+
+            #s {
+                padding-right: 0.75rem;
+            }
+        }
     </style>
 </head>
 
@@ -99,7 +99,7 @@
                             <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
                             <li class="nav-item"><a class="nav-link" href="/signup">Sign Up</a></li>
                             <li class="nav-item"><a class="nav-link" href="/map">Maps</a>
-                              <li class="nav-item"><a class="nav-link" href="/about">About Us</a>
+                            <li class="nav-item"><a class="nav-link" href="/about">About Us</a>
                                 <!-- <li class="nav-item submenu dropdown">
                                       <a href="#!" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                                         aria-expanded="false">Pages</a>
@@ -124,8 +124,8 @@
                                 <div class="typeahead__container">
                                     <div class="typeahead__field">
                                         <div class="typeahead__query">
-                                          <!--for a11y, how best to include this label-->
-                                          <!-- <label>Search:</label> -->
+                                            <!--for a11y, how best to include this label-->
+                                            <!-- <label>Search:</label> -->
                                             <input id="s" name="search[query]" type="search" placeholder="Household items, apartments & more" autocomplete="off" inputmode="search">
                                         </div>
                                         <div class="typeahead__button">
@@ -155,8 +155,8 @@
                     <p><strong>Corpers Online</strong> is where corpers provide relevant real time info for other corpers. Tell other corpers about the household items you want to sell and find buyers, tell other corpers about accommodation space up for rent. You so that by subleasing yours if it hasn't expired and you're done with service year. Show others routes! Lots of it. Give directions to your PPA, an office building likely an SPA, a logde or an accommodation space.</p>
                     <p>If you are a serving corper then <em>be</em> a <strong>corper online</strong> too!</p>
                     <div>
-                      <a class="button mt-4" href="/login">Join the network</a>
-                      <a class="button button-hero mt-4" href="/about">Learn More</a>
+                        <a class="button mt-4" href="/login">Join the network</a>
+                        <a class="button button-hero mt-4" href="/about">Learn More</a>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-7 col-xl-6 offset-xl-1">
@@ -228,7 +228,7 @@
                     </div>
                 </div>
                 <div class="col-lg-5 col-md-6 align-self-center about-content">
-                  <!--make this h4 text bigger?-->
+                    <!--make this h4 text bigger?-->
                     <h4>Know the important places, <br class="d-none d-xl-block">like where you're meant to <br class="d-none d-xl-block"> get do NYSC 'business'</h4>
                     <p>Aside from your PPA, find other relevant NYSC hangouts (think <strong>NYSC Secretariat</strong>, <strong>LGA Offices</strong> etc.).</p>
                     <a class="button" href="/maps">Explore Maps</a>
@@ -569,8 +569,8 @@
                             <!-- give alot of metrics, prices of routes from different bus parks to the other. tell them about SPAs, get affiliated with companies willing to hire corpers. tell them about Government Laws, new, old and the ones under delibrations and how it affects them, tell them to give their input. what's happening to them, they can leave reviews about their lodges and the area they lived/ served in/at. park the newsletter with graphics. relevent graphics. just tell them alot. worthwhile stuffs. -->
                             Subscribe! Be in the know on stuffs that definately benefits you and gives you insight during your service year. And also if you're intrested in mediocre print, presentations and graphic output relevant for your Service Year, things you can understand. We'd also tell you what we're up to.
                         </p>
-                        <div >
-                            <form  id="sublist" >
+                        <div>
+                            <form id="sublist">
                                 <div class="input-group d-flex flex-row">
                                     <input name="email" placeholder="Email Address" autocomplete="email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email Address '" required="true" type="email">
                                     <button class="btn bb-btn" type="submit"><span class="fas fa-paper-plane"></span></button>
@@ -604,8 +604,8 @@
                     <p class="col-lg-8 col-sm-12 footer-text m-0 text-center text-lg-left">
                         <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                         &copy; <script>
-                            document.write( new Date()
-                                .getFullYear() );
+                            document.write(new Date()
+                                .getFullYear());
                         </script> For corpers by corpers with <em class="fa fa-heart" aria-hidden="true"></em>
                         <!-- try putting words in between the i [it shouldn't be <i> tag, i mean icon tag] tag to see it it shows when the icons does (loads) or doesn't show (load) -->
                     </p>
@@ -628,53 +628,53 @@
             var XHR = new XMLHttpRequest();
 
             // Bind the FormData object and the form element
-            var FD = new FormData( form );
-            
+            var FD = new FormData(form);
+
 
             // Define what happens on successful data submission
-            XHR.addEventListener( "load", function( event ) {
+            XHR.addEventListener("load", function(event) {
                 // alert(event.target.responseText);
-                console.log( event.target.responseText );
+                console.log(event.target.responseText);
 
                 if (event.target.responseText == 'OK') {
                     document.getElementById('submsg').innerHTML = 'You\'ve subscribed and rock too.';
-                    document.getElementById( "sublist" ).reset();
+                    document.getElementById("sublist").reset();
                     // tell them to send another message again
-                    setTimeout( function() {
+                    setTimeout(function() {
                         document.getElementById('submsg').innerHTML = "";
-                    }, 4000 );
+                    }, 4000);
                 } else { // 'Not Acceptable'
                     document.getElementById('submsg').innerHTML = 'We have you in our list already. Boss.';
-                     // clear the message
-                    setTimeout( function() {
+                    // clear the message
+                    setTimeout(function() {
                         document.getElementById('submsg').innerHTML = "";
-                    }, 4000 );
+                    }, 4000);
                 }
                 // say thank you
 
-            } );
+            });
 
             // Define what happens in case of error
-            XHR.addEventListener( "error", function( event ) {
-                alert( 'Oops! Something went wrong.' );
-            } );
+            XHR.addEventListener("error", function(event) {
+                alert('Oops! Something went wrong.');
+            });
 
             // Set up our request
-            XHR.open( 'POST', '/subscribe', true ); // true makes it async request
+            XHR.open('POST', '/subscribe', true); // true makes it async request
 
             // The data sent is what the user provided in the form
-            XHR.send( FD );
+            XHR.send(FD);
         }
 
         // Access the form element...
-        var form = document.getElementById( "sublist" );
-        
+        var form = document.getElementById("sublist");
+
         // ...and take over its submit event.
-        form.addEventListener( "submit", function( event ) {
+        form.addEventListener("submit", function(event) {
             event.preventDefault(); // the default behaviour is refreshing the page and adding search params to the url
 
             sublist();
-        }, false, true ); // https://developer.mozilla.org/en-US/docs/Web/Events/submit
+        }, false, true); // https://developer.mozilla.org/en-US/docs/Web/Events/submit
     </script>
 
     <script src="assets/js/jquery-3.3.1.min.js"></script>

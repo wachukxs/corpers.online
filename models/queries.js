@@ -33,11 +33,13 @@ exports.CorpersSignUp = async (signupData) => {
     // var sqlquery = "INSERT INTO info(email, firstname, middlename, password, lastname, statecode, batch, servicestate, stream) VALUES ('" + signupData.email + "', '" + signupData.firstname + "', '" + signupData.middlename + "', '" + signupData.password + "', '" + signupData.lastname + "', '" + signupData.statecode.toUpperCase() + "', '" + signupData.statecode.slice(3, 6).toUpperCase() + "', '" + theservicestate + "' , '" + getstream(thestream) + "'  )";
     /**[re]sponse for this funtion CorpersSignUp() */
     let re = await new Promise((resolve, reject) => {
-        let r; // [r]esponse
+        /**[r]esponse */
+        let r;
 
-        // check if statecode is valid
-        const regex = /^(ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/\d\d[abcACB]\/[0-9]{4}$/gi;
-        const valid_statecode = signupData.statecode.match(regex);
+        /**statecode validation regex */
+        const statecode_regex = /^(ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/\d\d[abcACB]\/[0-9]{4}$/gi;
+        /**check if statecode is valid */
+        const valid_statecode = signupData.statecode.match(statecode_regex);
         
         if (valid_statecode === null) {
             reject({ message: 'invalid statecode' })

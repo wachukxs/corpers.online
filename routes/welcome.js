@@ -165,8 +165,6 @@ router.post('/subscribe', /* upload.none(), */ function (req, res) {
         break;
     }
   })
-
-
 });
 
 router.get('/signup', function (req, res) {
@@ -222,7 +220,7 @@ router.post('/signup', /* bodyParser.urlencoded({
     });
 
 
-  });
+});
 
 // if someone tries loggin in with a state code that is correct but isn't yet registerd (i.e. hasn't been signed up with in corpers.online), what do we do ?
 // block it? esp if they try more than once... ??
@@ -275,8 +273,7 @@ router.post('/login', /* bodyParser.urlencoded({ // edited
     }).catch(reason => {
       console.log('catching this err because:', reason);
     })
-  });
-
+});
 
 router.get('/login', function (req, res) {
   res.set('Content-Type', 'text/html');

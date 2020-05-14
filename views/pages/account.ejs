@@ -108,7 +108,7 @@
         }
 
         .card-columns {
-            overflow-y: scroll;
+            overflow-x: scroll;
             height: 40vh;
         }
 
@@ -197,8 +197,7 @@
         }
 
         @media (max-width: 576px) {
-            #hereNow {
-            }
+            #hereNow {}
         }
 
 
@@ -708,7 +707,7 @@
                                             </fieldset>
 
                                             <script>
-                                                var minmax = new Date();
+                                                let minmax = new Date();
                                                 document.getElementById('expire')
                                                     .min = minmax.toISOString()
                                                     .substr(0,
@@ -719,8 +718,8 @@
                                                     .toISOString()
                                                     .substr(0, 10); // The argument monthIndex is 0-based. This means that January = 0 and December = 11.
 
-                                                var radios = document.forms["accommodationform"].elements['tenure'];
-                                                for (var i = 0, max = radios.length; i < max; i++) {
+                                                let radios = document.forms["accommodationform"].elements['tenure'];
+                                                for (let i = 0, max = radios.length; i < max; i++) {
                                                     radios[i].onclick = function() {
                                                         // using if-else because we have just two options, so if it isn't one, it's the other
 
@@ -936,10 +935,10 @@
             $('#postModalSale').modal('hide');
 
             // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
-            var XHR = new XMLHttpRequest();
+            const XHR = new XMLHttpRequest();
 
             // Bind the FormData object and the form element
-            var FD = new FormData(form);
+            let FD = new FormData(form);
 
             // append post_time
             FD.append('post_time', Date.now()); // data type number
@@ -981,24 +980,24 @@
                 // some times there are cases where posts happen immediately after each other 
                 // and there would then be more than one notifications on the user tl...
                 // how do we ensure they are closed as they come ? A dedicated functions to handle notifications ????/
-                
+
                 if (event.target.status == 200) {
                     $("#1or0") // #tl
-                    .before(
-                        '<div class="alert alert-success mt-3 fade show" id="postposted" role="alert">Post created successfully.</div>'
-                    );
+                        .before(
+                            '<div class="alert alert-success mt-3 fade show" id="postposted" role="alert">Post created successfully.</div>'
+                        );
 
                 } else {
                     $("#1or0") // formerly #tl
-                    .before(
-                        '<div class="alert alert-success mt-3 fade show" id="postposted" role="alert">We didn\'t get that. Please post again.</div>'
-                    );
+                        .before(
+                            '<div class="alert alert-success mt-3 fade show" id="postposted" role="alert">We didn\'t get that. Please post again.</div>'
+                        );
                 }
                 setTimeout(function() {
                     $('div.alert.alert-success.mt-3.fade.show')
                         .alert('close'); // Closes an alert (for now all) by removing it from the DOM
                 }, 2000);
-                
+
             });
 
             // Define what happens in case of error
@@ -1016,7 +1015,7 @@
         }
 
         // Access the form element...
-        var form = document.getElementById("postform");
+        let form = document.getElementById("postform");
 
         // ...and take over its submit event.
         form.addEventListener("submit", function(event) {
@@ -1035,10 +1034,10 @@
                 .modal('hide');
 
             // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
-            var XHR1 = new XMLHttpRequest();
+            const XHR1 = new XMLHttpRequest();
 
             // Bind the FormData object and the form element
-            var FD1 = new FormData(form1);
+            let FD1 = new FormData(form1);
 
             // append post_time
             FD1.append('post_time', Date.now()); // data type number
@@ -1097,7 +1096,7 @@
         }
 
         // Access the form element...
-        var form1 = document.getElementById("accommodationform");
+        let form1 = document.getElementById("accommodationform");
 
         // ...and take over its submit event.
         form1.addEventListener("submit", function(event) {
@@ -1309,16 +1308,16 @@
     <script>
         // check if it's empty i.e. the person is the first to register in the state
         /** tell the user they are the first to show up from their state and they should start using the platform, basically give them a tour */
-        var tell = function() {
+        let tell = function() {
             if (!document.getElementById("1or0msg")) { // if it isn't there before
                 console.log('teeeeelllllllllllll');
                 // create a new div element 
-                var newDiv = document.createElement("div");
+                let newDiv = document.createElement("div");
                 newDiv.id = '1or0msg'
                 newDiv.className = 'pt-4 pb-2 display-2';
                 newDiv.style.fontSize = '1.5rem';
                 // and give it some content 
-                var newContent = document.createTextNode("You're either the first here or no one has posted anything... yet! Either way, welcome. Now tell others what you want to sell or sublease. Post something!");
+                let newContent = document.createTextNode("You're either the first here or no one has posted anything... yet! Either way, welcome. Now tell others what you want to sell or sublease. Post something!");
                 // add the text node to the newly created div
                 newDiv.appendChild(newContent);
 
@@ -1403,13 +1402,13 @@
          */
 
 
-        var pathArray = window.location.pathname.split('/');
+        let pathArray = window.location.pathname.split('/');
         console.log('user = ' + pathArray[2]);
 
         // start: bm[0], //oldest post in user's timeline
         // end: bm[bm.length - 1] //newest post in user's timeline
         // bm[] = boardcast messages currently in the user's time line
-        var bm = [],
+        let bm = [],
             bn = [];
 
         //connect to socket.io on /user but somehow it still connects with\to /
@@ -1419,16 +1418,16 @@
         upgraded to "better" transports (like WebSocket {transports: ['websocket'],}). If you like to
         live dangerously, this part can be skipped:
         */
-        var socket = io('/user', {
+        let socket = io('/user', {
             transports: ['websocket'],
             query: {
                 user: pathArray[2],
                 putl: bm,
                 autl: bn,
-                first_post_pst: bm.length > 0 ? bm[0] : null ,
-                last_post_pst: bm.length > 0 ? bm[bm.length - 1] : null ,
-                first_post_acc: bn.length > 0 ? bn[0] : null ,
-                last_post_acc: bn.length > 0 ? bn[bn.length - 1] : null ,
+                first_post_pst: bm.length > 0 ? bm[0] : null,
+                last_post_pst: bm.length > 0 ? bm[bm.length - 1] : null,
+                first_post_acc: bn.length > 0 ? bn[0] : null,
+                last_post_acc: bn.length > 0 ? bn[bn.length - 1] : null,
                 test: 'ertrerer',
                 from: window.location.pathname.substring(1, 12),
                 statecode: '<%= statecode %>' // window.location.pathname.substring( 1, 12 ) // '<%= statecode %>'
@@ -1439,10 +1438,10 @@
             console.log('got an unread message', data);
             // (data.count == 1 ? '' : 's') adds 's' to 'corpers' if there are more than one corpers online.
 
-            var ph = document.getElementById('totalunreadmsg')
+            let ph = document.getElementById('totalunreadmsg')
                 .innerHTML;
             if (!ph == '') { // if it is not empty, i.e. there was a number there, there's been unread messages
-                var c = parseInt(ph);
+                let c = parseInt(ph);
                 document.getElementById('totalunreadmsg')
                     .innerHTML = c + 1; // increment the number of messages
             } else {
@@ -1528,7 +1527,7 @@
             console.log(data); // data will be 'woot ...'
         });
 
-        var cb = function(params) {
+        let cb = function(params) {
             console.log('the callback', params);
         };
         socket.on('callback', cb);
@@ -1536,7 +1535,7 @@
 
         /*  when we receive a boardcast message --save them (in var bm --an array somewhere up).
             so that thing where we can confirm a message has gotten to the server. */
-        var bc = function(data) {
+        let bc = function(data) {
             // remove the loader --this is not a very awesom logic, but it works well
             document.getElementById('loader')
                 .style.display = 'none';
@@ -1577,9 +1576,9 @@
             // console.log(data.post.type == "sale", data.post.type === "sale")
             console.log('received boardcast message', data); // uncomment if we wanna see what we got
 
-            var feeds = document.getElementById('tl');
+            let feeds = document.getElementById('tl');
 
-            var newFeed = document.createElement("li");
+            let newFeed = document.createElement("li");
             newFeed.setAttribute('class', 'list-group-item');
 
             // each post has a unique id, we'll later add state code to make it more unique
@@ -1587,9 +1586,9 @@
 
             // chaining is not good for appendChild()
 
-            var h = document.createElement('div');
+            let h = document.createElement('div');
             h.setAttribute('class', '');
-            var g = document.createElement('div');
+            let g = document.createElement('div');
             g.setAttribute('class', 'media-content');
             h.appendChild(g);
 
@@ -1597,8 +1596,8 @@
             //------------------ previously on how we handled images
             /* if (data.post.images) {
 
-                for (var i = 0; i < data.post.images.length; i++) {
-                    // var ii = 'img' + i.toString();
+                for (let i = 0; i < data.post.images.length; i++) {
+                    // let ii = 'img' + i.toString();
                     ii = document.createElement('img');
                     ii.setAttribute('class', 'img-fluid border');
                     ii.setAttribute('src', data.post.images[i]);
@@ -1613,24 +1612,24 @@
 
                 console.info('got sale', data.post.media);
                 if (data.post.media && Array.isArray(data.post.media)) {
-                    var gg = document.createElement('div');
+                    let gg = document.createElement('div');
                     gg.setAttribute('class', 'app');
 
-                    var jk = data.post.media.length;
-                    for (var i = 0; i < jk; i++) {
-                        // var ii = 'img' + i.toString();
+                    let jk = data.post.media.length;
+                    for (let i = 0; i < jk; i++) {
+                        // let ii = 'img' + i.toString();
                         ii = document.createElement('img');
                         ii.setAttribute('class', 'img-fluid border');
 
                         try {
                             // if localhost
                             if (window.location.hostname == "localhost") {
-                                var a = new URL(`/uc?id=${data.post.media[i]}`, "https://drive.google.com") // removed /uc?id=
+                                let a = new URL(`/uc?id=${data.post.media[i]}`, "https://drive.google.com") // removed /uc?id=
                                     .toString(); // important: the trailing slash
 
                             } else if (window.location.hostname == "corpers.online") { // if not localhost then get media from live site
                                 // getting media from live site
-                                var a = new URL(`/uc?id=${data.post.media[i]}`, "https://drive.google.com")
+                                let a = new URL(`/uc?id=${data.post.media[i]}`, "https://drive.google.com")
                                     .toString(); // upload images to this url when ever users upload images
                             }
                         } catch (error) {
@@ -1652,36 +1651,36 @@
                 }
 
                 /*
-                  var ii = document.createElement('img');
+                  let ii = document.createElement('img');
                   ii.setAttribute('class', 'col-4');
                   ii.setAttribute('data-src','holder.js/64x64?theme=thumb');
                   ii.setAttribute('alt', 'user\'s posted image');
                 */
 
-                var e = document.createElement('div');
+                let e = document.createElement('div');
                 e.setAttribute('class', 'd-flex w-100 justify-content-between');
 
-                var z = document.createElement('h6');
+                let z = document.createElement('h6');
                 z.setAttribute('class', 'mb-1');
                 z.innerHTML = data.post.statecode.toUpperCase() + ' <br> <small>' + data.post.location + '</small>';
 
-                var y = document.createElement('small');
+                let y = document.createElement('small');
                 y.setAttribute('class', '');
                 y.innerText = data.post.age;
                 e.appendChild(z);
                 e.appendChild(y);
 
-                var k = document.createElement("p");
+                let k = document.createElement("p");
                 // k.classList(["maintext"]);
                 k.setAttribute('class', 'maintext');
                 k.innerText = data.post.text;
-                var d = document.createElement('div');
+                let d = document.createElement('div');
                 d.setAttribute('class', 'media-body');
                 d.appendChild(e);
                 d.appendChild(k); //the text from sender
                 d.appendChild(h);
 
-                var c = document.createElement('img');
+                let c = document.createElement('img');
                 c.setAttribute('class', 'align-self-start mr-2 rounded-circle');
                 // c.setAttribute('data-src','holder.js/64x64');
 
@@ -1693,18 +1692,18 @@
                 c.setAttribute('style', 'font-size: 8px;');
 
 
-                var b = document.createElement('div');
+                let b = document.createElement('div');
                 b.setAttribute('class', 'mt-2 row');
                 // do not put var b inside the this next if block. it would affect newFeed.appendChild(b)
                 if (window.location.pathname.substring(1) != data.post.statecode.toUpperCase()) { // if they aren't the one who made the post, show the three interact icons
                     for (let index = 0; index < 3; index++) {
-                        var zx = document.createElement('a');
+                        let zx = document.createElement('a');
                         if (index == 1) {
                             zx.href = `/chat?s=<%= statecode %>&posts[type]=sale&posts[who]=${data.post.statecode}&posts[when]=${(data.post.post_time || Date.parse(data.post.input_time) )}`;
                         }
                         zx.setAttribute('class', 'col-4 text-center');
 
-                        var cv = document.createElement('i');
+                        let cv = document.createElement('i');
                         cv.setAttribute('class', (index == 0 ? 'far fa-bookmark' : index == 1 ? 'far fa-comment-alt' : 'fas fa-ellipsis-h'));
 
                         zx.appendChild(cv);
@@ -1715,7 +1714,7 @@
 
 
 
-                var a = document.createElement('div');
+                let a = document.createElement('div');
                 a.setAttribute('class', 'media mb-4');
                 a.appendChild(c);
                 a.appendChild(d);
@@ -1734,40 +1733,40 @@
                 // because when a post is made, it is immediately sent to others before saving to db
                 // so in that state of being sent to others, it is an array, but from db, it's a string
 
-                var rms = (Array.isArray(data.post.rooms) ? data.post.rooms : data.post.rooms.split(','));
+                let rms = (Array.isArray(data.post.rooms) ? data.post.rooms : data.post.rooms.split(','));
 
-                // var jk = ( Array.isArray( data.post.media ) ? data.post.media : data.post.media.split( ',' ) );
+                // let jk = ( Array.isArray( data.post.media ) ? data.post.media : data.post.media.split( ',' ) );
                 // if there are no rooms, no need to split, it causes an array to be made regardless
-                var jk = (Array.isArray(data.post.media) ? data.post.media : data.post.media == '' ? data.post.media : data.post.media.split(','));
+                let jk = (Array.isArray(data.post.media) ? data.post.media : data.post.media == '' ? data.post.media : data.post.media.split(','));
 
                 if (jk.length > 0) {
                     // the carousel  
-                    var gg = document.createElement('div');
+                    let gg = document.createElement('div');
                     gg.setAttribute('id', 'carousel' + Date.parse(data.post.input_time)); // each carousel has unique id with input time maybe new Date(data.post.input_time)
                     gg.setAttribute('class', 'carousel slide carousel-fade');
                     gg.setAttribute('data-ride', 'carousel');
 
                     // the indicators for the corousel
-                    var ind = document.createElement('ol');
+                    let ind = document.createElement('ol');
                     ind.setAttribute('class', 'carousel-indicators bg-dark');
 
                     // the carousel inner
-                    var cinn = document.createElement('div');
+                    let cinn = document.createElement('div');
                     cinn.setAttribute('class', 'carousel-inner');
 
 
-                    // var jk = data.post.media.split(',');
-                    for (var i = 0; i < jk.length; i++) {
+                    // let jk = data.post.media.split(',');
+                    for (let i = 0; i < jk.length; i++) {
 
                         // the actual indicators
-                        var aind = document.createElement('li');
+                        let aind = document.createElement('li');
                         aind.setAttribute('data-target', '#carousel' + Date.parse(data.post.input_time)); // the # is important
                         aind.setAttribute('data-slide-to', i);
 
                         ind.appendChild(aind);
 
                         // the carousel items
-                        var ci = document.createElement('div');
+                        let ci = document.createElement('div');
                         ci.setAttribute('class', 'carousel-item' + (i == 0 ? ' active' : '')); // the first carousel item must be active
 
                         cinn.appendChild(ci);
@@ -1775,23 +1774,23 @@
                         cimg = document.createElement('img');
                         cimg.setAttribute('class', 'd-block img-fluid mx-auto');
                         // cimg.setAttribute('src', (window.location.hostname == "localhost" ? new URL(`/uc?id=${jk[i]}`, "https://drive.google.com").toString() : 'https://corpers.online/') + jk[i]);
-                        cimg.setAttribute('src',  new URL(`/uc?id=${jk[i]}`, "https://drive.google.com").toString() );
+                        cimg.setAttribute('src', new URL(`/uc?id=${jk[i]}`, "https://drive.google.com").toString());
                         cimg.setAttribute('alt', `Might be a picture of a ${(rms[i] == undefined ? rms[0] : rms[i])}`); // this is not exactly correct, needs more work
 
 
                         // for each carousel item, append to it the image and explanatory/description div
                         ci.appendChild(cimg);
                         // the descriptions
-                        var thed = document.createElement('div');
+                        let thed = document.createElement('div');
                         thed.setAttribute('class', 'carousel-caption d-none d-md-block');
 
-                        var hh5 = document.createElement('h3');
+                        let hh5 = document.createElement('h3');
                         // jk[i].includes(rms[ i ]);
-                        // var tr = jk[i].slice(parseInt(jk[i]).toString().length, jk[i].lastIndexOf('.'));
+                        // let tr = jk[i].slice(parseInt(jk[i]).toString().length, jk[i].lastIndexOf('.'));
                         hh5.innerText = `${(rms[i] == undefined ? rms[0] : rms[i])}`;
                         // hh5.innerText = ( rms[ i ] == undefined ? rms[ 0 ] : rms[ i ] ); // this is not exactly correct, needs more work
 
-                        // var ppp = document.createElement( 'p' );
+                        // let ppp = document.createElement( 'p' );
                         // ppp.innerText = `Maybe some metric about ${(rms[i] == undefined ? rms[0] : rms[i])}`; // this is not exactly correct, needs more work
 
                         // append h5 and p to description div
@@ -1808,7 +1807,7 @@
 
                     for (let index = 0; index <= 1; index++) {
                         // 2nd indicators
-                        var aind2 = document.createElement('a');
+                        let aind2 = document.createElement('a');
                         aind2.setAttribute('class', 'carousel-control-' + (index == 0 ? 'prev' : 'next') + ' bg-secondary');
                         aind2.setAttribute('href', '#carousel' + Date.parse(data.post.input_time));
                         aind2.setAttribute('data-slide', (index == 0 ? 'prev' : 'next'));
@@ -1816,7 +1815,7 @@
                         aind2.setAttribute('role', 'button');
                         aind2.setAttribute('title', (index == 0 ? 'Previous room' : 'Next room'));
 
-                        var aind2icon = document.createElement('span');
+                        let aind2icon = document.createElement('span');
                         aind2icon.setAttribute('class', 'carousel-control-' + (index == 0 ? 'prev' : 'next') + '-icon');
                         aind2icon.setAttribute('aria-hidden', 'true');
 
@@ -1831,32 +1830,32 @@
 
                 }
 
-                var e = document.createElement('div');
+                let e = document.createElement('div');
                 e.setAttribute('class', 'd-flex w-100 justify-content-between');
 
-                var z = document.createElement('h6');
+                let z = document.createElement('h6');
                 z.setAttribute('class', 'mb-1');
                 z.innerHTML = data.post.statecode.toUpperCase() + ' <br> <small>' + data.post.post_location + '</small>';
 
-                var y = document.createElement('small');
+                let y = document.createElement('small');
                 y.setAttribute('class', '');
                 y.innerText = data.post.age;
                 e.appendChild(z);
                 e.appendChild(y);
 
-                var k = document.createElement("p");
+                let k = document.createElement("p");
                 // k.classList(["maintext"]);
                 k.setAttribute('class', 'maintext');
                 // to make the sentence thingy ['ggff','gfff'].toString().replace(',', ', ').replace(['ggff','gfff'][['ggff','gfff'].length - 1], 'and ' + ['ggff','gfff'][['ggff','gfff'].length - 1]) gives "ggff, and gfff" // there is a little edit with the ,
                 k.innerHTML =
                     `<address><span class='font-italic text-muted'>Address</span>: <a href="#!">${data.post.address} </a> </address> <p><span class='font-italic text-muted'>Details</span>: ${data.post.type} ${(Array.isArray( rms ) ? 'with ' + rms.toString().replace('', 'and ').split(',').reverse().toString().replace(/,/g, ', ') : '' )} at &#8358;${data.post.price} ${data.post.rentrange}. ${(data.post.tenure == 'Sublease.' ? 'Sublease (expires ' + new Date(Date.parse(data.post.expire)).toDateString().italics().bold() + ').'  : 'New lease.' )}</p> <p><span class='font-italic text-muted'>Directions</span>: ${data.post.directions}</p>`;
-                var d = document.createElement('div');
+                let d = document.createElement('div');
                 d.setAttribute('class', 'media-body');
                 d.appendChild(e);
                 d.appendChild(k); // the text from sender
                 d.appendChild(h);
 
-                var c = document.createElement('img');
+                let c = document.createElement('img');
                 c.setAttribute('class', 'align-self-start mr-2 rounded-circle');
                 // c.setAttribute('data-src','holder.js/64x64');
 
@@ -1867,18 +1866,18 @@
                 c.setAttribute('alt', data.post.statecode);
                 c.setAttribute('style', 'font-size: 8px;');
 
-                var b = document.createElement('div');
+                let b = document.createElement('div');
                 b.setAttribute('class', 'mt-2 row');
                 // do not put var b inside the this next if block. it would affect newFeed.appendChild(b)
                 if (window.location.pathname.substring(1) != data.post.statecode.toUpperCase()) { // if they aren't the one who made the post, show the three interact icons
                     for (let index = 0; index < 3; index++) {
-                        var zx = document.createElement('a');
+                        let zx = document.createElement('a');
                         if (index == 1) {
                             zx.href = `/chat?s=<%= statecode %>&posts[type]=accommodation&posts[who]=${data.post.statecode}&posts[when]=${(data.post.post_time || Date.parse(data.post.input_time) )}`;
                         }
                         zx.setAttribute('class', 'col-4 text-center');
 
-                        var cv = document.createElement('i');
+                        let cv = document.createElement('i');
                         cv.setAttribute('class', (index == 0 ? 'far fa-bookmark' : index == 1 ? 'far fa-comment-alt' : 'fas fa-ellipsis-h'));
 
                         zx.appendChild(cv);
@@ -1888,7 +1887,7 @@
                 }
 
 
-                var a = document.createElement('div');
+                let a = document.createElement('div');
                 a.setAttribute('class', 'media mb-4');
                 a.appendChild(c);
                 a.appendChild(d);
@@ -1901,16 +1900,16 @@
             } else if (data.post.type == 'location') {
                 console.info('got a location', data);
                 if (true) {
-                    var gg = document.createElement('div');
+                    let gg = document.createElement('div');
                     gg.setAttribute('class', 'app');
 
-                    // var ii = 'img' + i.toString();
+                    // let ii = 'img' + i.toString();
                     ii = document.createElement('img');
                     ii.setAttribute('class', 'img-fluid border');
 
                     // if what's coming is already a url (like our mapbox pictures) // change later maybe...
                     try {
-                        var a = new URL(data.post.media)
+                        let a = new URL(data.post.media)
                             .toString();
                         console.log('good url')
                         ii.setAttribute('src', data.post.media);
@@ -1926,36 +1925,36 @@
                 }
 
                 /*
-                  var ii = document.createElement('img');
+                  let ii = document.createElement('img');
                   ii.setAttribute('class', 'col-4');
                   ii.setAttribute('data-src','holder.js/64x64?theme=thumb');
                   ii.setAttribute('alt', 'user\'s posted image');
                 */
 
-                var e = document.createElement('div');
+                let e = document.createElement('div');
                 e.setAttribute('class', 'd-flex w-100 justify-content-between');
 
-                var z = document.createElement('h6');
+                let z = document.createElement('h6');
                 z.setAttribute('class', 'mb-1');
                 z.innerHTML = data.post.statecode.toUpperCase() + ' <br> <small>' + data.post.location + '</small>';
 
-                var y = document.createElement('small');
+                let y = document.createElement('small');
                 y.setAttribute('class', '');
                 y.innerText = data.post.age;
                 e.appendChild(z);
                 e.appendChild(y);
 
-                var k = document.createElement("p");
+                let k = document.createElement("p");
                 // k.classList(["maintext"]);
                 k.setAttribute('class', 'maintext');
                 k.innerText = data.post.text;
-                var d = document.createElement('div');
+                let d = document.createElement('div');
                 d.setAttribute('class', 'media-body');
                 d.appendChild(e);
                 d.appendChild(k); //the text from sender
                 d.appendChild(h);
 
-                var c = document.createElement('img');
+                let c = document.createElement('img');
                 c.setAttribute('class', 'align-self-start mr-2 rounded-circle');
                 // c.setAttribute('data-src','holder.js/64x64');
 
@@ -1967,18 +1966,18 @@
                 c.setAttribute('style', 'font-size: 8px;');
 
 
-                var b = document.createElement('div');
+                let b = document.createElement('div');
                 b.setAttribute('class', 'mt-2 row');
                 // do not put var b inside the this next if block. it would affect newFeed.appendChild(b)
                 if (window.location.pathname.substring(1) != data.post.statecode.toUpperCase()) { // if they aren't the one who made the post, show the three interact icons
                     for (let index = 0; index < 3; index++) {
-                        var zx = document.createElement('a');
+                        let zx = document.createElement('a');
                         if (index == 1) {
                             zx.href = `/chat?s=<%= statecode %>&posts[type]=sale&posts[who]=${data.post.statecode}&posts[when]=${(data.post.post_time || Date.parse(data.post.input_time) )}`;
                         }
                         zx.setAttribute('class', 'col-4 text-center');
 
-                        var cv = document.createElement('i');
+                        let cv = document.createElement('i');
                         cv.setAttribute('class', (index == 0 ? 'far fa-bookmark' : index == 1 ? 'far fa-comment-alt' : 'fas fa-ellipsis-h'));
 
                         zx.appendChild(cv);
@@ -1989,7 +1988,7 @@
 
 
 
-                var a = document.createElement('div');
+                let a = document.createElement('div');
                 a.setAttribute('class', 'media mb-4');
                 a.appendChild(c);
                 a.appendChild(d);
@@ -2011,7 +2010,7 @@
         socket.on('boardcast message', bc);
     </script>
     <script>
-        var txtFld = document.getElementById("TXT");
+        let txtFld = document.getElementById("TXT");
 
         noNull = function() {
             console.log('typed');
@@ -2027,7 +2026,7 @@
         txtFld.addEventListener('input', noNull, false);
 
         /*
-            var handleKey = function(evt) {
+            let handleKey = function(evt) {
               console.log('keyup on #TXT field');
               if (evt.keyCode === 13 || evt.keyCode === 14) {
                 sendMsg();
@@ -2040,12 +2039,12 @@
         //----------------------
 
         //some sort of global variables
-        var previewParent = document.getElementById('previewParent');
-        var msg = {
+        let previewParent = document.getElementById('previewParent');
+        let msg = {
             images: [],
             videos: []
         };
-        /*       var sendBtn = document.getElementById("SEND");
+        /*       let sendBtn = document.getElementById("SEND");
         
               function sendMsg() {
         
@@ -2120,7 +2119,7 @@
         */
 
         /* Dynamically adding a change listener to the img input button */
-        var imgBtn = document.getElementById("IMG");
+        let imgBtn = document.getElementById("IMG");
 
 
         function handleImages() {
@@ -2130,30 +2129,30 @@
             document.getElementById("mapimg").value = '';
             // set post type to sale
             document.getElementById("ptype").value = 'sale';
-            //var preview = document.getElementById('preview');
-            // var preview = document.createElement( 'div' );
+            //let preview = document.getElementById('preview');
+            // let preview = document.createElement( 'div' );
             // preview.setAttribute( 'id', 'preview' );
             // preview.setAttribute( 'class', 'app' );
             // console.log( 'created!' );
 
-            var fileList = this.files; /* now you can work with the file list */
+            let fileList = this.files; /* now you can work with the file list */
             console.log('picture(s) picked!');
 
             // remove what was there (pics to post) before
             $('#previewPostPics').html('');
 
 
-            for (var i = 0; i < fileList.length; i++) {
-                var file = fileList[i];
+            for (let i = 0; i < fileList.length; i++) {
+                let file = fileList[i];
 
                 if (file.type.startsWith('image/')) {
-                    /* var contain = document.createElement( 'div' );
+                    /* let contain = document.createElement( 'div' );
                     contain.setAttribute( 'class', 'image-wrapper' );
                     contain.setAttribute( 'id', 'image-to-post' + i );
-                    var b = document.createElement( 'button' );
+                    let b = document.createElement( 'button' );
                     b.classList.add( 'top-right', 'btn', 'btn-sm' );
                     b.innerHTML = 'Remove';
-                    var ico = document.createElement( 'i' );
+                    let ico = document.createElement( 'i' );
                     ico.classList.add( 'top-right', 'fa-remove' );
                     b.onclick = function remove( e ) {
                         console.log( e );
@@ -2166,7 +2165,7 @@
                         console.log( msg.images );
                     }
 
-                    var img = document.createElement( "img" );
+                    let img = document.createElement( "img" );
 
                     contain.appendChild( img );
                     contain.appendChild( b ); */ // or ico
@@ -2184,7 +2183,7 @@
                     Our implementation of this routine sets the img element's
                     src attribute to the loaded image which results in the image
                     appearing in the thumbnail on the user's screen.*/
-                    var reader = new FileReader();
+                    const reader = new FileReader();
                     /* reader.onload = (
                         function( aImg ) {
                             return function( e ) {
@@ -2201,8 +2200,8 @@
 
                     // -----
 
-                    // var file = files[i];
-                    // var reader = new FileReader();
+                    // const file = files[i];
+                    // let reader = new FileReader();
 
                     reader.onload = (function(file) {
                         return function(event) {
@@ -2229,11 +2228,12 @@
         imgBtn.addEventListener("change", handleImages, false);
 
         $('#roomsmedia').change(function(e) {
-            var files = e.target.files;
-            for (var i = 0; i <= files.length; i++) {
+            $('#hereNow').empty();
+            let files = e.target.files;
+            for (let i = 0; i <= files.length; i++) {
 
-                var file = files[i];
-                var reader = new FileReader();
+                let file = files[i];
+                const reader = new FileReader();
 
                 reader.onload = (function(file) {
 
@@ -2255,7 +2255,7 @@
                         $('.accviews').change(function(evt) {
                             console.log('name of change', evt, evt.target.attributes['id'].value)
                             // the picture choosen
-                            var farr = document.forms[1].elements["roomsmedia"].files;
+                            let farr = document.forms[1].elements["roomsmedia"].files;
                             for (let index = 0; index < farr.length; index++) {
                                 const f = farr[index];
                                 console.log('fname', f.name, f.lastModified)
@@ -2295,7 +2295,7 @@
     </script>
     <script>
         // https://developer.mozilla.org/en-US/docs/Web/API/Node/replaceChild
-        var placeBtn = document.getElementById("place");
+        let placeBtn = document.getElementById("place");
 
         function placeMe() {
 
@@ -2305,8 +2305,8 @@
     <script>
         // work on this bit alot
 
-        var findBtn = document.getElementById("findme");
-        var findBtn2 = document.getElementById("geo");
+        let findBtn = document.getElementById("findme");
+        let findBtn2 = document.getElementById("geo");
 
         function locate(ev) {
             // if it's for a location, remove sales pic from DOM and input
@@ -2316,10 +2316,10 @@
             document.getElementById("ptype").value = 'location';
             // [ev.target.id == 'findme' ev.target.nodeName == 'SPAN'] [ev.target.nodeName == 'A' ev.target.id == 'geo']
             // if the screen is small, then ev.target.nodeName == 'I', the icon tag <i></i> so we use locinfo as infoElement
-            var infoElement = (ev.target.nodeName == 'SPAN' ? 'locinfo' : ev.target.nodeName == 'A' ? 'accinfo' : 'locinfo'); // the variable that decides where the geolocation errors are displayed, this is getting the id of the element and passing it to the variable so we can reference the div element and display error messages
+            let infoElement = (ev.target.nodeName == 'SPAN' ? 'locinfo' : ev.target.nodeName == 'A' ? 'accinfo' : 'locinfo'); // the variable that decides where the geolocation errors are displayed, this is getting the id of the element and passing it to the variable so we can reference the div element and display error messages
 
             console.log('Retriving location...', infoElement, ev.target.nodeName);
-            var savePoint = {
+            let savePoint = {
                 "type": "Feature",
                 "properties": {},
                 "geometry": {
@@ -2333,19 +2333,19 @@
             savePoint.geometry.coordinates.pop();
             savePoint.properties = {};
 
-            var geo_options = {
+            let geo_options = {
                 enableHighAccuracy: true,
                 maximumAge: 30000,
                 timeout: 27000
             };
 
-            var geo_options_to = {
+            let geo_options_to = {
                 enableHighAccuracy: true,
                 maximumAge: 30000,
                 timeout: 33000
             };
-            var one = 0;
-            var geoPointError = function(error) {
+            let one = 0;
+            let geoPointError = function(error) {
 
                 console.log(error);
                 switch (error.code) {
@@ -2388,7 +2388,7 @@
                 }
             };
 
-            var geoPoint = function(position) {
+            let geoPoint = function(position) {
                 // Do magic with location
 
                 //inform the corper we got the location, and then suggests streets name for them in the input box, also if the geolocation isn't accurate enough, tell them to try again
@@ -2466,7 +2466,7 @@
                     //save to db
 
                     //do the image
-                    var img = new Image();
+                    let img = new Image();
                     img.id = 'mapboximage';
                     // get map if location is accurate enough, but if it isn't then ask user where they are. | Retrieve a map at gotten longitude and latitude, with zoom 14.24, bearing 0, and pitch 60. The map will be 460 pixels wide and 460 pixels high (for mobile screen, 310px by 290px)
                     img.src = "https://api.mapbox.com/styles/v1/mapbox/streets-v10/static/pin-l(" + position.coords.longitude +
@@ -2476,7 +2476,7 @@
                     // set the form property for the img
                     document.getElementById("mapimg").value = img.src;
 
-                    var preview = document.createElement('div');
+                    let preview = document.createElement('div');
                     preview.setAttribute('id', 'preview');
                     preview.setAttribute('class', 'cnt mb-2'); // TODO, align item in middle
                     // preview.setAttribute('class', 'app');
@@ -2491,7 +2491,7 @@
                     // note: there's img.complete;
 
 
-                    var anythere = document.getElementById('previewPostPics').hasChildNodes();
+                    let anythere = document.getElementById('previewPostPics').hasChildNodes();
                     if (anythere) { // replace the first element
                         // previewParent.replaceChild(preview, document.getElementById('previewPostPics'));
                         $('#previewPostPics').html('');
@@ -2514,7 +2514,7 @@
                       //to convert to dataURI // https://davidwalsh.name/convert-image-data-uri-javascript https://ourcodeworld.com/articles/read/182/the-canvas-has-been-tainted-by-cross-origin-data-and-tainted-canvases-may-not-be-exported
                       img.crossOrigin = "anonymous" ;
                       img.onload = function () {
-                        var canvas = document.createElement('canvas');
+                        let canvas = document.createElement('canvas');
                         canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
                         canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
 
@@ -2631,7 +2631,7 @@
                 // The ul.typeahead__list has max-height: 300px; and is scrollable, onNavigateAfter is set to scroll the result container if arrow UP or DOWN are pressed to the .active item.
                 onNavigateAfter: function(node, lis, a, item, query, event) {
                     if (~[38, 40].indexOf(event.keyCode)) {
-                        var resultList = node.closest("form")
+                        let resultList = node.closest("form")
                             .find("ul.typeahead__list"),
                             activeLi = lis.filter("li.active"),
                             offsetTop = activeLi[0] && activeLi[0].offsetTop - (resultList.height() / 2) || 0;
@@ -2652,8 +2652,8 @@
 
     <script>
         // https://developer.mozilla.org/en-US/docs/Web/API/Network_Information_API
-        var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-        var type = connection.effectiveType;
+        let connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        let type = connection.effectiveType;
 
         function updateConnectionStatus() {
             console.log("Connection type changed from " + type + " to " + connection.type);
