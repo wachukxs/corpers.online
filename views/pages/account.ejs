@@ -1117,7 +1117,7 @@
                     <div class="card shadow" id="profilecard">
                         <div class="card-body">
                             <h6 class="">About <small>
-                                    <!-- · <a href="/profile" id="editprofile">Edit</a></small> --> · <a href="/newprofile" id="">Edit</a></small></h6>
+                                    <!-- · <a href="/profile" id="editprofile">Edit</a></small> --> · <a href="/profile" id="">Edit</a></small></h6>
                             <ul class="" id="profile">
                                 <li>
                                     <span class=""></span>Serving at <a href="#!"> <%= servicestate %> </a>
@@ -1126,7 +1126,7 @@
                                     <span class=""></span>Batch <a href="#!"> <%= batch %> </a>
                                 </li>
                                 <li>
-                                    <span class=""></span>PPA at <a href="<%= ( name_of_ppa ? '/newsearch?nop=' + name_of_ppa : '/newprofile' ) %>">
+                                    <span class=""></span>PPA at <a href="<%= ( name_of_ppa ? '/newsearch?nop=' + name_of_ppa : '/profile' ) %>">
                                         <%= ( name_of_ppa ? name_of_ppa : '?' ) %> </a>
                                 </li>
                                 <li style="display:none;">

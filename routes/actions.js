@@ -7,7 +7,6 @@ const socket = require('../sockets/routes')
 const ngplaces = require('../constants/ngstates')
 const moment = require('moment');
 const query = require('../models/queries');
-
 const ggle = require('../helpers/uploadgdrive');
 // using path module removes the buffer object from the req.files array of uploaded files,... incase we ever need this... info!
 // const path = require('path');
@@ -68,26 +67,13 @@ router.get('/allstateslgas', function (req, res) {
 
 router.get('/allppas', function (req, res) {
   res.set('Content-Type', 'application/json');
-  var query = "SELECT type_of_ppa FROM info WHERE type_of_ppa != ''";
-  pool.query(query, function (error, results, fields) {
-
-    if (error) throw error;
-    console.log('it', results)
-    var listoftypesofppas = [];
-    for (let index = 0; index < results.length; index++) {
-      const element = results[index].type_of_ppa;
-      listoftypesofppas.push(element);
-
-    }
-    /**
- *  [ RowDataPacket { type_of_ppa: 'Radio Station' },
-RowDataPacket { type_of_ppa: 'School' },
-RowDataPacket { type_of_ppa: 'rew qrqew' } ]
- */
-    let jkl = JSON.parse(JSON.stringify(listoftypesofppas));
-    // let's hope there's no err
-    res.send(jkl);
-  });
+  query.AllPPAs().then( result => {
+    res.send(result);
+  }, reject => {
+    res.sendStatus(500);
+  }).catch(error => {
+    res.sendStatus(500);
+  })
 
 });
 
@@ -101,7 +87,7 @@ router.get('/newsearch', function (req, res) {
   // res.sendFile(__dirname + '/search and places/index.html');
   console.log('req.query:', req.query); // find every thing that is req.query.search.query
 
-  var mustquery = "SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null); SELECT * FROM accommodations WHERE expire > UTC_DATE ; SELECT geo_data, name, address, street, type_of_place FROM places WHERE lga = '' AND geo_data != '' ;"; // AND `acc_geodata` != '' \\ [for the 2nd query] // we should be selecting accommodations with geo data, so we have to nudge the corpers to provide geodata
+  let mustquery = "SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null); SELECT * FROM accommodations WHERE expire > UTC_DATE ; SELECT geo_data, name, address, street, type_of_place FROM places WHERE lga = '' AND geo_data != '' ;"; // AND `acc_geodata` != '' \\ [for the 2nd query] // we should be selecting accommodations with geo data, so we have to nudge the corpers to provide geodata
 
   // if we know where the ppa is, get the geo data and show it on the map
   if (req.query.nop) {
@@ -355,10 +341,7 @@ router.get('/newsearch', function (req, res) {
       _details.nop = undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
       res.render('pages/newsearch2', _details);
     })
-
   }
-
-
 
 });
 
@@ -533,14 +516,14 @@ router.get('/posts', function (req, res) {
   console.log('search query parameters', req.query)
 
   if (req.query.s) {
-    var q = "SELECT streetname, type, input_time, statecode, price, rentrange FROM accommodations WHERE statecode LIKE '" + req.query.s.substring(0, 2) + "%' ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != '' AND statecode LIKE '" + req.query.s.substring(0, 2) + "%'";
+    let q = "SELECT streetname, type, input_time, statecode, price, rentrange FROM accommodations WHERE statecode LIKE '" + req.query.s.substring(0, 2) + "%' ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != '' AND statecode LIKE '" + req.query.s.substring(0, 2) + "%'";
   } else {
-    var q = '';
+    let q = '';
     for (let index = 0; index < 36/* ngplaces.states_short.length */; index++) {
       const element = ngplaces.states_short[index];
       q += "SELECT streetname, type, input_time, statecode, price, rentrange FROM accommodations WHERE statecode LIKE '" + element + "%' ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != '' AND statecode LIKE '" + element + "%' ;"; // the trailing ';' is very important
     }
-    // var q = "SELECT streetname, type, input_time, statecode, price, rentrange FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != ''";
+    // let q = "SELECT streetname, type, input_time, statecode, price, rentrange FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != ''";
   }
 
   // console.log('search sql query ', q)
@@ -556,14 +539,14 @@ router.get('/posts', function (req, res) {
       // res.status(200).send({ data: {ppas: ppa, accommodations: acc} }); // {a: acc, p: ppa}
 
       if (req.query.s) {
-        var thisisit = {
+        let thisisit = {
           data: {
             ppas: results[1],
             accommodations: results[0]
           }
         };
       } else {
-        var thisisit = {
+        let thisisit = {
           data: {}
         };
         for (let index = 0, k = 0; index < results.length; index += 2, k++) {
@@ -592,17 +575,18 @@ router.get('/posts', function (req, res) {
   // res.status(200).send({ data: ["ghfc ty", "rewfhb iwre", "hblg er ieur\n\nthat apostrophe", "The happening place in Abia is NCCF!", "Well and NACC too. But NCCF would Never die!!!", "dsaf df asd", "5u96y j94938\nfdsig eor\n\ndfsnhgu es9rgre\n\ndsigj90e9re", "gfh r", "gejge rniog eoigrioerge ", "gf er rg erg", "fdg erei sug serugeis gr  \n\n\n\n\nThis", "test df gf byyyyyyyyy mee", "Okay. ", "This is it. And yep.", "I could sing. ... Oh"] });
 });
 
-router.get('/newprofile', function (req, res) {
+/**the new profile page */
+router.get('/profile', function (req, res) {
   fs.readFile('./constants/ngstateslga.json', (err, data) => {
     let jkl = JSON.parse(data);
     // let's hope there's no err
 
 
     if (req.session.loggedin) {
-      var jn = req.session.statecode.toUpperCase()
+      let jn = req.session.statecode.toUpperCase()
 
       /**an array of all the local government in the state */
-      var lgas = jkl.states[ngplaces.states_short.indexOf(jn.slice(0, 2))][ngplaces.states_long[ngplaces.states_short.indexOf(jn.slice(0, 2))]];
+      let lgas = jkl.states[ngplaces.states_short.indexOf(jn.slice(0, 2))][ngplaces.states_long[ngplaces.states_short.indexOf(jn.slice(0, 2))]];
       // use the ones from their service state // AND servicestate = '" + req.session.servicestate + "'
       pool.query("SELECT name_of_ppa FROM info WHERE name_of_ppa != '' ; SELECT ppa_address from info WHERE ppa_address != '' AND servicestate = '" + req.session.servicestate + "'; SELECT city_town FROM info WHERE city_town != '' AND servicestate = '" + req.session.servicestate + "'; SELECT region_street FROM info WHERE region_street != '' AND servicestate = '" + req.session.servicestate + "'", function (error2, results2, fields2) {
 
@@ -611,7 +595,7 @@ router.get('/newprofile', function (req, res) {
 
         res.set('Content-Type', 'text/html');
         // res.sendFile(__dirname + '/new profile/index.html');
-        res.render('pages/newprofile', {
+        res.render('pages/profile', {
           statecode: req.session.statecode.toUpperCase(),
           servicestate: req.session.servicestate.toUpperCase(),
           batch: req.session.batch,
@@ -631,21 +615,24 @@ router.get('/newprofile', function (req, res) {
   })
 });
 
-router.post('/profile', /* bodyParser.urlencoded({
+/**handles updating the corper's profile */
+router.post('/profile', bodyParser.urlencoded({
   extended: true
-}),  */function (req, res) {
+}), function (req, res) {
+
+  query.UpdateProfile({req_body: req.body, session_statecode: req.session.statecode.toUpperCase()})
     // cater for fields we already have, so that we don't touch them eg. servicestate
     // UPDATE 'info' SET 'firstname'=[value-1],'lastname'=[value-2],'accomodation_location'=[value-3],'servicestate'=[value-4],'batch'=[value-5],'name_of_ppa'=[value-6],'statecode'=[value-7],'email'=[value-8],'middlename'=[value-9],'password'=[value-10],'phone'=[value-11],'dateofreg'=[value-12],'lga'=[value-13],'city_town'=[value-14],'region_street'=[value-15],'stream'=[value-16],'type_of_ppa'=[value-17],'ppa_address'=[value-18],'travel_from_state'=[value-19],'travel_from_city'=[value-20],'spaornot'=[value-21] WHERE email = req.body.email
     // UPDATE info SET 'accomodation_location'=req.body.accomodation_location,'servicestate'=req.body.servicestate,'name_of_ppa'=[value-6],'lga'=req.body.lga,'city_town'=req.body.city_town,'region_street'=req.body.region_street,'stream'=req.body.stream,'type_of_ppa'=req.body.type_of_ppa,'ppa_address'=req.body.ppa_address,'travel_from_state'=req.body.travel_from_state,'travel_from_city'=req.body.travel_from_city,'spaornot'=req.body.spaornot WHERE email = req.body.email
-    // var sqlquery = "INSERT INTO info(servicestate, lga, city_town, region_street, stream, accomodation_location, type_of_ppa, travel_from_state, travel_from_city) VALUES ('" + req.body.servicestate + "', '" + req.body.lga + "', '" + req.body.city_town + "', '" + req.body.region_street + "', '" + req.body.stream + "', '" + req.body.accomodation_location + "', '" + req.body.type_of_ppa + "', '" + req.body.travel_from_state + "', '" + req.body.travel_from_city + "', '" + req.body.spaornot + "' )";
+    // let sqlquery = "INSERT INTO info(servicestate, lga, city_town, region_street, stream, accomodation_location, type_of_ppa, travel_from_state, travel_from_city) VALUES ('" + req.body.servicestate + "', '" + req.body.lga + "', '" + req.body.city_town + "', '" + req.body.region_street + "', '" + req.body.stream + "', '" + req.body.accomodation_location + "', '" + req.body.type_of_ppa + "', '" + req.body.travel_from_state + "', '" + req.body.travel_from_city + "', '" + req.body.spaornot + "' )";
 
-    // var sqlquery = "UPDATE info SET accomodation_location = '" + req.body.accomodation_location + "', servicestate = '" + req.body.servicestate + "', name_of_ppa = '" + req.body.name_of_ppa + "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" + req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" + req.body.type_of_ppa + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" + req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city + "', spaornot = '" + req.body.spaornot + "' WHERE email = '" + req.body.email + "' " ;
+    // let sqlquery = "UPDATE info SET accomodation_location = '" + req.body.accomodation_location + "', servicestate = '" + req.body.servicestate + "', name_of_ppa = '" + req.body.name_of_ppa + "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" + req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" + req.body.type_of_ppa + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" + req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city + "', spaornot = '" + req.body.spaornot + "' WHERE email = '" + req.body.email + "' " ;
 
     /*[req.body.accomodation_location, req.body.servicestate, req.body.name_of_ppa, req.body.lga, req.body.city_town, req.body.region_street, req.body.stream, req.body.type_of_ppa, req.body.ppa_address, req.body.travel_from_state, req.body.travel_from_city, req.body.spaornot, req.body.email],*/
-    console.log('\n\nthe req.body for /newprofile', req.body, '\n\n', req.body.statecode);
+    console.log('\n\nthe req.body for /profile', req.body, '\n\n', req.body.statecode);
     // console.log('\n\n', req);
-    var sqlquery = "UPDATE info SET accommodation_location = '" + (req.body.accommodation_location ? req.body.accommodation_location : '') +
-      (req.body.ss ? "', servicestate = '" + req.body.ss : '') // if there's service state(i.e. corper changed service state in real life and from front end), insert it.
+    let sqlquery = "UPDATE info SET accommodation_location = '" + (req.body.accommodation_location ? req.body.accommodation_location : '') +
+      (req.body.servicestate ? "', servicestate = '" + req.body.servicestate : '') // if there's service state(i.e. corper changed service state in real life and from front end), insert it.
       +
       "', name_of_ppa = '" + req.body.name_of_ppa +
       "', ppa_directions = '" + req.body.ppadirections +
@@ -677,7 +664,7 @@ router.post('/profile', /* bodyParser.urlencoded({
         if (req.body.newstatecode) { // if they are changing statecode to a different state, then their service state in the db should change and their ppa details too should change, tell them to change the ppa details if they don't change it
           // change statecode in other places too
           // this works because rooms only have one instance for every two corpers or statecode, so there's no DD/17B/7778-AB/17B/2334 and AB/17B/2334-DD/17B/7778 only one of it, same reason why there's no LIMIT 1 in the SELECT statement in REPLACE function
-          var updatequery = "UPDATE chats SET room = (SELECT REPLACE( ( SELECT DISTINCT room WHERE room LIKE '%" + req.session.statecode.toUpperCase() + "%' ) ,'" + req.session.statecode.toUpperCase() + "','" + req.body.newstatecode.toUpperCase() + "')) ; " +
+          let updatequery = "UPDATE chats SET room = (SELECT REPLACE( ( SELECT DISTINCT room WHERE room LIKE '%" + req.session.statecode.toUpperCase() + "%' ) ,'" + req.session.statecode.toUpperCase() + "','" + req.body.newstatecode.toUpperCase() + "')) ; " +
             " UPDATE chats SET message_from = '" + req.body.newstatecode.toUpperCase() + "' WHERE message_from = '" + req.session.statecode.toUpperCase() + "' ; " +
             " UPDATE chats SET message_to = '" + req.body.newstatecode.toUpperCase() + "' WHERE message_to = '" + req.session.statecode.toUpperCase() + "' ;" +
             " UPDATE posts SET statecode = '" + req.body.newstatecode.toUpperCase() + "' WHERE statecode = '" + req.session.statecode.toUpperCase() + "' ; " +
@@ -744,34 +731,27 @@ router.post('/profile', /* bodyParser.urlencoded({
         // res.sendStatus(200);
       } else {
         // res.sendStatus(500);
-        res.status(500).redirect('/newprofile' + '?e=n'); // [e]dit=[y]es|[n]o
+        res.status(500).redirect('/profile' + '?e=n'); // [e]dit=[y]es|[n]o
       }
     });
 
 });
 
-router.post('/addplace', /* upload.none(), */ function (req, res) {
+router.post('/addplace', upload.none(), function (req, res) {
   // handle post request, add data to database.
   console.log('came here /addplace', req.body);
   if (!helpers.isEmpty(req.body)) {
-    console.log('we are returning a response')
-    var sqlquery = "INSERT INTO places( geo_data, name, address, lga, street, type_of_place, region ) VALUES ('" + req.body.geodata + "','" + req.body.nameOfPlace + "', '" + req.body.address + "', " + pool.escape(req.body.lga) + ", " + pool.escape('') + ", " + pool.escape(req.body.category) + ",'" + req.body.town + "')"
 
-    pool.query(sqlquery, function (error, results, fields) {
-      console.log('inserted data from: ', results);
-      if (error) throw error;
-      // connected!
-      if (results.affectedRows === 1) {
-        // then status code is good
-        res.status(200).send('OK'); // the 'OK' is what the front end sees as event.target.responseText
-
-      } else {
-        // this is really important for the form to get response
-        res.sendStatus(500);
-        // === res.status(500).send('Internal Server Error')
-      }
-    });
-
+    query.AddPlace(req.body).then(result => {
+      res.status(200).send('OK');
+    }, reject => {
+      res.sendStatus(500);
+    }).catch(reason => {
+      // we hope we never get here
+      res.status(500).send('Internal Server Error')
+    })
+  } else {
+    // send empty response feedback
   }
 });
 
@@ -839,18 +819,18 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
     /**One thing you might be able to try is to read 0 bytes from the stream first and see if you get the appropriate 'end' event or not (perhaps on the next tick) */
 
     if (filename != '' && helpers.acceptedfiles.includes(mimetype)) { // filename: 1848-1844-1-PB.pdf, encoding: 7bit, mimetype: application/pdf
-      /* var obj = {
+      /* let obj = {
           filestream: file_stream,
           mimetype: mimetype,
           filename: filename
       }; */
-      // var _id = authorize(JSON.parse(cred_content), uploadFile, obj)
+      // let _id = authorize(JSON.parse(cred_content), uploadFile, obj)
 
-      var fileMetadata = {
+      let fileMetadata = {
         'name': filename, // Date.now() + 'test.jpg',
         parents: ['15HYR0_TjEPAjBjo_m9g4aR-afULaAzrt'] // upload to folder CorpersOnline-TEST 15HYR0_TjEPAjBjo_m9g4aR-afULaAzrt
       };
-      var media = {
+      let media = {
         mimeType: mimetype,
         body: filestream // fs.createReadStream("C:\\Users\\NWACHUKWU\\Pictures\\ad\\IMG-20180511-WA0001.jpg")
       };
@@ -1064,18 +1044,18 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
     /**One thing you might be able to try is to read 0 bytes from the stream first and see if you get the appropriate 'end' event or not (perhaps on the next tick) */
 
     if (filename != '' && helpers.acceptedfiles.includes(mimetype)) { // filename: 1848-1844-1-PB.pdf, encoding: 7bit, mimetype: application/pdf
-      /* var obj = {
+      /* let obj = {
           filestream: file_stream,
           mimetype: mimetype,
           filename: filename
       }; */
-      // var _id = authorize(JSON.parse(cred_content), uploadFile, obj)
+      // let _id = authorize(JSON.parse(cred_content), uploadFile, obj)
 
-      var fileMetadata = {
+      let fileMetadata = {
         'name': filename, // Date.now() + 'test.jpg',
         parents: ['15HYR0_TjEPAjBjo_m9g4aR-afULaAzrt'] // upload to folder CorpersOnline-TEST 15HYR0_TjEPAjBjo_m9g4aR-afULaAzrt
       };
-      var media = {
+      let media = {
         mimeType: mimetype,
         body: filestream // fs.createReadStream("C:\\Users\\NWACHUKWU\\Pictures\\ad\\IMG-20180511-WA0001.jpg")
       };
@@ -1250,9 +1230,9 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
   // if there are images in the post user boardcasted
   if (req.files.length > 0) {
     // save the files in an array
-    var arraymedia = [];
+    let arraymedia = [];
 
-    /* var l = req.files.length;
+    /* let l = req.files.length;
     req.files.forEach(function (item, index, array) {
       console.log('item:\n', item,'index:\n', index);
     }); */
@@ -1268,17 +1248,17 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
         /** When using the "single"
          data come in "req.file" regardless of the attribute "name". 
         **/
-        var tmp_path = value.path;
+        let tmp_path = value.path;
 
         /** The original name of the uploaded file
             stored in the variable "originalname".
         **/
-        // var target_path = 'img/' + value.originalname;
-        var target_path = 'img/' + value.filename;
+        // let target_path = 'img/' + value.originalname;
+        let target_path = 'img/' + value.filename;
 
         /** A better way to copy the uploaded file. **/
-        var src = fs.createReadStream(tmp_path);
-        var dest = fs.createWriteStream(target_path);
+        let src = fs.createReadStream(tmp_path);
+        let dest = fs.createWriteStream(target_path);
         src.pipe(dest);
 
         src.on('end', function () {

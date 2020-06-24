@@ -1,297 +1,902 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+<!doctype html>
+<html lang="en-NG">
 
-    <link rel="icon" type="image/png" href="assets/images/logo32x32.png"/>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" type="image/png" href="assets/images/logo32x32.png" />
 
-
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet"
-      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    
-    <!-- <script src="/jquery-3.3.1.min.js"></script> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
-      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous"></script> -->
-    
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"
-      integrity="sha384-pjaaA8dDz/5BgdFUPX6M/9SUZv4d12SUPF0axWc+VRZkx5xU3daN+lYb49+Ax+Tl" crossorigin="anonymous"></script>
-    
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"
-      integrity="sha256-fzFFyH01cBVPYzl16KT40wqjhgPtq6FFUB6ckN2+GGw=" crossorigin="anonymous"></script> -->
-
-    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-        crossorigin="anonymous"></script> -->
-    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
-      integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-    
-    <!-- <script src="/font-awesome.min.css"></script> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.4/holder.js"
-      integrity="sha256-crfkMD0BL2TtiwpbIlXF/SVmGSvOtgbMM8GBkibVKyc=" crossorigin="anonymous"></script>
-    
-    <script src="/socket.io/socket.io.js"></script>
-
-    
-      
     <title>Profile edit</title>
 
-      
-</head>
-<body>
-        <nav class="navbar navbar-expand-md navbar-light bg-light">
-          <a class="navbar-brand" href="#!">Corpers Online <span class="sr-only">(current)</span></a>
-          <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-    
-          <div class="navbar-collapse collapse" id="navbarsExample04" style="">
-            <ul class="navbar-nav mr-auto">
-              <li class="nav-item">
-                <a class="nav-link" href="/login">Log In</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/signup">Sign up</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#!">About</a>
-              </li>
-              <li class="nav-item">
-              <a class="nav-link" href="#!">Contact</a>
-              </li>
-            </ul>
-          </div>
-        </nav>
-    <main class="container pt-2">
+    <!-- Bootstrap core CSS -->
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
 
-        <h6>
-          Information provided will be kept confidential and used to provide assistance for other Corpers.
-        </h6>
-        <p>
-          <a href="<%= statecode %>" id="gb">Go back</a>
+    <!-- Custom styles for this template, do we need this? we can't even find it! -->
+    <!-- <link href="form-validation.css" rel="stylesheet"> -->
 
-          <!-- https://stackoverflow.com/questions/8814472/how-to-make-an-html-back-link -->
-          <!-- <a href="#!" onclick="location.href = document.referrer; return false;">Go Back</a> -->
-        </p>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"
+      integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+      crossorigin="" />
 
-        <form class="container" role="form" name="profile" action="/profile" enctype="application/x-www-form-urlencoded" method="POST">
-          <div class="form-group">
-            <label for="servicestate">Where are you serving?</label>
-            <!-- <input type="text" name="servicestate" list="states" id="ss" class="form-control mb-2" id="email" placeholder="State"> -->
-            <select id="servicestate" name="servicestate" class="custom-select mb-2">
-              <option value="Abia">Abia</option>
-              <option value="Adamawa">Adamawa</option>
-              <option value="Akwa Ibom">Akwa Ibom</option>
-              <option value="Anambra">Anambra</option>
-              <option value="Bauchi">Bauchi</option>
-              <option value="Bayelsa">Bayelsa</option>
-              <option value="Benue">Benue</option>
-              <option value="Borno">Borno</option>
-              <option value="Cross River">Cross River</option>
-              <option value="Delta">Delta</option>
-              <option value="Ebonyi">Ebonyi</option>
-              <option value="Enugu">Enugu</option>
-              <option value="Edo">Edo</option>
-              <option value="Ekiti">Ekiti</option>
-              <option value="Gombe">Gombe</option>
-              <option value="Imo">Imo</option>
-              <option value="Jigawa">Jigawa</option>
-              <option value="Kaduna">Kaduna</option>
-              <option value="Kano">Kano</option>
-              <option value="Kastina">Kastina</option>
-              <option value="Kebbi">Kebbi</option>
-              <option value="Kogi">Kogi</option>
-              <option value="Kwara">Kwara</option>
-              <option value="Lagos">Lagos</option>
-              <option value="Nasarawa">Nasarawa</option>
-              <option value="Niger">Niger</option>
-              <option value="Ogun">Ogun</option>
-              <option value="Ondo">Ondo</option>
-              <option value="Osun">Osun</option>
-              <option value="Oyo">Oyo</option>
-              <option value="Plateau">Plateau</option>
-              <option value="Rivers">Rivers</option>
-              <option value="Sokoto">Sokoto</option>
-              <option value="Taraba">Taraba</option>
-              <option value="Yobe">Yobe</option>
-              <option value="Zamfara">Zamfara</option>
-            </select>
-            <input type="text" class="form-control mb-2" id="" name="lga" placeholder="LGA">
-            <small class="text-muted">Optional.</small>
-            <input type="text" class="form-control mb-2" id="" name="city_town" placeholder="City or Town">
-            <small class="text-muted">Optional.</small>
-            <input type="text" class="form-control mb-2" id="" name="region_street" placeholder="Region or Street">
-          </div>
-          <div class="form-group">
-            <label for="pwd">Your batch stream?</label>
-            <div class="">
-              <input type="number" min="1" max="3" list="stream" class="form-control" name="stream" id="" placeholder="Stream 1, 2 or 3?">
-              <datalist id="stream">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-              </datalist>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="pwd">Where did you find accomodation?</label>
-            <div class="form-check">
-              <input class="form-check-input" name="accommodationornot" type="checkbox" id="accommodationornot" value="not">
-              <label class="form-check-label" for="accommodationornot">
-                <small class="text-muted">I haven't gotten a place yet</small>
-              </label>
-            </div>
-            <input type="text" name="accomodation_location" class="form-control mb-2" id="house" placeholder="What part of town is it">
-          </div>
-          <div class="form-group">
-            <label for="name_of_ppa">Name of your PPA ?</label>
-            <input type="text" name="name_of_ppa" class="form-control mb-2" id="">
-            <label for="type_of_ppa"> Type of Institution? </label>
-            <input type="text" name="type_of_ppa" class="form-control" id="" placeholder="A School? " list="ppatype">
-            <!-- help suggest ppatype based on the ppa name, so if the name of ppa is Salem University, then of course, ppatype is University -->
-            <datalist id="ppatype" >
-              <option value="School">School</option>
-              <option value="Hospital">Hospital</option>
-              <option value="Clinic">Clinic</option>
-              <option value="Pharmacy">Pharmacy</option>
-              <option value="Radio Station">Radio Station</option>
-              <option value="University">University</option>
-            </datalist>
-          </div>
-          <div class="form-group">
-            <label for="pwd">Your PPA address?</label>
-            <input type="text" name="ppa_address" class="form-control" id="">
-          </div>
-          <div class="form-group">
-            <label for="pwd">Where did you travel from for NYSC?</label>
-            <input type="text" name="travel_from_state" class="form-control mb-2" id="" placeholder="State">
-            <input type="text" name="travel_from_city" class="form-control mb-2" id="" placeholder="City">
-          </div>
-          
-          <div class="form-group">
-            <label for="pwd">Want an SPA (side hustle) ?</label>
-            <b></b>
-            <small class="text-muted" id="whatisspa" data-toggle="tooltip" data-placement="right"
-              title="An SPA is a side job you do during your Service Year for extra cash. A <b>S</b>econdary <b>P</b>lace of <b>A</b>ssignment.">What's this?</small>
-              <script>
-                // Tooltips are opt-in for performance reasons, so you must initialize them yourself. So ...
-                //  initialize all tooltips on a page
+    <!-- ask questions about places on maps! -->
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
+      integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
+      crossorigin=""></script>
 
-                /* $(function () {
-                    $('[data-toggle="tooltip"]').tooltip()
-                  }) */
-
-                $('#whatisspa').tooltip({ html: true });
-              </script>
-            <br>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="wantspaornot" id="inlineRadio1" value="yes">
-              <label class="form-check-label" for="inlineRadio1">Yes</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="wantspaornot" id="inlineRadio2" value="no">
-              <label class="form-check-label" for="inlineRadio2">No</label>
-            </div>
-          </div>
-          
-          <input type="submit" class="btn btn-default" value="Submit">
-          
-        </form>
-            
-    </main>
-
-    <footer class="position-sticky text-center pt-3"> <!-- fixed-bottom only on big screens | position-sticky on small screens -->
-      <p>Corpers Online built by <a href="#!">Corpers</a> for <a href="#!">Corpers</a>.</p>
-      <p>
-        <a href="#!"> &copy; <script>document.write(new Date().getFullYear())</script></a>
-      </p>
-  </footer>
-  
-
-    <script src="/socket.io/socket.io.js"></script>
-
-    <!-- <script>
-      // script for submitting posts (not accommodation).
-      function sendPost() {
-
-        // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
-        var XHR = new XMLHttpRequest();
-
-        // Bind the FormData object and the form element
-        var FD = new FormData(form);
-
-        // append post_time
-        FD.append('change_time', Date.now()); // data type number
-
-        // Define what happens on successful data submission
-        XHR.addEventListener("load", function (event) {
-          // alert(event.target.responseText);
-          console.log(event.target.responseText);
-        });
-
-        // Define what happens in case of error
-        XHR.addEventListener("error", function (event) {
-          alert('Oops! Something went wrong.');
-        });
-
-        // Set up our request
-        XHR.open('POST', '/profile', true); // true makes it async request
-
-        XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded'); // multipart/form-data
-
-        // The data sent is what the user provided in the form
-        XHR.send(FD);
+    <style>
+      #mapid {
+        height: calc(1000px);
       }
+    </style>
+  </head>
 
-      // Access the form element...
-      var form = document.forms["profile"];
+  <body class="bg-light">
 
-      // ...and take over its submit event.
-      form.addEventListener("submit", function (event) {
-        event.preventDefault(); // the default behaviour is refreshing the page and adding search params to the url
+    <div class="container">
+      <div class="py-5 text-center">
+        <!-- a map of their serive state or their profile picture -->
+        <!-- <img class="d-block mx-auto mb-4" src="https://getbootstrap.com/assets/brand/bootstrap-solid.svg" alt=""
+          width="72" height="72"> -->
+        <h2><%= statecode %></h2>
+        <p class="lead">Profile update.</p>
+      </div>
 
-        sendPost();
-      }, false, true); // https://developer.mozilla.org/en-US/docs/Web/Events/submit
-    </script> -->
- 
-    <script>
+      <div class="row">
+        <!--  -->
+        <div class="col-md-4 order-md-2 mb-4 d-sm-none d-md-block" id="mapid">
+          <!-- when map loads, it doesn't fill the whole space until we readjust the screen -->
+          <!-- Hidden only on sm -->
+          <!-- make the map 50% in height and class h-50 not working...yet -->
+          <!-- <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-muted">Map</span>
+            <span class="badge badge-secondary badge-pill">3</span>
+          </h4>
+          <ul class="list-group mb-3">
+            <li class="list-group-item d-flex justify-content-between lh-condensed">
+              <div>
+                <h6 class="my-0">Product name</h6>
+                <small class="text-muted">Brief description</small>
+              </div>
+              <span class="text-muted">$12</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between lh-condensed">
+              <div>
+                <h6 class="my-0">Second product</h6>
+                <small class="text-muted">Brief description</small>
+              </div>
+              <span class="text-muted">$8</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between lh-condensed">
+              <div>
+                <h6 class="my-0">Third item</h6>
+                <small class="text-muted">Brief description</small>
+              </div>
+              <span class="text-muted">$5</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between bg-light">
+              <div class="text-success">
+                <h6 class="my-0">Promo code</h6>
+                <small>EXAMPLECODE</small>
+              </div>
+              <span class="text-success">-$5</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Total (USD)</span>
+              <strong>$20</strong>
+            </li>
+          </ul>
 
-      var checkbox = document.querySelector('input[name=accommodationornot]');
-      // if they have a house of not
-      checkbox.addEventListener('change', function () {
-        if (this.checked) {
-          // Checkbox is checked..
-          console.log('checked');
-          document.getElementById('house').style.display = 'none';
-          document.getElementById('house').value = ''; // since they said they don't have an accommodation, clear the input value so we don't submit it
-        } else {
-          // Checkbox is not checked..
-          console.log('not checked');
-          document.getElementById('house').style.display = 'block';
+          <form class="card p-2">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Promo code">
+              <div class="input-group-append">
+                <button type="submit" class="btn btn-secondary">Redeem</button>
+              </div>
+            </div>
+          </form> -->
+        </div>
+
+        <script>
+          var mymap = L.map('mapid', {
+            tilt: true,
+            zoomControl: false
+          })
+            .setView([5.5216578, 7.5066884], 16);
+
+
+          L.tileLayer(
+            'https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery Â© <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox.streets',
+            accessToken: 'pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg'
+          })
+            .addTo(mymap);
+
+          L.control.zoom({
+            position: 'topright'
+          })
+            .addTo(mymap);
+
+
+          // loader for when map is loading
+          mymap.on('loading', function (event) {
+            console.log('start loading tiles');
+          });
+          mymap.on('load', function (event) {
+            console.log('all tiles loaded');
+          });
+          mymap.on('tileloadstart', function (event) {
+            console.log('start loading 1 tile');
+          });
+        </script>
+
+        <!-- main form -->
+
+        <div class="col-md-8 order-md-1">
+          <h4 class="mb-3">Service details</h4><!--fill the form values if the corper has filled them before-->
+          <form class="needs-validation" action="/profile" method="POST" enctype="application/x-www-form-urlencoded"
+            novalidate>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="servicestate">Service state</label>
+                <!-- <input type="text" class="form-control" id="firstName" placeholder="" value="" required> -->
+                <select id="servicestate" name="servicestate" class="custom-select" disabled required>
+                  <!-- use server side to render all this list and choose the one the user is from -->
+                  <% for (i = 0; i < states.length; i++) { %>
+                  <option value="<%= states[i] %>" <%= (servicestate == states[i] ? 'selected="true"' : '') %>>
+                    <%= states[i] %></option>
+                  <% } %>
+                </select>
+                <div class="invalid-feedback">
+                  Uhmm, I think we've got this handled
+                </div>
+                <div class="custom-control custom-checkbox">
+                  <input name="relocated" type="checkbox" class="custom-control-input" id="relocated" value="relocated">
+                  <label class="custom-control-label" style="line-height: normal;" for="relocated">Relocated ?</label>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="lgas">LGA</label>
+                <select name="lga" id="lgas" class="custom-select">
+                  <% for (i = 0; i < lgas.length; i++) { %>
+                  <option value="<%= lgas[i] %>"><%= lgas[i] %></option>
+                  <% } %>
+                </select>
+                <div class="invalid-feedback">
+                  Just choose a LGA please
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="city_town">City or Town</label>
+                <input type="text" class="form-control" name="city_town" id="city_town" placeholder="">
+                <!--not really required-->
+                <div class="invalid-feedback">
+                  Please select a valid city or town.
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="region_street">Street
+                  <!-- or Region --> <span class="text-muted">(Optional)</span></label>
+                <input type="text" class="form-control" name="region_street" id="region_street" placeholder="">
+                <div class="invalid-feedback">
+                  Please provide a valid region or street name.
+                </div>
+              </div>
+              <!-- <div class="col-md-6 mb-3">
+                  <label for="zip">Zip</label>
+                  <input type="text" class="form-control" id="zip" placeholder="" required>
+                  <div class="invalid-feedback">
+                    Zip code required.
+                  </div>
+                </div> -->
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="stream">Stream</label>
+                <input type="number" min="1" max="3" list="stream" class="form-control" name="stream" id=""
+                  placeholder="1, 2 or 3">
+                <datalist id="stream">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                </datalist>
+                <div class="invalid-feedback">
+                  Your stream is either 1, 2 or 3. Are you sure you're a corper?
+                </div>
+              </div>
+              <div class="col-md-6 mb-3" id="newss" style="display: none">
+                <label for="newstatecode">New state code</label>
+                <input type="text" class="form-control text-uppercase" value="" name="newstatecode" id="nsc" placeholder="TR/18A/1234">
+                <div class="invalid-feedback">
+                  Please provide a valid statecode.
+                </div>
+              </div>
+            </div>
+
+            <script>
+              // if the relocated check box is checked, and the page is reoladed, the check box remains checked but the new state code input is invisible
+              document.getElementById('relocated')
+                .addEventListener('change', (e) => {
+                  console.log(e)
+                  
+                  var uppercaseStates = 'AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM';
+                    var lowercaseStetes = 'ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm';
+                  if (e.target.checked) {
+                    console.log('yess')
+                    document.getElementById('servicestate')
+                      .disabled = false;
+                    document.getElementById('newss')
+                      .style.display = 'block';
+
+                      var years = parseInt(new Date(Date.now())
+                      .getFullYear()
+                      .toFixed()
+                      .slice(2, 4));
+                    var yearrange = '(' + (years - 1).toString() + '|' + years.toString() + ')';
+                    console.log('the year range', yearrange)
+                    document.forms[0].elements[6].pattern = '('+uppercaseStates+'|'+lowercaseStetes+')'+'\\/' + yearrange + '[abcACB]\\/\\d\\d\\d\\d'; // extra escaping probably because we're setting with string from here and not directly from the pattern attribute
+                    // document.forms[0].elements[6].pattern = 'AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm\\/' + yearrange + '[abcACB]\\/\\d\\d\\d\\d'; // extra escaping probably because we're setting with string from here and not directly from the pattern attribute
+
+                    document.getElementById('nsc')
+                      .oninvalid = function (event) {
+                        event.target.setCustomValidity("State code should start with a valid state abbrevation, have forward slashes, appropriate batch, and four trailing digits. Right?");
+                      }
+                  } else {
+                    document.getElementById('servicestate')
+                      .disabled = true;
+                    document.getElementById('newss')
+                      .style.display = 'none';
+
+                  }
+
+                  // make this call once! how ? by putting it outside the change event listener, and always using it's results once we notice a change
+                  // how can I know if and when the fetch api was aborted https://developers.google.com/web/updates/2017/09/abortable-fetch
+                  const controller = new AbortController();
+                  const signal = controller.signal;
+
+                  setTimeout(() => controller.abort(), 5000);
+                  //once we get the geo coordinates, first we get the name of the place., nominatium isn't perfect yet, will just be saving data from it to compare the accuracy we get
+                  fetch('/allstateslgas', {
+                    signal
+                  })
+                    .then(function (response) {
+                      if (response.status !== 200) {
+                        console.log('Looks like there was a problem. Status Code: ' +
+                          response.status);
+                        return;
+                      }
+
+                      // Examine the text in the response AND WHY IS CORDINATES NOT SAVING TO savePoint variable
+                      response.json()
+                        .then(function (data) {
+                          console.log('stateslgas', data);
+
+                          var k = uppercaseStates.split('|');
+                          var l = lowercaseStetes.split('|');
+                          // add event listner to service state input
+                          document.getElementById('servicestate')
+                            .addEventListener('change', (e) => {
+                              console.log('changed state', e.target.value)
+                              // console.log(data.states) // [e.target.value]
+                              var it = e.target.value;
+                              var thestate = data.states.find((eachElement, index) => {
+
+                                if (eachElement[it]) {
+                                  console.log(k[index], l[index]);
+
+                                  // create a new pattern attribute based on the state that was selected
+                                  document.forms[0].elements[6].pattern = k[index] + '|' + l[index] +'\\/' + yearrange + '[abcACB]\\/\\d\\d\\d\\d'; // extra escaping probably because we're setting with string from here and not directly from the pattern attribute
+                                }
+                                return eachElement[it];
+
+                              })
+
+                              // console.log('it', thestate[it])
+
+                              var thelgas = thestate[it];
+
+                              theLGAsInputElement = document.getElementById('lgas');
+                              theLGAsInputElement.options.length = 0; // removes all options
+
+                              // starts creating the new LGAs options for the lga select input
+                              for (let index = 0; index < thelgas.length; index++) {
+                                const element = thelgas[index];
+                                theLGAsInputElement.options[index] = new Option(element, element) // new Option(text, value)
+                              }
+
+                            }, false);
+                        });
+                    })
+                    .catch(function (err) {
+                      //console.log('Fetch Error :-S', err);
+                      if (err.name === 'AbortError') {
+                        console.log('Fetch aborted');
+                      } else {
+                        console.error('Uh oh, an error! Fetch Error :-S', err);
+                      }
+                    });
+                }, false)
+            </script>
+            <hr class="mb-4">
+
+            <h4 class="mb-3">PPA details</h4>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="name_of_ppa">Name of PPA</label>
+                <input type="text" class="form-control" list="names" name="name_of_ppa" id="name_of_ppa" placeholder=""
+                  required>
+                <% if (names_of_ppas.length > 0) { %>
+                <datalist id="names">
+                  <% for (let q = 0; q < names_of_ppas.length; q++) { %>
+
+                  <option value="<%= names_of_ppas[q].name_of_ppa %>"><%= names_of_ppas[q].name_of_ppa %></option>
+
+                  <% } %>
+                </datalist>
+                <% } %>
+                <!-- based on the name of the ppa provided, we should be able to predict the type of institution it is and fill it in for the user -->
+                <!-- <datalist id="names">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                </datalist> -->
+
+                <small class="text-muted">Help other corpers find it too.</small>
+                <div class="invalid-feedback">
+                  Please provide us with the name of your PPA
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="type_of_ppa">Type of Institution</label>
+                <input type="text" class="form-control" name="type_of_ppa" id="type_of_ppa" placeholder="" required>
+                <div class="invalid-feedback">
+                  It's important we know this too.
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3 d-none" style="display: none">
+              <label for="ppa_geodata">Geo data <span class="text-muted">(Optional, but kinda important)</span></label>
+              <input type="text" name="ppa_geodata" class="form-control" id="ppa_geodata"
+                placeholder="What part of town is it?">
+              <small class="text-muted">We are trying to get an accurate as possible data, so we might ask you to try
+                again if what we got won't be of help to other corpers.</small>
+            </div>
+
+            <div class="mb-3">
+              <label for="ppa_address">PPA address</label>
+              <div class="input-group">
+                <input type="text" class="form-control" list="ppaaddr" name="ppa_address" id="ppa_address"
+                  placeholder="1234 Main St" required>
+                <div class="input-group-append">
+                  <a id="geo" class="btn btn-secondary">Geo</a>
+                </div>
+              </div>
+              <% if (ppa_addresses.length > 0) { %>
+              <datalist id="ppaaddr">
+                <% for (let q = 0; q < ppa_addresses.length; q++) { %>
+
+                <option value="<%= ppa_addresses[q].ppa_address %>"><%= ppa_addresses[q].name_of_ppa %></option>
+
+                <% } %>
+              </datalist>
+              <% } %>
+              <small class="text-muted">If you're there right now, help other corpers find it! Click the 'Geo' button to
+                locate your PPA on the
+                map.</small>
+              <!-- if we already have a very accurate location of the ppa, we don't need geo, but if we don't have then we can show geo and ask the user to help us locate it -->
+              <!-- <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">@</span>
+                </div>
+                <input type="text" class="form-control" id="username" placeholder="Username" required>
+                <div class="invalid-feedback" style="width: 100%;">
+                  Your username is required.
+                </div>
+              </div> -->
+              <div id="mapid2" style="height: 250px;" class="d-block d-sm-none   d-none d-sm-block d-md-none">
+                <!-- Visible only on xs    Visible only on sm -->
+
+              </div>
+              <script>
+                var mymap2 = L.map('mapid2', {
+                  tilt: true,
+                  zoomControl: false
+                })
+                  .setView([5.5216578, 7.5066884], 16);
+
+
+                L.tileLayer(
+                  'https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg', {
+                  attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery Â© <a href="https://www.mapbox.com/">Mapbox</a>',
+                  maxZoom: 18,
+                  id: 'mapbox.streets',
+                  accessToken: 'pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg'
+                })
+                  .addTo(mymap2);
+
+                L.control.zoom({
+                  position: 'topright'
+                })
+                  .addTo(mymap2);
+
+
+                // loader for when map is loading
+                mymap2.on('loading', function (event) {
+                  console.log('start loading tiles');
+                });
+                mymap2.on('load', function (event) {
+                  console.log('all tiles loaded');
+                });
+                mymap2.on('tileloadstart', function (event) {
+                  console.log('start loading 1 tile');
+                });
+              </script>
+            </div>
+
+
+            <div class=" mb-3">
+              <label for="lgas">Directions</label>
+              <textarea class="form-control" name="ppadirections" id="pd"
+                placeholder="Please give directions to the PPA from a popular nearby junction or hard-to-miss building"></textarea>
+
+            </div>
+
+            <script>
+              /* // ---geo
+    document.getElementById('geo').onclick = function () {
+      console.log('position button clicked');
+      // first find the user's current location/start tracking the add a marker
+
+      // first find the user's current location
+
+      function onLocationFound(e) {
+
+        var radius = e.accuracy / 2; // measurement in meters
+        console.log(e);
+        // if accurate enough, push [e.longitude, e.latitude]
+
+        function onClk(e) {
+          console.log('clicked addPlace Marker!');
         }
-      });
 
-      var radios = document.forms[0].elements['wantspaornot'];
-      for (var i = 0, max = radios.length; i < max; i++) {
-        radios[i].onclick = function () {
-          console.log(this.value);
-          if (this.value == 'yes') {
-            
-          } else {
-            
+        function onPO() {
+          // c.addTo(mymap2);
+          if (document.getElementById('baptm')) {
+            console.log('we wanna add a place');
           }
         }
+        // if user within 5 meters from location, add it. AND IF LOCATION ACCURACY IS NOT SO CORRECT THEN DON'T SHOW IT IN THE MAP !!! NOT EVERYONE IS IN LAGOS, ALSO SHOW THEM THE STATE THEY'RE IN AND THE lga FIRST
+        // Only display those icons when the user is in a good enough zoom level
+        var p = L.marker(e.latlng).on({
+          click: onClk
+        }).addTo(mymap2)
+          .bindPopup('<p> You\'re within ' +
+            radius.toFixed(2) +
+            ' meters from this point.</p>' +
+            (radius.toFixed(2) <= 10.50 ?
+              ' <hr/> <small><button data-toggle="modal" data-target="#AddPlace" id="baptm" class="btn btn-primary btn-sm"> Add location to map</button></small> ' :
+              ''))
+          .openPopup().on({
+            popupopen: onPO
+          });
+        // after 3.5 sec closePopup()
+        setTimeout(() => {
+          p.closePopup();
+        }, 3500);
+        // if we couldn't get a so accurate location but got a resonable accurate info, then user can drag the marker to point. means we have to then make marker draggable
+
+        var c = L.circle(e.latlng, {
+          radius: radius,
+          stroke: false
+        }).addTo(mymap2);
+        // after 3.5 sec remove circle
+        setTimeout(() => c.remove(), 3500);
+
+        // p.on('popupopen', c.addTo(mymap2) );
+
+        // make it so that when ever the popUP is open, the event listerner is added ... also (if it doesn't work so that the app place button works even if it has been dismissed because of clicking the marker (to show the popUp) again n again.)
+
+        //then save it.
+
+        //then get the altitude and it's accuracy and determine if the apartment is an upstairs
+        //then point the map in the direction of movement var e.heading
       }
 
-      var socket = io('/profile'); //connect to socket.io on /user but somehow it still connects with\to /
-/**
- * 
- *    [AB, AD, AK, AN, BA, BY, BN, BO, CR, DT, EB, ED, EK, EN, FC, GM, IM, JG, KD, KN, KT, KB, KG, KW, LA, NS, NG, OG, OD, OS, OY, PL, RV, SO, TR, YB, ZM]
-      [ABIA, ADAMAWA, AKWA IBOM, ANAMBRA, BAUCHI, BAYELSA, BENUE, BORNO, CROSS RIVER, DELTA, EBONYI, EDO, EKITI, ENUGU, FCT-ABUJA, GOMBE, IMO, JIGAWA, KADUNA, KANO, KASTINA, KEBBI, KOGI, KWARA, LAGOS, NASSARAWA, NIGER, OGUN, ONDO, OSUN, OYO, PLATEAU, RIVERS, SOKOTO, TARABA, YOBE, ZAMFARA]
-*/
-    
+      mymap2.on('locationfound', onLocationFound);
+
+      // error ?
+      function onLocationError(e) {
+        document.getElementById('AddError').innerHTML = e.message;
+        $("#LocationError").modal();
+      }
+
+      mymap2.on('locationerror', onLocationError);
+
+      // acutally finding it
+      mymap2.locate({
+        setView: true,
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+      });
+
+      // then save it.
+    } */
+            </script>
+
+
+            <script>
+              // for mapid and mymap && mapid2 and mymap2 // and the zoom isn't exactly the same when location function runs, we need to set the correct zoom
+              // ---geo
+              document.getElementById('geo')
+                .onclick = function () {
+                  console.log('position button clicked');
+                  // first find the user's current location/start tracking the add a marker
+
+                  // first find the user's current location
+
+                  function onLocationFound(e) {
+
+                    var radius = e.accuracy / 2; // measurement in meters
+                    console.log(e);
+                    // if accurate enough, push [e.longitude, e.latitude]
+                    // uncomment this block when we can load data on maps
+                    /* if (radius < 10) {
+                      delete e.sourceTarget;
+                      delete e.target;
+                      delete e.type;
+                      var x = document.createElement("input");
+                      x.setAttribute("type", "text");
+                      x.setAttribute("name", "ppa_geodata");
+                      x.setAttribute("value", e);
+                      console.log('saving', e);
+                      document.forms[0].appendChild(x); // or x.cloneNode() ?
+                    } else {
+                      // tell them to try again ?!?!?
+                    } */
+
+                    // not removing these cause Uncaught TypeError: Converting circular structure to JSON, Thank God we don't need them to begin with
+                    delete e.sourceTarget;
+                    delete e.target;
+                    delete e.type;
+                    console.log('saving after deleting', e, JSON.stringify(e)
+                      .length);
+
+                    document.forms[0].elements["ppa_geodata"].value = JSON.stringify(e);
+
+
+                    // var FD = new FormData(document.forms[0]);
+                    // FD.append('coords', [e.longitude, e.latitude].toString());
+
+                    function onClk(e) {
+                      console.log('clicked addPlace Marker!');
+                    }
+
+                    function onPO() {
+                      // c.addTo(mymap2);
+                      if (document.getElementById('baptm')) {
+                        console.log('we wanna add a place');
+                      }
+                    }
+                    // if user within 5 meters from location, add it. AND IF LOCATION ACCURACY IS NOT SO CORRECT THEN DON'T SHOW IT IN THE MAP !!! NOT EVERYONE IS IN LAGOS, ALSO SHOW THEM THE STATE THEY'RE IN AND THE lga FIRST
+                    // Only display those icons when the user is in a good enough zoom level
+                    var p = L.marker(e.latlng)
+                      .on({
+                        click: onClk
+                      })
+                      .addTo(mymap)
+                      .bindPopup('<p> You\'re within ' +
+                        radius.toFixed(2) +
+                        ' meters from this point.</p>' +
+                        (radius.toFixed(2) <= 10.50 ?
+                          ' <hr/> <small><button data-toggle="modal" data-target="#AddPlace" id="baptm" class="btn btn-primary btn-sm"> Add location to map</button></small> ' :
+                          ''))
+                      .openPopup()
+                      .on({
+                        popupopen: onPO
+                      });
+
+                    var p2 = L.marker(e.latlng)
+                      .on({
+                        click: onClk
+                      })
+                      .addTo(mymap2)
+                      .bindPopup('<p> You\'re within ' +
+                        radius.toFixed(2) +
+                        ' meters from this point.</p>' +
+                        (radius.toFixed(2) <= 10.50 ?
+                          ' <hr/> <small><button data-toggle="modal" data-target="#AddPlace" id="baptm" class="btn btn-primary btn-sm"> Add location to map</button></small> ' :
+                          ''))
+                      .openPopup()
+                      .on({
+                        popupopen: onPO
+                      });
+                    // after 3.5 sec closePopup()
+                    setTimeout(() => {
+                      p.closePopup();
+
+                      p2.closePopup();
+                    }, 3500);
+                    // if we couldn't get a so accurate location but got a resonable accurate info, then user can drag the marker to point. means we have to then make marker draggable
+
+                    var c = L.circle(e.latlng, {
+                      radius: radius,
+                      stroke: false
+                    })
+                      .addTo(mymap);
+
+                    var c2 = L.circle(e.latlng, {
+                      radius: radius,
+                      stroke: false
+                    })
+                      .addTo(mymap);
+                    // after 3.5 sec remove circle
+                    setTimeout(() => c.remove(), 3500);
+
+                    setTimeout(() => c2.remove(), 3500);
+
+                    // p.on('popupopen', c.addTo(mymap) );
+
+                    // make it so that when ever the popUP is open, the event listerner is added ... also (if it doesn't work so that the app place button works even if it has been dismissed because of clicking the marker (to show the popUp) again n again.)
+
+                    //then save it.
+
+                    //then get the altitude and it's accuracy and determine if the apartment is an upstairs
+                    //then point the map in the direction of movement var e.heading
+                  }
+
+                  mymap.on('locationfound', onLocationFound);
+
+                  // error ?
+                  function onLocationError(e) {
+                    console.log('nah', e.message, e)
+                    // uncomment this later
+                    // document.getElementById('AddError').innerHTML = e.message;
+                    // $("#LocationError").modal();
+                  }
+
+                  mymap.on('locationerror', onLocationError);
+
+                  // acutally finding it
+                  mymap.locate({
+                    setView: true,
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0
+                  });
+
+                  // then save it.
+                }
+            </script>
+
+            <hr class="mb-4">
+
+            <h4 class="mb-3">Other details</h4>
+            <!-- add an event listner so that when the corper puts in origin state, we can fetch origin city and towns in that state --and do similar for accommodation -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="travel_from_state">Origin state</label>
+                <!-- <input type="text" class="form-control" name="travel_from_state" id="travel_from_state" placeholder="" required> -->
+                <select id="travel_from_state" name="travel_from_state" class="custom-select d-block w-100" required>
+                  <option value="Abia">Abia</option>
+                  <option value="Adamawa">Adamawa</option>
+                  <option value="Akwa Ibom">Akwa Ibom</option>
+                  <option value="Anambra">Anambra</option>
+                  <option value="Bauchi">Bauchi</option>
+                  <option value="Bayelsa">Bayelsa</option>
+                  <option value="Benue">Benue</option>
+                  <option value="Borno">Borno</option>
+                  <option value="Cross River">Cross River</option>
+                  <option value="Delta">Delta</option>
+                  <option value="Ebonyi">Ebonyi</option>
+                  <option value="Enugu">Enugu</option>
+                  <option value="Edo">Edo</option>
+                  <option value="Ekiti">Ekiti</option>
+                  <option value="Gombe">Gombe</option>
+                  <option value="Imo">Imo</option>
+                  <option value="Jigawa">Jigawa</option>
+                  <option value="Kaduna">Kaduna</option>
+                  <option value="Kano">Kano</option>
+                  <option value="Kastina">Kastina</option>
+                  <option value="Kebbi">Kebbi</option>
+                  <option value="Kogi">Kogi</option>
+                  <option value="Kwara">Kwara</option>
+                  <option value="Lagos">Lagos</option>
+                  <option value="Nasarawa">Nasarawa</option>
+                  <option value="Niger">Niger</option>
+                  <option value="Ogun">Ogun</option>
+                  <option value="Ondo">Ondo</option>
+                  <option value="Osun">Osun</option>
+                  <option value="Oyo">Oyo</option>
+                  <option value="Plateau">Plateau</option>
+                  <option value="Rivers">Rivers</option>
+                  <option value="Sokoto">Sokoto</option>
+                  <option value="Taraba">Taraba</option>
+                  <option value="Yobe">Yobe</option>
+                  <option value="Zamfara">Zamfara</option>
+                </select>
+                <small class="text-muted">Where did you travel from for NYSC?</small>
+                <div class="invalid-feedback">
+                  Choose a state, please.
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="travel_from_city">Origin city or town <span class="text-muted">(Optional)</span></label>
+                <input type="text" class="form-control" id="travel_from_city" name="travel_from_city" placeholder="">
+                <div class="invalid-feedback">
+                  Please name a place
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="accomodation_location">Where did you find accomodation <span
+                  class="text-muted">(Optional)</span></label>
+              <input type="text" name="accomodation_location" class="form-control" id="accomodation_location"
+                placeholder="What part of town is it?">
+              <small class="text-muted">Please enter a known area, or be at least specific.</small>
+              <div class="invalid-feedback">
+                Please enter the name of a place or an area.
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="name_of_ppa">Want an SPA ?</label>
+                <div class="d-block">
+                  <div class="custom-control custom-radio">
+                    <input id="yes" value="yes" name="wantspaornot" type="radio" class="custom-control-input" checked>
+                    <label class="custom-control-label" for="yes">Yes</label>
+                  </div>
+                  <div class="custom-control custom-radio">
+                    <input id="no" value="no" name="wantspaornot" type="radio" class="custom-control-input">
+                    <label class="custom-control-label" for="no">No</label>
+                  </div>
+                </div>
+                <small class="text-muted">An SPA is a side job you do during your Service Year for extra cash. A
+                  <b>S</b>econdary <b>P</b>lace of
+                  <b>A</b>ssignment.</small>
+              </div>
+
+            </div>
+
+            <!--             <div class="mb-3">
+              <label for="address">Address</label>
+              <input type="text" class="form-control" id="address" placeholder="1234 Main St" required>
+              <div class="invalid-feedback">
+                Please enter your shipping address.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="address2">Address 2 <span class="text-muted">(Optional)</span></label>
+              <input type="text" class="form-control" id="address2" placeholder="Apartment or suite">
+            </div>
+
+            
+            <hr class="mb-4">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="same-address">
+              <label class="custom-control-label" for="same-address">Shipping address is the same as my billing address</label>
+            </div>
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="save-info">
+              <label class="custom-control-label" for="save-info">Save this information for next time</label>
+            </div>
+            <hr class="mb-4">
+
+            <h4 class="mb-3">Payment</h4>
+
+            <div class="d-block my-3">
+              <div class="custom-control custom-radio">
+                <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked required>
+                <label class="custom-control-label" for="credit">Credit card</label>
+              </div>
+              <div class="custom-control custom-radio">
+                <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" required>
+                <label class="custom-control-label" for="debit">Debit card</label>
+              </div>
+              <div class="custom-control custom-radio">
+                <input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" required>
+                <label class="custom-control-label" for="paypal">PayPal</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="cc-name">Name on card</label>
+                <input type="text" class="form-control" id="cc-name" placeholder="" required>
+                <small class="text-muted">Full name as displayed on card</small>
+                <div class="invalid-feedback">
+                  Name on card is required
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="cc-number">Credit card number</label>
+                <input type="text" class="form-control" id="cc-number" placeholder="" required>
+                <div class="invalid-feedback">
+                  Credit card number is required
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3 mb-3">
+                <label for="cc-expiration">Expiration</label>
+                <input type="text" class="form-control" id="cc-expiration" placeholder="" required>
+                <div class="invalid-feedback">
+                  Expiration date required
+                </div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="cc-cvv">CVV</label>
+                <input type="text" class="form-control" id="cc-cvv" placeholder="" required>
+                <div class="invalid-feedback">
+                  Security code required
+                </div>
+              </div>
+            </div> -->
+
+            <hr class="mb-4">
+            <button class="btn btn-primary btn-lg btn-block" type="submit">Update profile</button>
+          </form>
+        </div>
+      </div>
+
+      <footer class="my-5 pt-5 text-muted text-center text-small">
+        <p class="mb-1">&copy; 2019 Corpers Online</p>
+        <ul class="list-inline">
+          <li class="list-inline-item"><a href="#!">Privacy</a></li>
+          <li class="list-inline-item"><a href="#!">Terms</a></li>
+          <li class="list-inline-item"><a href="#!">Support</a></li>
+        </ul>
+      </footer>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+      </script>
+    <!-- <script>
+      window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')
     </script>
-</body>
+    <script src="../../../../assets/js/vendor/popper.min.js"></script>
+    <script src="../../../../dist/js/bootstrap.min.js"></script>
+    <script src="../../../../assets/js/vendor/holder.min.js"></script> -->
+
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function () {
+          'use strict';
+
+          window.addEventListener('load', function () {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function (form) {
+              form.addEventListener('submit', function (event) {
+                if (form.checkValidity() === false) {
+                  event.preventDefault();
+                  event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+              }, false);
+            });
+          }, false);
+        })();
+    </script>
+  </body>
+
 </html>

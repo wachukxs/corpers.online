@@ -8,6 +8,7 @@ const morgan = require('morgan');
 const welcomeRoutes = require('../routes/welcome');
 const actionsRoutes = require('../routes/actions');
 const byeRoutes = require('../routes/bye');
+const blogRoutes = require('../routes/blog');
 
 app.set('view engine', 'ejs');
 

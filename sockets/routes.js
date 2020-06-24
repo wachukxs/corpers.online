@@ -160,7 +160,9 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
             console.log('error - insert row in post table');
 
         })
-        // save to db --put picture in different columns // increse packet size for media (pixs and vids)                                                                                                                & when using pool.escape(data.text), there's no need for the enclosing single quotes incase the user has ' or any funny characters
+        // save to db --put picture in different columns
+        // increse packet size for media (pixs and vids)
+        // & when using pool.escape(data.text), there's no need for the enclosing single quotes incase the user has ' or any funny characters
         
 
         // this funtion will run in the client to show/acknowledge the server has gotten the message.

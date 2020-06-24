@@ -19,11 +19,11 @@ exports.CorpersSignUp = async (signupData) => {
     function getstream(sb) {
         return sb == 'A' ? 1 : sb == 'B' ? 2 : sb == 'C' ? 3 : 4; // because we're sure it's gonna be 'D'
     }
-    
+
     // 'chuks'.replace(/^[a-z]/, (s) => {return s.toUpperCase()} ) // makes 'chuks' => 'Chuks'
-    signupData.lastname = signupData.lastname.replace(/^[a-z]/, (s) => {return s.toUpperCase()} );
-    signupData.middlename = signupData.middlename.replace(/^[a-z]/, (s) => {return s.toUpperCase()} );
-    signupData.firstname = signupData.firstname.replace(/^[a-z]/, (s) => {return s.toUpperCase()} );
+    signupData.lastname = signupData.lastname.replace(/^[a-z]/, (s) => { return s.toUpperCase() });
+    signupData.middlename = signupData.middlename.replace(/^[a-z]/, (s) => { return s.toUpperCase() });
+    signupData.firstname = signupData.firstname.replace(/^[a-z]/, (s) => { return s.toUpperCase() });
 
     signupData.servicestate = theservicestate;
     signupData.stream = getstream(thestream);
@@ -40,7 +40,7 @@ exports.CorpersSignUp = async (signupData) => {
         const statecode_regex = /^(ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/\d\d[abcACB]\/[0-9]{4}$/gi;
         /**check if statecode is valid */
         const valid_statecode = signupData.statecode.match(statecode_regex);
-        
+
         if (valid_statecode === null) {
             reject({ message: 'invalid statecode' })
         }
@@ -611,6 +611,60 @@ exports.SubscribeToEmailUpdates = async (req_body) => {
             });
 
         }
+    })
+
+    return re;
+}
+
+exports.AllPPAs = async () => {
+    let re = await new Promise((resolve, reject) => {
+        connectionPool.query("SELECT type_of_ppa FROM info WHERE type_of_ppa != ''", function (error, results, fields) {
+
+            if (error) reject(error);
+            console.log('ppa types:', results)
+            var listoftypesofppas = [];
+            for (let index = 0; index < results.length; index++) {
+                const element = results[index].type_of_ppa;
+                listoftypesofppas.push(element);
+
+            }
+            /**
+             *  [ RowDataPacket { type_of_ppa: 'Radio Station' },
+                  RowDataPacket { type_of_ppa: 'School' },
+                  RowDataPacket { type_of_ppa: 'rew qrqew' } ]
+            */
+            let jkl = JSON.parse(JSON.stringify(listoftypesofppas));
+            // let's hope there's no err
+            resolve(jkl);
+        })
+
+    })
+
+    return re;
+}
+
+exports.AddPlace = async (req_body) => {
+    let re = await new Promise((resolve, reject) => {
+
+        connectionPool.query("INSERT INTO places SET ?", req_body, function (error, results, fields) {
+            console.log('inserted data from: ', results);
+            if (error) reject(error);
+            if (results.affectedRows === 1) {
+                resolve()
+            } else {
+                reject()
+            }
+        });
+    })
+
+    return re;
+}
+
+exports.UpdateProfile = async (data) => {
+    let re = await new Promise((resolve, reject) => {
+        connectionPool.query("INSERT INTO info SET ?", data.req_body, function (error, results, field) {
+            
+        })
     })
 
     return re;

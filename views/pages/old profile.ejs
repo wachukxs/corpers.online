@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="icon" type="image/png" href="assets/images/logo32x32.png"/>
+
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <!-- <script src="/jquery-3.3.1.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script> -->
+    
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"
+      integrity="sha384-pjaaA8dDz/5BgdFUPX6M/9SUZv4d12SUPF0axWc+VRZkx5xU3daN+lYb49+Ax+Tl" crossorigin="anonymous"></script>
+    
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"
+      integrity="sha256-fzFFyH01cBVPYzl16KT40wqjhgPtq6FFUB6ckN2+GGw=" crossorigin="anonymous"></script> -->
+
+    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script> -->
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+      integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    
+    <!-- <script src="/font-awesome.min.css"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.4/holder.js"
+      integrity="sha256-crfkMD0BL2TtiwpbIlXF/SVmGSvOtgbMM8GBkibVKyc=" crossorigin="anonymous"></script>
+    
+    <script src="/socket.io/socket.io.js"></script>
+
+    
+      
+    <title>Profile edit</title>
+
+      
+</head>
+<body>
+        <nav class="navbar navbar-expand-md navbar-light bg-light">
+          <a class="navbar-brand" href="#!">Corpers Online <span class="sr-only">(current)</span></a>
+          <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+    
+          <div class="navbar-collapse collapse" id="navbarsExample04" style="">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="/login">Log In</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/signup">Sign up</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#!">About</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link" href="#!">Contact</a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+    <main class="container pt-2">
+
+        <h6>
+          Information provided will be kept confidential and used to provide assistance for other Corpers.
+        </h6>
+        <p>
+          <a href="<%= statecode %>" id="gb">Go back</a>
+
+          <!-- https://stackoverflow.com/questions/8814472/how-to-make-an-html-back-link -->
+          <!-- <a href="#!" onclick="location.href = document.referrer; return false;">Go Back</a> -->
+        </p>
+
+        <form class="container" role="form" name="profile" action="/profile" enctype="application/x-www-form-urlencoded" method="POST">
+          <div class="form-group">
+            <label for="servicestate">Where are you serving?</label>
+            <!-- <input type="text" name="servicestate" list="states" id="ss" class="form-control mb-2" id="email" placeholder="State"> -->
+            <select id="servicestate" name="servicestate" class="custom-select mb-2">
+              <option value="Abia">Abia</option>
+              <option value="Adamawa">Adamawa</option>
+              <option value="Akwa Ibom">Akwa Ibom</option>
+              <option value="Anambra">Anambra</option>
+              <option value="Bauchi">Bauchi</option>
+              <option value="Bayelsa">Bayelsa</option>
+              <option value="Benue">Benue</option>
+              <option value="Borno">Borno</option>
+              <option value="Cross River">Cross River</option>
+              <option value="Delta">Delta</option>
+              <option value="Ebonyi">Ebonyi</option>
+              <option value="Enugu">Enugu</option>
+              <option value="Edo">Edo</option>
+              <option value="Ekiti">Ekiti</option>
+              <option value="Gombe">Gombe</option>
+              <option value="Imo">Imo</option>
+              <option value="Jigawa">Jigawa</option>
+              <option value="Kaduna">Kaduna</option>
+              <option value="Kano">Kano</option>
+              <option value="Kastina">Kastina</option>
+              <option value="Kebbi">Kebbi</option>
+              <option value="Kogi">Kogi</option>
+              <option value="Kwara">Kwara</option>
+              <option value="Lagos">Lagos</option>
+              <option value="Nasarawa">Nasarawa</option>
+              <option value="Niger">Niger</option>
+              <option value="Ogun">Ogun</option>
+              <option value="Ondo">Ondo</option>
+              <option value="Osun">Osun</option>
+              <option value="Oyo">Oyo</option>
+              <option value="Plateau">Plateau</option>
+              <option value="Rivers">Rivers</option>
+              <option value="Sokoto">Sokoto</option>
+              <option value="Taraba">Taraba</option>
+              <option value="Yobe">Yobe</option>
+              <option value="Zamfara">Zamfara</option>
+            </select>
+            <input type="text" class="form-control mb-2" id="" name="lga" placeholder="LGA">
+            <small class="text-muted">Optional.</small>
+            <input type="text" class="form-control mb-2" id="" name="city_town" placeholder="City or Town">
+            <small class="text-muted">Optional.</small>
+            <input type="text" class="form-control mb-2" id="" name="region_street" placeholder="Region or Street">
+          </div>
+          <div class="form-group">
+            <label for="pwd">Your batch stream?</label>
+            <div class="">
+              <input type="number" min="1" max="3" list="stream" class="form-control" name="stream" id="" placeholder="Stream 1, 2 or 3?">
+              <datalist id="stream">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </datalist>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="pwd">Where did you find accomodation?</label>
+            <div class="form-check">
+              <input class="form-check-input" name="accommodationornot" type="checkbox" id="accommodationornot" value="not">
+              <label class="form-check-label" for="accommodationornot">
+                <small class="text-muted">I haven't gotten a place yet</small>
+              </label>
+            </div>
+            <input type="text" name="accomodation_location" class="form-control mb-2" id="house" placeholder="What part of town is it">
+          </div>
+          <div class="form-group">
+            <label for="name_of_ppa">Name of your PPA ?</label>
+            <input type="text" name="name_of_ppa" class="form-control mb-2" id="">
+            <label for="type_of_ppa"> Type of Institution? </label>
+            <input type="text" name="type_of_ppa" class="form-control" id="" placeholder="A School? " list="ppatype">
+            <!-- help suggest ppatype based on the ppa name, so if the name of ppa is Salem University, then of course, ppatype is University -->
+            <datalist id="ppatype" >
+              <option value="School">School</option>
+              <option value="Hospital">Hospital</option>
+              <option value="Clinic">Clinic</option>
+              <option value="Pharmacy">Pharmacy</option>
+              <option value="Radio Station">Radio Station</option>
+              <option value="University">University</option>
+            </datalist>
+          </div>
+          <div class="form-group">
+            <label for="pwd">Your PPA address?</label>
+            <input type="text" name="ppa_address" class="form-control" id="">
+          </div>
+          <div class="form-group">
+            <label for="pwd">Where did you travel from for NYSC?</label>
+            <input type="text" name="travel_from_state" class="form-control mb-2" id="" placeholder="State">
+            <input type="text" name="travel_from_city" class="form-control mb-2" id="" placeholder="City">
+          </div>
+          
+          <div class="form-group">
+            <label for="pwd">Want an SPA (side hustle) ?</label>
+            <b></b>
+            <small class="text-muted" id="whatisspa" data-toggle="tooltip" data-placement="right"
+              title="An SPA is a side job you do during your Service Year for extra cash. A <b>S</b>econdary <b>P</b>lace of <b>A</b>ssignment.">What's this?</small>
+              <script>
+                // Tooltips are opt-in for performance reasons, so you must initialize them yourself. So ...
+                //  initialize all tooltips on a page
+
+                /* $(function () {
+                    $('[data-toggle="tooltip"]').tooltip()
+                  }) */
+
+                $('#whatisspa').tooltip({ html: true });
+              </script>
+            <br>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="wantspaornot" id="inlineRadio1" value="yes">
+              <label class="form-check-label" for="inlineRadio1">Yes</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="wantspaornot" id="inlineRadio2" value="no">
+              <label class="form-check-label" for="inlineRadio2">No</label>
+            </div>
+          </div>
+          
+          <input type="submit" class="btn btn-default" value="Submit">
+          
+        </form>
+            
+    </main>
+
+    <footer class="position-sticky text-center pt-3"> <!-- fixed-bottom only on big screens | position-sticky on small screens -->
+      <p>Corpers Online built by <a href="#!">Corpers</a> for <a href="#!">Corpers</a>.</p>
+      <p>
+        <a href="#!"> &copy; <script>document.write(new Date().getFullYear())</script></a>
+      </p>
+  </footer>
+  
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <!-- <script>
+      // script for submitting posts (not accommodation).
+      function sendPost() {
+
+        // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
+        var XHR = new XMLHttpRequest();
+
+        // Bind the FormData object and the form element
+        var FD = new FormData(form);
+
+        // append post_time
+        FD.append('change_time', Date.now()); // data type number
+
+        // Define what happens on successful data submission
+        XHR.addEventListener("load", function (event) {
+          // alert(event.target.responseText);
+          console.log(event.target.responseText);
+        });
+
+        // Define what happens in case of error
+        XHR.addEventListener("error", function (event) {
+          alert('Oops! Something went wrong.');
+        });
+
+        // Set up our request
+        XHR.open('POST', '/profile', true); // true makes it async request
+
+        XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded'); // multipart/form-data
+
+        // The data sent is what the user provided in the form
+        XHR.send(FD);
+      }
+
+      // Access the form element...
+      var form = document.forms["profile"];
+
+      // ...and take over its submit event.
+      form.addEventListener("submit", function (event) {
+        event.preventDefault(); // the default behaviour is refreshing the page and adding search params to the url
+
+        sendPost();
+      }, false, true); // https://developer.mozilla.org/en-US/docs/Web/Events/submit
+    </script> -->
+ 
+    <script>
+
+      var checkbox = document.querySelector('input[name=accommodationornot]');
+      // if they have a house of not
+      checkbox.addEventListener('change', function () {
+        if (this.checked) {
+          // Checkbox is checked..
+          console.log('checked');
+          document.getElementById('house').style.display = 'none';
+          document.getElementById('house').value = ''; // since they said they don't have an accommodation, clear the input value so we don't submit it
+        } else {
+          // Checkbox is not checked..
+          console.log('not checked');
+          document.getElementById('house').style.display = 'block';
+        }
+      });
+
+      var radios = document.forms[0].elements['wantspaornot'];
+      for (var i = 0, max = radios.length; i < max; i++) {
+        radios[i].onclick = function () {
+          console.log(this.value);
+          if (this.value == 'yes') {
+            
+          } else {
+            
+          }
+        }
+      }
+
+      var socket = io('/profile'); //connect to socket.io on /user but somehow it still connects with\to /
+/**
+ * 
+ *    [AB, AD, AK, AN, BA, BY, BN, BO, CR, DT, EB, ED, EK, EN, FC, GM, IM, JG, KD, KN, KT, KB, KG, KW, LA, NS, NG, OG, OD, OS, OY, PL, RV, SO, TR, YB, ZM]
+      [ABIA, ADAMAWA, AKWA IBOM, ANAMBRA, BAUCHI, BAYELSA, BENUE, BORNO, CROSS RIVER, DELTA, EBONYI, EDO, EKITI, ENUGU, FCT-ABUJA, GOMBE, IMO, JIGAWA, KADUNA, KANO, KASTINA, KEBBI, KOGI, KWARA, LAGOS, NASSARAWA, NIGER, OGUN, ONDO, OSUN, OYO, PLATEAU, RIVERS, SOKOTO, TARABA, YOBE, ZAMFARA]
+*/
+    
+    </script>
+</body>
+</html>
