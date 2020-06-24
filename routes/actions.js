@@ -616,9 +616,9 @@ router.get('/profile', function (req, res) {
 });
 
 /**handles updating the corper's profile */
-router.post('/profile', bodyParser.urlencoded({
+router.post('/profile', /* bodyParser.urlencoded({
   extended: true
-}), function (req, res) {
+}), */ function (req, res) {
 
   query.UpdateProfile({req_body: req.body, session_statecode: req.session.statecode.toUpperCase()})
     // cater for fields we already have, so that we don't touch them eg. servicestate

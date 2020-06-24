@@ -4,25 +4,14 @@ let router = express.Router();
 const query = require('../models/queries');
 
 router.get(['/', '/home', '/index', '/homepage'], function (req, res) {
-  /* _session = req.session;
-  _session.d = 'k'; */
   res.type('.html');
-  // res.contentType('*/*');
-  // res.sendFile(__dirname + '/index.html');
-  res.render('pages/index');
+  res.render('pages/about');
 });
 
-router.get(['/about', '/about-us'], function (req, res) {
-  /* _session = req.session;
-  _session.d = 'k'; */
+/* router.get(['/about', '/about-us'], function (req, res) {
   res.type('html');
-  // res.contentType('*/*');
-  // res.sendFile(__dirname + '/index.html');
-  res.render('pages/about', {
-    // houses: results1,
-    // pictures: results2
-  });
-});
+  res.render('pages/about');
+}); */
 
 router.get(['/AB', '/AD', '/AK', '/AN', '/BA', '/BY', '/BN', '/BO', '/CR', '/DT', '/EB', '/ED', '/EK', '/EN', '/FC', '/GM', '/IM', '/JG', '/KD', '/KN', '/KT', '/KB', '/KG', '/KW', '/LA', '/NS', '/NG', '/OG', '/OD', '/OS', '/OY', '/PL', '/RV', '/SO', '/TR', '/YB', '/ZM'], function (req, res) {
   // console.log('tryna login ', req.session.id, req.session.loggedin);
