@@ -378,9 +378,11 @@ async function main(email, name, state) {
 var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://localhost:27017/';
 */
-server.listen(process.env.PORT, function () { // auto change port if port is already in use, handle error gracefully
-  console.log('node server listening on port :%s', process.env.PORT);
-}); //  throw er; // Unhandled 'error' event // Error: listen EADDRINUSE ::process.env.PORT
+
+const portnumber = process.env.PORT || process.env.LOCAL_PORT || 8081
+server.listen(portnumber , function () { // auto change port if port is already in use, handle error gracefully
+  console.log('node server listening on port :%s', portnumber);
+}); //  throw er; // Unhandled 'error' event // Error: listen EADDRINUSE ::process.env.[portnumber]
 
 // WARNING: app.listen(80) will NOT work here!
 /**

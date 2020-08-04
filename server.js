@@ -493,9 +493,10 @@ var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://localhost:27017/';
 */
 
-server.listen(process.env.PORT || 8081, function () { // auto change port if port is already in use, handle error gracefully
-  console.log('node server listening on port :%s', process.env.PORT || 8081);
-}); //  throw err; // Unhandled 'error' event // Error: listen EADDRINUSE ::process.env.PORT
+const portnumber = process.env.PORT || process.env.LOCAL_PORT || 8081
+server.listen(portnumber , function () { // auto change port if port is already in use, handle error gracefully
+  console.log('node server listening on port :%s', portnumber);
+}); //  throw err; // Unhandled 'error' event // Error: listen EADDRINUSE ::process.env.[portnumber]
 
 console.info(`This server's process PID is ${process.pid} running on platform ${process.platform}`);
 fs.writeFile('PID.txt', process.pid, (err) => {

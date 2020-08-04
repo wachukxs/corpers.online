@@ -5,7 +5,7 @@ const app = require('./web/app'); // Express
 const http = require('http');
 
 // Get port from environment and store in Express.
-const port = parseInt(process.env.PORT, 10) || 3000;
+const port = parseInt(process.env.PORT, 10) || parseInt(process.env.LOCAL_PORT, 10) || 3000;
 app.set('port', port); // necessary ?
 
 // Create HTTP server.
