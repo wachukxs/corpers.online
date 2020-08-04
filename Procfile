@@ -1,1 +1,1 @@
-web: nodemon index
+web: node index.js
