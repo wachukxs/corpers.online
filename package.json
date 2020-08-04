@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified... yet\" && exit 1",
-    "start": "node ./index.js"
+    "start": "nodemon ./index.js"
   },
   "keywords": [
     "corpers",
@@ -18,7 +18,7 @@
     "places"
   ],
   "engines": {
-    "node": "12.x"
+    "node": "12.14.x"
   },
   "author": "@wachukx, Mogaba Juliet",
   "license": "ISC",
