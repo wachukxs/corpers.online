@@ -160,3 +160,8 @@ test*.js
 
 # someone tryna steal? wow
 todo.txt
+
+# makes repo too large
+img/
+testimg/
+.git
