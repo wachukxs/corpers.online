@@ -86,8 +86,7 @@ router.get('/newsearch', function (req, res) {
   res.set('Content-Type', 'text/html');
   // res.sendFile(__dirname + '/search and places/index.html');
   console.log('req.query:', req.query); // find every thing that is req.query.search.query
-
-
+  
   query.DistinctNotNullDataFromPPAs(req).then(result => {
     res.render('/newsearch2', result)
   }, reject => {

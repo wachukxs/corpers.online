@@ -11,23 +11,25 @@ const ngstates = require('../constants/ngstates');
 */
 exports.CorpersSignUp = async (signupData) => {
 
-    var theservicestate = ngstates.states_long[ngstates.states_short.indexOf(signupData.statecode.slice(0, 2).toUpperCase())];
+    console.log('sign up data', signupData)
+
+    let theservicestate = ngstates.states_long[ngstates.states_short.indexOf(signupData.statecode.trim().slice(0, 2).toUpperCase())];
 
     // we don't need stream, do we? can be inferred! same as batch!
-    var thestream = signupData.statecode.slice(5, 6).toUpperCase();
+    let thestream = signupData.statecode.trim().slice(5, 6).toUpperCase();
 
     function getstream(sb) {
-        return sb == 'A' ? 1 : sb == 'B' ? 2 : sb == 'C' ? 3 : 4; // because we're sure it's gonna be 'D'
+        return sb == 'A' ? 1 : sb == 'B' ? 2 : sb == 'C' ? 3 : 4; // because we're sure it's gonna be 'D'... are we? ...sure?
     }
 
-    // 'chuks'.replace(/^[a-z]/, (s) => {return s.toUpperCase()} ) // makes 'chuks' => 'Chuks'
-    signupData.lastname = signupData.lastname.replace(/^[a-z]/, (s) => { return s.toUpperCase() });
-    signupData.middlename = signupData.middlename.replace(/^[a-z]/, (s) => { return s.toUpperCase() });
-    signupData.firstname = signupData.firstname.replace(/^[a-z]/, (s) => { return s.toUpperCase() });
+    // 'chuks'.replace(/^[a-z]/i, (s) => {return s.toUpperCase()} ) // makes 'chuks' => 'Chuks'
+    signupData.lastname = signupData.lastname.trim().replace(/^[a-z]/i, (s) => { return s.toUpperCase() });
+    signupData.middlename = signupData.middlename.trim().replace(/^[a-z]/i, (s) => { return s.toUpperCase() });
+    signupData.firstname = signupData.firstname.trim().replace(/^[a-z]/i, (s) => { return s.toUpperCase() });
 
     signupData.servicestate = theservicestate;
     signupData.stream = getstream(thestream);
-    signupData.statecode = signupData.statecode.toUpperCase(); // convert statecode to uppercase, very important!
+    signupData.statecode = signupData.statecode.trim().toUpperCase(); // convert statecode to uppercase, very important!
     // signupData.batch = signupData.statecode.slice(3, 6).toUpperCase(); // we don't need batch, can be inferred from statecode
 
     // var sqlquery = "INSERT INTO info(email, firstname, middlename, password, lastname, statecode, batch, servicestate, stream) VALUES ('" + signupData.email + "', '" + signupData.firstname + "', '" + signupData.middlename + "', '" + signupData.password + "', '" + signupData.lastname + "', '" + signupData.statecode.toUpperCase() + "', '" + signupData.statecode.slice(3, 6).toUpperCase() + "', '" + theservicestate + "' , '" + getstream(thestream) + "'  )";
@@ -46,7 +48,7 @@ exports.CorpersSignUp = async (signupData) => {
         }
 
         connectionPool.query('INSERT INTO info SET ?', signupData, function (error, results, fields) {
-            console.log('inserted data from: ', results);
+            console.log('inserted data result: ', results);
             if (error) {
                 console.log('the error code:', error.code, error.sqlMessage)
                 switch (error.code) { // do more here
@@ -682,7 +684,7 @@ exports.DistinctNotNullDataFromPPAs = async (data) => {
   if (data.query.nop) {
     // should we only be getting data from info ? how about [ppas in] places table ?????????????
     // we have req.query.nop=name_of_ppa + req.query.pa=ppa_address + req.query.top=type_of_ppa // also select ppa closer to it and other relevant info we'll find later
-    connectionPool.query(mustquery + "SELECT name_of_ppa, ppa_address, type_of_ppa, ppa_geodata, ppa_directions FROM info WHERE name_of_ppa = '" + req.query.nop + "'", function (error, results, fields) { // bring the results in ascending order
+    connectionPool.query(mustRunQuery + "SELECT name_of_ppa, ppa_address, type_of_ppa, ppa_geodata, ppa_directions FROM info WHERE name_of_ppa = '" + req.query.nop + "'", function (error, results, fields) { // bring the results in ascending order
 
       if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
         console.log(error);
@@ -763,13 +765,15 @@ exports.DistinctNotNullDataFromPPAs = async (data) => {
 
     });
   } else if (data.query.rr) { // if it's an accomodation
+  console.log('ghghghhghghghhg')
     // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
-    connectionPool.query(mustquery + "SELECT * FROM accommodations WHERE rentrange = '" + data.query.rr + "' AND input_time = '" + data.query.it + "'", function (error, results, fields) {
+    connectionPool.query(mustRunQuery + "SELECT * FROM accommodations WHERE rentrange = '" + data.query.rr + "' AND input_time = '" + data.query.it + "'", function (error, results, fields) {
 
       if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
         console.log(error);
-        throw error;
+        reject(error);
       } else if (!helpers.isEmpty(results) /* && results[3].acc_geodata != '' */) {
+        
         // we're not adding the GeoJSON results to an array because it's only one result
         for (index = 0; index < results[3].length; index++) {
           /**
@@ -840,7 +844,7 @@ exports.DistinctNotNullDataFromPPAs = async (data) => {
   } else if (req.query.type == 'accommodations') { // if it's an accomodation
     // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
     // inputing time from js to sql causes ish
-    connectionPool.query(mustquery + "SELECT * FROM accommodations WHERE statecode = '" + req.query.sc + "' AND input_time = '" + moment(new Date(req.query.it)).format('YYYY-MM-DD HH:mm:ss') + "' AND streetname = '" + req.query.sn + "'", function (error, results, fields) {
+    connectionPool.query(mustRunQuery + "SELECT * FROM accommodations WHERE statecode = '" + req.query.sc + "' AND input_time = '" + moment(new Date(req.query.it)).format('YYYY-MM-DD HH:mm:ss') + "' AND streetname = '" + req.query.sn + "'", function (error, results, fields) {
       console.log('should be here', results[3])
       if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
         console.log(error);
@@ -951,7 +955,7 @@ exports.GetPosts = async (data) => {
   // so we're selecting posts newer than the ones currently in the user's timeline. or the server closed the connection error
 
   // SELECT * FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT ppa_address, ppa_geodata, type_of_ppa FROM info WHERE ppa_address != '' AND ppa_geodata != '' AND type_of_ppa != ''
-  console.log('search query parameters', data.query)
+  // console.log('search query parameters', data.query)
   let q = '', thisisit = {};
   if (data.query.s) {
       console.log('are we here?');
@@ -960,7 +964,6 @@ exports.GetPosts = async (data) => {
     ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town \
     FROM info WHERE ppa_address != '' AND statecode LIKE '" + data.query.s.substring(0, 2) + "%'";
   } else {
-    console.log('we should be here?');
     
     for (let index = 0; index < 36/* ngstates.states_short.length */; index++) {
       const element = ngstates.states_short[index];
@@ -969,7 +972,6 @@ exports.GetPosts = async (data) => {
       SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info \
       WHERE ppa_address != '' AND statecode LIKE '" + element + "%' ;"; // the trailing ';' is very important
     }
-    console.log('did we finish?');
     // let q = "SELECT streetname, type, input_time, statecode, price, rentrange FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != ''";
   }
 
@@ -984,7 +986,9 @@ exports.GetPosts = async (data) => {
         console.log('AGAIN we should be here?');
       // res.json({er: 'er'}); // auto sets content-type header with the correct content-type
       // res.send({ user: 'tobi' });
-      console.log('\n[=', results.length, results)
+
+      // console.log('\n[=', results.length, results)
+
       // res.status(200).send({ data: {ppas: ppa, accommodations: acc} }); // {a: acc, p: ppa}
 
       if (data.query.s) {
