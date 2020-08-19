@@ -55,6 +55,10 @@
         input#statecode {
             text-transform: uppercase;
         }
+
+        .wrong{
+            color: red;
+        }
     </style>
 </head>
 
@@ -159,19 +163,24 @@
 	</script>
 	<script>
         if ( 'URLSearchParams' in window ) {
+            console.log('using window')
             var urlParams = new URLSearchParams( window.location.search );
             // URLSearchParams also provides familiar Object methods like keys(), values(), and entries():
+            // group repepitive commands together like ...removeAttribute( 'hidden' ) etc., so we call them once
             if ( urlParams.get("m") === "de" ) {
-                document.getElementsByClassName( 'wrong' )[ 0 ].textContent = 'Email already registered with'; // .removeAttribute( 'hidden' );
+                document.getElementsByClassName( 'wrong' )[ 0 ].textContent = 'Email already registered with';
+                document.getElementsByClassName( 'wrong' )[ 0 ].removeAttribute( 'hidden' );
                 document.getElementById( 'email' )
 					.classList.add( 'is-invalid' );
 					
             } else if ( urlParams.get("m") === "ds" ) {
-                document.getElementsByClassName( 'wrong' )[ 1 ].textContent = 'State code already registered with'; // .removeAttribute( 'hidden' );
+                document.getElementsByClassName( 'wrong' )[ 1 ].textContent = 'State code already registered with';
+                document.getElementsByClassName( 'wrong' )[ 1 ].removeAttribute( 'hidden' );
                 document.getElementById( 'scinput' )
                     .classList.add( 'is-invalid' );
             } else if ( urlParams.get("m") === "is" ) {
                 document.getElementsByClassName( 'wrong' )[ 1 ].textContent = 'Invalid statecode';
+                document.getElementsByClassName( 'wrong' )[ 1 ].removeAttribute( 'hidden' );
                 document.getElementById( 'scinput' )
                     .classList.add( 'is-invalid' );
             }
