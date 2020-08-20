@@ -594,7 +594,7 @@
                                                 <!-- //  -->
                                                 <div class="form-group">
                                                     <label for="streetname">Street name</label>
-                                                    <input type="text" name="streetname" class="form-control" id="streetname" placeholder="No. 17B, Room 5.">
+                                                    <input type="text" name="streetname" autocomplete="address-level4" class="form-control" id="streetname" placeholder="No. 17B, Room 5.">
 
 
                                                     <div class=" d-none" style="display: none">
@@ -606,7 +606,7 @@
                                                     <div class="">
                                                         <label for="address">Address <small class="form-text text-muted">(If you're there right now click 'Geo' to locate in maps)</small> </label>
                                                         <div class="input-group">
-                                                            <input type="text" name="address" class="form-control" id="address" placeholder="Adeleke Street">
+                                                            <input type="text" name="address" autocomplete="street-address" class="form-control" id="address" placeholder="Adeleke Street">
                                                             <div class="input-group-append">
                                                                 <a id="geo" class="btn btn-secondary">Geo</a>
                                                             </div>
@@ -707,11 +707,11 @@
                                             </fieldset>
 
                                             <script>
+                                                // to also set date: const date = new Date().toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' })
                                                 let minmax = new Date();
                                                 document.getElementById('expire')
                                                     .min = minmax.toISOString()
-                                                    .substr(0,
-                                                        10); // Minimum date is today!
+                                                    .substr(0, 10); // Minimum date is today!
                                                 // Max date is two years from now.
                                                 document.getElementById('expire')
                                                     .max = new Date(minmax.getFullYear() + 2, minmax.getMonth())
@@ -785,7 +785,7 @@
         $('#accommodationFormCarousel')
             .on('slide.bs.carousel', function(e) {
                 // do something…
-                console.log('e', e);
+                // console.log('e', e);
                 if (e.from == 0 && e.to == 1) {
                     // document.getElementById('ap').setAttribute('disabled', 'false');
                     document.getElementById('ap')
@@ -796,7 +796,7 @@
                 } else if (e.from == 3 && e.to == 4) {
                     // change the next button to submit && make sure the form is full before they can submit
                     // make the corper see a preview of how their post would look like too, to make them make changes as much as neccessary
-                    console.info('change');
+                    // console.info('change');
                     $("#an")
                         .replaceWith("<input type='submit' class='btn btn-primary' id='accsub' value='Put up for rent'>");
                 } else if (e.from == 4 && e.to == 3) {
@@ -808,13 +808,13 @@
         $('#accommodationFormCarousel')
             .on('slid.bs.carousel', function(e) {
                 // do something…
-                console.log('2nd e', e);
+                // console.log('2nd e', e);
 
             });
 
         $('#accommodationModal')
             .on('shown.bs.modal', function(e) {
-                console.info('acc modal shown');
+                // console.info('acc modal shown');
                 // document.getElementById('ap').disabled = true;
 
                 // once a user submits accommodation, reset everything and prevent user from posting twice
@@ -905,7 +905,7 @@
 
                     </div>
                     <div class="modal-footer">
-                        <input type="submit" class="btn btn-primary" id="postsubmit" value="Post it" disabled>
+                        <input type="submit" class="btn btn-primary" id="postsubmit" value="Post" disabled>
                     </div>
 
                 </form>
@@ -970,7 +970,9 @@
                     document.getElementById('previewParent').removeChild( document.getElementById( 'preview' ) );
                 } */
 
+                // remove appended images/media in the preview
                 $('#previewPostPics').html('');
+                $('#preview').html(''); // for location too
 
                 // if there were location info, clear it
                 document.getElementById('locinfo').innerHTML = '';
@@ -1030,8 +1032,7 @@
         function sendAccommodation() {
 
             // close the accommodation modal form
-            $('#accommodationModal')
-                .modal('hide');
+            $('#accommodationModal').modal('hide');
 
             // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
             const XHR1 = new XMLHttpRequest();
@@ -1060,8 +1061,7 @@
                 document.forms[1].elements["roomsmedia"].labels[0].children[0].innerText = "Upload media...";
 
                 // rest the carousel too
-                $('#accommodationFormCarousel')
-                    .carousel(0);
+                $('#accommodationFormCarousel').carousel(0);
 
                 // make the previous and next buttons as they were
                 $("#accsub")
@@ -1424,10 +1424,10 @@
                 user: pathArray[2],
                 putl: bm,
                 autl: bn,
-                first_post_pst: bm.length > 0 ? bm[0] : null,
-                last_post_pst: bm.length > 0 ? bm[bm.length - 1] : null,
-                first_post_acc: bn.length > 0 ? bn[0] : null,
-                last_post_acc: bn.length > 0 ? bn[bn.length - 1] : null,
+                // first_post_pst: bm.length > 0 ? bm[0] : null,
+                // last_post_pst: bm.length > 0 ? bm[bm.length - 1] : null,
+                // first_post_acc: bn.length > 0 ? bn[0] : null,
+                // last_post_acc: bn.length > 0 ? bn[bn.length - 1] : null,
                 test: 'ertrerer',
                 from: window.location.pathname.substring(1, 12),
                 statecode: '<%= statecode %>' // window.location.pathname.substring( 1, 12 ) // '<%= statecode %>'
@@ -1621,15 +1621,16 @@
                         ii = document.createElement('img');
                         ii.setAttribute('class', 'img-fluid border');
 
-                        try {
+                        let a;
+                        try { // try to initialize a
                             // if localhost
                             if (window.location.hostname == "localhost") {
-                                let a = new URL(`/uc?id=${data.post.media[i]}`, "https://drive.google.com") // removed /uc?id=
+                                a = new URL(`/uc?id=${data.post.media[i]}`, "https://drive.google.com") // removed /uc?id=
                                     .toString(); // important: the trailing slash
 
                             } else if (window.location.hostname == "corpers.online") { // if not localhost then get media from live site
                                 // getting media from live site
-                                let a = new URL(`/uc?id=${data.post.media[i]}`, "https://drive.google.com")
+                                a = new URL(`/uc?id=${data.post.media[i]}`, "https://drive.google.com")
                                     .toString(); // upload images to this url when ever users upload images
                             }
                         } catch (error) {
@@ -1909,13 +1910,14 @@
 
                     // if what's coming is already a url (like our mapbox pictures) // change later maybe...
                     try {
-                        let a = new URL(data.post.media)
-                            .toString();
-                        console.log('good url')
-                        ii.setAttribute('src', data.post.media);
+                        let a = new URL(data.post.media || data.post.mapdata).toString();
+                        console.log('good url?')
+                        ii.setAttribute('src', a);
                     } catch (error) { // if it's not already a url
-                        console.log(data.post.media, 'err image map', error);
+                        console.log(a, 'err image map', error);
                         // with holder.js set the src attr of the image to display an appropriate err msg
+
+                        // ii.setAttribute('src', a); // set a with error image
                     }
 
 
@@ -2428,14 +2430,15 @@
                 if (infoElement == 'locinfo') {
                     console.log('weeeee;');
                     // how can I know if and when the fetch api was aborted https://developers.google.com/web/updates/2017/09/abortable-fetch
-                    const controller = new AbortController();
+                    // commented out because the next block of code is where we use it, and we aren't using the next block of code now
+                    /* const controller = new AbortController();
                     const signal = controller.signal;
 
-                    setTimeout(() => controller.abort(), 5000);
+                    setTimeout(() => controller.abort(), 5000); */
 
-                    //once we get the geo coordinates, first we get the name of the place., nominatium isn't perfect yet, will just be saving data from it to compare the accuracy we get
-                    fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + position.coords.latitude +
-                            '&lon=' + position.coords.longitude, {
+                    // once we get the geo coordinates, first we get the name of the place., nominatium isn't perfect yet, will just be saving data from it to compare the accuracy we get
+                    // commented out because we aren't using it for now, and it always returns an error, Failed to fetch, seems we're calling the API wrongly
+                    /* fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + position.coords.latitude + '&lon=' + position.coords.longitude, {
                                 signal
                             })
                         .then(
@@ -2454,15 +2457,14 @@
                                         console.log('savePoint2', savePoint);
                                     });
                             }
-                        )
-                        .catch(function(err) {
+                        ).catch(function(err) {
                             //console.log('Fetch Error :-S', err);
                             if (err.name === 'AbortError') {
                                 console.log('Fetch aborted');
                             } else {
-                                console.error('Uh oh, an error! Fetch Error :-S', err);
+                                console.error('Uh oh, an error! Fetch Error :', err);
                             }
-                        });
+                        }); */
                     //save to db
 
                     //do the image
@@ -2485,11 +2487,10 @@
                     preview.appendChild(img);
 
                     img.onloadstart = (event) => {
-                        // console.log('l', event)
+                        // console.log('map img load event', event)
                     }
 
                     // note: there's img.complete;
-
 
                     let anythere = document.getElementById('previewPostPics').hasChildNodes();
                     if (anythere) { // replace the first element
@@ -2538,8 +2539,7 @@
             };
 
             navigator.geolocation.getCurrentPosition(geoPoint, geoPointError, geo_options);
-            document.getElementById(infoElement)
-                .innerText = 'Retrieving location...';
+            document.getElementById(infoElement).innerText = 'Retrieving location...';
         };
 
         findBtn.addEventListener("click", locate, false);

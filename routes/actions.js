@@ -679,7 +679,7 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
   const busboy = new Busboy({
     headers: req.headers,
     limits: { // set fields, fieldSize, and fieldNameSize later (security)
-      files: 7, // don't upload more than 7 media files
+      files: 12, // don't upload more than 12 media files
       fileSize: 24 * 1024 * 1024 // 24MB
     }
   });
@@ -719,10 +719,9 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
 
 
     filestream.on('data', function (data) {
-      if (!get) {
+      if (!get) { // ?? why?
 
       }
-
       console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
     });
 

@@ -1,5 +1,5 @@
 const query = require('../models/queries');
-
+const moment = require('moment');
 // https://www.npmjs.com/package/socket.io#standalone
 const io = require('socket.io')();
 // find a more authentic way to calculate the numbers of corpers online using io(/user) --so even if they duplicate pages, it won't double count
@@ -39,19 +39,19 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
     // find a way to handle images and videos
     /** sender, statecode, type, text, price, location, post_time, input_time */
 
-    // posts currently in user's time line is socket.handshake.query.utl.split(',')
+    // posts currently in user's time line is socket.handshake.query.[p|a]utl.split(',')
     console.log('socket.handshake.query.putl', typeof socket.handshake.query.putl, socket.handshake.query.putl)
 
-    /**
-     * for use later:
-     * socket.handshake.query.putl.split(',');
-     * socket.handshake.query.autl.split(',');
-     */
     
+     // for use later:
+     
+     
     
 
-    var pUTL = socket.handshake.query.last_post_pst;
-    var aUTL = socket.handshake.query.last_post_acc;
+    let pUTL = socket.handshake.query.putl.split(',');
+    let aUTL = socket.handshake.query.autl.split(',');
+    console.log('\nwaht?', aUTL, pUTL);
+    console.log('socket.handshake.query.putl after', typeof pUTL, aUTL)
     // console.log('socket query parameter(s) [user timeline]\n', 'acc:' + aUTL.length, ' posts:' + pUTL.length); // if either equals 1, then user timeline is empty
 
     // SELECT * FROM posts WHERE post_time > 1545439085610 ORDER BY posts.post_time ASC (selects posts newer than 1545439085610 | or posts after 1545439085610)
@@ -64,21 +64,21 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
 
     // ways to convert from js format to sql format
     
-    let d, e =0;
-    try { // login DT/19A/1266 // login DT/19A/1234 - pass
-        console.log('the time', aUTL[aUTL.length - 1])
-        d = new Date(aUTL[aUTL.length - 1]).toISOString().slice(0, 19).replace('T', ' '); // or use moment.js library
-
-    // moment is better because it makes it exactly as it was, the other just uses string manipulation and it's always an hour behind original time
-     e = moment(new Date(aUTL[aUTL.length - 1])).format('YYYY-MM-DD HH:mm:ss');
-
     
-    } catch (error) {
+    // https://stackoverflow.com/a/22573495
+    let aUTLlast = aUTL.slice(-1)[0] !== '' ? aUTL.slice(-1)[0] : null;
+    let pUTLlast = pUTL.slice(-1)[0] !== '' ? pUTL.slice(-1)[0] : null;
+    try { // this try-catch block isn't necessary, just for testing I guess // ...
+        let d, e;
+        console.log('the time', aUTL, new Date(aUTLlast));
+        d = new Date(aUTLlast).toISOString().slice(0, 19).replace('T', ' '); // or use moment.js library
+
+        // moment is better because it makes it exactly as it was, the other just uses string manipulation and it's always an hour behind original time
+        e = moment(new Date(aUTLlast)).format('YYYY-MM-DD HH:mm:ss');
+        // console.log('the time', d, e);
+    } catch (error) { // pUTLlast/aUTLlast must be null then
         console.log('err => ', error);
-        d = 0;
     }
-    // console.log('d is :', d, 'e is :', e, '\naUTL', aUTL, 'aUTL.length', aUTL.length);
-    
     // remember to check if the query to know if the time is actually greater than or less
     // console.log(e, 'time causing the ish', aUTL[aUTL.length - 1], pUTL[pUTL.length - 1]); // when timeline is empty, e is "Invalid Date"
 
@@ -86,8 +86,8 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
 
     query.FetchPostsForTimeLine({
         statecode_substr: socket.handshake.query.statecode.substring(0, 2),
-        last_post_time: pUTL,
-        last_input_time: aUTL
+        last_post_time: pUTLlast,
+        last_input_time: aUTLlast
     }).then((allposts_results) => {
         Object.entries(allposts_results).forEach(
             ([key, value]) => {
@@ -110,9 +110,6 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
         console.log('FetchPostForTimeLine failed');
         
     })
-
-    
-
 
 
     socket.on('boardcast message', (data, fn) => {

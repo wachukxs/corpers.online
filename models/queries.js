@@ -176,7 +176,7 @@ exports.UnreadMessages = async (corpersData) => {
 }
 
 /**
- * get post for the timeline
+ * get newer posts for the timeline based on the most current in corper's timeline
  */
 exports.FetchPostsForTimeLine = async (timeLineInfo) => {
     let re = new Promise((resolve, reject) => {
