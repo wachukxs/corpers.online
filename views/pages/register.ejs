@@ -115,7 +115,7 @@
                     <div class="form-row">
                         <div class="col-md-4 mb-3">
                             <label for="statecode">State code</label>
-							<input id="scinput" type="text" pattern="^(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)/\d\d[abcACB]/[0-9]{4}"
+							<input id="scinput" type="text" pattern="(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)/[0-9]{2}[abcACB]/[0-9]{4}"
 							class="form-control text-uppercase" autocomplete="statecode" id="statecode" name="statecode" placeholder="e.g. AB/17A/4567" required>
                             <!-- add distinct state codes. make sure state codes haven't been registered before -->
                             <small class="text-muted">This will help verify corpers.</small>
@@ -146,24 +146,31 @@
 
     </main>
 
+    <footer class="footer text-center pt-3">
+        <p>Corpers Online built by <a href="/contact">Corpers</a> for <a href="/login">Corpers</a>.</p>
+        <p>
+            &copy; <span id="year">2020</span>
+        </p>
+    </footer>
+
     <script>
-		// (AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/\d\d[abcACB]\/\d\d\d\d
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // (AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/\d\d[abcACB]\/\d\d\d\d
 		// [^~!@#$%&*()_+=\-?/\\:;{}[\]\[]
 		// ([A-Za-z]+[\'\-]?[A-Za-z]\w+)
 		var years = parseInt( new Date( Date.now() ).getFullYear().toFixed().slice( 2, 4 ) );
 		var yearrange = '(' + ( years - 1 ).toString() + '|' + years.toString() + ')';
 		// document.forms[ 0 ].elements[ 5 ].pattern.replace( '\\d\\d', yearrange );
 		
-		document.forms[ 0 ].elements[ 5 ].pattern = `^(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm\/${yearrange}[abcACB]\/[0-9]{4}$`; // extra escaping probably because we're setting with string from here and not directly from the pattern attribute
+		document.forms[ 0 ].elements[ 5 ].pattern = `^(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\\/${yearrange}[abcACB]\\/[0-9]{4}$`; // extra escaping probably because we're setting with string from here and not directly from the pattern attribute
 
         document.getElementById( 'scinput' )
             .oninvalid = function( event ) {
                 event.target.setCustomValidity("State code should start with a valid state abbrevation, have forward slashes, appropriate batch, and four trailing digits. Right? And are you currently serving?");
             }
-	</script>
-	<script>
+
         if ( 'URLSearchParams' in window ) {
-            console.log('using window')
             var urlParams = new URLSearchParams( window.location.search );
             // URLSearchParams also provides familiar Object methods like keys(), values(), and entries():
             // group repepitive commands together like ...removeAttribute( 'hidden' ) etc., so we call them once
@@ -205,15 +212,6 @@
             }
         }
 	</script>
-
-    <footer class="footer text-center pt-3">
-        <p>Corpers Online built by <a href="/contact">Corpers</a> for <a href="/login">Corpers</a>.</p>
-        <p>
-            &copy; <script>
-                document.write( new Date().getFullYear() )
-            </script>
-        </p>
-    </footer>
 </body>
 
 </html>

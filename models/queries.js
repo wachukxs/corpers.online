@@ -96,9 +96,9 @@ exports.CorpersSignUp = async (signupData) => {
 }
 
 exports.CorpersLogin = async (req_body) => {
-    const loginData = [req_body.statecode.toUpperCase(), req_body.password];
+    const loginData = [req_body.statecode.toUpperCase()]; // , req_body.password // .toUpperCase() is crucial
     let re = await new Promise((resolve, reject) => {
-        let sqlquery = "SELECT password, name_of_ppa, lga, region_street, city_town, batch, servicestate, statecode FROM info WHERE statecode = ?";
+        let sqlquery = "SELECT password, name_of_ppa, lga, region_street, city_town, servicestate, statecode FROM info WHERE statecode = ?";
         connectionPool.query(sqlquery, loginData, function (error, result, fields) {
             console.log('can login result be empty', result);
             // console.log('selected data from db, logging In...', results1); // error sometimes, maybe when there's no db conn: ...
@@ -106,28 +106,27 @@ exports.CorpersLogin = async (req_body) => {
                 console.log('the error code:', error.code)
                 switch (error.code) { // do more here
                     case 'ER_ACCESS_DENIED_ERROR':
-
                         break;
                     case 'ECONNREFUSED': // maybe send an email to myself or the delegated developer // try to connect again multiple times first
-
                         break;
                     case 'PROTOCOL_CONNECTION_LOST':
-
                         break;
-
                     default:
                         break;
                 }
                 // throw error;
                 console.log('backend error', `${error.code} ${error.sqlMessage}`);
 
-                reject({ message: false, result: error.code })
+                reject({ message: 'backend error' })
             } else if (helpers.isEmpty(result)) {
-                reject({ message: 'sign up' }) // tell them they need to sign up
+                reject({ message: 'sign up' }) // tell them they need to sign up or password or statecode is wrong
             } else if (result.length === 1) {
-
-                resolve({ message: true, response: result })
-
+                if (result[0].password === req_body.password) { // very crucial step!
+                    resolve({ message: true, response: result })
+                } else {
+                    reject({ message: 'wrong password' }) // wrong password
+                }
+                
             }
         });
     })

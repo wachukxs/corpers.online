@@ -221,8 +221,7 @@ router.post('/login', /* bodyParser.urlencoded({ // edited
 
     query.CorpersLogin(req.body).then(result => {
 
-      if (result.response[0].password === req.body.password) { // verify password, crucial step
-        req.session.statecode = req.body.statecode.toUpperCase();
+      req.session.statecode = req.body.statecode.toUpperCase();
         req.session.batch = result.response[0].batch;
         req.session.loggedin = true;
         req.session.servicestate = result.response[0].servicestate;
@@ -238,24 +237,23 @@ router.post('/login', /* bodyParser.urlencoded({ // edited
         }).catch(reason => {
           console.log('fail save login session', reason);
         })
-      } else {
-        res.status(502).redirect('/login?p=w'); // [p]assword = [w]rong
-      }
-
-
+      
     }, reject => {
 
       switch (reject.message) {
-        case false:
-          res.status(502).redirect('/login?l=n');
+        case 'backend error':
+          res.status(502).redirect('/login?l=n'); // [b]ackend = [e]rror
           break;
 
         case 'sign up':
           res.status(502).redirect('/login?m=s'); // [m]essage = [s]ignup // tell corper at the front end
           break;
-
+        
+        case 'wrong password':
+          res.status(502).redirect('/login?p=w'); // [p]assword = [w]rong
+          break;
         default:
-          res.status(502).redirect('/login?b=e'); // [b]ackend = [e]rror
+          res.status(502).redirect('/login?t=a'); // just [t]ry = [a]gain
           break;
       }
 

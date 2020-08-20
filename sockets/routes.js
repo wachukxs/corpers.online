@@ -66,6 +66,7 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
     
     let d, e =0;
     try { // login DT/19A/1266 // login DT/19A/1234 - pass
+        console.log('the time', aUTL[aUTL.length - 1])
         d = new Date(aUTL[aUTL.length - 1]).toISOString().slice(0, 19).replace('T', ' '); // or use moment.js library
 
     // moment is better because it makes it exactly as it was, the other just uses string manipulation and it's always an hour behind original time
