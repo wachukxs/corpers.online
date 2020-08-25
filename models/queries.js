@@ -490,107 +490,110 @@ exports.GetMapData = async () => {
 /**
  * fetch chat history
  */
-exports.GetChatData = async (req_session, req_query) => {
+exports.GetChatData = async (req) => {
     let re = await new Promise((resolve, reject) => {
-        if (req_session.loggedin && req_query.posts) { // we need to be sure that they clicked from /account
+        if (req.session.loggedin && req.query.posts) { // we need to be sure that they clicked from /account
 
             let query = '';
-            // console.log('\n\n\n\n\n uhmmmm', req_query.posts.who, req_query.posts.when, req_query.posts.type, moment(new Date(parseInt(req_query.posts.when))).format('YYYY-MM-DD HH:mm:ss'));
-            // console.log( new Date(parseInt(req_query.posts.when)).toISOString().slice(0, 19).replace('T', ' ') ); // typeof req_query.posts.when = string
+            // console.log('\n\n\n\n\n uhmmmm', req.query.posts.who, req.query.posts.when, req.query.posts.type, moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss'));
+            // console.log( new Date(parseInt(req.query.posts.when)).toISOString().slice(0, 19).replace('T', ' ') ); // typeof req.query.posts.when = string
 
             // ALSO SELECT OLDMESSAGES THAT ARE NOT SENT... THEN COUNT THEM... 
-            if (req_query.posts.type == 'accommodation') {
-                query = "SELECT * FROM accommodations WHERE statecode = '" + req_query.posts.who + "' AND input_time = '" + moment(new Date(parseInt(req_query.posts.when))).format('YYYY-MM-DD HH:mm:ss') + "' ; "
-                    // + "SELECT * FROM chats WHERE room LIKE '%" + req_query.s + "%' AND message IS NOT NULL ;"
+            if (req.query.posts.type == 'accommodation') {
+                query = "SELECT * FROM accommodations WHERE statecode = '" + req.query.posts.who + "' AND input_time = '" + moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss') + "' ; "
+                    // + "SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL ;"
                     +
-                    "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%" + req_query.s + "%' AND chats.message IS NOT NULL ;"
-                    // + "SELECT * FROM chats WHERE room LIKE '%" + req_query.s + "%' AND message IS NOT NULL AND message_sent = false ;";
+                    "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;"
+                    // + "SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL AND message_sent = false ;";
                     +
-                    "SELECT * FROM chats WHERE message_to = '" + req_query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
-                    "SELECT * FROM chats WHERE message_from = '" + req_query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
-                    "SELECT firstname, lastname FROM info WHERE statecode = '" + req_query.posts.who.toUpperCase() + "' ;";
+                    "SELECT * FROM chats WHERE message_to = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
+                    "SELECT * FROM chats WHERE message_from = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
+                    "SELECT firstname, lastname FROM info WHERE statecode = '" + req.query.posts.who.toUpperCase() + "' ;";
 
-            } else if (req_query.posts.type == 'sale') { // we will only do escrow payments for products sale
-                query = "SELECT * FROM posts WHERE statecode = '" + req_query.posts.who + "' AND post_time = '" + req_query.posts.when + "' ;"
-                    // + " SELECT * FROM chats WHERE room LIKE '%" + req_query.s + "%' AND message IS NOT NULL ;"
+            } else if (req.query.posts.type == 'sale') { // we will only do escrow payments for products sale
+                query = "SELECT * FROM posts WHERE statecode = '" + req.query.posts.who + "' AND post_time = '" + req.query.posts.when + "' ;"
+                    // + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL ;"
                     +
-                    "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%" + req_query.s + "%' AND chats.message IS NOT NULL ;"
-                    // + " SELECT * FROM chats WHERE room LIKE '%" + req_query.s + "%' AND message IS NOT NULL AND message_sent = false ;";
+                    "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;"
+                    // + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL AND message_sent = false ;";
                     +
-                    "SELECT * FROM chats WHERE message_to = '" + req_query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
-                    "SELECT * FROM chats WHERE message_from = '" + req_query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
-                    "SELECT firstname, lastname FROM info WHERE statecode = '" + req_query.posts.who.toUpperCase() + "' ;";
+                    "SELECT * FROM chats WHERE message_to = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
+                    "SELECT * FROM chats WHERE message_from = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
+                    "SELECT firstname, lastname FROM info WHERE statecode = '" + req.query.posts.who.toUpperCase() + "' ;";
 
             }
             /**SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%AB/17B/1234%' AND chats.message IS NOT NULL   */
 
             connectionPool.query(query, function (error, results, fields) {
 
-                if (error) reject(error);
+                if (error) {
+                    console.error('got unread chats from db UNsuccessfully-00, rejecting', error);
+                    reject(error)
+                }
 
                 // console.info('\nold chats', results[1], '\nfrom db successfully');
                 // so if the newchat has chatted before, i.e. is in oldchats, then just make it highlighted
                 // then send it to the chat page of the involved parties so they are remainded of what they want to buy
                 resolve({
-                    statecode: req_session.statecode.toUpperCase(),
-                    statecode2: req_query.s,
-                    servicestate: req_session.servicestate,
-                    batch: req_session.batch,
-                    name_of_ppa: req_session.name_of_ppa,
+                    statecode: req.session.statecode.toUpperCase(),
+                    statecode2: req.query.s,
+                    servicestate: req.session.servicestate,
+                    batch: req.session.batch,
+                    name_of_ppa: req.session.name_of_ppa,
                     postdetails: (isEmpty(results[0]) ? null : results[0]), // tell user the post no longer exists, maybe it was bought or something, we should delete it if it was bought, we hope not to use this function
                     newchat: {
-                        statecode: req_query.posts.who.toUpperCase(),
+                        statecode: req.query.posts.who.toUpperCase(),
                         name: results[4][0]
                     },
-                    posttime: req_query.posts.when,
-                    posttype: req_query.posts.type,
+                    posttime: req.query.posts.when,
+                    posttype: req.query.posts.type,
                     oldchats: results[1], // leave it like this!!
                     oldunreadchats: results[2], // messages that was sent to this user but this user hasn't seen them
                     oldunsentchats: results[3], // messages this user sent but hasn't deliver, i.e. the receipent hasn't seen it
                     total_num_unread_msg: results[2].filter((value, index, array) => {
-                        return value.message_to == req_query.s && value.message_sent == 0
+                        return value.message_to == req.query.s && value.message_sent == 0
                     }).length
                 });
 
 
             });
 
-        }
-
-        else if (req_session.loggedin) {
-            res.set('Content-Type', 'text/html');
-            // res.sendFile(__dirname + '/account.html');
-            // console.log('wanna chat', req_session.statecode, req_query.s);
-            var query = // "SELECT * FROM chats WHERE room LIKE '%" + req_query.s + "%' AND message IS NOT NULL;"
-                "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%" + req_query.s + "%' AND chats.message IS NOT NULL ;" +
-                "SELECT * FROM chats WHERE message_to = '" + req_query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
-                "SELECT * FROM chats WHERE message_from = '" + req_query.s + "' AND message IS NOT NULL AND message_sent = false ;";
+        } else if (req.session.loggedin) {
+            console.error('we should be getting here')
+            
+            // console.log('wanna chat', req.session.statecode, req.query.s);
+            let query = // "SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL;"
+                "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;" +
+                "SELECT * FROM chats WHERE message_to = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
+                "SELECT * FROM chats WHERE message_from = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;";
             connectionPool.query(query, function (error, results, fields) {
+                console.log('are we even inside?');
+                if (error) {
+                    console.error('got unread chats from db UNsuccessfully-1', error);
+                    reject(error)
+                }
 
-                if (error) reject(error);
-
-                // console.info('got unread chats from db successfully', results[1]);
+                console.info('got unread chats from db successfully', results[1]);
 
                 // then send it to the chat page of the involved parties so they are remainded of what they want to buy
                 resolve({ // having it named account.2 returns error cannot find module '2'
-                    statecode: req_session.statecode.toUpperCase(),
-                    statecode2: req_query.s,
-                    servicestate: req_session.servicestate,
-                    batch: req_session.batch,
-                    name_of_ppa: req_session.name_of_ppa,
+                    statecode: req.session.statecode.toUpperCase(),
+                    statecode2: req.query.s,
+                    servicestate: req.session.servicestate,
+                    // batch: req.session.batch,
+                    name_of_ppa: req.session.name_of_ppa,
                     oldchats: results[0], // leave it like this!!
                     newchat: null,
                     oldunreadchats: results[1], // (isEmpty(results[1]) ? null : results[1])
                     oldunsentchats: results[2],
                     total_num_unread_msg: results[1].filter((value, index, array) => {
-                        return value.message_to == req_query.s && value.message_sent == 0
+                        return value.message_to == req.query.s && value.message_sent == 0
                     }).length
                 })
             });
 
-        }
-
-        else {
+        } else {
+            console.info('what? not logged in & wanna chat?!?!???!')
             reject();
         }
     })

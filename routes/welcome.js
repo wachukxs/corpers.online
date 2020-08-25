@@ -95,9 +95,13 @@ router.get('/chat', function (req, res) {
    * utc + 1 is our time zone [when converting], or use moment .js
    */
 
-  query.GetChatData(req.session, req.query).then(result => {
+  console.log('??', req.session.loggedin, req.query, '\n??')
+
+  query.GetChatData(req).then(result => {
+    res.set('Content-Type', 'text/html');
     res.render('pages/newchat', result);
   }, reject => {
+    res.set('Content-Type', 'text/html');
     res.redirect('/login');
   }).catch(reason => {
     // we hope we never get here

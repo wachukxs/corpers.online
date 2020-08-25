@@ -186,7 +186,7 @@ const iochat = io.of('/chat').on('connection', function (socket) {
 
 
         // immediately join all the rooms presently online they are involved in, someone wants to chat with you
-        var everyRoomOnline = Object.keys(chat.adapter.rooms)
+        var everyRoomOnline = Object.keys(iochat.adapter.rooms)
 
         console.log('everyRoomOnline: ', everyRoomOnline);
 
@@ -295,27 +295,27 @@ const iochat = io.of('/chat').on('connection', function (socket) {
                 m.from.statecode = socket.handshake.query.from, m.to.statecode = msg.to, m.it = msg;
                 m.from.firstname = socket.names.firstname, m.from.lastname = socket.names.lastname;
 
-                var everyRoomOnline = Object.keys(chat.adapter.rooms)
+                var everyRoomOnline = Object.keys(iochat.adapter.rooms)
                 // ON EVERY MESSAGE, WE CAN ITERATE THROUGH ALL THE CONNECTED ROOMS AND IF A ROOM CONTAINS BOTH THE .TO AND .FROM, WE SEND TO THAT ROOM BUT THIS METHOD IS INEFFICIENT, IF THE ROOM ISN'T ALREADY EXISTING, CREATE IT AND JOIN, ELSE JUST ONLY JOIN
                 // console.log('\n\n\n\nevery online room', everyRoomOnline)
 
                 //// in the IFs statements, check if the receipient sockets are online too before sending!!!
 
-                var c_online = corperonline(msg.to, chat);
+                var c_online = corperonline(msg.to, iochat);
                 //[TODO]// check if they are both in the room before sending to the room. [DONE]
 
                 // THE TWO IF STATEMENTS HAVE THE SAME LOGIC BUT DIFFERENT IMPLMENTATION
 
-                if (chat.adapter.rooms[socket.handshake.query.from + '-' + msg.to] && c_online) {
+                if (iochat.adapter.rooms[socket.handshake.query.from + '-' + msg.to] && c_online) {
                     // In the array!
                     var room = socket.handshake.query.from + '-' + msg.to;
-                    console.log('is in room ?', chat.adapter.rooms[room].sockets[socket.id]);
-                    if (!chat.adapter.rooms[room].sockets[socket.id]) { // if the sending socket is NOT in the room
+                    console.log('is in room ?', iochat.adapter.rooms[room].sockets[socket.id]);
+                    if (!iochat.adapter.rooms[room].sockets[socket.id]) { // if the sending socket is NOT in the room
 
                     }
 
-                    if (!chat.adapter.rooms[room].sockets[c_online]) {
-                        chat.sockets[c_online].join(room, () => {
+                    if (!iochat.adapter.rooms[room].sockets[c_online]) {
+                        iochat.sockets[c_online].join(room, () => {
                             console.log(msg.to, "wasn't in", room, "just joined")
                         })
                     }
@@ -325,16 +325,16 @@ const iochat = io.of('/chat').on('connection', function (socket) {
                         m.sent = true;
                     });
                     console.log('\n\ngot close to deliver ? 001', !m.sent)
-                } else if (chat.adapter.rooms[msg.to + '-' + socket.handshake.query.from] && c_online) {
+                } else if (iochat.adapter.rooms[msg.to + '-' + socket.handshake.query.from] && c_online) {
                     // In the array!
-                    console.log(socket.id, 'what ??????', c_online) // chat.sockets[c_online].id
+                    console.log(socket.id, 'what ??????', c_online) // iochat.sockets[c_online].id
                     var room = msg.to + '-' + socket.handshake.query.from;
 
-                    console.log('are in room ? sender = ', chat.adapter.rooms[room].sockets[socket.id], 'receipent =', chat.adapter.rooms[room].sockets[c_online]);
-                    if (chat.adapter.rooms[room].sockets[socket.id] && chat.adapter.rooms[room].sockets[c_online]) { // if they are both online and in the room
+                    console.log('are in room ? sender = ', iochat.adapter.rooms[room].sockets[socket.id], 'receipent =', iochat.adapter.rooms[room].sockets[c_online]);
+                    if (iochat.adapter.rooms[room].sockets[socket.id] && iochat.adapter.rooms[room].sockets[c_online]) { // if they are both online and in the room
                         socket.to(room).broadcast.emit('message', m);
                     } else {
-                        chat.sockets[c_online].join(room, () => {
+                        iochat.sockets[c_online].join(room, () => {
                             socket.join(room, () => {
                                 socket.to(room).broadcast.emit('message', m);
                                 m.sent = true;
@@ -350,7 +350,7 @@ const iochat = io.of('/chat').on('connection', function (socket) {
                     var room = socket.handshake.query.from + '-' + msg.to;
 
                     if (c_online) {
-                        chat.sockets[c_online].join(room, () => {
+                        iochat.sockets[c_online].join(room, () => {
                             socket.join(room, () => {
                                 socket.to(room).broadcast.emit('message', m);
                                 m.sent = true;
@@ -416,7 +416,7 @@ const iochat = io.of('/chat').on('connection', function (socket) {
         // io.sockets.in(room).emit('message', 'what is going on, party people?'); // room is something unique. sockets.room
 
         //everyone, including self, in /chat will get it
-        chat.emit('hi!', {
+        iochat.emit('hi!', {
             test: 'from chat',
             '/chat': 'will get, it ?'
         });
