@@ -303,13 +303,14 @@ exports.InsertRowInPostsTable = async (postData) => {
 
 exports.GetFirstAndLastNameWithStatecode = async (data) => {
     let re = await new Promise((resolve, reject) => {
-        connectionPool.query("SELECT firstname, lastname FROM info WHERE statecode = '" + socket.handshake.query.from + "'", function (error, results, fields) { // bring the results in ascending order
+        connectionPool.query("SELECT firstname, lastname FROM info WHERE statecode = '" + data.statecode + "'", function (error, results, fields) { // bring the results in ascending order, rewrite query using mysql-npm special queries
 
             if (error) reject(error)
             else if (!helpers.isEmpty(results)) {
                 resolve(results[0])
             } else {
-                reject()
+                console.error('error with getF&LnameFstatecode', error)
+                reject(error)
             }
 
         });

@@ -149,7 +149,7 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
                 post: data
             });
         }, reject => {
-            console.log('failed to insert row in post table');
+            console.log('failed to insert row in post table', reject);
         }).catch(reason => {
             console.log('error - insert row in post table');
 
@@ -179,7 +179,7 @@ const iochat = io.of('/chat').on('connection', function (socket) {
         }).then(result => {
             socket.names = result
         }, reject => {
-            console.log('failed to insert row in post table');
+            console.log('failed to insert row in post table', reject);
         }).catch(reason => {
             console.log('error - insert row in post table');
         })
