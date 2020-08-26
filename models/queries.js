@@ -541,7 +541,7 @@ exports.GetChatData = async (req) => {
                     servicestate: req.session.servicestate,
                     batch: req.session.batch,
                     name_of_ppa: req.session.name_of_ppa,
-                    postdetails: (isEmpty(results[0]) ? null : results[0]), // tell user the post no longer exists, maybe it was bought or something, we should delete it if it was bought, we hope not to use this function
+                    postdetails: (helpers.isEmpty(results[0]) ? null : results[0]), // tell user the post no longer exists, maybe it was bought or something, we should delete it if it was bought, we hope not to use this function
                     newchat: {
                         statecode: req.query.posts.who.toUpperCase(),
                         name: results[4][0]
@@ -585,7 +585,7 @@ exports.GetChatData = async (req) => {
                     name_of_ppa: req.session.name_of_ppa,
                     oldchats: results[0], // leave it like this!!
                     newchat: null,
-                    oldunreadchats: results[1], // (isEmpty(results[1]) ? null : results[1])
+                    oldunreadchats: results[1], // (helpers.isEmpty(results[1]) ? null : results[1])
                     oldunsentchats: results[2],
                     total_num_unread_msg: results[1].filter((value, index, array) => {
                         return value.message_to == req.query.s && value.message_sent == 0
@@ -604,7 +604,7 @@ exports.GetChatData = async (req) => {
 
 exports.SubscribeToEmailUpdates = async (req_body) => {
     let re = await new Promise((resolve, reject) => {
-        if (isEmpty(req_body.email)) {
+        if (helpers.isEmpty(req_body.email)) {
             res.status(406).send('Not Acceptable');
         } else {
             // console.log('NOT empthy');

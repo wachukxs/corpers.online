@@ -217,9 +217,9 @@
 
                     <% if ( newwer.length == 0 || !newwer.includes(newchat.statecode)) { // for when they open up a new chat and if they've never chatted before // i.e. this guy has no old chat AT ALL they possibly couldn't have chatted before %>
                     <div class="tab-pane fade show active" id="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>" role="tabpanel" aria-labelledby="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>-tab">
-                        <h6><%= newchat.statecode %>'s wall</h6>
+                        <h6><%= newchat.statecode %></h6>
                         <div class="wall">
-                            no old messages they haven't chatted before
+                            Start your first message with <%= newchat.statecode %>
                             <div class="messages">
 
                             </div>
@@ -237,9 +237,9 @@
                                     </div>
                                 </div> -->
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control text" spellcheck="true" placeholder="Type a message" aria-label="Recipient's statecode" aria-describedby="find out later">
+                                    <input type="text" class="form-control text" spellcheck="true" placeholder="Type a message" sc="<%= statecode.replace(/\//g, '-') %>" aria-label="Message box" aria-describedby="textbox">
                                     <div class="input-group-append">
-                                      <button class="btn btn-outline-secondary send" type="button" >Send</button>
+                                      <button class="btn btn-outline-secondary send" type="button" sc="<%= statecode.replace(/\//g, '-') %>">Send</button>
                                     </div>
                                   </div>
                             </div>
@@ -268,7 +268,7 @@
 
                     <% console.log('err 03', error); %>
                     <% } %>
-                    <!-- // new chats -->
+                    <!--end new chats -->
 
                     <!-- old chats [the chatting tab]  -->
                     <% if (newwer) { // if there are old chats [newwer] // if there is no new chat, we don't need to check if it is in newwer %>
@@ -331,7 +331,7 @@
                                     </div>
                                 </div> -->
                                 <div class="input-group mb-3 mt-3">
-                                    <input type="text" class="form-control text" spellcheck="true" sc="<%= newwer[index].replace(/\//g, '-') %>" placeholder="Type a message" aria-label="Recipient's statecode" aria-describedby="the id">
+                                    <input type="text" class="form-control text" spellcheck="true" sc="<%= newwer[index].replace(/\//g, '-') %>" placeholder="Type a message" aria-label="Message box" aria-describedby="textbox">
                                     <div class="input-group-append">
                                       <button class="btn btn-outline-secondary send" type="button" sc="<%= newwer[index].replace(/\//g, '-') %>">Send</button>
                                     </div>
@@ -344,7 +344,7 @@
                     <% } %>
 
                     <% } %>
-                    <!-- // old chats -->
+                    <!-- end old chats -->
 
                     <!-- test tabs -->
                     <!-- <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
@@ -575,7 +575,7 @@
         document.querySelectorAll( '.send' ).forEach( item => {
                 item.addEventListener( 'click', event => {
                     //handle click
-                    console.log( 'event', event.srcElement.attributes[ 'sc' ].value );
+                    console.log( 'event', event, event.srcElement.attributes[ 'sc' ].value );
                     console.log( 'h', document.querySelector( `input[sc='${event.srcElement.attributes['sc'].value}']` ) )
                     // an alternative to using document.querySelector to long chain from event to the inputtextarea.value attribute and clear it// event.srcElement.parentElement.offsetParent.parentElement.children[0].lastElementChild.value
 
