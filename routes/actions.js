@@ -7,6 +7,7 @@ const socket = require('../sockets/routes')
 const ngplaces = require('../constants/ngstates')
 const moment = require('moment');
 const query = require('../models/queries');
+const fs = require('fs');
 const ggle = require('../helpers/uploadgdrive');
 // using path module removes the buffer object from the req.files array of uploaded files,... incase we ever need this... info!
 // const path = require('path');

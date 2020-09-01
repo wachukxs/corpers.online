@@ -160,6 +160,11 @@
           opacity: 0;
         }
       }
+
+      ion-icon {
+        width: 1.5em;
+        height: 2em;
+      }
     </style>
   </head>
 
@@ -624,12 +629,12 @@
                      track.title = 'Track your movement';
                      // track.innerHTML = '&#11005;' ; // &#11005; | &#8889;
 
-                     var positionImg = L.DomUtil.create( 'img', '', position );
-                     var trackImg = L.DomUtil.create( 'img', '', track );
+                     var positionImg = L.DomUtil.create( 'ion-icon', '', position );
+                     var trackImg = L.DomUtil.create( 'ion-icon', '', track );
 
-                     var stopTrackImg = L.DomUtil.create( 'img', '' );
-                     stopTrackImg.src = 'https://icon.now.sh/cancel';
-                     stopTrackImg.alt = '%'; // it distructs the icon
+                     var stopTrackImg = L.DomUtil.create( 'ion-icon', '' );
+                     stopTrackImg.name = 'close';
+                     // stopTrackImg.alt = '%'; // it doesn't work
                      stopTrackImg.onerror = "imgErr()"; // TODO for trackImg too, it doesn't work
 
                      // Stop the given event from propagation to parent element(s)
@@ -641,12 +646,12 @@
                          console.log( 'seems there is an error' );
                      }
 
-                     positionImg.src = 'https://icon.now.sh/my_location';
-                     positionImg.alt = '#'; // it distructs the icon
+                     positionImg.name = 'locate';
+                     // positionImg.alt = '|'; // not working
                      positionImg.onerror = "imgErr()"; // TODO for trackImg too, it doesn't work
 
-                     trackImg.src = 'https://icon.now.sh/navigation';
-                     trackImg.alt = '&'; // it distructs the icon
+                     trackImg.name = 'navigate';
+                     // trackImg.alt = '/\\/'; // it doesn't work
                      trackImg.onerror = "imgErr()"; // seems the browser ignores doing the onerror if there's an alt attr.
 
 
@@ -851,29 +856,26 @@
                      var addplace = L.DomUtil.create( 'a', '', container );
                      addplace.title = 'Add current location to map' // or 'Add this place'; // if our map is used to get current location (and we don't have that place in our database) we can show the corper/user a pop up so they add the place to our records (for other corpers at least/for sure)
                      // position.innerHTML = '&#10991;' ; // &#x1f518;
-
-                     var addplaceImg = L.DomUtil.create( 'img', '', addplace );
-
+                     var addplaceImg = L.DomUtil.create( 'ion-icon', '', addplace );
 
                      // Stop the given event from propagation to parent element(s)
                      L.DomEvent.on( container, 'click dblclick', function( ev ) {
                          L.DomEvent.stopPropagation( ev );
-                     } );
+                     });
 
-                     addplaceImg.src = 'https://icon.now.sh/local_offer';
-                     addplaceImg.alt = '#'; // it distructs the icon
+                     addplaceImg.name = 'location';
+                     // addplaceImg.alt = '*!*'; // it doesn't work
 
                      addplace.onclick = function() {
                          console.log( 'addplace button clicked' );
                          // first find the user's current location
 
                          function onLocationFound( e ) {
-
                              var radius = e.accuracy / 2; // measurement in meters
-                             console.log( e );
+                             console.log(e);
 
-                             function onClk( e ) {
-                                 console.log( 'clicked addPlace Marker!' );
+                             function onClk(e) {
+                                 console.log('clicked addPlace Marker!');
                              }
 
                              function onPO() {
@@ -910,15 +912,14 @@
                      }
                  };
                  console.log('the e', e);
-
                              // remove sourceTarget and target from e
                              delete e.sourceTarget;
-                                 delete e.target;
+                             delete e.target;
 
-                                 // add geodata to the form
-                             document.forms[0].elements['geodata'].value = JSON.stringify(e);
+                            // add geodata to the form
+                            document.forms[0].elements['geodata'].value = JSON.stringify(e);
 
-                                 $( "#AddPlace" ).modal();
+                                 $("#AddPlace" ).modal();
                              }
                              // after 5 sec closePopup(), 5 sec so we give enough time to read the message
                              setTimeout( () => {
@@ -1164,14 +1165,12 @@
              }
              category.addEventListener( 'keyup', cs, false );
 
-
              var nameOfPlace = document.getElementById( 'nameOfPlace' );
 
              function naop() {
 
              }
              nameOfPlace.addEventListener( 'keyup', naop, false );
-
 
              /////test modal events to know when they fire and use appropraitely
              $( '#AddPlace' )
@@ -1197,8 +1196,6 @@
                      document.forms[0][2].onchange = function (event) {
                          console.log(event);
                      } */
-
-
                  } )
              $( '#AddPlace' )
                  .on('hide.bs.modal', function(e) {
@@ -1212,15 +1209,11 @@
                      console.log('hidden.bs.modal');
                  } )
 
-
-
-
              // script for submitting
              function sendPost() {
 
                  // close the modal
-                 $('#AddPlace')
-                         .modal('hide');
+                 $('#AddPlace').modal('hide');
 
                  // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
                  const XHR = new XMLHttpRequest();
@@ -1241,9 +1234,6 @@
 
                      // and reset the form
                      document.forms[0].reset();
-
-
-
                  } );
 
                  // Define what happens in case of error
@@ -1369,5 +1359,6 @@
                 console.log('the response', response)
             }) */
     </script>
+    <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
   </body>
 </HTML>

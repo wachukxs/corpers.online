@@ -68,6 +68,12 @@
         }
       }
 
+      .search-div {
+        width: 50%;
+      }
+      #s {
+        padding-right: 0px;
+      }
       
     </style>
 </head>
@@ -111,14 +117,14 @@
                             <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
                         </ul>
 
-                        <div class="nav-right text-lg-right py-4 py-lg-0">
+                        <div class="nav-right text-lg-right py-4 py-lg-0 search-div">
                             <!-- <a class="button text-center" href="/login">Get Started</a> -->
 
                             <form id="form-search" action="/search" name="form-search" class="mr-md-3">
                                 <div class="typeahead__container">
                                     <div class="typeahead__field">
                                         <div class="typeahead__query">
-                                            <input id="s" name="search[query]" type="search" placeholder="Search by states" autocomplete="off" inputmode="search">
+                                            <input id="s" name="search[query]" type="search" placeholder="Search for accommodations, & sales." autocomplete="off" inputmode="search">
                                         </div>
                                         <div class="typeahead__button">
                                             <button type="submit">
