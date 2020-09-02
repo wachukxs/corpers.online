@@ -279,33 +279,34 @@ router.get('/profile', function (req, res) {
     let jkl = JSON.parse(data);
     // let's hope there's no err
 
-
     if (req.session.loggedin) {
       let jn = req.session.statecode.toUpperCase()
 
       /**an array of all the local government in the state */
       let lgas = jkl.states[ngplaces.states_short.indexOf(jn.slice(0, 2))][ngplaces.states_long[ngplaces.states_short.indexOf(jn.slice(0, 2))]];
-      // use the ones from their service state // AND servicestate = '" + req.session.servicestate + "'
-      pool.query("SELECT name_of_ppa FROM info WHERE name_of_ppa != '' ; SELECT ppa_address from info WHERE ppa_address != '' AND servicestate = '" + req.session.servicestate + "'; SELECT city_town FROM info WHERE city_town != '' AND servicestate = '" + req.session.servicestate + "'; SELECT region_street FROM info WHERE region_street != '' AND servicestate = '" + req.session.servicestate + "'", function (error2, results2, fields2) {
-
-        if (error2) throw error2;
-        // console.log('PPAs', results2);
-
-        res.set('Content-Type', 'text/html');
-        // res.sendFile(__dirname + '/new profile/index.html');
+      res.set('Content-Type', 'text/html');
+      query.GetPlacesByTypeInOurDB(req).then(data => {
         res.render('pages/profile', {
           statecode: req.session.statecode.toUpperCase(),
           servicestate: req.session.servicestate.toUpperCase(),
           batch: req.session.batch,
-          names_of_ppas: results2[0], // array of objects ie names_of_ppas[i].name_of_ppa
-          ppa_addresses: results2[1],
-          cities_towns: results2[2],
-          regions_streets: results2[3],
+          names_of_ppas: data.names_of_ppas, // array of objects ie names_of_ppas[i].name_of_ppa
+          ppa_addresses: data.ppa_addresses,
+          cities_towns: data.cities_towns,
+          regions_streets: data.regions_streets,
           states: ngplaces.states_long,
           lgas: lgas
           // select all distinct ppa type / address / name and send it to the front end as suggestions for the input when the corpers type
         });
-      });
+      }, reject => {
+        res.render('pages/profile', {
+          statecode: req.session.statecode.toUpperCase(),
+          servicestate: req.session.servicestate.toUpperCase(),
+          batch: req.session.batch,
+          states: ngplaces.states_long,
+          lgas: lgas
+        });
+      })
     } else {
       res.render('pages/login');
     }
@@ -318,120 +319,17 @@ router.post('/profile', /* bodyParser.urlencoded({
   extended: true
 }), */ function (req, res) {
 
-  query.UpdateProfile({req_body: req.body, session_statecode: req.session.statecode.toUpperCase()})
-    // cater for fields we already have, so that we don't touch them eg. servicestate
-    // UPDATE 'info' SET 'firstname'=[value-1],'lastname'=[value-2],'accomodation_location'=[value-3],'servicestate'=[value-4],'batch'=[value-5],'name_of_ppa'=[value-6],'statecode'=[value-7],'email'=[value-8],'middlename'=[value-9],'password'=[value-10],'phone'=[value-11],'dateofreg'=[value-12],'lga'=[value-13],'city_town'=[value-14],'region_street'=[value-15],'stream'=[value-16],'type_of_ppa'=[value-17],'ppa_address'=[value-18],'travel_from_state'=[value-19],'travel_from_city'=[value-20],'spaornot'=[value-21] WHERE email = req.body.email
-    // UPDATE info SET 'accomodation_location'=req.body.accomodation_location,'servicestate'=req.body.servicestate,'name_of_ppa'=[value-6],'lga'=req.body.lga,'city_town'=req.body.city_town,'region_street'=req.body.region_street,'stream'=req.body.stream,'type_of_ppa'=req.body.type_of_ppa,'ppa_address'=req.body.ppa_address,'travel_from_state'=req.body.travel_from_state,'travel_from_city'=req.body.travel_from_city,'spaornot'=req.body.spaornot WHERE email = req.body.email
-    // let sqlquery = "INSERT INTO info(servicestate, lga, city_town, region_street, stream, accomodation_location, type_of_ppa, travel_from_state, travel_from_city) VALUES ('" + req.body.servicestate + "', '" + req.body.lga + "', '" + req.body.city_town + "', '" + req.body.region_street + "', '" + req.body.stream + "', '" + req.body.accomodation_location + "', '" + req.body.type_of_ppa + "', '" + req.body.travel_from_state + "', '" + req.body.travel_from_city + "', '" + req.body.spaornot + "' )";
-
-    // let sqlquery = "UPDATE info SET accomodation_location = '" + req.body.accomodation_location + "', servicestate = '" + req.body.servicestate + "', name_of_ppa = '" + req.body.name_of_ppa + "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" + req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" + req.body.type_of_ppa + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" + req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city + "', spaornot = '" + req.body.spaornot + "' WHERE email = '" + req.body.email + "' " ;
-
-    /*[req.body.accomodation_location, req.body.servicestate, req.body.name_of_ppa, req.body.lga, req.body.city_town, req.body.region_street, req.body.stream, req.body.type_of_ppa, req.body.ppa_address, req.body.travel_from_state, req.body.travel_from_city, req.body.spaornot, req.body.email],*/
-    console.log('\n\nthe req.body for /profile', req.body, '\n\n', req.body.statecode);
-    // console.log('\n\n', req);
-    let sqlquery = "UPDATE info SET accommodation_location = '" + (req.body.accommodation_location ? req.body.accommodation_location : '') +
-      (req.body.servicestate ? "', servicestate = '" + req.body.servicestate : '') // if there's service state(i.e. corper changed service state in real life and from front end), insert it.
-      +
-      "', name_of_ppa = '" + req.body.name_of_ppa +
-      "', ppa_directions = '" + req.body.ppadirections +
-      "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" +
-      req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" +
-      req.body.type_of_ppa + "', ppa_geodata = '" + (req.body.ppa_geodata ? req.body.ppa_geodata : '') + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" +
-      req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city +
-      (req.body.newstatecode ? "', statecode = '" + req.body.newstatecode.toUpperCase() : '') + // if there's a new statecode ...
-      /* "', accommodationornot = '" + (req.body.accommodationornot ? req.body.accommodationornot : 'yes') + */
-      "', wantspaornot = '" +
-      req.body.wantspaornot + "' WHERE statecode = '" + req.session.statecode.toUpperCase() + "' "; // always change state code to uppercase, that's how it is in the db
-
-
-    pool.query(sqlquery, function (error, results, fields) {
-      console.log('updated user profile data: ', results);
-      if (error) throw error;
-      // go back to the user's timeline
-      if (results.changedRows === 1 && !helpers.isEmpty(req.body)) {
-        if (req.body.name_of_ppa) {
-          req.session.name_of_ppa = req.body.name_of_ppa;
-        }
-        /* 
-        // todo later...
-  
-        statecode: req.session.statecode.toUpperCase(),
-        servicestate: req.session.servicestate,
-        batch: req.session.batch, */
-
-        if (req.body.newstatecode) { // if they are changing statecode to a different state, then their service state in the db should change and their ppa details too should change, tell them to change the ppa details if they don't change it
-          // change statecode in other places too
-          // this works because rooms only have one instance for every two corpers or statecode, so there's no DD/17B/7778-AB/17B/2334 and AB/17B/2334-DD/17B/7778 only one of it, same reason why there's no LIMIT 1 in the SELECT statement in REPLACE function
-          let updatequery = "UPDATE chats SET room = (SELECT REPLACE( ( SELECT DISTINCT room WHERE room LIKE '%" + req.session.statecode.toUpperCase() + "%' ) ,'" + req.session.statecode.toUpperCase() + "','" + req.body.newstatecode.toUpperCase() + "')) ; " +
-            " UPDATE chats SET message_from = '" + req.body.newstatecode.toUpperCase() + "' WHERE message_from = '" + req.session.statecode.toUpperCase() + "' ; " +
-            " UPDATE chats SET message_to = '" + req.body.newstatecode.toUpperCase() + "' WHERE message_to = '" + req.session.statecode.toUpperCase() + "' ;" +
-            " UPDATE posts SET statecode = '" + req.body.newstatecode.toUpperCase() + "' WHERE statecode = '" + req.session.statecode.toUpperCase() + "' ; " +
-            " UPDATE accommodations SET statecode = '" + req.body.newstatecode.toUpperCase() + "' WHERE statecode = '" + req.session.statecode.toUpperCase() + "' ";
-          pool.query(updatequery, function (error, results, fields) {
-            console.log('updated statecode ', results);
-            if (error) throw error;
-            // connected!
-            // at least ONE or ALL of these MUST update, not necessarily all that why we are using || and NOT && because it could be possible they've not chatted or posted anything at all, but they must have at least registered!
-            if (results[0].affectedRows > 0 || results[1].affectedRows > 0 || results[2].affectedRows > 0 || results[3].affectedRows > 0 || results[4].affectedRows > 0) {
-              // then status code is good
-              console.log('we\'re really good with the update')
-
-              // then change the session statecode
-              req.session.statecode = req.body.newstatecode.toUpperCase();
-
-              res.status(200).redirect(req.body.newstatecode.toUpperCase()); // if there's new statecode
-            } else {
-              console.log('we\'re bad with the update') // we should find out what went wrong
-              /**
-               * 
-               * 
-               * results looks like:
-               * 
-               * OkPacket {
-                  fieldCount: 0,
-                  affectedRows: 1,
-                  insertId: 0,
-                  serverStatus: 2,
-                  warningCount: 1,
-                  message: '',
-                  protocol41: true,
-                  changedRows: 0 
-                }
-  
-                so we'd want to check out message attribute
-               */
-
-              // we should redirect to somewhere and not just block the whole system!!!!!!!!!!
-            }
-          });
-          // should we save every change of statecode that ever occured ?
-          // SELECT room FROM `chats` WHERE message_from = 'AB/17B/1234' or message_to = 'AB/17B/1234'
-
-          // UPDATE `chats` SET `room`=[value-1],`message_from`=[value-3],`message_to`=[value-4] WHERE message_from = 'AB/17B/1234' or message_to = 'AB/17B/1234'
-          //- UPDATE `chats` SET `message_from`=[value-3] WHERE message_from = 'AB/17B/1234'
-          //- UPDATE `chats` SET `message_to`=[value-4] WHERE message_to = 'AB/17B/1234'
-
-          // SELECT room from chats WHERE message_from = 'AB/17B/1234' or message_to = 'AB/17B/1234'
-          // SELECT `room` FROM `chats` WHERE room LIKE '%AB/17B/1234%'
-
-          // should know when who they are chatting with is online and when they are typing
-
-          // for room change, consider using REPLACE('str', 'str_to_replace', 'replacement_str')
-          // for room change, consider using REPLACE(SELECT `room` FROM `chats` WHERE room LIKE '%AB/17B/1234%', 'AB/17B/1234', 'OD/19B/7778')
-          //- REPLACE(SELECT `room` FROM `chats` WHERE room LIKE '%AB/17B/1234%', 'AB/17B/1234', 'OD/19B/7778')
-
-          // for room formation, concat('str1', 'str2', ..., 'strN'), or concat_ws('seperator', 'str1', 'str2', ..., 'strN')
-
-
-        } else { // if no newstatecode
-          res.status(200).redirect(req.session.statecode.toUpperCase() /* + '?e=y' */); // [e]dit=[y]es|[n]o
-        }
-        // res.sendStatus(200);
-      } else {
-        // res.sendStatus(500);
-        res.status(500).redirect('/profile' + '?e=n'); // [e]dit=[y]es|[n]o
+    query.UpdateProfile(req).then(result => {
+      if (req.body.name_of_ppa) {
+        req.session.name_of_ppa = req.body.name_of_ppa;
       }
-    });
+      if (req.body.newstatecode) {
+        req.session.statecode = req.body.newstatecode.toUpperCase();
+      }
+      res.status(200).redirect(result); // redirectly appropriately if there's new statecode or not
+    }, reject => {
+      res.status(500).redirect('/profile?e=n'); // [e]dit=[y]es|[n]o
+    })
 
 });
 
