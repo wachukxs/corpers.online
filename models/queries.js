@@ -794,279 +794,283 @@ exports.UpdateProfile = async (req) => {
     return re;
 }
 
-exports.DistinctNotNullDataFromPPAs = async (data) => {
-    const mustRunQuery = "SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions \
-    FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null); \
-    SELECT * FROM accommodations WHERE expire > UTC_DATE ; \
-    SELECT geo_data, name, address, street, type_of_place FROM places WHERE lga = '' AND geo_data != '' ;";
-
+exports.DistinctNotNullDataFromPPAs = async (req) => {
+    
     let re = await new Promise((resolve, reject) => {
+        const mustRunQuery = "SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null); \
+        SELECT * FROM accommodations WHERE expire > UTC_DATE ; \
+        SELECT `places_data`, `test`, `when`, `here` FROM places WHERE places_data != '' ;"
+        ;
 
         // if we know where the ppa is, get the geo data and show it on the map
-  if (data.query.nop) {
-    // should we only be getting data from info ? how about [ppas in] places table ?????????????
-    // we have req.query.nop=name_of_ppa + req.query.pa=ppa_address + req.query.top=type_of_ppa // also select ppa closer to it and other relevant info we'll find later
-    connectionPool.query(mustRunQuery + "SELECT name_of_ppa, ppa_address, type_of_ppa, ppa_geodata, ppa_directions FROM info WHERE name_of_ppa = '" + req.query.nop + "'", function (error, results, fields) { // bring the results in ascending order
+        if (req.query.nop) {
+            // should we only be getting data from info ? how about [ppas in] places table ?????????????
+            // we have req.query.nop=name_of_ppa + req.query.pa=ppa_address + req.query.top=type_of_ppa // also select ppa closer to it and other relevant info we'll find later
+            connectionPool.query(mustRunQuery + "SELECT name_of_ppa, ppa_address, type_of_ppa, ppa_geodata, ppa_directions FROM info WHERE name_of_ppa = '" + req.query.nop + "';", function (error, results, fields) { // bring the results in ascending order
+                console.log('we do get here', results)
+            if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
+                console.log(error);
+                reject(error)
+                // throw error;
+            } else if (!helpers.isEmpty(results) /* && results[3].ppa_geodata != '' */) {
+                // we're not adding the GeoJSON results to an array because it's only one result
+                for (index = 0; index < results[3].length; index++) {
+                /**
+                 * {
+                         "type": "Feature",
+                        "properties": {
+                            "name": "Coors Field",
+                            "amenity": "Hospital",
+                            "popupContent": "The Amenity [Hospital], then the location/street name."
+                        },
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [ 7.5098633766174325, 5.515524804961825 ]
+                        }
+                    }
+                */
+                // unstringify the ppa_geodata entry
+                // results[index]['ppa_geodata'] = JSON.parse(results[index].ppa_geodata);
 
-      if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
-        console.log(error);
-        reject(error)
-        // throw error;
-      } else if (!helpers.isEmpty(results) /* && results[3].ppa_geodata != '' */) {
-        // we're not adding the GeoJSON results to an array because it's only one result
-        for (index = 0; index < results[3].length; index++) {
-          /**
-           * {
-                  "type": "Feature",
-                  "properties": {
-                      "name": "Coors Field",
-                      "amenity": "Hospital",
-                      "popupContent": "The Amenity [Hospital], then the location/street name."
-                  },
-                  "geometry": {
-                      "type": "Point",
-                      "coordinates": [ 7.5098633766174325, 5.515524804961825 ]
-                  }
-              }
-           */
-          // unstringify the ppa_geodata entry
-          // results[index]['ppa_geodata'] = JSON.parse(results[index].ppa_geodata);
+                // re-arrange to GeoJSON Format
+                results[3][index].type = "Feature";
 
-          // re-arrange to GeoJSON Format
-          results[3][index].type = "Feature";
+                results[3][index].properties = {};
+                
+                results[3][index].properties.ppa_address = results[3][index].ppa_address;
+                results[3][index].properties.type_of_ppa = results[3][index].type_of_ppa;
+                results[3][index].properties.name_of_ppa = results[3][index].name_of_ppa;
 
-          results[3][index].properties = {};
-          results[3][index].properties.ppa_geodata = JSON.parse(results[3][index].ppa_geodata);
-          results[3][index].properties.ppa_address = results[3][index].ppa_address;
-          results[3][index].properties.type_of_ppa = results[3][index].type_of_ppa;
-          results[3][index].properties.name_of_ppa = results[3][index].name_of_ppa;
+                // shouldn't we add name of PPA and other details as well ?!?!?
 
-          // shouldn't we add name of PPA and other details as well ?!?!?
+                if (results[3][index].ppa_geodata) {
+                    results[3][index].properties.ppa_geodata = JSON.parse(results[3][index].ppa_geodata);
+                    
+                    results[3][index].geometry = {};
+                    results[3][index].geometry.type = "Point";
+                    results[3][index].geometry.coordinates = [JSON.parse(results[3][index].ppa_geodata).longitude, JSON.parse(results[3][index].ppa_geodata).latitude];
+                    
+                }
+                // console.log(JSON.parse(results[3][index].ppa_geodata).latlng, '======++++++++====', JSON.parse(results[3][index]['ppa_geodata']).longitude, JSON.parse(results[3][index]['ppa_geodata']).latitude);
 
-          results[3][index].geometry = {};
-          results[3][index].geometry.type = "Point";
-          results[3][index].geometry.coordinates = [JSON.parse(results[3][index].ppa_geodata).longitude, JSON.parse(results[3][index].ppa_geodata).latitude];
+                // delete results[3][index]['ppa_geodata'];
+                // delete results[3][index]['type_of_ppa'];
+                // delete results[3][index]['ppa_address'];
 
-          console.log(JSON.parse(results[3][index].ppa_geodata).latlng, '======++++++++====', JSON.parse(results[3][index]['ppa_geodata']).longitude, JSON.parse(results[3][index]['ppa_geodata']).latitude);
+                // delete redundate data like longitude, latitude, and latlng in ppa_geodata after reassigning values
+                }
+            }
 
-          // delete results[3][index]['ppa_geodata'];
-          // delete results[3][index]['type_of_ppa'];
-          // delete results[3][index]['ppa_address'];
+            ppa_details = {
+                user: {}
+            };
 
-          // delete redundate data like longitude, latitude, and latlng in ppa_geodata after reassigning values
+            if (req.session.statecode) {
+                ppa_details.user.statecode = req.session.statecode.toUpperCase();
+            }
+            if (req.session.servicestate) {
+                ppa_details.user.servicestate = req.session.servicestate;
+            }
+            if (req.session.batch) {
+                ppa_details.user.batch = req.session.batch;
+            }
+            if (req.session.name_of_ppa) {
+                ppa_details.user.name_of_ppa = req.session.name_of_ppa;
+            }
+            ppa_details.theacc = []; // make it empty
+            ppa_details.theppa = results[3]; // JSON.stringify(results);
+            ppa_details.nop = results[3]; // this variable is ambigious, nop == name of place, or name of ppa ... but we need it for now, just rush work for now
+            ppa_details.ppas = results[0];
+            ppa_details.accommodations = results[1];
+            ppa_details.places = results[2];
+
+            console.log('let\'s see nop that was searched for', ppa_details.theppa);
+            // having it named 'pages/account.2' returns error cannot find module '2'
+            resolve(ppa_details);
+            // res.render('pages/newsearch2', ppa_details);
+
+            });
+        } else if (req.query.rr) { // if it's an accomodation
+        console.log('ghghghhghghghhg')
+            // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
+            connectionPool.query(mustRunQuery + "SELECT * FROM accommodations WHERE rentrange = '" + req.query.rr + "' AND input_time = '" + req.query.it + "'", function (error, results, fields) {
+
+            if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
+                console.log(error);
+                reject(error);
+            } else if (!helpers.isEmpty(results) /* && results[3].acc_geodata != '' */) {
+                
+                // we're not adding the GeoJSON results to an array because it's only one result
+                for (index = 0; index < results[3].length; index++) {
+                /**
+                 * {
+                         "type": "Feature",
+                        "properties": {
+                            "name": "Coors Field",
+                            "amenity": "Hospital",
+                            "popupContent": "The Amenity [Hospital], then the location/street name."
+                        },
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [ 7.5098633766174325, 5.515524804961825 ]
+                        }
+                    }
+                */
+                // unstringify the acc_geodata entry
+                // results[index]['acc_geodata'] = JSON.parse(results[index].acc_geodata);
+
+                // re-arrange to GeoJSON Format
+                // results[3][index].type = "Feature"; // we don't need this for acc, even for ppa
+
+                results[3][index].properties = {};
+
+                if (results[3][index].acc_geodata != '') {
+                    results[3][index].properties.acc_geodata = JSON.parse(results[3][index].acc_geodata);
+                    results[3][index].properties.acc_geodata.latlng = {
+                    "lat": results[3][index].properties.acc_geodata.geometry.coordinates[1],
+                    "lng": results[3][index].properties.acc_geodata.geometry.coordinates[0]
+                    }
+
+                    results[3][index].geometry = {};
+                    results[3][index].geometry.type = "Point";
+                    results[3][index].geometry.coordinates = [JSON.parse(results[3][index].acc_geodata).longitude, JSON.parse(results[3][index].acc_geodata).latitude];
+                } else {
+                    // results[3][index].properties.acc_geodata = '';
+                }
+
+                results[3][index].properties.address = results[3][index].address;
+                results[3][index].properties.type = results[3][index].type;
+                results[3][index].properties.price = results[3][index].price;
+
+                // shouldn't we add name of PPA and other details as well ?!?!?
+
+                if (results[3][index].acc_geodata != '') {
+                    console.log(JSON.parse(results[3][index].acc_geodata).latlng, '======++++++++====', JSON.parse(results[3][index]['acc_geodata']).longitude, JSON.parse(results[3][index]['acc_geodata']).latitude);
+                }
+                // delete results[3][index]['acc_geodata'];
+                // delete results[3][index]['type'];
+                // delete results[3][index]['address'];
+
+                // delete redundate data like longitude, latitude, and latlng in acc_geodata after reassigning values
+                }
+            }
+
+            accommodation_details = {};
+            accommodation_details.ppas = results[0];
+            accommodation_details.accommodations = results[1];
+            accommodation_details.places = results[2];
+            accommodation_details.theacc = results[3];
+            accommodation_details.nop = JSON.stringify(results[3]); // this variable is ambigious, nop == name of place, or name of ppa ... but we need it for now, just rush work for now
+            accommodation_details.theppa = undefined;
+            // accommodation_details.nop = '[]' // || undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
+            resolve(accommodation_details)
+            // res.render('pages/newsearch2', accommodation_details);
+            })
+
+        } else if (req.query.type == 'accommodations') { // if it's an accomodation
+            // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
+            // inputing time from js to sql causes ish
+            connectionPool.query(mustRunQuery + "SELECT * FROM accommodations WHERE statecode = '" + req.query.sc + "' AND input_time = '" + moment(new Date(req.query.it)).format('YYYY-MM-DD HH:mm:ss') + "' AND streetname = '" + req.query.sn + "'", function (error, results, fields) {
+            console.log('should be here', results[3])
+            if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
+                console.log('error', error);
+                reject(error);
+            } else if (!helpers.isEmpty(results) /* && results[3].acc_geodata != '' */) {
+                // we're not adding the GeoJSON results to an array because it's only one result
+                for (index = 0; index < results[3].length; index++) {
+                /**
+                * {
+                        "type": "Feature",
+                        "properties": {
+                            "name": "Coors Field",
+                            "amenity": "Hospital",
+                            "popupContent": "The Amenity [Hospital], then the location/street name."
+                        },
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [ 7.5098633766174325, 5.515524804961825 ]
+                        }
+                    }
+                */
+                // unstringify the acc_geodata entry
+                // results[index]['acc_geodata'] = JSON.parse(results[index].acc_geodata);
+
+                // re-arrange to GeoJSON Format
+                // results[3][index].type = "Feature"; // we don't need this for acc, even for ppa
+                // here needs work
+                results[3][index].properties = {};
+
+                if (results[3][index].acc_geodata != '') {
+                    results[3][index].properties.acc_geodata = JSON.parse(results[3][index].acc_geodata);
+                    results[3][index].properties.acc_geodata.latlng = {
+                    "lat": results[3][index].properties.acc_geodata.geometry.coordinates[1],
+                    "lng": results[3][index].properties.acc_geodata.geometry.coordinates[0]
+                    }
+
+                    results[3][index].geometry = {};
+                    results[3][index].geometry.type = "Point";
+                    results[3][index].geometry.coordinates = [JSON.parse(results[3][index].acc_geodata).longitude, JSON.parse(results[3][index].acc_geodata).latitude];
+                } else {
+                    // results[3][index].properties.acc_geodata = '';
+                }
+
+                results[3][index].properties.address = results[3][index].address;
+                results[3][index].properties.type = results[3][index].type;
+                results[3][index].properties.price = results[3][index].price;
+
+                // shouldn't we add name of PPA and other details as well ?!?!?
+
+                if (results[3][index].acc_geodata != '') {
+                    console.log(JSON.parse(results[3][index].acc_geodata).latlng, '======++++++++====', JSON.parse(results[3][index]['acc_geodata']).longitude, JSON.parse(results[3][index]['acc_geodata']).latitude);
+                }
+
+                // delete results[3][index]['acc_geodata'];
+                // delete results[3][index]['type'];
+                // delete results[3][index]['address'];
+
+                // delete redundate data like longitude, latitude, and latlng in acc_geodata after reassigning values
+                }
+            }
+
+            accommodation_details = {};
+            accommodation_details.ppas = results[0];
+            accommodation_details.accommodations = results[1];
+            accommodation_details.places = results[2];
+            accommodation_details.theacc = results[3];
+            accommodation_details.nop = JSON.stringify(results[3]); // this variable is ambigious, nop == name of place, or name of ppa ... but we need it for now, just rush work for now
+            accommodation_details.theppa = undefined;
+            // accommodation_details.nop = '[]' // || undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
+            // console.log('what we shold see');
+            resolve(accommodation_details)
+            // res.render('pages/newsearch2', accommodation_details);
+            })
+
+        } else {
+            // SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address,ppa_geodata FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null)
+
+            connectionPool.query("SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions FROM info \
+            WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null);\
+            SELECT * FROM accommodations WHERE expire > UTC_DATE ; SELECT `places_data`, `test`, `when`, `here` FROM places \
+            WHERE lga = '' AND ppa_geodata != '' ;", function (error, results, fields) {
+
+            if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
+                console.log(error);
+                throw error;
+            }
+            console.log('looking for ooo', results)
+            _details = {};
+            _details.ppas = results[0];
+            _details.accommodations = results[1];
+            _details.places = results[2];
+            _details.theppa = []; // empty
+            _details.theacc = []; // empty
+            _details.nop = undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
+            resolve(_details)
+            // res.render('pages/newsearch2', _details);
+            })
         }
-      }
-
-      ppa_details = {
-        user: {}
-      };
-
-      if (data.session.statecode) {
-        ppa_details.user.statecode = data.session.statecode.toUpperCase();
-      }
-      if (data.session.servicestate) {
-        ppa_details.user.servicestate = data.session.servicestate;
-      }
-      if (data.session.batch) {
-        ppa_details.user.batch = data.session.batch;
-      }
-      if (data.session.name_of_ppa) {
-        ppa_details.user.name_of_ppa = data.session.name_of_ppa;
-      }
-      ppa_details.theacc = []; // make it empty
-      ppa_details.theppa = results[3]; // JSON.stringify(results);
-      ppa_details.nop = results[3]; // this variable is ambigious, nop == name of place, or name of ppa ... but we need it for now, just rush work for now
-      ppa_details.ppas = results[0];
-      ppa_details.accommodations = results[1];
-      ppa_details.places = results[2];
-
-      console.log('let\'s see nop that was searched for', ppa_details.theppa);
-      // having it named 'pages/account.2' returns error cannot find module '2'
-      resolve(ppa_details);
-      // res.render('pages/newsearch2', ppa_details);
 
     });
-  } else if (data.query.rr) { // if it's an accomodation
-  console.log('ghghghhghghghhg')
-    // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
-    connectionPool.query(mustRunQuery + "SELECT * FROM accommodations WHERE rentrange = '" + data.query.rr + "' AND input_time = '" + data.query.it + "'", function (error, results, fields) {
-
-      if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
-        console.log(error);
-        reject(error);
-      } else if (!helpers.isEmpty(results) /* && results[3].acc_geodata != '' */) {
-        
-        // we're not adding the GeoJSON results to an array because it's only one result
-        for (index = 0; index < results[3].length; index++) {
-          /**
-           * {
-                  "type": "Feature",
-                  "properties": {
-                      "name": "Coors Field",
-                      "amenity": "Hospital",
-                      "popupContent": "The Amenity [Hospital], then the location/street name."
-                  },
-                  "geometry": {
-                      "type": "Point",
-                      "coordinates": [ 7.5098633766174325, 5.515524804961825 ]
-                  }
-              }
-           */
-          // unstringify the acc_geodata entry
-          // results[index]['acc_geodata'] = JSON.parse(results[index].acc_geodata);
-
-          // re-arrange to GeoJSON Format
-          // results[3][index].type = "Feature"; // we don't need this for acc, even for ppa
-
-          results[3][index].properties = {};
-
-          if (results[3][index].acc_geodata != '') {
-            results[3][index].properties.acc_geodata = JSON.parse(results[3][index].acc_geodata);
-            results[3][index].properties.acc_geodata.latlng = {
-              "lat": results[3][index].properties.acc_geodata.geometry.coordinates[1],
-              "lng": results[3][index].properties.acc_geodata.geometry.coordinates[0]
-            }
-
-            results[3][index].geometry = {};
-            results[3][index].geometry.type = "Point";
-            results[3][index].geometry.coordinates = [JSON.parse(results[3][index].acc_geodata).longitude, JSON.parse(results[3][index].acc_geodata).latitude];
-          } else {
-            // results[3][index].properties.acc_geodata = '';
-          }
-
-          results[3][index].properties.address = results[3][index].address;
-          results[3][index].properties.type = results[3][index].type;
-          results[3][index].properties.price = results[3][index].price;
-
-          // shouldn't we add name of PPA and other details as well ?!?!?
-
-          if (results[3][index].acc_geodata != '') {
-            console.log(JSON.parse(results[3][index].acc_geodata).latlng, '======++++++++====', JSON.parse(results[3][index]['acc_geodata']).longitude, JSON.parse(results[3][index]['acc_geodata']).latitude);
-          }
-          // delete results[3][index]['acc_geodata'];
-          // delete results[3][index]['type'];
-          // delete results[3][index]['address'];
-
-          // delete redundate data like longitude, latitude, and latlng in acc_geodata after reassigning values
-        }
-      }
-
-      accommodation_details = {};
-      accommodation_details.ppas = results[0];
-      accommodation_details.accommodations = results[1];
-      accommodation_details.places = results[2];
-      accommodation_details.theacc = results[3];
-      accommodation_details.nop = JSON.stringify(results[3]); // this variable is ambigious, nop == name of place, or name of ppa ... but we need it for now, just rush work for now
-      accommodation_details.theppa = undefined;
-      // accommodation_details.nop = '[]' // || undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
-      resolve(accommodation_details)
-      // res.render('pages/newsearch2', accommodation_details);
-    })
-
-  } else if (req.query.type == 'accommodations') { // if it's an accomodation
-    // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
-    // inputing time from js to sql causes ish
-    connectionPool.query(mustRunQuery + "SELECT * FROM accommodations WHERE statecode = '" + req.query.sc + "' AND input_time = '" + moment(new Date(req.query.it)).format('YYYY-MM-DD HH:mm:ss') + "' AND streetname = '" + req.query.sn + "'", function (error, results, fields) {
-      console.log('should be here', results[3])
-      if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
-        console.log(error);
-        throw error;
-      } else if (!helpers.isEmpty(results) /* && results[3].acc_geodata != '' */) {
-        // we're not adding the GeoJSON results to an array because it's only one result
-        for (index = 0; index < results[3].length; index++) {
-          /**
-           * {
-                  "type": "Feature",
-                  "properties": {
-                      "name": "Coors Field",
-                      "amenity": "Hospital",
-                      "popupContent": "The Amenity [Hospital], then the location/street name."
-                  },
-                  "geometry": {
-                      "type": "Point",
-                      "coordinates": [ 7.5098633766174325, 5.515524804961825 ]
-                  }
-              }
-           */
-          // unstringify the acc_geodata entry
-          // results[index]['acc_geodata'] = JSON.parse(results[index].acc_geodata);
-
-          // re-arrange to GeoJSON Format
-          // results[3][index].type = "Feature"; // we don't need this for acc, even for ppa
-          // here needs work
-          results[3][index].properties = {};
-
-          if (results[3][index].acc_geodata != '') {
-            results[3][index].properties.acc_geodata = JSON.parse(results[3][index].acc_geodata);
-            results[3][index].properties.acc_geodata.latlng = {
-              "lat": results[3][index].properties.acc_geodata.geometry.coordinates[1],
-              "lng": results[3][index].properties.acc_geodata.geometry.coordinates[0]
-            }
-
-            results[3][index].geometry = {};
-            results[3][index].geometry.type = "Point";
-            results[3][index].geometry.coordinates = [JSON.parse(results[3][index].acc_geodata).longitude, JSON.parse(results[3][index].acc_geodata).latitude];
-          } else {
-            // results[3][index].properties.acc_geodata = '';
-          }
-
-          results[3][index].properties.address = results[3][index].address;
-          results[3][index].properties.type = results[3][index].type;
-          results[3][index].properties.price = results[3][index].price;
-
-          // shouldn't we add name of PPA and other details as well ?!?!?
-
-          if (results[3][index].acc_geodata != '') {
-            console.log(JSON.parse(results[3][index].acc_geodata).latlng, '======++++++++====', JSON.parse(results[3][index]['acc_geodata']).longitude, JSON.parse(results[3][index]['acc_geodata']).latitude);
-          }
-
-          // delete results[3][index]['acc_geodata'];
-          // delete results[3][index]['type'];
-          // delete results[3][index]['address'];
-
-          // delete redundate data like longitude, latitude, and latlng in acc_geodata after reassigning values
-        }
-      }
-
-      accommodation_details = {};
-      accommodation_details.ppas = results[0];
-      accommodation_details.accommodations = results[1];
-      accommodation_details.places = results[2];
-      accommodation_details.theacc = results[3];
-      accommodation_details.nop = JSON.stringify(results[3]); // this variable is ambigious, nop == name of place, or name of ppa ... but we need it for now, just rush work for now
-      accommodation_details.theppa = undefined;
-      // accommodation_details.nop = '[]' // || undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
-      // console.log('what we shold see');
-      resolve(accommodation_details)
-      // res.render('pages/newsearch2', accommodation_details);
-    })
-
-  } else {
-    // SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address,ppa_geodata FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null)
-
-    connectionPool.query("SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions FROM info \
-    WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null);\
-    SELECT * FROM accommodations WHERE expire > UTC_DATE ; SELECT geo_data, name, address, street, type_of_place FROM places \
-    WHERE lga = '' AND geo_data != '' ;", function (error, results, fields) {
-
-      if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
-        console.log(error);
-        throw error;
-      }
-      console.log('looking for ooo', results)
-      _details = {};
-      _details.ppas = results[0];
-      _details.accommodations = results[1];
-      _details.places = results[2];
-      _details.theppa = []; // empty
-      _details.theacc = []; // empty
-      _details.nop = undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
-      resolve(_details)
-      // res.render('pages/newsearch2', _details);
-    })
-  }
-
-    })
 
     return re;
 }

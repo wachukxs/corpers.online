@@ -89,10 +89,12 @@ router.get('/newsearch', function (req, res) {
   console.log('req.query:', req.query); // find every thing that is req.query.search.query
   
   query.DistinctNotNullDataFromPPAs(req).then(result => {
-    res.render('/newsearch2', result)
+    res.render('pages/newsearch2', result)
   }, reject => {
+    console.log(reject)
     res.sendStatus(500);
   }).catch(error => {
+    console.log('///', error)
     res.sendStatus(500);
   })
 
