@@ -891,7 +891,6 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
 
             });
         } else if (req.query.rr) { // if it's an accomodation
-        console.log('ghghghhghghghhg')
             // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
             connectionPool.query(mustRunQuery + "SELECT * FROM accommodations WHERE rentrange = '" + req.query.rr + "' AND input_time = '" + req.query.it + "'", function (error, results, fields) {
 

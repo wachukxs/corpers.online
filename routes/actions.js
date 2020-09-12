@@ -100,6 +100,7 @@ router.get('/newsearch', function (req, res) {
 
 });
 
+// obselete ... (for now?)
 router.get('/search', function (req, res) {
   // maybe make use of [req.originalUrl .baseUrl .path] later. req.params too
 
