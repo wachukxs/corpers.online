@@ -496,6 +496,7 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
         statecode: req.session.statecode,
         type: (_text.type ? _text.type : "sale"),
         text: _text.text,
+        itemname: _text.itemname,
         price: (_text.price ? _text.price : ""),
         location: req.session.location,
         post_time: _text.post_time
@@ -505,7 +506,7 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
 
         // once it saves in db them emit to other users
         socket.of('/user').to(req.session.statecode.substring(0, 2)).emit('boardcast message', {
-          to: 'be received by everyoneELSE',
+          to: 'be received by everyone else',
           post: {
             statecode: req.session.statecode,
             location: req.session.location,
@@ -514,6 +515,7 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
             type: _text.type,
             mapdata: (_text.mapimage ? _text.mapimage : ''),
             text: _text.text,
+            itemname: _text.itemname,
             age: moment(Number(_text.post_time)).fromNow(),
             price: (_text.price ? _text.price : '')
           }
@@ -533,6 +535,7 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
         statecode: req.session.statecode,
         type: (_text.type ? _text.type : "sale"),
         text: _text.text,
+        itemname: _text.itemname,
         price: (_text.price ? _text.price : ""),
         location: req.session.location,
         post_time: _text.post_time,
@@ -550,6 +553,7 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
             media: (_media.length > 0 ? _media : false), // need to change this, just post _media, if it's empty, we'll check in frontend
             post_time: _text.post_time,
             type: _text.type,
+            itemname: _text.itemname,
             mapdata: (_text.mapimage ? _text.mapimage : ''),
             text: _text.text,
             age: moment(Number(_text.post_time)).fromNow(),
@@ -637,7 +641,7 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
     });
 
 
-    // this is not a good method
+    // this is not a very very good method
 
     /**One thing you might be able to try is to read 0 bytes from the stream first and see if you get the appropriate 'end' event or not (perhaps on the next tick) */
 
@@ -657,7 +661,7 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
         mimeType: mimetype,
         body: filestream // fs.createReadStream("C:\\Users\\NWACHUKWU\\Pictures\\ad\\IMG-20180511-WA0001.jpg")
       };
-
+      // how about we add meta data to the file with ggle APIs, like it is a picture of a bathroom or fridge
       const up = ggle.drive.files.create({ // up = [u]pload [p]romise
         resource: fileMetadata,
         media: media,
@@ -767,7 +771,6 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
 
     } else if (!helpers.isEmpty(_text) && !helpers.isEmpty(uploadPromise)) {
       await Promise.all(uploadPromise);
-
 
       query.InsertRowInAccommodationsTable({
         statecode: req.session.statecode,

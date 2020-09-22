@@ -225,14 +225,20 @@
             position: fixed;
             width: 60px;
             height: 60px;
-            bottom: 40px;
             right: 20px;
             background-color: rgb(44, 167, 27);
             color: #FFF;
+            cursor: pointer;
             border-radius: 50px;
             text-align: center;
             box-shadow: 2px 2px 3px #999;
             z-index: 3;
+        }
+        .space-float {
+            bottom: 107px;
+        }
+        .sale-float {
+            bottom: 40px;
         }
 
         .my-float {
@@ -455,7 +461,11 @@
 
             <!-- Button trigger modal for posting-->
             <!-- hide on screens smaller than md -->
-            <button id="bfp" class="btn btn-primary   d-none d-md-block" data-toggle="modal" data-target="#postModalSale">Post</button>
+            <div class="btn-group d-none d-md-block" role="group" aria-label="Basic example">
+                <button id="bfp" class="btn btn-primary" data-toggle="modal" data-target="#postModalSale">Sale</button>
+                <button id="place" type="button" class="btn btn-secondary">Space</button>
+            </div>
+            <!-- <button id="bfp" class="btn btn-primary   d-none d-md-block" data-toggle="modal" data-target="#postModalSale">Post</button> -->
         </div>
     </nav>
 
@@ -498,7 +508,6 @@
                                                         <option value="1 bedroom flat">1 bedroom flat</option>
                                                     </select>
                                                     <small id="" class="form-text text-muted">Choose the category that best describes it.</small>
-
 
                                                     <!-- //test -->
                                                     <div class="custom-control custom-checkbox">
@@ -832,12 +841,14 @@
             });
     </script>
 
+    <!-- if you want to add a new location, go to Maps, not here-->
+
 
     <!-- the Modal for posting (sale)-->
-    <div class="modal fade" id="postModalSale" tabindex="-1" role="dialog" aria-labelledby="postModalLabelSale" aria-hidden="true">
+    <div class="modal fade" id="oldpostModalSale" tabindex="-1" role="dialog" aria-labelledby="oldpostModalLabelSale" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <form id="postform" name="postform">
+                <form id="oldpostform" name="oldpostform">
                     <!-- a very good form -->
                     <input type="text" name="mapimage" id="mapimg" hidden>
                     <input type="text" name="type" id="ptype" value="sale" hidden>
@@ -850,7 +861,7 @@
                     </div>
                     <div class="modal-body">
 
-                        <textarea autofocus required name="text" type="text" class="form-control mb-3 shadow-sm" placeholder="Upload items for sale. Share the location of your PPA (give directions from a popular landmark or junction!). Get creative." id="TXT"></textarea>
+                        <textarea autofocus required name="text" type="text" class="form-control mb-3 shadow-sm" placeholder="Upload items for sale. Share the location of your PPA (give directions from a popular landmark or junction!). Get creative." id="oldTXT"></textarea>
                         <!--make sure there's no space between opening and closing textarea tag-->
 
                         <small id="locinfo"></small>
@@ -866,7 +877,7 @@
                                         Image
                                     </span>
                                     <i class="fas fa-images   d-block d-sm-none  d-none d-sm-block d-md-none"></i>
-                                    <input type="file" accept="image/*" name="see" class="upload" multiple id="IMG">
+                                    <input type="file" accept="image/*" name="oldsee" class="upload" multiple id="oldIMG">
                                 </div>
                                 <!--<div class="fileUpload btn btn-light">
                                                   <span>Vid</span>
@@ -891,10 +902,10 @@
 
                                     <!-- <button class="btn btn-outline-dark" id="findme">Share location</button> -->
 
-                                    <div class="btn btn-outline-dark" id="place">
+                                    <!-- <div class="btn btn-outline-dark" id="place">
                                         <span class="d-none d-md-block d-lg-none   d-lg-block d-xl-none   d-xl-block">or accommodation</span>
                                         <i class="fas fa-home   d-block d-sm-none  d-none d-sm-block d-md-none"></i>
-                                    </div>
+                                    </div> -->
 
                                     <!-- <button class="btn btn-outline-dark" id="place">or accommodation</button> -->
                                 </div>
@@ -907,10 +918,85 @@
 
                     </div>
                     <div class="modal-footer">
-                        <input type="submit" class="btn btn-primary" id="postsubmit" value="Post" disabled>
+                        <input type="submit" class="btn btn-primary" id="oldpostsubmit" value="Post" disabled>
                     </div>
 
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="postModalSale" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="postModalLabelSale" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="">Put up a sale</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="">
+                    <form id="postform" name="postform">
+                        <div class="modal-body">
+
+                <div class="mx-1">
+                <fieldset>
+                    <h2>Provide item details</h2>
+                    <!-- <small>.</small> -->
+                    <!-- //  -->
+                    <div class="form-group">
+                        <label for="itemname">Item name</label>
+                        <input type="text" required name="itemname" class="form-control" id="itemname" placeholder="Fridge, table, carpet, ...">
+
+                        <label for="ppa_geodata">Item price</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">&#8358;</span>
+                            </div>
+                            <input name="price" required type="number" inputmode="numeric" class="form-control" id="itemprice" placeholder="Price" required>
+                            <!-- <div class="invalid-feedback" style="width: 100%;">
+                                The recurring price for the rent is required.
+                            </div> -->
+                        </div>
+                        <!-- <small class="text-muted"></small> -->
+
+                        <label for="ppa_geodata">Item image</label>
+                        <br>
+                        <div class="fileUpload btn btn-outline-dark">
+                            <span class="d-none d-md-block d-lg-none   d-lg-block d-xl-none   d-xl-block">
+                                Image
+                            </span>
+                            <i class="fas fa-images d-block d-sm-none d-none d-sm-block d-md-none"></i>
+                            <input required type="file" accept="image/*" name="see" class="upload" multiple id="IMG">
+                        </div>
+                    
+                        <div class="">
+                            <label for="directions">Description <span class="text-muted">(optional)</span></label>
+                            <textarea class="form-control" name="text" type="text" class="form-control mb-3 shadow-sm" placeholder="Maybe give a bit more details about the item" id="TXT"></textarea>
+                        </div>
+                    </div>
+                </fieldset>
+<!-- 
+maybe a little map area to pin the location of the place if they're currently there
+
+we can even try to show a route in the map based on what address is and information in the directions textarea, we can even auto route.
+-->
+
+                                <!-- //end form for accommodation -->
+                            </div>
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <!--             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary">Save changes</button> -->
+
+                    <input type="submit" class="btn btn-primary" id="postsubmit" value="Post">
+                        </div>
+                    </form>
+                </div>
+
+
             </div>
         </div>
     </div>
@@ -932,7 +1018,6 @@
     <script>
         // script for submitting posts (not accommodation).
         function sendPost() {
-
             // close the modal first. this makes the site look 
             $('#postModalSale').modal('hide');
 
@@ -946,19 +1031,19 @@
             FD.append('post_time', Date.now()); // data type number
 
             // append post type
+            FD.append('type', 'sale');
 
             // checks if there are preview picture and the mapboximage exists
-            /* if (document.getElementById( 'previewParent' ).hasChildNodes() & $( "#mapboximage" ).length ) {
-                FD.append( 'type', 'location' );
+            /* if (document.getElementById('previewParent').hasChildNodes() & $("#mapboximage").length ) {
+                FD.append('type', 'location');
                 
                 // get the image loaded from mapbox here.
-                FD.append( 'mapimage', document.getElementById('mapboximage').src );
+                FD.append('mapimage', document.getElementById('mapboximage').src );
                 // console.log('l', );
 
             } else {
-                FD.append( 'type', 'sale' );
+                FD.append('type', 'sale');
             } */
-
 
             // Define what happens on successful data submission
             XHR.addEventListener("load", function(event) {
@@ -978,8 +1063,6 @@
 
                 // if there were location info, clear it
                 document.getElementById('locinfo').innerHTML = '';
-
-                document.getElementById('postsubmit').disabled = true;
 
                 // some times there are cases where posts happen immediately after each other 
                 // and there would then be more than one notifications on the user tl...
@@ -1300,8 +1383,11 @@
 
 
         <!-- fab Code begins here -->
+        <div class="float space-float d-md-none" data-toggle="modal" data-target="#accommodationModal">
+            <i class="edit-solid icon my-float"></i>
+        </div>
         <!-- hide on screens wider than md -->
-        <div class="float d-md-none" data-toggle="modal" data-target="#postModalSale">
+        <div class="float sale-float d-md-none" data-toggle="modal" data-target="#postModalSale">
             <i class="edit-solid icon my-float"></i>
         </div>
     </main>
@@ -1676,7 +1762,9 @@
                 let k = document.createElement("p");
                 // k.classList(["maintext"]);
                 k.setAttribute('class', 'maintext');
-                k.innerText = data.post.text;
+                k.innerHTML = 
+                `<p><span class='font-italic text-muted'>Item</span>: ${data.post.itemname} selling for &#8358;${data.post.price}.</p> ${data.post.text ? "<p><span class='font-italic text-muted'>More info</span>: " + data.post.text + "</p>" : ''}`;
+                // k.innerText = data.post.text;
                 let d = document.createElement('div');
                 d.setAttribute('class', 'media-body');
                 d.appendChild(e);
@@ -2014,20 +2102,6 @@
         socket.on('boardcast message', bc);
     </script>
     <script>
-        let txtFld = document.getElementById("TXT");
-
-        noNull = function() {
-            console.log('typed');
-            if (txtFld.value == "") {
-                document.getElementById('postsubmit')
-                    .disabled = true;
-            } else {
-                document.getElementById('postsubmit')
-                    .disabled = false;
-            }
-        }
-
-        txtFld.addEventListener('input', noNull, false);
 
         /*
             let handleKey = function(evt) {
@@ -2040,7 +2114,6 @@
 
             txtFld.addEventListener("keyup", handleKey, false );
         */
-        //----------------------
 
         //some sort of global variables
         let previewParent = document.getElementById('previewParent');
@@ -2101,7 +2174,7 @@
 
         $('#postModalSale')
             .on('shown.bs.modal', function(e) {
-                txtFld.focus();
+                // txtFld.focus();
             });
 
         $('#postModalSale')
