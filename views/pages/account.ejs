@@ -461,10 +461,13 @@
 
             <!-- Button trigger modal for posting-->
             <!-- hide on screens smaller than md -->
-            <div class="btn-group d-none d-md-block" role="group" aria-label="Basic example">
-                <button id="bfp" class="btn btn-primary" data-toggle="modal" data-target="#postModalSale">Sale</button>
-                <button id="place" type="button" class="btn btn-secondary">Space</button>
+            <div class="d-none d-md-block">
+                <div class="btn-group" role="group" aria-label="Post buttons">
+                    <button id="bfp" type="button" class="btn btn-primary" data-toggle="modal" data-target="#postModalSale">Post a sale</button>
+                    <button id="place" type="button" class="btn btn-outline-primary">or space</button>
+                </div>
             </div>
+            
             <!-- <button id="bfp" class="btn btn-primary   d-none d-md-block" data-toggle="modal" data-target="#postModalSale">Post</button> -->
         </div>
     </nav>
@@ -500,14 +503,16 @@
 
                                                 <div class="form-group">
                                                     <label for="accommodationtype">Accommodation type</label>
-                                                    <!-- <label class="sr-only" for="accommodationtype">Accommodation type</label> -->
+                                                    
                                                     <select class="custom-select pointer" name="accommodationtype" id="accommodationtype" required>
                                                         <option value="" selected>Choose...</option>
                                                         <option value="Self contain">Self contain</option>
                                                         <option value="Flat">Flat</option>
                                                         <option value="1 bedroom flat">1 bedroom flat</option>
+                                                        <option value="2 bedroom flat">2 bedroom flat</option>
+                                                        <option value="3 bedroom flat">3 bedroom flat</option>
                                                     </select>
-                                                    <small id="" class="form-text text-muted">Choose the category that best describes it.</small>
+                                                    <small class="form-text text-muted">Choose the category that best describes it.</small>
 
                                                     <!-- //test -->
                                                     <div class="custom-control custom-checkbox">
@@ -515,7 +520,7 @@
                                                         <label class="custom-control-label" for="rooms1">Sitting room ?</label>
                                                     </div>
                                                     <div class="custom-control custom-checkbox">
-                                                        <input name="rooms" type="checkbox" class="custom-control-input" id="rooms2" value="kitchen">
+                                                        <input name="rooms" type="checkbox" class="custom-control-input" id="rooms2" value="Kitchen">
                                                         <label class="custom-control-label" for="rooms2">Kitchen ?</label>
                                                         <!-- Maybe later seperate the two, with radio buttons, kitchen in the apartment or a general one tenant shares -->
                                                     </div>
@@ -533,7 +538,11 @@
                                                         <input name="rooms" type="checkbox" class="custom-control-input" id="rooms5" value="Bathroom">
                                                         <label class="custom-control-label" for="rooms5">Bathroom ?</label>
                                                     </div>
-                                                    <small id="" class="form-text text-muted mb-4">What rooms does the accommodation contain?</small>
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input name="rooms" type="checkbox" class="custom-control-input" id="rooms6" value="Dining room">
+                                                        <label class="custom-control-label" for="rooms6">Dining room?</label>
+                                                    </div>
+                                                    <small class="form-text text-muted mb-4">What rooms does the accommodation contain?</small>
                                                     <!-- // // test -->
                                                     <!-- the check box should change based on the accommodation type choosen -->
 
@@ -570,10 +579,9 @@
                                                     </div>
                                                     <!-- / // / testing -->
 
-                                                    <!-- this should be disabled until the person chooses either per month or quarter or year then we say price per whatever the person chose -->
+                                                    <!-- this should be disabled until the corper chooses either per month or quarter or year then we say price per whatever the person chose -->
 
                                                     <label for="price">Price per month/quater/year</label>
-
                                                     <div class="input-group">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text">&#8358;</span>
@@ -601,13 +609,10 @@
                                         <div class="mx-1">
                                             <fieldset>
                                                 <h2>Precise location</h2>
-                                                <!-- <small>.</small> -->
-                                                <!-- //  -->
                                                 <div class="form-group">
-                                                    <label for="streetname">Street name</label>
+                                                    <!-- <label for="streetname">Apartment number</label>
                                                     <input type="text" name="streetname" autocomplete="address-level4" class="form-control" id="streetname" placeholder="No. 17B, Room 5.">
-
-
+ -->
                                                     <div class=" d-none" style="display: none">
                                                         <label for="ppa_geodata">Geo data <span class="text-muted">(Optional, but kinda important)</span></label>
                                                         <input type="text" name="acc_geodata" class="form-control" id="acc_geodata" placeholder="What part of town is it?">
@@ -617,7 +622,7 @@
                                                     <div class="">
                                                         <label for="address">Address <small class="form-text text-muted">(If you're there right now click 'Geo' to locate in maps)</small> </label>
                                                         <div class="input-group">
-                                                            <input type="text" name="address" autocomplete="street-address" class="form-control" id="address" placeholder="Adeleke Street">
+                                                            <input type="text" name="address" autocomplete="street-address" class="form-control" id="address" placeholder="Please specify apartment number, and street">
                                                             <div class="input-group-append">
                                                                 <a id="geo" class="btn btn-secondary">Geo</a>
                                                             </div>
@@ -628,7 +633,7 @@
                                                     </div>
                                                     <div class="">
                                                         <label for="directions">Directions</label>
-                                                        <textarea class="form-control" name="directions" id="directions" placeholder="Give directions to the accommodation from a popular nearby junction or hard-to-miss building"></textarea>
+                                                        <textarea class="form-control" name="directions" id="directions" placeholder="Give directions to the accommodation from a popular nearby junction, a land mark or hard-to-miss building"></textarea>
                                                     </div>
                                                 </div>
                                             </fieldset>
@@ -1131,7 +1136,7 @@ we can even try to show a route in the map based on what address is and informat
             // Define what happens on successful data submission
             XHR1.addEventListener("load", function(event) {
                 // alert(event.target.responseText);
-                console.log(event.target.responseText);
+                // console.log(event);
 
                 // and reset the form
                 document.forms["accommodationform"].reset();
@@ -1154,11 +1159,19 @@ we can even try to show a route in the map based on what address is and informat
                 $("#ap")
                     .replaceWith('<button class="btn btn-outline-primary" id="ap" href="#accommodationFormCarousel" disabled="true" data-slide="prev">Previous</button>');
 
-                // add successful alert 
+                if (event.target.status === 500) {
+                    // add UNsuccessful alert 
+                    $("#tl")
+                    .before(
+                        '<div class="alert alert-danger mt-3 fade show" id="accommodationposted" role="alert">We couldn\'t post that. Please try again. Fill all details.</div>'
+                    );
+                } else {
+                    // add successful alert 
                 $("#tl")
                     .before(
                         '<div class="alert alert-success mt-3 fade show" id="accommodationposted" role="alert">Accommodation space was posted successfully.</div>'
                     );
+                }
 
                 setTimeout(function() {
                     $('#accommodationposted')
@@ -1384,11 +1397,11 @@ we can even try to show a route in the map based on what address is and informat
 
         <!-- fab Code begins here -->
         <div class="float space-float d-md-none" data-toggle="modal" data-target="#accommodationModal">
-            <i class="edit-solid icon my-float"></i>
+            <i class="fa fa-home icon my-float"></i>
         </div>
         <!-- hide on screens wider than md -->
         <div class="float sale-float d-md-none" data-toggle="modal" data-target="#postModalSale">
-            <i class="edit-solid icon my-float"></i>
+            <i class="fa fa-tag icon my-float"></i>
         </div>
     </main>
 
@@ -1398,7 +1411,7 @@ we can even try to show a route in the map based on what address is and informat
         /** tell the user they are the first to show up from their state and they should start using the platform, basically give them a tour */
         let tell = function() {
             if (!document.getElementById("1or0msg")) { // if it isn't there before
-                console.log('teeeeelllllllllllll');
+                //console.log('teeeeelllllllllllll');
                 // create a new div element 
                 let newDiv = document.createElement("div");
                 newDiv.id = '1or0msg'
@@ -1573,22 +1586,17 @@ we can even try to show a route in the map based on what address is and informat
             // check if the alert is there already before adding it so there is no redundancy (so it doens't appear twice)
             if ($("#offlinealert").length) {
                 // to check if element exists from https://stackoverflow.com/a/41605814 (& jQuery doc.)
-                $("#tl")
-                    .before('<div class="alert alert-danger mt-3" id="offlinealert" role="alert">Seems you\'re offline!</div>')
+                $("#tl").before('<div class="alert alert-danger mt-3" id="offlinealert" role="alert">Seems you\'re offline!</div>')
             }
 
             // incase their tl is empty and hasn't connected
             // remove the loader --this is a not so much an awesome logic
-            document.getElementById('loader')
-                .style.display = 'none';
-
+            document.getElementById('loader').style.display = 'none';
 
             //apply text-decoration: line-through;
-            $('#tco')
-                .css('text-decoration', 'line-through');
+            $('#tco').css('text-decoration', 'line-through');
 
             //track users across multiple session id because when sockets disconnects and then reconnects they are assigned a new session id without knowing the new id that sockets had, but socket.io has a way of knowing with the 'reconnect' event listner...
-
 
             //very important !!!!!!!!!!!!
             //also we need to message the user when there was an error in sending messages/ posts.
@@ -1600,7 +1608,6 @@ we can even try to show a route in the map based on what address is and informat
             }
             // else the socket will automatically try to reconnect
         });
-
 
         socket.on('corpersCount', function(data) {
             console.log('got corpers count');
@@ -1620,13 +1627,11 @@ we can even try to show a route in the map based on what address is and informat
         };
         socket.on('callback', cb);
 
-
         /*  when we receive a boardcast message --save them (in var bm --an array somewhere up).
             so that thing where we can confirm a message has gotten to the server. */
         let bc = function(data) {
             // remove the loader --this is not a very awesom logic, but it works well
-            document.getElementById('loader')
-                .style.display = 'none';
+            document.getElementById('loader').style.display = 'none';
 
             // know when they are the first user in their state or if no one has posted on their state
             if (typeof data.post === 'object') {
@@ -1833,7 +1838,7 @@ we can even try to show a route in the map based on what address is and informat
                 if (jk.length > 0) {
                     // the carousel  
                     let gg = document.createElement('div');
-                    gg.setAttribute('id', 'carousel' + Date.parse(data.post.input_time)); // each carousel has unique id with input time maybe new Date(data.post.input_time)
+                    gg.setAttribute('id', 'carousel' + data.post.post_time); // each carousel has unique id with input time maybe new Date(data.post.input_time)
                     gg.setAttribute('class', 'carousel slide carousel-fade');
                     gg.setAttribute('data-ride', 'carousel');
 
@@ -1851,7 +1856,7 @@ we can even try to show a route in the map based on what address is and informat
 
                         // the actual indicators
                         let aind = document.createElement('li');
-                        aind.setAttribute('data-target', '#carousel' + Date.parse(data.post.input_time)); // the # is important
+                        aind.setAttribute('data-target', '#carousel' + data.post.post_time); // the # is important
                         aind.setAttribute('data-slide-to', i);
 
                         ind.appendChild(aind);
@@ -1871,25 +1876,28 @@ we can even try to show a route in the map based on what address is and informat
 
                         // for each carousel item, append to it the image and explanatory/description div
                         ci.appendChild(cimg);
-                        // the descriptions
-                        let thed = document.createElement('div');
-                        thed.setAttribute('class', 'carousel-caption d-none d-md-block');
+
+
+                        // the descriptions [we aren't adding the right descriptions]
+                        //let thed = document.createElement('div');
+                        //thed.setAttribute('class', 'carousel-caption d-none d-md-block');
 
                         let hh5 = document.createElement('h3');
-                        // jk[i].includes(rms[ i ]);
-                        // let tr = jk[i].slice(parseInt(jk[i]).toString().length, jk[i].lastIndexOf('.'));
-                        hh5.innerText = `${(rms[i] == undefined ? rms[0] : rms[i])}`;
-                        // hh5.innerText = ( rms[ i ] == undefined ? rms[ 0 ] : rms[ i ] ); // this is not exactly correct, needs more work
+                        //// jk[i].includes(rms[ i ]);
+                        //// let tr = jk[i].slice(parseInt(jk[i]).toString().length, jk[i].lastIndexOf('.'));
+                        //hh5.innerText = `${(rms[i] == undefined ? rms[0] : rms[i])}`;
+                        //// hh5.innerText = ( rms[ i ] == undefined ? rms[ 0 ] : rms[ i ] ); // this is not exactly correct, needs more work
 
-                        // let ppp = document.createElement( 'p' );
-                        // ppp.innerText = `Maybe some metric about ${(rms[i] == undefined ? rms[0] : rms[i])}`; // this is not exactly correct, needs more work
+                        //// let ppp = document.createElement( 'p' );
+                        //// ppp.innerText = `Maybe some metric about ${(rms[i] == undefined ? rms[0] : rms[i])}`; // this is not exactly correct, needs more work
 
                         // append h5 and p to description div
-                        thed.appendChild(hh5);
-                        // thed.appendChild( ppp );
+                        //thed.appendChild(hh5);
+                        //// thed.appendChild( ppp );
 
                         // then ...
-                        ci.appendChild(thed);
+                        //ci.appendChild(thed);
+                        // end of the descriptions
 
                     }
                     gg.appendChild(ind);
@@ -1900,7 +1908,7 @@ we can even try to show a route in the map based on what address is and informat
                         // 2nd indicators
                         let aind2 = document.createElement('a');
                         aind2.setAttribute('class', 'carousel-control-' + (index == 0 ? 'prev' : 'next') + ' bg-secondary');
-                        aind2.setAttribute('href', '#carousel' + Date.parse(data.post.input_time));
+                        aind2.setAttribute('href', '#carousel' + data.post.post_time);
                         aind2.setAttribute('data-slide', (index == 0 ? 'prev' : 'next'));
                         aind2.setAttribute('style', 'top: 43%; bottom: 43%;');
                         aind2.setAttribute('role', 'button');
@@ -1939,7 +1947,7 @@ we can even try to show a route in the map based on what address is and informat
                 k.setAttribute('class', 'maintext');
                 // to make the sentence thingy ['ggff','gfff'].toString().replace(',', ', ').replace(['ggff','gfff'][['ggff','gfff'].length - 1], 'and ' + ['ggff','gfff'][['ggff','gfff'].length - 1]) gives "ggff, and gfff" // there is a little edit with the ,
                 k.innerHTML =
-                    `<address><span class='font-italic text-muted'>Address</span>: <a href="#!">${data.post.address} </a> </address> <p><span class='font-italic text-muted'>Details</span>: ${data.post.type} ${(Array.isArray( rms ) ? 'with ' + rms.toString().replace('', 'and ').split(',').reverse().toString().replace(/,/g, ', ') : '' )} at &#8358;${data.post.price} ${data.post.rentrange}. ${(data.post.tenure == 'Sublease.' ? 'Sublease (expires ' + new Date(Date.parse(data.post.expire)).toDateString().italics().bold() + ').'  : 'New lease.' )}</p> <p><span class='font-italic text-muted'>Directions</span>: ${data.post.directions}</p>`;
+                    `<address><span class='font-italic text-muted'>Address</span>: <a href="#!">${data.post.address} </a> </address> <p><span class='font-italic text-muted'>Details</span>: ${data.post.type} ${( rms.length > 1 ? 'with ' + rms.toString().replace('', 'and ').split(',').reverse().toString().replace(/,/g, ', ') : 'with a ' + rms[0] )} at &#8358;${data.post.price} ${data.post.rentrange}. ${(data.post.tenure == 'Sublease.' ? 'Sublease (expires ' + new Date(Date.parse(data.post.expire)).toDateString().italics().bold() + ').'  : 'New lease.' )}</p> <p><span class='font-italic text-muted'>Directions</span>: ${data.post.directions}</p>`;
                 let d = document.createElement('div');
                 d.setAttribute('class', 'media-body');
                 d.appendChild(e);
@@ -2004,13 +2012,10 @@ we can even try to show a route in the map based on what address is and informat
                         console.log('good url?')
                         ii.setAttribute('src', a);
                     } catch (error) { // if it's not already a url
-                        console.log(a, 'err image map', error);
+                        console.error('err image map', error);
                         // with holder.js set the src attr of the image to display an appropriate err msg
-
                         // ii.setAttribute('src', a); // set a with error image
                     }
-
-
                     ii.setAttribute('alt', 'map image'); // do better
                     gg.appendChild(ii);
                     g.appendChild(gg);

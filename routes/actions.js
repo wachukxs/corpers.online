@@ -591,6 +591,7 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
   });
   let _media = []; // good, because we re-initialize on new post
   let _text = {};
+  _text.rooms = []; // hot fix
   let uploadPromise = [];
   let get = true;
 
@@ -699,7 +700,12 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
 
   busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
     console.log('Field [' + fieldname + ']: value: ' + inspect(val));
-    _text[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
+    // this if block is an hot fix
+    if (fieldname === 'rooms') {
+      _text[fieldname].push(val)
+    } else {
+      _text[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
+    }
     console.warn('fielddname Truncated:', fieldnameTruncated, valTruncated, transferEncoding, mimetype);
   });
 
@@ -722,14 +728,14 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
     if (!helpers.isEmpty(_text) && helpers.isEmpty(uploadPromise)) {
       console.log('what\'s _text?', _text)
       console.log('post_time', _text.post_time)
-      query.InsertRowInAccommodationsTable({
+      query.InsertRowInAccommodationsTable({ // why are we boardcasting req ?
         statecode: req.session.statecode,
         streetname: req.body.streetname,
         type: req.body.accommodationtype,
         price: req.body.price,
         media: [].toString(), // same as '' but for consitenc sake
         rentrange: req.body.rentrange,
-        rooms: req.body.rooms,
+        rooms: [req.body.rooms].toString(), // hot fix
         address: req.body.address,
         directions: req.body.directions,
         tenure: req.body.tenure,
@@ -755,7 +761,7 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
             expiredate: (req.body.expiredate ? req.body.expiredate : ''),
             post_location: req.session.location,
             media: [], // make an empty array 
-            post_time: new Date().toLocaleString(), // not sure we need and make use of post time
+            post_time: req.body.post_time,
             type: req.body.accommodationtype,
             address: req.body.address,
             directions: req.body.directions,
@@ -779,7 +785,7 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
         price: _text.price,
         media: _media.toString(), // .toString() only on the query
         rentrange: _text.rentrange,
-        rooms: _text.rooms,
+        rooms: _text.rooms.toString(),
         address: _text.address,
         directions: _text.directions,
         tenure: _text.tenure,
@@ -805,7 +811,7 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
             expiredate: (_text.expiredate ? _text.expiredate : ''),
             post_location: req.session.location,
             media: _media,
-            post_time: new Date().toLocaleString(), // not sure we need and make use of post time
+            post_time: _text.post_time,
             type: _text.accommodationtype,
             address: _text.address,
             directions: _text.directions,
@@ -813,7 +819,7 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
             price: _text.price
           }
         });
-      }, reject => {
+      }, reject => { // give proper feedback based on error
         console.log('insert row didn\'t work', reject);
         res.sendStatus(500);
       }).catch(reason => {
