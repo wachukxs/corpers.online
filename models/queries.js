@@ -878,7 +878,7 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
                 ppa_details.user.name_of_ppa = req.session.name_of_ppa;
             }
             ppa_details.theacc = []; // make it empty
-            ppa_details.theppa = results[3]; // JSON.stringify(results);
+            ppa_details.theppa = JSON.stringify(results[3]); // JSON.stringify(results);
             ppa_details.nop = results[3]; // this variable is ambigious, nop == name of place, or name of ppa ... but we need it for now, just rush work for now
             ppa_details.ppas = results[0];
             ppa_details.accommodations = results[1];
@@ -966,10 +966,10 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
             // res.render('pages/newsearch2', accommodation_details);
             })
 
-        } else if (req.query.type == 'accommodations') { // if it's an accomodation
+        } else if (req.query.type === 'accommodations') { // if it's an accomodation
             // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
             // inputing time from js to sql causes ish
-            connectionPool.query(mustRunQuery + "SELECT * FROM accommodations WHERE statecode = '" + req.query.sc + "' AND input_time = '" + moment(new Date(req.query.it)).format('YYYY-MM-DD HH:mm:ss') + "' AND streetname = '" + req.query.sn + "'", function (error, results, fields) {
+            connectionPool.query(mustRunQuery + "SELECT * FROM accommodations WHERE statecode = '" + req.query.sc + "' AND input_time = '" + moment(new Date(req.query.it)).format('YYYY-MM-DD HH:mm:ss') + "'", function (error, results, fields) {
             console.log('should be here', results[3])
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
                 console.log('error', error);
@@ -1037,7 +1037,7 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
             accommodation_details.places = results[2];
             accommodation_details.theacc = results[3];
             accommodation_details.nop = JSON.stringify(results[3]); // this variable is ambigious, nop == name of place, or name of ppa ... but we need it for now, just rush work for now
-            accommodation_details.theppa = undefined;
+            accommodation_details.theppa = [];
             // accommodation_details.nop = '[]' // || undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
             // console.log('what we shold see');
             resolve(accommodation_details)
@@ -1061,7 +1061,7 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
             _details.ppas = results[0];
             _details.accommodations = results[1];
             _details.places = results[2];
-            _details.theppa = []; // empty
+            _details.theppa = '[]'; // empty
             _details.theacc = []; // empty
             _details.nop = undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
             resolve(_details)
@@ -1171,6 +1171,124 @@ exports.GetPlacesByTypeInOurDB = async (req) => {
             regions_streets: results2[3]
         });
       });
+    })
+
+    return re;
+}
+
+exports.SearchNOPs = async (req) => {
+    let re = await new Promise((resolve, reject) => {
+        // should we only be getting data from info ? how about [ppas in] places table ?????????????
+        // we have req.query.nop=name_of_ppa + req.query.pa=ppa_address + req.query.top=type_of_ppa
+        // also select ppa closer to it and other relevant info we'll find later
+        // also if we don't have the geo data for a school, we can try searching else where for it...
+        // also we should track where the search is from coming from
+    
+        // use the ones from their service state // AND servicestate = '" + req.session.servicestate + "'
+        connectionPool.query("SELECT name_of_ppa, ppa_address, type_of_ppa, ppa_geodata FROM info WHERE name_of_ppa = '" + req.query.nop + "'", function (error, results, fields) {  // bring the results in ascending order
+            console.log(results[0].ppa_geodata != '', 'we want to check', results)
+            if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
+              reject(error);
+            } else if (!helpers.isEmpty(results) && results[0].ppa_geodata != '') {
+              // we're not adding the GeoJSON results to an array because it's only one result
+              for (index = 0; index < results.length; index++) {
+                /**
+                 * {
+                        "type": "Feature",
+                        "properties": {
+                            "name": "Coors Field",
+                            "amenity": "Hospital",
+                            "popupContent": "The Amenity [Hospital], then the location/street name."
+                        },
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [ 7.5098633766174325, 5.515524804961825 ]
+                        }
+                    }
+                 */
+                // unstringify the ppa_geodata entry
+                // results[index]['ppa_geodata'] = JSON.parse(results[index].ppa_geodata);
+      
+                // re-arrange to GeoJSON Format
+                results[index].type = "Feature";
+      
+                results[index].properties = {};
+                results[index].properties.ppa_geodata = JSON.parse(results[index].ppa_geodata);
+                results[index].properties.ppa_address = results[index].ppa_address;
+                results[index].properties.type_of_ppa = results[index].type_of_ppa;
+                results[index].properties.name_of_ppa = results[index].name_of_ppa;
+      
+                // shouldn't we add name of PPA and other details as well ?!?!?
+      
+                results[index].geometry = {};
+                results[index].geometry.type = "Point";
+                results[index].geometry.coordinates = [JSON.parse(results[index].ppa_geodata).longitude, JSON.parse(results[index].ppa_geodata).latitude];
+      
+                console.log(JSON.parse(results[index].ppa_geodata).latlng, '======++++++++====', JSON.parse(results[index]['ppa_geodata']).longitude, JSON.parse(results[index]['ppa_geodata']).latitude);
+      
+                delete results[index]['ppa_geodata'];
+                delete results[index]['type_of_ppa'];
+                delete results[index]['ppa_address'];
+      
+                // delete redundate data like longitude, latitude, and latlng in ppa_geodata after reassigning values
+              }
+            }
+      
+            ppa_details = {};
+      
+            if (req.session.statecode) {
+              ppa_details.user.statecode = req.session.statecode.toUpperCase();
+            }
+            if (req.session.servicestate) {
+              ppa_details.user.servicestate = req.session.servicestate;
+            }
+            if (req.session.batch) {
+              ppa_details.user.batch = req.session.batch;
+            }
+            if (req.session.name_of_ppa) {
+              ppa_details.user.name_of_ppa = req.session.name_of_ppa;
+            }
+            ppa_details.theppa = results[0]; // JSON.stringify(results);
+      
+            console.log('let\'s see nop that was searched for', ppa_details.theppa);
+            // having it named 'pages/account.2' returns error cannot find module '2'
+            resolve(ppa_details);
+          });
+        })
+    
+    return re;
+}
+
+exports.SearchAcc = async (req) => {
+    let re = await new Promise((resolve, reject) => {
+        // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
+        connectionPool.query("SELECT * FROM accommodations WHERE rentrange = '" + req.query.rr + "' AND input_time = '" + moment(new Date(req.query.it)).format('YYYY-MM-DD HH:mm:ss') + "'", function (error, results, fields) {
+        if (error) reject(error);
+        accommodation_details = {};
+        accommodation_details.nop = '[]'; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
+        resolve(accommodation_details);
+      })
+    })
+
+    return re;
+    
+}
+
+exports.SearchDefault = async () => {
+    let re = await new Promise((resolve, reject) => {
+        connectionPool.query("SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null); SELECT * FROM accommodations WHERE expire > UTC_DATE", function (error, results, fields) {
+
+            if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
+              reject(error);
+            }
+            console.log('looking for ooo', results)
+            _details = {};
+            _details.ppas = results[0];
+            _details.accommodations = results[1];
+            _details.theppa = '[]';
+            _details.nop = '[]'; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
+            resolve(_details);
+          })
     })
 
     return re;
