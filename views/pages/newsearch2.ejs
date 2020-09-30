@@ -214,17 +214,18 @@
                                     <div class="card-header" id="headingPPAs">
                                         <h5 class="mb-0"><%#= ( ppas.length > 1 ? 'true' : 'false' ) // what if one or all the sections are empty, then how do we handle which is expanded first %>
                                             <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsePPAs" aria-expanded="true" aria-controls="collapsePPAs">
-                                                PPAs
+                                                PPAs (<%= ppas.length %>)
                                             </button>
                                         </h5>
                                     </div>
                                     <div id="collapsePPAs" class="collapse show" aria-labelledby="headingPPAs" data-parent="#accordionExample">
                                         <div class="card-body">
                                             <div class="wrapper"><!-- removed class 'd-none d-lg-block' from images -->
+                                                <%# should we remove the selected ppa from the other ppas? %>
                                                 <% if ( theppa.length > 0 ) { // %>
                                                     
                                                     <% var containsPPA = ppas.filter((value, index, array) => { return value.name_of_ppa == theppa[0].name_of_ppa && value.ppa_address == theppa[0].ppa_address }) ; %>
-                                                    <% if ( containsPPA.lenght > 0 ) { // %>
+                                                    <% if ( containsPPA.length > 0 ) { // %>
                                                         <%#= "it's in it" %>
                                                     <% } %>
 
@@ -270,7 +271,7 @@
                                     <div class="card-header" id="headingAccommodations">
                                         <h5 class="mb-0">
                                             <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseAccommodations" aria-expanded="false" aria-controls="collapseAccommodations">
-                                                Accommodations
+                                                Accommodations (<%= accommodations.length %>)
                                             </button>
                                         </h5>
                                     </div>
@@ -531,11 +532,11 @@
             L.control.scale()
                 .addTo( mymap );
 
-            here = <%- ( nop !== undefined ? nop : 'undefined' ) %> ;
+            let here = <%- JSON.stringify(nop) %> ;
             
-            if ( here !== undefined && here.length > 0 ) { // if the array is not empty...
+            if ( here.length > 0 ) { // if the array is not empty...
             console.log( 'here.length', here, here.length );
-                console.log( 'creating popup:', <%- nop %> );
+                console.log( 'creating popup:', here );
 
                 /* var popup = L.popup()
                   .setLatLng(<%- nop %>[0].properties.ppa_geodata.latlng)
@@ -561,13 +562,53 @@
                     .openPopup();
                 mymap.setView( (it.ppa_geodata.latlng   ) );
                 } else { // if it's an accommodation
-                [{"statecode":"TR/19A/1234","price":43,"rooms":"Bedroom,Toilet","rentrange":"monthly","streetname":"43","media":"","tenure":"Sublease","input_time":"2019-10-19T21:14:19.000Z","expire":"2019-10-29T23:00:00.000Z","directions":"fdas","post_location":"TARABA, fdwadsdf","post_time":1571519658976,"properties":{"acc_geodata":{"type":"Feature","properties":{"geo":{"accuracy":510314}},"geometry":{"type":"Point","coordinates":[3.3792057,6.5243793]},"latlng":{"lat":6.5243793,"lng":3.3792057}},"address":"asd","type":"Feature","price":43},"geometry":{"type":"Point","coordinates":[null,null]}}] ;
+                const sample_data = [{
+                    "statecode":"TR/19A/1234",
+                    "price":43,
+                    "rooms":"Bedroom,Toilet",
+                    "rentrange":"monthly",
+                    "streetname":"43",
+                    "media":"",
+                    "tenure":"Sublease",
+                    "input_time":"2019-10-19T21:14:19.000Z",
+                    "expire":"2019-10-29T23:00:00.000Z",
+                    "directions":"fdas",
+                    "post_location":"TARABA, fdwadsdf",
+                    "post_time":1571519658976,
+                    "properties":{
+                        "acc_geodata":{
+                            "type":"Feature",
+                            "properties":{
+                                "geo":{
+                                    "accuracy":510314
+                                }
+                            },
+                            "geometry":{
+                                "type":"Point",
+                                "coordinates":[3.3792057,6.5243793]},
+                                "latlng":{
+                                    "lat":6.5243793,
+                                    "lng":3.3792057
+                                }
+                            },
+                            "address":"asd",
+                            "type":"Feature",
+                            "price":43
+                        },
+                        "geometry":{
+                            "type":"Point",
+                            "coordinates":[null,null]
+                        }
+                    }] ;
                     var it = here[ 0 ];
-                    L.marker( (it.properties.acc_geodata.latlng  ) ) // name_of_ppa || price
-                    .addTo( mymap )
-                    .bindPopup( it.type + ` at ${it.price} ${it.rentrange} with ${it.rooms.replace('', 'and ').split(',').reverse().toString().replace(/,/g, ', ')}. <br>${(it.tenure == 'Sublease' ? 'A sublease, expires ' + new Date(it.expire).toDateString() : it.tenure )}` + " <br>Address: "+( it.properties.address ) + '<br> <i class="text-muted">' + ( it.directions ) + '</i> ' )
-                    .openPopup();
-                mymap.setView( ( it.properties.acc_geodata.latlng  ) );
+                    if (it.properties.acc_geodata) {
+                        L.marker( (it.properties.acc_geodata.latlng  ) ) // name_of_ppa || price
+                        .addTo( mymap )
+                        .bindPopup( it.type + ` at ${it.price} ${it.rentrange} with ${it.rooms.replace('', 'and ').split(',').reverse().toString().replace(/,/g, ', ')}. <br>${(it.tenure == 'Sublease' ? 'A sublease, expires ' + new Date(it.expire).toDateString() : it.tenure )}` + " <br>Address: "+( it.properties.address ) + '<br> <i class="text-muted">' + ( it.directions ) + '</i> ' )
+                        .openPopup();
+                        
+                        mymap.setView( ( it.properties.acc_geodata.latlng  ) );
+                    }
                 }
 
                 // [here[0].properties.ppa_geodata.longitude, here[0].properties.ppa_geodata.latitude]

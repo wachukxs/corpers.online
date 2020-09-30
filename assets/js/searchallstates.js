@@ -15,7 +15,6 @@ $.typeahead({
     ttl: 3600000, // Cache time to live in ms
     maxItem: 30, // highest number of results to show
 
-
     ///////////////////
     /* group: {
         key: 'price',
@@ -37,7 +36,7 @@ $.typeahead({
             url: '/posts'
         }
     },
-    template: "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}}, &#8358;{{price}} {{rentrange}} by {{statecode}}</small>" +
+    template: "{{address}} <br> <small class='text-muted text-uppercase'>{{type}}, &#8358;{{price}} {{rentrange}} by {{statecode}}</small>" +
                 "<br> <small class='text-muted text-uppercase'>{{group}}</small>",
                 template: "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                 "<br> <small class='text-muted text-uppercase'>{{group}}</small>",
@@ -47,7 +46,7 @@ $.typeahead({
     group: { // use group to maybe group by LGAs and anything relevant
         template: "{{group}} STATE"
     },
-    // template: "{{streetname}} {{ppa_address}} <br> <small class='text-muted text-uppercase'>{{group}}</small>",
+    // template: "{{address}} {{ppa_address}} <br> <small class='text-muted text-uppercase'>{{group}}</small>",
     // href: "/newsearch?title={{display}}",
 
     // Typeahead can also search deep inside an object, just separate the keys with "." like display: ['string', 'deeper.key.level']
@@ -59,18 +58,18 @@ $.typeahead({
         // group cannot be 'data'
         ABIA: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // what you can search and it autocompletes // 'group' options works but isn't ideal yet because we can't implement // display cannot be a function
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // what you can search and it autocompletes // 'group' options works but isn't ideal yet because we can't implement // display cannot be a function
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
@@ -78,7 +77,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
 
@@ -90,24 +89,23 @@ $.typeahead({
                     q: '{{query}}',
                     u: 'te'
                 },
-
                 path: 'data.ABIA'
             }
         },
         ADAMAWA: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
@@ -115,7 +113,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
             },
@@ -130,18 +128,18 @@ $.typeahead({
         },
         "AKWA IBOM": {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
@@ -149,7 +147,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
             },
@@ -160,24 +158,23 @@ $.typeahead({
                     q: '{{query}}',
                     u: 'te'
                 },
-
                 path: 'data."AKWA IBOM"'
             }
         },
         ANAMBRA: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
@@ -185,7 +182,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
             },
@@ -200,18 +197,18 @@ $.typeahead({
         },
         BAUCHI: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
@@ -219,7 +216,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
             },
@@ -230,24 +227,23 @@ $.typeahead({
                     q: '{{query}}',
                     u: 'te'
                 },
-
                 path: 'data.BAUCHI'
             }
         },
         BAYELSA: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
@@ -255,7 +251,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
             },
@@ -270,18 +266,18 @@ $.typeahead({
         },
         BENUE: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
@@ -289,7 +285,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
             },
@@ -300,24 +296,23 @@ $.typeahead({
                     q: '{{query}}',
                     u: 'te'
                 },
-
                 path: 'data.BENUE'
             }
         },
         BORNO: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
@@ -325,7 +320,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
             },
@@ -340,18 +335,18 @@ $.typeahead({
         },
         "CROSS RIVER": {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
@@ -359,7 +354,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
             },
@@ -370,24 +365,23 @@ $.typeahead({
                     q: '{{query}}',
                     u: 'te'
                 },
-
                 path: 'data."CROSS RIVER"'
             }
         },
         DELTA: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
@@ -395,7 +389,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
             },
@@ -410,18 +404,18 @@ $.typeahead({
         },
         EBONYI: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
@@ -429,7 +423,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
             },
@@ -440,24 +434,23 @@ $.typeahead({
                     q: '{{query}}',
                     u: 'te'
                 },
-
                 path: 'data.EBONYI'
             }
         },
         EDO: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
@@ -465,7 +458,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
             },
@@ -480,18 +473,18 @@ $.typeahead({
         },
         EKITI: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
@@ -499,7 +492,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
             },
@@ -510,24 +503,23 @@ $.typeahead({
                     q: '{{query}}',
                     u: 'te'
                 },
-
                 path: 'data.EKITI'
             }
         },
         ENUGU: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
@@ -535,7 +527,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
             },
@@ -550,18 +542,18 @@ $.typeahead({
         },
         "FCT - ABUJA": {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
@@ -569,7 +561,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
             },
@@ -580,24 +572,23 @@ $.typeahead({
                     q: '{{query}}',
                     u: 'te'
                 },
-
                 path: 'data."FCT - ABUJA"'
             }
         },
         IMO: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
@@ -605,7 +596,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
                     
@@ -621,22 +612,22 @@ $.typeahead({
         },
         JIGAWA: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -646,24 +637,23 @@ $.typeahead({
                     q: '{{query}}',
                     u: 'te'
                 },
-
                 path: 'data.JIGAWA'
             }
         },
         KADUNA: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
@@ -671,7 +661,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
                     
@@ -687,22 +677,22 @@ $.typeahead({
         },
         KANO: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -718,18 +708,18 @@ $.typeahead({
         },
         KASTINA: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
@@ -737,7 +727,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
                     
@@ -753,22 +743,22 @@ $.typeahead({
         },
         KEBBI: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -784,18 +774,18 @@ $.typeahead({
         },
         KOGI: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
@@ -803,7 +793,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
                     
@@ -819,22 +809,22 @@ $.typeahead({
         },
         KWARA: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -850,18 +840,18 @@ $.typeahead({
         },
         LAGOS: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
@@ -869,7 +859,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
                     
@@ -885,22 +875,22 @@ $.typeahead({
         },
         NASSARAWA: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -916,18 +906,18 @@ $.typeahead({
         },
         NIGER: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
@@ -935,7 +925,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
                     
@@ -951,22 +941,22 @@ $.typeahead({
         },
         OGUN: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -982,18 +972,18 @@ $.typeahead({
         },
         ONDO: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
@@ -1001,7 +991,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
                     
@@ -1017,22 +1007,22 @@ $.typeahead({
         },
         OSUN: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -1048,18 +1038,18 @@ $.typeahead({
         },
         OYO: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
@@ -1067,7 +1057,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
                     
@@ -1083,22 +1073,22 @@ $.typeahead({
         },
         PLATEAU: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -1114,18 +1104,18 @@ $.typeahead({
         },
         RIVERS: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
@@ -1133,7 +1123,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
                     
@@ -1149,22 +1139,22 @@ $.typeahead({
         },
         SOKOTO: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -1180,18 +1170,18 @@ $.typeahead({
         },
         TARABA: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
@@ -1199,7 +1189,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
                     
@@ -1215,22 +1205,22 @@ $.typeahead({
         },
         YOBE: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('acc href', item);
-                return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                     item.statecode; // sn sc it
             },
             ajax: {
@@ -1246,18 +1236,18 @@ $.typeahead({
         },
         ZAMFARA: {
             template: function (query, item) {
-                if (item.streetname) {
+                if (item.address) {
                     console.log('t', item)
-                    var d = moment(item.input_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.input_time), { addSuffix: true });
-                    return "{{streetname}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
+                    var d = moment(item.post_time).fromNow();
+                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
                         "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted text-lowercase'>PPA</small>";
                 };
             },
-            display: ['streetname', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 // console.log('ppa href', item);
@@ -1265,7 +1255,7 @@ $.typeahead({
                     return "/newsearch?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/newsearch?state=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" +
+                    return "/newsearch?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 }
                     

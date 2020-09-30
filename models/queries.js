@@ -878,7 +878,7 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
                 ppa_details.user.name_of_ppa = req.session.name_of_ppa;
             }
             ppa_details.theacc = []; // make it empty
-            ppa_details.theppa = JSON.stringify(results[3]); // JSON.stringify(results);
+            ppa_details.theppa = results[3]; // JSON.stringify(results);
             ppa_details.nop = results[3]; // this variable is ambigious, nop == name of place, or name of ppa ... but we need it for now, just rush work for now
             ppa_details.ppas = results[0];
             ppa_details.accommodations = results[1];
@@ -892,7 +892,7 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
             });
         } else if (req.query.rr) { // if it's an accomodation
             // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
-            connectionPool.query(mustRunQuery + "SELECT * FROM accommodations WHERE rentrange = '" + req.query.rr + "' AND input_time = '" + req.query.it + "'", function (error, results, fields) {
+            connectionPool.query(mustRunQuery + "SELECT * FROM accommodations WHERE rentrange = '" + req.query.rr + "' AND post_time = '" + req.query.pt + "'", function (error, results, fields) {
 
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
                 console.log(error);
@@ -959,8 +959,8 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
             accommodation_details.accommodations = results[1];
             accommodation_details.places = results[2];
             accommodation_details.theacc = results[3];
-            accommodation_details.nop = JSON.stringify(results[3]); // this variable is ambigious, nop == name of place, or name of ppa ... but we need it for now, just rush work for now
-            accommodation_details.theppa = undefined;
+            accommodation_details.nop = results[3]; // this variable is ambigious, nop == name of place, or name of ppa ... but we need it for now, just rush work for now
+            accommodation_details.theppa = [];
             // accommodation_details.nop = '[]' // || undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
             resolve(accommodation_details)
             // res.render('pages/newsearch2', accommodation_details);
@@ -969,7 +969,7 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
         } else if (req.query.type === 'accommodations') { // if it's an accomodation
             // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
             // inputing time from js to sql causes ish
-            connectionPool.query(mustRunQuery + "SELECT * FROM accommodations WHERE statecode = '" + req.query.sc + "' AND input_time = '" + moment(new Date(req.query.it)).format('YYYY-MM-DD HH:mm:ss') + "'", function (error, results, fields) {
+            connectionPool.query(mustRunQuery + "SELECT * FROM accommodations WHERE statecode = '" + req.query.sc + "' AND post_time = '" + req.query.pt + "'", function (error, results, fields) {
             console.log('should be here', results[3])
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
                 console.log('error', error);
@@ -1036,7 +1036,7 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
             accommodation_details.accommodations = results[1];
             accommodation_details.places = results[2];
             accommodation_details.theacc = results[3];
-            accommodation_details.nop = JSON.stringify(results[3]); // this variable is ambigious, nop == name of place, or name of ppa ... but we need it for now, just rush work for now
+            accommodation_details.nop = results[3]; // this variable is ambigious, nop == name of place, or name of ppa ... but we need it for now, just rush work for now
             accommodation_details.theppa = [];
             // accommodation_details.nop = '[]' // || undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
             // console.log('what we shold see');
@@ -1061,9 +1061,9 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
             _details.ppas = results[0];
             _details.accommodations = results[1];
             _details.places = results[2];
-            _details.theppa = '[]'; // empty
+            _details.theppa = []; // empty
             _details.theacc = []; // empty
-            _details.nop = undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
+            _details.nop = []; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
             resolve(_details)
             // res.render('pages/newsearch2', _details);
             })
@@ -1082,18 +1082,19 @@ exports.GetPosts = async (data) => {
   // SELECT * FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT ppa_address, ppa_geodata, type_of_ppa FROM info WHERE ppa_address != '' AND ppa_geodata != '' AND type_of_ppa != ''
   // console.log('search query parameters', data.query)
   let q = '', thisisit = {};
+  // maybe change the ORDER BYs since we're using post_time now =---
   if (data.query.s) {
     console.log('are we here?');
-    q = "SELECT streetname, type, input_time, statecode, price, rentrange FROM accommodations \
+    q = "SELECT address, type, post_time, statecode, price, rentrange FROM accommodations \
     WHERE statecode LIKE '" + data.query.s.substring(0, 2) + "%' \
-    ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town \
+    ORDER BY post_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town \
     FROM info WHERE ppa_address != '' AND statecode LIKE '" + data.query.s.substring(0, 2) + "%'";
   } else {
     
     for (let index = 0; index < 36/* ngstates.states_short.length */; index++) {
       const element = ngstates.states_short[index];
-      q += "SELECT streetname, type, input_time, statecode, price, rentrange FROM accommodations \
-      WHERE statecode LIKE '" + element + "%' ORDER BY input_time DESC LIMIT 55; \
+      q += "SELECT address, type, post_time, statecode, price, rentrange FROM accommodations \
+      WHERE statecode LIKE '" + element + "%' ORDER BY post_time DESC LIMIT 55; \
       SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info \
       WHERE ppa_address != '' AND statecode LIKE '" + element + "%' ;"; // the trailing ';' is very important
     }
@@ -1262,10 +1263,10 @@ exports.SearchNOPs = async (req) => {
 exports.SearchAcc = async (req) => {
     let re = await new Promise((resolve, reject) => {
         // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
-        connectionPool.query("SELECT * FROM accommodations WHERE rentrange = '" + req.query.rr + "' AND input_time = '" + moment(new Date(req.query.it)).format('YYYY-MM-DD HH:mm:ss') + "'", function (error, results, fields) {
+        connectionPool.query("SELECT * FROM accommodations WHERE rentrange = '" + req.query.rr + "' AND post_time = '" + req.query.pt + "'", function (error, results, fields) {
         if (error) reject(error);
         accommodation_details = {};
-        accommodation_details.nop = '[]'; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
+        accommodation_details.nop = []; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
         resolve(accommodation_details);
       })
     })
@@ -1285,8 +1286,8 @@ exports.SearchDefault = async () => {
             _details = {};
             _details.ppas = results[0];
             _details.accommodations = results[1];
-            _details.theppa = '[]';
-            _details.nop = '[]'; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
+            _details.theppa = [];
+            _details.nop = []; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
             resolve(_details);
           })
     })

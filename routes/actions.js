@@ -84,7 +84,7 @@ router.get('/newsearch', function (req, res) {
 
   // "/search?type=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address + "&top=" + item.type_of_ppa; // nop type pa
 
-  // "/search?type=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" + item.statecode; // sn sc it
+  // "/search?type=" + item.group + "&it=" + item.input_time + "&sn=" + item.address + "&sc=" + item.statecode; // sn sc it
   res.set('Content-Type', 'text/html');
   // res.sendFile(__dirname + '/search and places/index.html');
   console.log('req.query:', req.query); // find every thing that is req.query.search.query
@@ -107,7 +107,7 @@ router.get('/search', function (req, res) {
 
   // "/search?type=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address + "&top=" + item.type_of_ppa; // nop type pa
 
-  // "/search?type=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" + item.statecode; // sn sc it
+  // "/search?type=" + item.group + "&it=" + item.input_time + "&sn=" + item.address + "&sc=" + item.statecode; // sn sc it
   res.set('Content-Type', 'text/html');
   // res.sendFile(__dirname + '/search and places/index.html');
 
