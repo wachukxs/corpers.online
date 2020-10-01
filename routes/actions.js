@@ -79,7 +79,7 @@ router.get('/allppas', function (req, res) {
 
 });
 
-router.get('/newsearch', function (req, res) {
+router.get('/places', function (req, res) {
   // maybe make use of [req.originalUrl .baseUrl .path] later. req.params too
 
   // "/search?type=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address + "&top=" + item.type_of_ppa; // nop type pa
@@ -102,7 +102,7 @@ router.get('/newsearch', function (req, res) {
 });
 
 // obselete ... (for now?)
-router.get('/search', function (req, res) {
+router.get('/items', function (req, res) {
   // maybe make use of [req.originalUrl .baseUrl .path] later. req.params too
 
   // "/search?type=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address + "&top=" + item.type_of_ppa; // nop type pa
@@ -132,8 +132,14 @@ router.get('/search', function (req, res) {
     
   } else {
     // SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address,ppa_geodata FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null)
-    query.SearchDefault().then(data => {
+    /* query.SearchDefault().then(data => {
       res.render('pages/search', data);
+    }, error => {
+      res.render('pages/search');
+    }) */
+
+    query.GetSales().then(sales => {
+      res.render('pages/search', sales);
     }, error => {
       res.render('pages/search');
     })

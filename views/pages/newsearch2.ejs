@@ -265,7 +265,6 @@
                                 <a>There's nothing for now. Check back later and you can also add a PPA.</a>
                             <% } %> %>
                             
-
                             <% if ( accommodations.length > 0 ) { // for when they open up a new chat and if they've never chatted before // i.e. this guy has no old chat AT ALL they possibly couldn't have chatted before %>
                             <div class="card">
                                     <div class="card-header" id="headingAccommodations">
@@ -519,13 +518,14 @@
                     zoomControl: false
                 } )
                 .setView( [ 5.5216578, 7.5066884 ], 16 );
-                        // https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg
-                        var basemap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        attribution: '<a href="https://www.openstreetmap.org/">OpenStreetMap</a>, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, <a href="https://www.mapbox.com/">Mapbox</a>',
-                        maxZoom: 18,
-                        id: 'mapbox.streets',
-                        accessToken: 'pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg'
-                    } )
+                
+                // https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg
+                var basemap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '<a href="https://www.openstreetmap.org/">OpenStreetMap</a>, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, <a href="https://www.mapbox.com/">Mapbox</a>',
+                    maxZoom: 18,
+                    id: 'mapbox.streets',
+                    accessToken: 'pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg'
+                })
                 .addTo( mymap );
 
             // A simple scale control that shows the scale of the current center of screen in metric (m/km) and imperial (mi/ft) systems

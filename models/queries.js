@@ -799,7 +799,7 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
     let re = await new Promise((resolve, reject) => {
         const mustRunQuery = "SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null); \
         SELECT * FROM accommodations WHERE expire > UTC_DATE ; \
-        SELECT `places_data`, `test`, `when`, `here` FROM places WHERE places_data != '' ;"
+        SELECT `geo_data`, `when` FROM places WHERE geo_data != '' ;"
         ;
 
         // if we know where the ppa is, get the geo data and show it on the map
@@ -1049,8 +1049,8 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
 
             connectionPool.query("SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions FROM info \
             WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null);\
-            SELECT * FROM accommodations WHERE expire > UTC_DATE ; SELECT `places_data`, `test`, `when`, `here` FROM places \
-            WHERE lga = '' AND ppa_geodata != '' ;", function (error, results, fields) {
+            SELECT * FROM accommodations WHERE expire > UTC_DATE ; SELECT `geo_data`, `when` FROM places \
+            WHERE geo_data != '' ;", function (error, results, fields) {
 
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
                 console.log(error);
@@ -1145,7 +1145,7 @@ exports.GetPosts = async (data) => {
           // the last result of thisisit is undefined because states_long[37 + 1] is above the last index of results
         }
       }
-      console.log('>>>', thisisit)
+      // console.log('>>>', thisisit)
       resolve(thisisit)
       // res.status(200).send(thisisit); // {a: acc, p: ppa}
     }
@@ -1289,6 +1289,21 @@ exports.SearchDefault = async () => {
             _details.theppa = [];
             _details.nop = []; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
             resolve(_details);
+          })
+    })
+
+    return re;
+}
+
+exports.GetSales = async () => {
+    let re = await new Promise((resolve, reject) => {
+        connectionPool.query("SELECT * FROM `posts` WHERE `type` = 'sale'", function (error, results, fields) {
+
+            if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
+              reject(error);
+            }
+            // console.log('looking for sales', results)
+            resolve({sales: results});
           })
     })
 

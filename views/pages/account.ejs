@@ -443,7 +443,7 @@
               </div>
             </form> -->
 
-            <form id="form-search" action="/newsearch" name="form-search" class="mr-md-3">
+            <form id="form-search" action="/places" name="form-search" class="mr-md-3">
                 <div class="typeahead__container">
                     <div class="typeahead__field">
                         <div class="typeahead__query">
@@ -1224,7 +1224,7 @@ we can even try to show a route in the map based on what address is and informat
                                     <span class=""></span>Batch <a href="#!"> <%= batch %> </a>
                                 </li>
                                 <li>
-                                    <span class=""></span>PPA at <a href="<%= ( name_of_ppa ? '/newsearch?nop=' + name_of_ppa : '/profile' ) %>">
+                                    <span class=""></span>PPA at <a href="<%= ( name_of_ppa ? '/places?nop=' + name_of_ppa : '/profile' ) %>">
                                         <%= ( name_of_ppa ? name_of_ppa : '?' ) %> </a>
                                 </li>
                                 <li style="display:none;">
@@ -2647,7 +2647,7 @@ we can even try to show a route in the map based on what address is and informat
             template: "{{group}}"
             }, */
             // template: "{{address}} {{ppa_address}} <br> <small class='text-muted text-uppercase'>{{group}}</small>",
-            // href: "/newsearch?title={{display}}",
+            // href: "/places?title={{display}}",
 
             // Typeahead can also search deep inside an object, just separate the keys with "." like display: ['string', 'deeper.key.level']
             // display: ["address", "ppa_address"], // or be specific in the group objects
@@ -2661,7 +2661,7 @@ we can even try to show a route in the map based on what address is and informat
                     // Be careful as item properties might contain Url-unsafe characters
                     href: function(item) {
                         // console.log('acc href', item);
-                        return "/newsearch?type=" + item.group + "&pt=" + item.post_time + "&sc=" +
+                        return "/places?type=" + item.group + "&pt=" + item.post_time + "&sc=" +
                             item.statecode; // sn sc it
                     },
                     ajax: {
@@ -2680,7 +2680,7 @@ we can even try to show a route in the map based on what address is and informat
                     // Be careful as item properties might contain Url-unsafe characters
                     href: function(item) {
                         // console.log('ppa href', item);
-                        return "/newsearch?type=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                        return "/places?type=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                             "&top=" + item.type_of_ppa; // nop type pa
                     },
                     ajax: {
