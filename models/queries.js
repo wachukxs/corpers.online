@@ -412,7 +412,6 @@ exports.GetMapData = async () => {
                     results[1][index].properties.type = results[1][index].type_of_ppa;
 
                     // we can add lga, name, and maybe region
-
                     results[1][index].geometry = {};
                     results[1][index].geometry.type = "Point";
                     results[1][index].geometry.coordinates = [JSON.parse(results[1][index].ppa_geodata).longitude, JSON.parse(results[1][index].ppa_geodata).latitude];
@@ -430,8 +429,8 @@ exports.GetMapData = async () => {
                 results[1] = []
             }
 
+            // for the results from info table
             if (!helpers.isEmpty(results[0])) {
-                // for the results from info table
                 // format to GeoJSON Format https://tools.ietf.org/html/rfc7946
                 for (index = 0; index < results[0].length; index++) {
 
@@ -459,7 +458,7 @@ exports.GetMapData = async () => {
                 results[0] = []
             }
 
-            let listoftypesofppas = ["ATM", "Bank", "School", "Hospital", "Corporate office", "Industory", "Mosque", "Bus stop", "Shop", "Stadium", "Airport", "Market", "Church", "Hotel", "University"];
+            let listoftypesofppas = ["ATM", "Bank", "Primary School", "Secondary School", "School", "Hospital", "Corporate office", "Industry", "Mosque", "Bus stop", "Shop", "Stadium", "Airport", "Market", "Church", "Hotel", "University"];
 
             if (!helpers.isEmpty(results[2])) {
 

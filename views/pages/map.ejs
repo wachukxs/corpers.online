@@ -52,7 +52,7 @@
     ></script>
 
     <!--jquery-->
-    <script src="assets/js/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
     <!--bootstrap-->
     <link
@@ -383,7 +383,7 @@
                  console.log( 'all tiles loaded' );
              } );
 
-             console.log( <%- mapdata %> ); // JSON.parse(JSON.stringify(mapdata))
+             console.log( <%- JSON.stringify(mapdata) %> ); // JSON.parse(JSON.stringify(mapdata))
 
              mymap.on( 'zoom', function(
                  event ) { // based on where people expand in our maps, we'll know what they are intrested in, and we'd ask other corpers to provide info about such places.
@@ -464,39 +464,29 @@
                          break;
                  }
              } );
-
-
-             var local_printshopIcon = L.icon( {
-                 iconUrl: 'https://icon.now.sh/local_printshop',
-                 iconSize: [ 30, 30 ],
-                 iconAnchor: [ 22, 94 ],
-                 popupAnchor: [ -7, -85 ], // documentation used [-3, -76], it wasn't exactly properly aligned to the icon, maybe it's directly on the latlng point but ...no
-                 shadowUrl: null,
-                 shadowSize: [ 68, 95 ],
-                 shadowAnchor: [ 22, 94 ],
-                 className: 'custom-icons' // no space
-             } );
+             
+/* 
+             var local_printshopIcon = L.divIcon({
+                html: '<ion-icon name="moon-outline"></ion-icon>',
+                popupAnchor: [ -7, -85 ],
+                className: 'custom-icons' // no space
+             });
              L.marker( [ 5.521697329407013, 7.514498233795167 ], {
                      icon: local_printshopIcon
                  } )
                  .addTo( mymap )
                  .bindPopup( "A print shop." );
 
-             var local_pharmacyIcon = L.icon( {
-                 iconUrl: 'https://icon.now.sh/local_pharmacy',
-                 iconSize: [ 30, 30 ],
-                 iconAnchor: [ 22, 94 ],
-                 popupAnchor: [ -3, -76 ],
-                 shadowUrl: null,
-                 shadowSize: [ 68, 95 ],
-                 shadowAnchor: [ 22, 94 ],
-                 className: 'custom-icons' // no space between class name
+             var local_pharmacyIcon = L.divIcon( {
+                html: '<i class="fas fa-clinic-medical"></i>',
+                
+                className: 'custom-icons' // no space between class name
              } );
              L.marker( [ 5.521889552319924, 7.512137889862061 ], {
                      icon: local_pharmacyIcon
                  } )
                  .addTo( mymap );
-
+ */
              /* mymap.on({zoom: function (event) {
                  console.log("Map 6666zoom level:", mymap.getZoom(), event);
              } }); */
@@ -1045,19 +1035,28 @@
                  }
              } ];
              // GENERAL RULES: THE popupAnchor for fas fa-[amenity] is [5, -2] for when it's big and [0, 0] (we're gonna try to find a middle ground) for when it's small and for icon.now.sh is [-7, -85]
-             var school = L.divIcon( {
-                 className: 'custom-icons fas fa-school fa-2x',
-                 popupAnchor: [9 , 1], // was and [3, 0], documentation used [-3, -76], it wasn't exactly properly aligned to the icon, maybe it's directly on the latlng point but ...no
+             let school = L.divIcon( {
+                 html: '<i class="fas fa-school"></i>',
+                 className: 'custom-icons',
+                 popupAnchor: [9 , 1],
+             } );
+             
+             let hospital = L.divIcon( {
+                 html: '<i class="fas fa-clinic-medical"></i>',
+                 className: 'custom-icons',
+                 popupAnchor: [5 , -2],
              } );
 
-             var hospital = L.divIcon( {
-                 className: 'custom-icons fas fa-hospital fa-2x',
-                 popupAnchor: [5 , -2], // was [5, -2] for smaller width icons documentation used [-3, -76], it wasn't exactly properly aligned to the icon, maybe it's directly on the latlng point but ...no
+             let default_office = L.divIcon( {
+                 html: '<i class="fas fa-building"></i>',
+                 className: 'custom-icons',
+                 popupAnchor: [5 , -2],
              } );
 
              // you can set .my-div-icon styles in CSS
              // L.marker([5.524986, 7.497182], { icon: university }).addTo(mymap);
-
+/* 
+             // sample way to add multiple icons
              L.geoJSON( yes, {
                      pointToLayer: function( feature, latlng ) {
                          // console.log( feature, latlng );
@@ -1065,27 +1064,28 @@
                              case 'Hospital':
                                  return L.marker( latlng, {
                                      icon: hospital,
+                                     alt: 'Hospital',
                                      title: feature.properties.popupContent
                                  } );
                              case 'School':
                                  return L.marker( latlng, {
                                      icon: school,
+                                     alt: 'School',
                                      title: feature.properties.popupContent
                                  } );
                          }
                      }
                  } )
                  .bindPopup( function( layer ) {
-                     console.log( 'layer',
-                         layer ); // layer.defaultOptions.icon.options.popupAnchor = [0, 0] if layer.defaultOptions.icon.options.className.has()
+                     console.log( 'layer', layer ); // layer.defaultOptions.icon.options.popupAnchor = [0, 0] if layer.defaultOptions.icon.options.className.has()
                      return layer.feature.properties.popupContent;
                  } )
                  .addTo( mymap );
-
-             L.geoJSON( <%- mapdata %> , {
+ */
+             L.geoJSON( <%- JSON.stringify(mapdata) %> , {
                      pointToLayer: function( feature, latlng ) {
                          // console.log( 'from server', feature, latlng );
-                         switch ( feature.properties.type ) {
+                        switch ( feature.properties.type ) {
                              case 'Hospital':
                                  return L.marker( latlng, {
                                      icon: hospital,
@@ -1096,7 +1096,12 @@
                                      icon: school,
                                      title: feature.properties.address + ' (' + feature.properties.type + ')'
                                  } );
-                         }
+                            default:
+                                return L.marker( latlng, {
+                                     icon: default_office,
+                                     title: feature.properties.address + ' (' + feature.properties.type + ')'
+                                });
+                        }
                      }
                  } )
                  .bindPopup( function( layer ) {

@@ -163,7 +163,7 @@
 		var yearrange = '(' + ( years - 1 ).toString() + '|' + years.toString() + ')';
 		// document.forms[ 0 ].elements[ 5 ].pattern.replace( '\\d\\d', yearrange );
 		
-		document.forms[ 0 ].elements[ 5 ].pattern = `^(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\\/${yearrange}[abcACB]\\/[0-9]{4}$`; // extra escaping probably because we're setting with string from here and not directly from the pattern attribute
+		document.forms[ 0 ].elements[ 5 ].pattern = `(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\\/${yearrange}[abcACB]\\/[0-9]{4}`; // extra escaping probably because we're setting with string from here and not directly from the pattern attribute
 
         document.getElementById( 'scinput' )
             .oninvalid = function( event ) {
