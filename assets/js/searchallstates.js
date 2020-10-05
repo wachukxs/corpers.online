@@ -2,7 +2,7 @@
 
 // use grouping from http://www.runningcoder.org/jquerytypeahead/demo/ Advanced demo Beer v1
 $.typeahead({
-    input: '#s',
+    input: '.s',
     // order: "asc", // asc or desc // no need for this, we already arrange it from server
     minLength: 1, // Accepts 0 to search on focus, minimum character length to perform a search
     offset: false, // Set to true to match items starting from their first character

@@ -5,9 +5,10 @@ const query = require('../models/queries');
 
 router.get(['/', '/home', '/index', '/homepage'], function (req, res) {
   res.type('.html');
-  res.render('pages/about');
+  res.render('pages/index');
 });
 
+// about.eje became index.ejs
 /* router.get(['/about', '/about-us'], function (req, res) {
   res.type('html');
   res.render('pages/about');
