@@ -413,13 +413,16 @@
             <!-- Nav tabs for the accommodation, PPAs, SPAs, SALES -->
             <ul class="nav navbar-nav mr-auto" id="theTabs" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link" href="/map" aria-selected="true">Maps</a>
+                    <a class="nav-link" href="/profile" aria-selected="true">Profile</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/chat?s=<%= statecode2 %>" aria-selected="true">
                         Messages
                         <span id="totalunreadmsg" class="float-right badge badge-secondary badge-pill"><%= (total_num_unread_msg > 0 ? total_num_unread_msg : '') %></span>
                     </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/map" aria-selected="true">Maps</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/logout" aria-selected="true">Logout</a>
