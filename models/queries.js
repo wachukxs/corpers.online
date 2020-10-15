@@ -1084,18 +1084,20 @@ exports.GetPosts = async (data) => {
   // maybe change the ORDER BYs since we're using post_time now =---
   if (data.query.s) {
     console.log('are we here?');
-    q = "SELECT address, type, post_time, statecode, price, rentrange FROM accommodations \
+    q = "SELECT * FROM accommodations \
     WHERE statecode LIKE '" + data.query.s.substring(0, 2) + "%' \
-    ORDER BY post_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town \
-    FROM info WHERE ppa_address != '' AND statecode LIKE '" + data.query.s.substring(0, 2) + "%'";
+    ORDER BY post_time DESC LIMIT 55; SELECT * \
+    FROM info WHERE ppa_address != '' AND statecode LIKE '" + data.query.s.substring(0, 2) + "%' ;\
+    SELECT * FROM posts WHERE statecode LIKE '" + data.query.s.substring(0, 2) + "%';";
   } else {
     
     for (let index = 0; index < 36/* ngstates.states_short.length */; index++) {
       const element = ngstates.states_short[index];
-      q += "SELECT address, type, post_time, statecode, price, rentrange FROM accommodations \
+      q += "SELECT * FROM accommodations \
       WHERE statecode LIKE '" + element + "%' ORDER BY post_time DESC LIMIT 55; \
-      SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info \
-      WHERE ppa_address != '' AND statecode LIKE '" + element + "%' ;"; // the trailing ';' is very important
+      SELECT * FROM info \
+      WHERE ppa_address != '' AND statecode LIKE '" + element + "%' ;\
+      SELECT * FROM posts WHERE statecode LIKE '" + element + "%' ;"; // the trailing ';' is very important
     }
     // let q = "SELECT streetname, type, input_time, statecode, price, rentrange FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != ''";
   }
@@ -1119,15 +1121,16 @@ exports.GetPosts = async (data) => {
       if (data.query.s) {
         thisisit = {
           data: {
+            accommodations: results[0],
             ppas: results[1],
-            accommodations: results[0]
+            sales: results[2]
           }
         };
       } else {
         thisisit = {
           data: {}
         };
-        for (let index = 0, k = 0; index < results.length; index += 2, k++) {
+        for (let index = 0, k = 0; index < results.length; index += 3, k++) {
           // never increment index like ++index or index++ or -- because you'd be changing the value of index in the next iteration
           // const element = results[index];
 
@@ -1139,7 +1142,7 @@ exports.GetPosts = async (data) => {
             
           } */
           console.log('\n', index, k)
-          thisisit.data[ngstates.states_long[k]] = results[index].concat(results[index + 1])
+          thisisit.data[ngstates.states_long[k]] = results[index].concat(results[index + 1]).concat(results[index + 2])
           // thisisit.data[ngstates.states_long[index+1]] = results[index+1]
           // the last result of thisisit is undefined because states_long[37 + 1] is above the last index of results
         }

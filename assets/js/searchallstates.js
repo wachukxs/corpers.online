@@ -58,27 +58,32 @@ $.typeahead({
         // group cannot be 'data'
         ABIA: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                // console.log('t', item)
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // what you can search and it autocompletes // 'group' options works but isn't ideal yet because we can't implement // display cannot be a function
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // what you can search and it autocompletes // 'group' options works but isn't ideal yet because we can't implement // display cannot be a function
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('acc href', item);
+                console.log('=href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
 
             },
@@ -94,27 +99,31 @@ $.typeahead({
         },
         ADAMAWA: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('ppa href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -128,27 +137,31 @@ $.typeahead({
         },
         "AKWA IBOM": {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('acc href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -163,27 +176,31 @@ $.typeahead({
         },
         ANAMBRA: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('ppa href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -197,27 +214,31 @@ $.typeahead({
         },
         BAUCHI: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('acc href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -232,27 +253,31 @@ $.typeahead({
         },
         BAYELSA: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('ppa href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -266,27 +291,31 @@ $.typeahead({
         },
         BENUE: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('acc href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -301,27 +330,31 @@ $.typeahead({
         },
         BORNO: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('ppa href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -335,27 +368,31 @@ $.typeahead({
         },
         "CROSS RIVER": {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('acc href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -370,27 +407,31 @@ $.typeahead({
         },
         DELTA: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('ppa href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -404,27 +445,31 @@ $.typeahead({
         },
         EBONYI: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('acc href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -439,27 +484,31 @@ $.typeahead({
         },
         EDO: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('ppa href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -473,27 +522,31 @@ $.typeahead({
         },
         EKITI: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('acc href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -508,27 +561,31 @@ $.typeahead({
         },
         ENUGU: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('ppa href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -542,27 +599,31 @@ $.typeahead({
         },
         "FCT - ABUJA": {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('acc href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -577,27 +638,31 @@ $.typeahead({
         },
         IMO: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('ppa href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -612,23 +677,32 @@ $.typeahead({
         },
         JIGAWA: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('acc href', item);
-                return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
-                    item.statecode; // sn sc it
+                // console.log('href', item);
+                if (item.name_of_ppa) { // if it's a ppa
+                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                        "&top=" + item.type_of_ppa;
+                } else if (item.rentrange) { // if it's an accommodation
+                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                        item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                }
             },
             ajax: {
                 url: "/posts",
@@ -642,27 +716,31 @@ $.typeahead({
         },
         KADUNA: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('ppa href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -677,23 +755,32 @@ $.typeahead({
         },
         KANO: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('acc href', item);
-                return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
-                    item.statecode; // sn sc it
+                // console.log('href', item);
+                if (item.name_of_ppa) { // if it's a ppa
+                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                        "&top=" + item.type_of_ppa;
+                } else if (item.rentrange) { // if it's an accommodation
+                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                        item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                }
             },
             ajax: {
                 url: "/posts",
@@ -708,27 +795,31 @@ $.typeahead({
         },
         KASTINA: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('ppa href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -743,23 +834,32 @@ $.typeahead({
         },
         KEBBI: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('acc href', item);
-                return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
-                    item.statecode; // sn sc it
+                // console.log('href', item);
+                if (item.name_of_ppa) { // if it's a ppa
+                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                        "&top=" + item.type_of_ppa;
+                } else if (item.rentrange) { // if it's an accommodation
+                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                        item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                }
             },
             ajax: {
                 url: "/posts",
@@ -774,27 +874,31 @@ $.typeahead({
         },
         KOGI: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('ppa href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -809,23 +913,32 @@ $.typeahead({
         },
         KWARA: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('acc href', item);
-                return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
-                    item.statecode; // sn sc it
+                // console.log('href', item);
+                if (item.name_of_ppa) { // if it's a ppa
+                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                        "&top=" + item.type_of_ppa;
+                } else if (item.rentrange) { // if it's an accommodation
+                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                        item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                }
             },
             ajax: {
                 url: "/posts",
@@ -840,27 +953,31 @@ $.typeahead({
         },
         LAGOS: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('ppa href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -875,23 +992,32 @@ $.typeahead({
         },
         NASSARAWA: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('acc href', item);
-                return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
-                    item.statecode; // sn sc it
+                // console.log('href', item);
+                if (item.name_of_ppa) { // if it's a ppa
+                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                        "&top=" + item.type_of_ppa;
+                } else if (item.rentrange) { // if it's an accommodation
+                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                        item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                }
             },
             ajax: {
                 url: "/posts",
@@ -906,27 +1032,31 @@ $.typeahead({
         },
         NIGER: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('ppa href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -941,23 +1071,32 @@ $.typeahead({
         },
         OGUN: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('acc href', item);
-                return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
-                    item.statecode; // sn sc it
+                // console.log('href', item);
+                if (item.name_of_ppa) { // if it's a ppa
+                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                        "&top=" + item.type_of_ppa;
+                } else if (item.rentrange) { // if it's an accommodation
+                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                        item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                }
             },
             ajax: {
                 url: "/posts",
@@ -972,27 +1111,31 @@ $.typeahead({
         },
         ONDO: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('ppa href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -1007,23 +1150,32 @@ $.typeahead({
         },
         OSUN: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('acc href', item);
-                return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
-                    item.statecode; // sn sc it
+                // console.log('href', item);
+                if (item.name_of_ppa) { // if it's a ppa
+                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                        "&top=" + item.type_of_ppa;
+                } else if (item.rentrange) { // if it's an accommodation
+                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                        item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                }
             },
             ajax: {
                 url: "/posts",
@@ -1038,27 +1190,31 @@ $.typeahead({
         },
         OYO: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('ppa href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -1073,23 +1229,32 @@ $.typeahead({
         },
         PLATEAU: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('acc href', item);
-                return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
-                    item.statecode; // sn sc it
+                // console.log('href', item);
+                if (item.name_of_ppa) { // if it's a ppa
+                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                        "&top=" + item.type_of_ppa;
+                } else if (item.rentrange) { // if it's an accommodation
+                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                        item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                }
             },
             ajax: {
                 url: "/posts",
@@ -1104,27 +1269,31 @@ $.typeahead({
         },
         RIVERS: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('ppa href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -1139,23 +1308,32 @@ $.typeahead({
         },
         SOKOTO: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('acc href', item);
-                return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
-                    item.statecode; // sn sc it
+                // console.log('href', item);
+                if (item.name_of_ppa) { // if it's a ppa
+                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                        "&top=" + item.type_of_ppa;
+                } else if (item.rentrange) { // if it's an accommodation
+                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                        item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                }
             },
             ajax: {
                 url: "/posts",
@@ -1170,27 +1348,31 @@ $.typeahead({
         },
         TARABA: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('ppa href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -1205,23 +1387,32 @@ $.typeahead({
         },
         YOBE: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'], // seems 'group' options isn't working
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('acc href', item);
-                return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
-                    item.statecode; // sn sc it
+                // console.log('href', item);
+                if (item.name_of_ppa) { // if it's a ppa
+                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                        "&top=" + item.type_of_ppa;
+                } else if (item.rentrange) { // if it's an accommodation
+                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                        item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                }
             },
             ajax: {
                 url: "/posts",
@@ -1236,27 +1427,31 @@ $.typeahead({
         },
         ZAMFARA: {
             template: function (query, item) {
-                if (item.address) {
-                    console.log('t', item)
-                    var d = moment(item.post_time).fromNow();
-                    // var dd = distanceInWordsToNow(new Date(item.post_time), { addSuffix: true });
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}} (" + d + ")</small>" +
-                        "<br> <small class='text-muted text-lowercase'>ACCOMMODATIONS</small>";
+                if (item.rentrange) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted text-lowercase'>PPA</small>";
+                        "<br> <small class='text-muted '>ppa</small>";
+                } else if (item.itemname) {
+                    let d = moment(item.post_time).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted '>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price'],
+            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                // console.log('ppa href', item);
+                // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
+                } else if (item.itemname) { // if it's an item for sale
+                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -1291,8 +1486,8 @@ $.typeahead({
             if (resultCount == 0){
                 // let's see the search text, emit it
                 if(query.length > 2){
-                    var qq = query;
-                    var ql = query.length;
+                    let qq = query;
+                    let ql = query.length;
                 }
             }
 
@@ -1300,7 +1495,7 @@ $.typeahead({
         // The ul.typeahead__list has max-height: 300px; and is scrollable, onNavigateAfter is set to scroll the result container if arrow UP or DOWN are pressed to the .active item.
         onNavigateAfter: function (node, lis, a, item, query, event) {
             if (~[38, 40].indexOf(event.keyCode)) {
-                var resultList = node.closest("form")
+                let resultList = node.closest("form")
                     .find("ul.typeahead__list"),
                     activeLi = lis.filter("li.active"),
                     offsetTop = activeLi[0] && activeLi[0].offsetTop - (resultList.height() / 2) || 0;
