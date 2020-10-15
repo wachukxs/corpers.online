@@ -49,7 +49,7 @@ var yearrange = '(' + (years - 1).toString() + '|' + years.toString() + ')';
 router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm))/:batch_stream((' + yearrange /**(18|19)*/ + '([abcACB])))/:lastfour(([0-9]{4}))', function (req, res) { // ['/AB/:batch/:code', '/AD/:batch/:code', '/AK/:batch/:code', '/AN/:batch/:code', '/BA/:batch/:code', '/BY/:batch/:code', '/BN/:batch/:code', '/BO/:batch/:code', '/CR/:batch/:code', '/DT/:batch/:code', '/EB/:batch/:code', '/ED/:batch/:code', '/EK/:batch/:code', '/EN/:batch/:code', '/FC/:batch/:code', '/GM/:batch/:code', '/IM/:batch/:code', '/JG/:batch/:code', '/KD/:batch/:code', '/KN/:batch/:code', '/KT/:batch/:code', '/KB/:batch/:code', '/KG/:batch/:code', '/KW/:batch/:code', '/LA/:batch/:code', '/NS/:batch/:code', '/NG/:batch/:code', '/OG/:batch/:code', '/OD/:batch/:code', '/OS/:batch/:code', '/OY/:batch/:code', '/PL/:batch/:code', '/RV/:batch/:code', '/SO/:batch/:code', '/TR/:batch/:code', '/YB/:batch/:code', '/ZM/:batch/:code']
   // console.log('tryna login ', req.session.statecode, req.session.id, req.session.loggedin);
   // they should be able to change state code too !!!!!!!!!!!! --later
-  console.log('\n\n\nreq.params', req.params.batch, req.params.code) // req.path is shorthand for url.parse(req.url).pathname
+  console.log('req.params/query', req.query, req.params) // req.path is shorthand for url.parse(req.url).pathname
   // when they update their profile. it should immediately reflect. so set it in the session object after a successfully update
 
   if (req.session.loggedin) {
@@ -227,21 +227,22 @@ router.post('/login', /* bodyParser.urlencoded({ // edited
     query.CorpersLogin(req.body).then(result => {
 
       req.session.statecode = req.body.statecode.toUpperCase();
-        req.session.batch = result.response[0].batch;
-        req.session.loggedin = true;
-        req.session.servicestate = result.response[0].servicestate;
-        req.session.name_of_ppa = result.response[0].name_of_ppa;
-        req.session.location = req.session.servicestate + (result.response[0].city_town ? ', ' + result.response[0].city_town : '') /* + (results1[0].region_street ? ', ' + results1[0].region_street : '' ) */;
+      req.session.batch = result.response[0].batch;
+      req.session.loggedin = true;
+      req.session.servicestate = result.response[0].servicestate;
+      req.session.name_of_ppa = result.response[0].name_of_ppa;
+      req.session.firstname = result.response[0].firstname;
+      req.session.location = req.session.servicestate + (result.response[0].city_town ? ', ' + result.response[0].city_town : '') /* + (results1[0].region_street ? ', ' + results1[0].region_street : '' ) */;
 
-        res.status(200).redirect(req.body.statecode.toUpperCase());
+      res.status(200).redirect(req.body.statecode.toUpperCase());
 
-        query.LoginSession([req.body.statecode.toUpperCase(), req.session.id, req.headers["user-agent"]]).then(resolve => {
-          console.log('saved login session info', resolve);
-        }, reject => {
-          console.log('reject save login session', reject);
-        }).catch(reason => {
-          console.log('fail save login session', reason);
-        })
+      query.LoginSession([req.body.statecode.toUpperCase(), req.session.id, req.headers["user-agent"]]).then(resolve => {
+        console.log('saved login session info', resolve);
+      }, reject => {
+        console.log('reject save login session', reject);
+      }).catch(reason => {
+        console.log('fail save login session', reason);
+      })
       
     }, reject => {
 

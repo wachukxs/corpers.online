@@ -96,11 +96,11 @@ exports.CorpersSignUp = async (signupData) => {
 }
 
 exports.CorpersLogin = async (req_body) => {
-    const loginData = [req_body.statecode.toUpperCase()]; // , req_body.password // .toUpperCase() is crucial
     let re = await new Promise((resolve, reject) => {
-        let sqlquery = "SELECT password, name_of_ppa, lga, region_street, city_town, servicestate, statecode FROM info WHERE statecode = ?";
-        connectionPool.query(sqlquery, loginData, function (error, result, fields) {
-            console.log('can login result be empty', result);
+        let sqlquery = "SELECT firstname, password, name_of_ppa, lga, region_street, city_town, servicestate, statecode FROM info WHERE statecode = ?";
+        // .toUpperCase() is crucial
+        connectionPool.query(sqlquery, [req_body.statecode.toUpperCase()], function (error, result, fields) {
+            console.log('is login result be empty?', result);
             // console.log('selected data from db, logging In...', results1); // error sometimes, maybe when there's no db conn: ...
             if (error) {
                 console.log('the error code:', error.code)
@@ -178,7 +178,7 @@ exports.UnreadMessages = async (corpersData) => {
 exports.FetchPostsForTimeLine = async (timeLineInfo) => {
     let re = new Promise((resolve, reject) => {
         /**there's much work on this section maybe, just to make sure sql sees and calculates the value as they should (or NOT ????) */
-        let getpostsquery = "SELECT * FROM posts WHERE statecode LIKE '%" + timeLineInfo.statecode_substr + "%'" + (timeLineInfo.last_post_time !== null ? ' AND post_time > "' + timeLineInfo.last_post_time + '" ORDER by posts.post_time ASC' : ' ORDER by posts.post_time ASC') +
+        let getpostsquery = "SELECT info.firstname, posts.itemname, posts.statecode, posts.type, posts.text, posts.media, posts.price, posts.location, posts.post_time FROM info RIGHT JOIN posts ON info.statecode = posts.statecode WHERE posts.statecode LIKE '%" + timeLineInfo.statecode_substr + "%'" + (timeLineInfo.last_post_time !== null ? ' AND post_time > "' + timeLineInfo.last_post_time + '" ORDER by posts.post_time ASC' : ' ORDER by posts.post_time ASC') +
             "; SELECT * FROM accommodations WHERE statecode LIKE '%" + timeLineInfo.statecode_substr + "%'" + (timeLineInfo.last_input_time !== null ? ' AND input_time > "' + timeLineInfo.last_input_time + '" ORDER by accommodations.input_time ASC' : ' ORDER BY accommodations.input_time ASC');
 
         /* console.log(getpostsquery)
@@ -676,7 +676,7 @@ exports.UpdateProfile = async (req) => {
     // let sqlquery = "UPDATE info SET accomodation_location = '" + req.body.accomodation_location + "', servicestate = '" + req.body.servicestate + "', name_of_ppa = '" + req.body.name_of_ppa + "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" + req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" + req.body.type_of_ppa + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" + req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city + "', spaornot = '" + req.body.spaornot + "' WHERE email = '" + req.body.email + "' " ;
 
     /*[req.body.accomodation_location, req.body.servicestate, req.body.name_of_ppa, req.body.lga, req.body.city_town, req.body.region_street, req.body.stream, req.body.type_of_ppa, req.body.ppa_address, req.body.travel_from_state, req.body.travel_from_city, req.body.spaornot, req.body.email],*/
-    console.log('\n\nthe req.body for /profile', req.body, '\n\n', req.body.statecode);
+    console.log('\nthe req.body for /profile', req.body, '\n\n', req.body.statecode);
     // console.log('\n\n', req);
     let sqlquery = "UPDATE info SET accommodation_location = '" + (req.body.accommodation_location ? req.body.accommodation_location : '') +
       (req.body.servicestate ? "', servicestate = '" + req.body.servicestate : '') // if there's service state(i.e. corper changed service state in real life and from front end), insert it.
