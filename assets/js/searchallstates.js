@@ -62,14 +62,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // what you can search and it autocompletes // 'group' options works but isn't ideal yet because we can't implement // display cannot be a function
@@ -102,14 +102,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
@@ -140,14 +140,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
@@ -179,14 +179,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
@@ -217,14 +217,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
@@ -256,14 +256,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
@@ -294,14 +294,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
@@ -333,14 +333,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
@@ -371,14 +371,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
@@ -410,14 +410,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
@@ -448,14 +448,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
@@ -487,14 +487,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
@@ -525,14 +525,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
@@ -564,14 +564,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
@@ -602,14 +602,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
@@ -641,14 +641,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
@@ -680,14 +680,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
@@ -719,14 +719,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
@@ -758,14 +758,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
@@ -798,14 +798,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
@@ -837,14 +837,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
@@ -877,14 +877,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
@@ -916,14 +916,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
@@ -956,14 +956,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
@@ -995,14 +995,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
@@ -1035,14 +1035,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
@@ -1074,14 +1074,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
@@ -1114,14 +1114,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
@@ -1153,14 +1153,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
@@ -1193,14 +1193,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
@@ -1232,14 +1232,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
@@ -1272,14 +1272,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
@@ -1311,14 +1311,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
@@ -1351,14 +1351,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],
@@ -1390,14 +1390,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // seems 'group' options isn't working
@@ -1430,14 +1430,14 @@ $.typeahead({
                 if (item.rentrange) {
                     let d = moment(item.post_time).fromNow();
                     return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>accommodations</small>";
+                        "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                        "<br> <small class='text-muted '>ppa</small>";
+                        "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted '>sale</small>";
+                        "<br> <small class='text-muted'>sale</small>";
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],

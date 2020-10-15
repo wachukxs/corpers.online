@@ -174,54 +174,51 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#!">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#!">Link</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#!">Disabled</a>
-                </li>
-                <li class="nav-item dropdown">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                      <a class="nav-link" href="/login">Log in</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="/signup">Sign up</a>
+                    </li>
+                  </ul>
+                <!-- <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
                     <div class="dropdown-menu" aria-labelledby="dropdown01">
                         <a class="dropdown-item" href="#!">Action</a>
                         <a class="dropdown-item" href="#!">Another action</a>
                         <a class="dropdown-item" href="#!">Something else here</a>
                     </div>
-                </li>
+                </li> -->
             </ul>
-            <form class="form-inline my-2 my-lg-0">
+            <!-- <form class="form-inline my-2 my-lg-0">
                 <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
-        </div> -->
+            </form> -->
+        </div>
     </nav>
 
     <main role="main">
 
-        <!-- Main jumbotron for a primary marketing message or call to action -->
         <div class="">
-            <!--remove border radius property on class jumbotron in bootstrap -->
-            <div class="" id="mapid">
-                <!-- <h1 class="display-3">map is here.</h1>
-          <p>a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-          <p><a class="btn btn-primary btn-lg" href="#!" role="button">Learn more &raquo;</a></p> -->
-            </div>
+            <!-- <div class="" id="mapid">
+                
+            </div> -->
+
+          <!-- <p><a class="btn btn-primary btn-lg" href="#!" role="button">Learn more &raquo;</a></p> -->
         </div>
 
         <script>
-            var mymap = L.map( 'mapid', {
+            /* let mymap = L.map( 'mapid', {
                     tilt: true,
                     zoomControl: false
                 } )
                 .setView( [ 5.5216578, 7.5066884 ], 16 );
 
 
-            var basemap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            let basemap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '<a href="https://www.openstreetmap.org/">OpenStreetMap</a>, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, <a href="https://www.mapbox.com/">Mapbox</a>',
                 maxZoom: 18,
                 id: 'mapbox.streets',
@@ -229,12 +226,8 @@
             })
             .addTo( mymap );
 
-            // A simple scale control that shows the scale of the current center of screen in metric (m/km) and imperial (mi/ft) systems
             L.control.scale()
-                .addTo( mymap );
-
-            //---
-
+                .addTo( mymap ); */
         </script>
 
         <div class="container mt-4">
@@ -244,10 +237,9 @@
                <% for (let index = 0; index < categories.length; index++) { %>
                 <% const category = categories[index]; %>
 
-                    <h2 class="mt-4"><%= category %> +</h2>
-                    
                     <%  let items = sales.filter(item => item.itemname === category) %>
-
+                    <h2 class="mt-4"><%= category %> &#183; (<%= items.length %>)</h2>
+                    
                     <div class="wrapper" style="overflow-x: scroll;">
 
                     <%  for (let index = 0; index < items.length; index++) { %>
