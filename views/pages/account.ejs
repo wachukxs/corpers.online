@@ -2312,7 +2312,7 @@ we can even try to show a route in the map based on what address is and informat
         $('#roomsmedia').change(function(e) {
             $('#hereNow').empty();
             let files = e.target.files;
-            for (let i = 0; i <= files.length; i++) {
+            for (let i = 0; i < files.length; i++) {
 
                 let file = files[i];
                 const reader = new FileReader();
