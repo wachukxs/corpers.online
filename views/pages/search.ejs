@@ -231,13 +231,13 @@
         </script>
 
         <div class="container mt-4">
-            
-            <% let categories = Array.from(new Set(sales.map(item => item.itemname))); %>
+
+            <% let categories = Array.from(new Set(result.data.sales.map(item => item.itemname))); %>
             <% if(categories.length > 0) { %>
                <% for (let index = 0; index < categories.length; index++) { %>
                 <% const category = categories[index]; %>
 
-                    <%  let items = sales.filter(item => item.itemname === category) %>
+                    <%  let items = result.data.sales.filter(item => item.itemname === category) %>
                     <h2 class="mt-4"><%= category %> &#183; (<%= items.length %>)</h2>
                     
                     <div class="wrapper" style="overflow-x: scroll;">
@@ -315,10 +315,7 @@
     </main>
 
     <footer class="container">
-        <p>&copy; Corpers Online <script type="text/javascript">
-                document.write( new Date()
-                    .getFullYear() );
-            </script>
+        <p>&copy; <%= result.current_year %> Corpers Online
         </p>
     </footer>
 

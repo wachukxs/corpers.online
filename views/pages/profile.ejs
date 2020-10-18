@@ -8,10 +8,9 @@
     <meta name="author" content="">
     <link rel="icon" type="image/png" href="assets/images/logo32x32.png" />
 
-    <title>Profile edit</title>
+    <title>Edit profile &#183; <%= statecode %></title>
 
-    <!-- Bootstrap core CSS -->
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
     <!-- Custom styles for this template, do we need this? we can't even find it! -->
     <!-- <link href="form-validation.css" rel="stylesheet"> -->
@@ -30,6 +29,11 @@
       #mapid {
         height: calc(1000px);
       }
+
+      #profile-picture-preview {
+        width: 90px;
+        height: 90px;
+      }
     </style>
   </head>
 
@@ -37,9 +41,9 @@
 
     <div class="container">
       <div class="py-5 text-center">
-        <!-- a map of their serive state or their profile picture -->
-        <!-- <img class="d-block mx-auto mb-4" src="https://getbootstrap.com/assets/brand/bootstrap-solid.svg" alt=""
-          width="72" height="72"> -->
+        <!-- their profile picture -->
+        <img class="d-block mx-auto mb-4" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E<%= statecode.slice(0, 2) %> <%= statecode.slice(3, 5) %> %3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="<%= statecode %> profile picture"
+          width="72" height="72">
         <h2><%= statecode %></h2>
         <p class="lead">Profile update.</p>
       </div>
@@ -107,20 +111,18 @@
             .setView([5.5216578, 7.5066884], 16);
 
 
-          L.tileLayer(
-            'https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg', {
-            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery Â© <a href="https://www.mapbox.com/">Mapbox</a>',
-            maxZoom: 18,
-            id: 'mapbox.streets',
-            accessToken: 'pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg'
-          })
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '<a href="https://www.openstreetmap.org/">OpenStreetMap</a>, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, <a href="https://www.mapbox.com/">Mapbox</a>',
+                    maxZoom: 18,
+                    id: 'mapbox.streets',
+                    accessToken: 'pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg'
+                })
             .addTo(mymap);
 
           L.control.zoom({
             position: 'topright'
           })
             .addTo(mymap);
-
 
           // loader for when map is loading
           mymap.on('loading', function (event) {
@@ -135,7 +137,6 @@
         </script>
 
         <!-- main form -->
-
         <div class="col-md-8 order-md-1">
           <h4 class="mb-3">Service details</h4><!--fill the form values if the corper has filled them before-->
           <form class="needs-validation" action="/profile" method="POST" enctype="application/x-www-form-urlencoded"
@@ -376,7 +377,7 @@
               <label for="ppa_address">PPA address</label>
               <div class="input-group">
                 <input type="text" class="form-control" list="ppaaddr" name="ppa_address" id="ppa_address"
-                  placeholder="1234 Main St" required>
+                  placeholder="Rehoboth Model Academy, Umuahia" required>
                 <div class="input-group-append">
                   <a id="geo" class="btn btn-secondary">Geo</a>
                 </div>
@@ -748,7 +749,7 @@
             </div>
 
             <div class="row">
-              <div class="col-md-6 mb-3">
+              <div class="col-md-12 mb-3">
                 <label for="name_of_ppa">Want an SPA ?</label>
                 <div class="d-block">
                   <div class="custom-control custom-radio">
@@ -767,80 +768,65 @@
 
             </div>
 
-            <!--             <div class="mb-3">
-              <label for="address">Address</label>
-              <input type="text" class="form-control" id="address" placeholder="1234 Main St" required>
-              <div class="invalid-feedback">
-                Please enter your shipping address.
-              </div>
-            </div>
-
-            <div class="mb-3">
-              <label for="address2">Address 2 <span class="text-muted">(Optional)</span></label>
-              <input type="text" class="form-control" id="address2" placeholder="Apartment or suite">
-            </div>
-
-            
-            <hr class="mb-4">
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" id="same-address">
-              <label class="custom-control-label" for="same-address">Shipping address is the same as my billing address</label>
-            </div>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" id="save-info">
-              <label class="custom-control-label" for="save-info">Save this information for next time</label>
-            </div>
             <hr class="mb-4">
 
-            <h4 class="mb-3">Payment</h4>
+            <h4 class="mb-3">Bio</h4>
 
             <div class="d-block my-3">
               <div class="custom-control custom-radio">
                 <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked required>
-                <label class="custom-control-label" for="credit">Credit card</label>
+                <label class="custom-control-label" for="credit">Publicly visible</label>
               </div>
               <div class="custom-control custom-radio">
                 <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" required>
-                <label class="custom-control-label" for="debit">Debit card</label>
+                <label class="custom-control-label" for="debit">Publicly invisible</label>
               </div>
-              <div class="custom-control custom-radio">
-                <input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" required>
-                <label class="custom-control-label" for="paypal">PayPal</label>
-              </div>
+              <small class="text-muted">A publicly visible profile means you can <b>search for other corpers</b> and <b>be seen by them too</b>.
+              </small>
             </div>
             <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="cc-name">Name on card</label>
-                <input type="text" class="form-control" id="cc-name" placeholder="" required>
-                <small class="text-muted">Full name as displayed on card</small>
-                <div class="invalid-feedback">
-                  Name on card is required
-                </div>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="cc-number">Credit card number</label>
-                <input type="text" class="form-control" id="cc-number" placeholder="" required>
-                <div class="invalid-feedback">
-                  Credit card number is required
-                </div>
+              <div class="col-md-12 mb-3">
+
+                <label for="bio">Profile</label>
+                <textarea class="form-control" name="bio" id="bio"
+                  placeholder="I'm a graphic designer. Get in touch if you like to travel. I'm your plug for all things phones. I'd love to visit Idanre hills before the service year is over, who's in?"></textarea>
+  
+                <small class="text-muted">What do you want other corpers to know about you? What you do, what you love doing?</small>
+                
               </div>
             </div>
             <div class="row">
               <div class="col-md-3 mb-3">
-                <label for="cc-expiration">Expiration</label>
+                <!-- <label for="cc-expiration">Profile picture</label>
                 <input type="text" class="form-control" id="cc-expiration" placeholder="" required>
-                <div class="invalid-feedback">
-                  Expiration date required
+                 -->
+                 <div class="custom-file">
+                  <input type="file" name="profile_pic" class="custom-file-input" id="profile-pic">
+                  <label class="custom-file-label" for="profile-pic">Profile picture</label>
                 </div>
               </div>
               <div class="col-md-3 mb-3">
-                <label for="cc-cvv">CVV</label>
-                <input type="text" class="form-control" id="cc-cvv" placeholder="" required>
-                <div class="invalid-feedback">
-                  Security code required
-                </div>
+                <!--preview-->
+                <img id="profile-picture-preview" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E<%= statecode.slice(0, 2) %> <%= statecode.slice(3, 5) %> %3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E"
+                alt="<%= statecode %> profile picture preview" class="rounded-circle">
+                <br/>
+                <small class="text-muted">Picture preview</small>
               </div>
-            </div> -->
+            </div>
+
+            <script>
+              document.getElementById('profile-pic').onchange = (evt) => {
+                if (evt.target.files[0]) {
+                  let reader = new FileReader();
+
+                  reader.onload = function (e) {
+                      $('#profile-picture-preview').attr('src', e.target.result);
+                  }
+
+                  reader.readAsDataURL(evt.target.files[0]);
+                }
+              }
+            </script>
 
             <hr class="mb-4">
             <button class="btn btn-primary btn-lg btn-block" type="submit">Update profile</button>
@@ -849,12 +835,12 @@
       </div>
 
       <footer class="my-5 pt-5 text-muted text-center text-small">
-        <p class="mb-1">&copy; 2019 Corpers Online</p>
-        <ul class="list-inline">
+        <p class="mb-1">&copy; <%= current_year %> Corpers Online</p>
+        <!-- <ul class="list-inline">
           <li class="list-inline-item"><a href="#!">Privacy</a></li>
           <li class="list-inline-item"><a href="#!">Terms</a></li>
           <li class="list-inline-item"><a href="#!">Support</a></li>
-        </ul>
+        </ul> -->
       </footer>
     </div>
 
@@ -864,14 +850,8 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
       integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
       </script>
-    <!-- <script>
-      window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')
-    </script>
-    <script src="../../../../assets/js/vendor/popper.min.js"></script>
-    <script src="../../../../dist/js/bootstrap.min.js"></script>
-    <script src="../../../../assets/js/vendor/holder.min.js"></script> -->
 
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous"></script>
 
     <script>
         // Example starter JavaScript for disabling form submissions if there are invalid fields

@@ -118,28 +118,41 @@ router.get('/items', function (req, res) {
   // if we don't know where the ppa is, ask the corper to show us on the map, we can even do this from the front end
   if (req.query.nop) {
     
-    query.SearchNOPs(req).then(data => {
-      res.render('pages/search', data); // having it named 'pages/account.2' returns error cannot find module '2'
+    query.SearchNOPs(req).then(data => { // ---- we don't use here, refactor codebase
+      result = {
+        data: data,
+        current_year: new Date().getFullYear()
+      }
+      res.render('pages/search', result); // having it named 'pages/account.2' returns error cannot find module '2'
     }, error => {
       res.render('pages/search');
     })
-  } else if (req.query.rr) { // if it's an accomodation
+  } 
+  // if it's an accomodation 
+  else if (req.query.rr) {// ---- we don't use here, refactor codebase
     query.SearchAcc(req).then(data => {
-      res.render('pages/search', accommodation_details);
+      result = {
+        data: data,
+        current_year: new Date().getFullYear()
+      }
+      res.render('pages/search', result);
     }, error => {
-      res.render('pages/search');
+      result = {
+        current_year: new Date().getFullYear(),
+        data: {
+          sales: []
+        }
+      }
+      res.render('pages/search', result);
     })
     
-  } else {
-    // SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address,ppa_geodata FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null)
-    /* query.SearchDefault().then(data => {
-      res.render('pages/search', data);
-    }, error => {
-      res.render('pages/search');
-    }) */
-
+  } else { // we only use here
     query.GetSales().then(sales => {
-      res.render('pages/search', sales);
+      result = {
+        data: sales,
+        current_year: new Date().getFullYear()
+      }
+      res.render('pages/search', result);
     }, error => {
       res.render('pages/search');
     })
@@ -224,7 +237,8 @@ router.get('/profile', function (req, res) {
           cities_towns: data.cities_towns,
           regions_streets: data.regions_streets,
           states: ngplaces.states_long,
-          lgas: lgas
+          lgas: lgas,
+          current_year: new Date().getFullYear()
           // select all distinct ppa type / address / name and send it to the front end as suggestions for the input when the corpers type
         });
       }, reject => {
@@ -233,7 +247,8 @@ router.get('/profile', function (req, res) {
           servicestate: req.session.servicestate.toUpperCase(),
           batch: req.session.batch,
           states: ngplaces.states_long,
-          lgas: lgas
+          lgas: lgas,
+          current_year: new Date().getFullYear()
         });
       })
     } else {

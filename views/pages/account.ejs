@@ -409,7 +409,6 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarsExample03">
-
             <!-- Nav tabs for the accommodation, PPAs, SPAs, SALES -->
             <ul class="nav navbar-nav mr-auto" id="theTabs" role="tablist">
                 <li class="nav-item">
@@ -849,9 +848,6 @@
             });
     </script>
 
-    <!-- if you want to add a new location, go to Maps, not here-->
-
-
     <!-- the Modal for posting (sale)-->
     <div class="modal fade" id="oldpostModalSale" tabindex="-1" role="dialog" aria-labelledby="oldpostModalLabelSale" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -1207,208 +1203,215 @@ we can even try to show a route in the map based on what address is and informat
         }, false, true); // https://developer.mozilla.org/en-US/docs/Web/Events/submit
     </script>
 
-    <!--make alerts appear only in relevant screens. like the alert in the middle (col-sm-9) appear only on small screens. then the one on the right, col-sm-3 appear only on large screens.-->
-
-    <main role="main">
-        <div class="pt-3 maincontent p-md-4 container">
-            <div class="row pb-3">
-                <!-- hide on screens smaller than md -->
-                <div class="col-md-3 d-none d-md-block">
-                    <!-- put the corper's information. let them see their profile (and be able to change it) -->
-                    <div class="card shadow" id="profilecard">
-                        <div class="card-body">
-                            <h6 class="">About <small>
-                                    <!-- · <a href="/profile" id="editprofile">Edit</a></small> --> · <a href="/profile" id="">Edit</a></small></h6>
-                            <ul class="" id="profile">
-                                <li>
-                                    <span class=""></span>Serving at <a href="#!"> <%= servicestate %> </a>
-                                </li>
-                                <li>
-                                    <span class=""></span>Batch <a href="#!"> <%= batch %> </a>
-                                </li>
-                                <li>
-                                    <span class=""></span>PPA at <a href="<%= ( name_of_ppa ? '/places?nop=' + name_of_ppa : '/profile' ) %>">
-                                        <%= ( name_of_ppa ? name_of_ppa : '?' ) %> </a>
-                                </li>
-                                <li style="display:none;">
-                                    <span class=""></span>SPA at <a href="#!">San Francisco</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!-- test-->
-                    <!--//-->
-                </div>
-
-                <div class="col-md-6" data-spy="scroll" id="middlediv" data-offset="0">
-
-                    <div id="loader" class='pb-3'></div>
-                    <div id="1or0"></div>
-                    <!--in this middle part, we'll give various toggle tabs for location of accommodation, PPAs, SPAs, SALES-->
-                    <!-- Nav tabs for the accommodation, PPAs, SPAs, SALES -->
-                    <!-- <ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
-                                  <li class="nav-item">
-                                    <a class="nav-link active" id="sales-tab" data-toggle="tab" href="#sales" role="tab" aria-controls="sales" aria-selected="true">Sales</a>
-                                  </li>
-                                  <li class="nav-item">
-                                    <a class="nav-link" id="accommodation-tab" data-toggle="tab" href="#accommodation" role="tab" aria-controls="accommodation" aria-selected="false">accommodations</a>
-                                  </li>
-                                  <li class="nav-item">
-                                    <a class="nav-link" id="ppa-tab" data-toggle="tab" href="#ppa" role="tab" aria-controls="ppa" aria-selected="false">PPAs</a>
-                                  </li>
-                                  <li class="nav-item">
-                                    <a class="nav-link" id="spa-tab" data-toggle="tab" href="#spa" role="tab" aria-controls="spa" aria-selected="false">SPAs</a>
-                                  </li>
-                                </ul> -->
-                    <!-- Tab panes for the accommodation, PPAs, SPAs, SALES-->
-                    <!-- <div class="tab-content" id="myTabContent">
-                      <div class="tab-pane fade show active" id="sales" role="tabpanel" aria-labelledby="sales-tab">
-                        organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr,
-                        vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit,
-                        sustainable jean shorts beard ut DIY ethical culpa terry richar
-                      </div>
-                      <div class="tab-pane fade" id="accommodation" role="tabpanel" aria-labelledby="accommodation-tab">
-                        Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.
-                        Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan
-                        four loko farm-to-table craft beer twee. Qui photo booth
-                      </div>
-                      <div class="tab-pane fade" id="ppa" role="tabpanel" aria-labelledby="ppa-tab">
-                        hardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint
-                        qui sapiente accusamus tattooed echo park.
-                      </div>
-                      <div class="tab-pane fade" id="spa" role="tabpanel" aria-labelledby="spa-tab">
-                        To help fit your needs, this works with -based markup, as shown above,
-                          or with any arbitrary “roll your own” markup. Note that if you’re using,
-                            you shouldn’t add role="tablist" directly to it.
-                      </div>
-                    </div> -->
-
-
-                    <ul class="list-group" id="tl">
-
-                        <!--
-                          <li class="list-group-item">
-                            <div class="media mb-4">
-                              <img class="align-self-start mr-2 rounded-circle" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E45x45%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="user image">
-                              <div class="media-body">
-                                <div class="d-flex w-100 justify-content-between">
-                                  <h6 class="mb-1">AB/12F/9478</h6>
-                                  <small class="">2 days ago</small>
-                                </div>
-                                <p>f f sad a bbbbbb</p>
-                                <div class="">
-                                  <div class="media-content"></div>
-                                </div>
-                              </div>
+<div>
+    
+    <script>
+        $("#me").click(function(e) {
+          e.preventDefault();
+          $("#wrapper").toggleClass("toggled");
+        });
+    </script>
+        <!--make alerts appear only in relevant screens. like the alert in the middle (col-sm-9) appear only on small screens. then the one on the right, col-sm-3 appear only on large screens.-->
+    
+        <main role="main">
+            <div class="pt-3 maincontent p-md-4 container">
+                <div class="row pb-3">
+                    <!-- hide on screens smaller than md -->
+                    <div class="col-md-3 d-none d-md-block">
+                        <!-- put the corper's information. let them see their profile (and be able to change it) -->
+                        <div class="card shadow" id="profilecard">
+                            <div class="card-body">
+                                <h6 class="">About <small>
+                                        <!-- · <a href="/profile" id="editprofile">Edit</a></small> --> · <a href="/profile" id="">Edit</a></small></h6>
+                                <ul class="" id="profile">
+                                    <li>
+                                        <span class=""></span>Serving at <a href="#!"> <%= servicestate %> </a>
+                                    </li>
+                                    <li>
+                                        <span class=""></span>Batch <a href="#!"> <%= batch %> </a>
+                                    </li>
+                                    <li>
+                                        <span class=""></span>PPA at <a href="<%= ( name_of_ppa ? '/places?nop=' + name_of_ppa : '/profile' ) %>">
+                                            <%= ( name_of_ppa ? name_of_ppa : '?' ) %> </a>
+                                    </li>
+                                    <li style="display:none;">
+                                        <span class=""></span>SPA at <a href="#!">San Francisco</a>
+                                    </li>
+                                </ul>
                             </div>
-                            <div class="align-items-center"></div>
-                          </li>
-
-
-                          <li class="list-group-item">
-                              <div class="media mb-4">
-                                  <img class="align-self-start mr-2 rounded-circle" data-src="holder.js/45x45?theme=thumb" alt="user image">
+                        </div>
+                        <!-- test-->
+                        <!--//-->
+                    </div>
+    
+                    <div class="col-md-6" data-spy="scroll" id="middlediv" data-offset="0">
+    
+                        <div id="loader" class='pb-3'></div>
+                        <div id="1or0"></div>
+                        <!--in this middle part, we'll give various toggle tabs for location of accommodation, PPAs, SPAs, SALES-->
+                        <!-- Nav tabs for the accommodation, PPAs, SPAs, SALES -->
+                        <!-- <ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
+                                      <li class="nav-item">
+                                        <a class="nav-link active" id="sales-tab" data-toggle="tab" href="#sales" role="tab" aria-controls="sales" aria-selected="true">Sales</a>
+                                      </li>
+                                      <li class="nav-item">
+                                        <a class="nav-link" id="accommodation-tab" data-toggle="tab" href="#accommodation" role="tab" aria-controls="accommodation" aria-selected="false">accommodations</a>
+                                      </li>
+                                      <li class="nav-item">
+                                        <a class="nav-link" id="ppa-tab" data-toggle="tab" href="#ppa" role="tab" aria-controls="ppa" aria-selected="false">PPAs</a>
+                                      </li>
+                                      <li class="nav-item">
+                                        <a class="nav-link" id="spa-tab" data-toggle="tab" href="#spa" role="tab" aria-controls="spa" aria-selected="false">SPAs</a>
+                                      </li>
+                                    </ul> -->
+                        <!-- Tab panes for the accommodation, PPAs, SPAs, SALES-->
+                        <!-- <div class="tab-content" id="myTabContent">
+                          <div class="tab-pane fade show active" id="sales" role="tabpanel" aria-labelledby="sales-tab">
+                            organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr,
+                            vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit,
+                            sustainable jean shorts beard ut DIY ethical culpa terry richar
+                          </div>
+                          <div class="tab-pane fade" id="accommodation" role="tabpanel" aria-labelledby="accommodation-tab">
+                            Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.
+                            Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan
+                            four loko farm-to-table craft beer twee. Qui photo booth
+                          </div>
+                          <div class="tab-pane fade" id="ppa" role="tabpanel" aria-labelledby="ppa-tab">
+                            hardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint
+                            qui sapiente accusamus tattooed echo park.
+                          </div>
+                          <div class="tab-pane fade" id="spa" role="tabpanel" aria-labelledby="spa-tab">
+                            To help fit your needs, this works with -based markup, as shown above,
+                              or with any arbitrary “roll your own” markup. Note that if you’re using,
+                                you shouldn’t add role="tablist" directly to it.
+                          </div>
+                        </div> -->
+    
+    
+                        <ul class="list-group" id="tl">
+    
+                            <!--
+                              <li class="list-group-item">
+                                <div class="media mb-4">
+                                  <img class="align-self-start mr-2 rounded-circle" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E45x45%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="user image">
                                   <div class="media-body">
                                     <div class="d-flex w-100 justify-content-between">
-                                        <h6 class="mb-1">List group item heading <br> <small>Umuahia, Abia State</small></h6>
-                                        <small>3 days ago</small>
+                                      <h6 class="mb-1">AB/12F/9478</h6>
+                                      <small class="">2 days ago</small>
                                     </div>
-                                    <p class="">Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
-                                    <p>Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+                                    <p>f f sad a bbbbbb</p>
                                     <div class="">
-                                        <div class="media-content">
-                                          <div class="app">
-                                              <img data-action="zoom" src="/5.png" class="img-fluid border" alt="Responsive image">
-                                              <img data-action="zoom" src="/3.png" class="img-fluid border" alt="Responsive image">
-                                              <img data-action="zoom" src="/6.PNG" class="img-fluid border" alt="Responsive image">
-                                          </div>
-                                        </div>
-                                    </div>
-                                    <div id="comment">
-                                      <hr>
-                                        <div class="media mt-3">
-                                            <a class="pr-2" href="#!">
-                                              <img class="rounded-circle" data-src="holder.js/45x45?theme=thumb" alt="img">
-                                            </a>
-                                            <div class="media-body">
-                                                <div class="d-flex w-100 justify-content-between">
-                                                    <h6 class="mb-1">List group item heading</h6>
-                                                    <small>3 days ago</small>
-                                                </div>
-                                                <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
-                                                <div id="media-content">
-                                                  <div class="app">
-                                                    <img data-action="zoom" src="/4.jpg" class="img-fluid border"  alt="Responsive image">
-                                                    <img src="/3.png" class="img-fluid border"  alt="Responsive image">
-                                                  </div>
-                                              </div>
-                                              </div>
-                                          </div>
+                                      <div class="media-content"></div>
                                     </div>
                                   </div>
                                 </div>
-                          </li>
-
-                      -->
-
-                    </ul>
-                </div>
-                <!-- hide on screens smaller than md -->
-                <div class="col-md-3 d-none d-md-block">
-
-                    <div class="card shadow" id="statscard">
-                        <div class="card-body text-center">
-                            <h6 class="card-title">Quick<i>ly</i> Report<i>s</i> </h6>
-                            <!-- <p class="card-text">
-                                    <ul>
-
-                                    </ul>
-                                  </p>
-                                  <a href="#!" class="">Go somewhere</a>
-                                  <a href="#!" class="card-link">Card link</a>
-                                  <a href="#!" class="card-link">Another link</a> -->
-                            <div> <small id="tco"></small> </div>
-                        </div>
+                                <div class="align-items-center"></div>
+                              </li>
+    
+    
+                              <li class="list-group-item">
+                                  <div class="media mb-4">
+                                      <img class="align-self-start mr-2 rounded-circle" data-src="holder.js/45x45?theme=thumb" alt="user image">
+                                      <div class="media-body">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">List group item heading <br> <small>Umuahia, Abia State</small></h6>
+                                            <small>3 days ago</small>
+                                        </div>
+                                        <p class="">Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
+                                        <p>Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+                                        <div class="">
+                                            <div class="media-content">
+                                              <div class="app">
+                                                  <img data-action="zoom" src="/5.png" class="img-fluid border" alt="Responsive image">
+                                                  <img data-action="zoom" src="/3.png" class="img-fluid border" alt="Responsive image">
+                                                  <img data-action="zoom" src="/6.PNG" class="img-fluid border" alt="Responsive image">
+                                              </div>
+                                            </div>
+                                        </div>
+                                        <div id="comment">
+                                          <hr>
+                                            <div class="media mt-3">
+                                                <a class="pr-2" href="#!">
+                                                  <img class="rounded-circle" data-src="holder.js/45x45?theme=thumb" alt="img">
+                                                </a>
+                                                <div class="media-body">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <h6 class="mb-1">List group item heading</h6>
+                                                        <small>3 days ago</small>
+                                                    </div>
+                                                    <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
+                                                    <div id="media-content">
+                                                      <div class="app">
+                                                        <img data-action="zoom" src="/4.jpg" class="img-fluid border"  alt="Responsive image">
+                                                        <img src="/3.png" class="img-fluid border"  alt="Responsive image">
+                                                      </div>
+                                                  </div>
+                                                  </div>
+                                              </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                              </li>
+    
+                          -->
+    
+                        </ul>
                     </div>
-
-                    <!--testing forms uploads-->
-                    <!--// testing forms uploads-->
-                    <!--strick through the message 1 corper online when user is offline-->
-                    <!--
-                          they should see news about current events concerning corpers happening around them
-
-                          news like cds meetings happening now, send forth meetings happening now, due dates for PV Signing,
-                          polls and results of incoming executives should be shown, congratulate
-                          corper so so n so for becoming the new secretary for ____ CDS, involve
-                          accounts for CDS Inspectors, so they can send messages too and verify
-                          people. Help the variuo CDS in ways we can; e.g. Publicity in gathering
-                          articules, reporting real-time events. (once somebody registers as being
-                          in publicity and editorial CDS, they can report real time events. like
-                          people in ENvironmetal CDS can take pictures of bad places around them
-                          and report to responsible Govt. officials etc. || people in drug and free
-                          cds can audit drugs in Pharmacies and road side sales ... people in law
-                          and legal aid can find SPAs at Law Courts etc. If Law offices need corpers,
-                          they should advertise on Corpers Online and easily find !!!!!!!! --
-                          use this in other screnerious too (like other Organisation that need
-                          corpers for SPAs work, can put their requirements etc.) )
-                    -->
+                    <!-- hide on screens smaller than md -->
+                    <div class="col-md-3 d-none d-md-block">
+    
+                        <div class="card shadow" id="statscard">
+                            <div class="card-body text-center">
+                                <h6 class="card-title">Quick<i>ly</i> Report<i>s</i> </h6>
+                                <!-- <p class="card-text">
+                                        <ul>
+    
+                                        </ul>
+                                      </p>
+                                      <a href="#!" class="">Go somewhere</a>
+                                      <a href="#!" class="card-link">Card link</a>
+                                      <a href="#!" class="card-link">Another link</a> -->
+                                <div> <small id="tco"></small> </div>
+                            </div>
+                        </div>
+    
+                        <!--testing forms uploads-->
+                        <!--// testing forms uploads-->
+                        <!--strick through the message 1 corper online when user is offline-->
+                        <!--
+                              they should see news about current events concerning corpers happening around them
+    
+                              news like cds meetings happening now, send forth meetings happening now, due dates for PV Signing,
+                              polls and results of incoming executives should be shown, congratulate
+                              corper so so n so for becoming the new secretary for ____ CDS, involve
+                              accounts for CDS Inspectors, so they can send messages too and verify
+                              people. Help the variuo CDS in ways we can; e.g. Publicity in gathering
+                              articules, reporting real-time events. (once somebody registers as being
+                              in publicity and editorial CDS, they can report real time events. like
+                              people in ENvironmetal CDS can take pictures of bad places around them
+                              and report to responsible Govt. officials etc. || people in drug and free
+                              cds can audit drugs in Pharmacies and road side sales ... people in law
+                              and legal aid can find SPAs at Law Courts etc. If Law offices need corpers,
+                              they should advertise on Corpers Online and easily find !!!!!!!! --
+                              use this in other screnerious too (like other Organisation that need
+                              corpers for SPAs work, can put their requirements etc.) )
+                        -->
+                    </div>
                 </div>
             </div>
-        </div>
-
-
-
-        <!-- fab Code begins here -->
-        <div class="float space-float d-md-none" data-toggle="modal" data-target="#accommodationModal">
-            <i class="fa fa-home icon my-float"></i>
-        </div>
-        <!-- hide on screens wider than md -->
-        <div class="float sale-float d-md-none" data-toggle="modal" data-target="#postModalSale">
-            <i class="fa fa-tag icon my-float"></i>
-        </div>
-    </main>
-
-
+    
+            <!-- fab Code begins here -->
+            <div class="float space-float d-md-none" data-toggle="modal" data-target="#accommodationModal">
+                <i class="fa fa-home icon my-float"></i>
+            </div>
+            <!-- hide on screens wider than md -->
+            <div class="float sale-float d-md-none" data-toggle="modal" data-target="#postModalSale">
+                <i class="fa fa-tag icon my-float"></i>
+            </div>
+        </main>
+    
+    
+</div>
     <script>
         // check if it's empty i.e. the person is the first to register in the state
         /** tell the user they are the first to show up from their state and they should start using the platform, basically give them a tour */

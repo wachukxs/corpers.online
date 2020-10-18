@@ -5,7 +5,7 @@ const query = require('../models/queries');
 
 router.get(['/', '/home', '/index', '/homepage'], function (req, res) {
   res.type('.html');
-  res.render('pages/index');
+  res.render('pages/index', { current_year: new Date().getFullYear() });
 });
 
 // about.eje became index.ejs
@@ -100,7 +100,7 @@ router.get('/chat', function (req, res) {
 
   query.GetChatData(req).then(result => {
     res.set('Content-Type', 'text/html');
-    res.render('pages/newchat', result);
+    res.render('pages/chat', result);
   }, reject => {
     res.set('Content-Type', 'text/html');
     res.redirect('/login');
