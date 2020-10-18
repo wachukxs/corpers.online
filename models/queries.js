@@ -1305,7 +1305,27 @@ exports.GetSales = async () => {
               reject(error);
             }
             // console.log('looking for sales', results)
-            resolve({sales: results});
+            resolve({
+                sales: results
+            });
+          })
+    })
+
+    return re;
+}
+
+exports.GetAllSalesAndOneSale = async (req_query) => {
+    let re = await new Promise((resolve, reject) => {
+        connectionPool.query("SELECT * FROM posts WHERE type = 'sale'; SELECT * FROM posts WHERE statecode = ? AND post_time = ?",Object.values(req_query), function (error, results, fields) {
+
+            if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
+              reject(error);
+            }
+            // console.log('looking for sales', results)
+            resolve({
+                sale: results[1],
+                sales: results[0]
+            });
           })
     })
 

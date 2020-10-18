@@ -83,7 +83,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
 
             },
@@ -123,7 +123,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -161,7 +161,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -200,7 +200,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -238,7 +238,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -277,7 +277,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -315,7 +315,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -354,7 +354,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -392,7 +392,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -431,7 +431,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -469,7 +469,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -508,7 +508,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -546,7 +546,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -585,7 +585,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -623,7 +623,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -662,7 +662,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -701,7 +701,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -740,7 +740,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -779,7 +779,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -819,7 +819,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -858,7 +858,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -898,7 +898,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -937,7 +937,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -977,7 +977,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -1016,7 +1016,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -1056,7 +1056,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -1095,7 +1095,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -1135,7 +1135,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -1174,7 +1174,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -1214,7 +1214,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -1253,7 +1253,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -1293,7 +1293,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -1332,7 +1332,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -1372,7 +1372,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -1411,7 +1411,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -1451,7 +1451,7 @@ $.typeahead({
                     return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items" // + "?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },

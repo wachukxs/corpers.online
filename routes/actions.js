@@ -117,7 +117,6 @@ router.get('/items', function (req, res) {
   // if we know where the ppa is, get the geo data and show it on the map
   // if we don't know where the ppa is, ask the corper to show us on the map, we can even do this from the front end
   if (req.query.nop) {
-    
     query.SearchNOPs(req).then(data => { // ---- we don't use here, refactor codebase
       result = {
         data: data,
@@ -146,6 +145,16 @@ router.get('/items', function (req, res) {
       res.render('pages/search', result);
     })
     
+  } else if(req.query.pt) {
+    query.GetAllSalesAndOneSale(req.query).then(data => {
+      result = {
+        data: data,
+        current_year: new Date().getFullYear()
+      }
+      res.render('pages/search', result);
+    }, error => {
+      res.render('pages/search');
+    })
   } else { // we only use here
     query.GetSales().then(sales => {
       result = {
