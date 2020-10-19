@@ -284,6 +284,10 @@ router.post('/profile', /* bodyParser.urlencoded({
     }
   });
 
+  _profile_data = {
+    statecode: req.session.statecode
+  };
+
   busboy.on('file', function (fieldname, filestream, filename, transferEncoding, mimetype) {
 
     // there's also 'limit' and 'error' events https://www.codota.com/code/javascript/functions/busboy/Busboy/on
@@ -389,15 +393,22 @@ router.post('/profile', /* bodyParser.urlencoded({
 
   });
 
+  busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+    console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+    
+    _profile_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
+    
+    console.warn('fielddname Truncated:', fieldnameTruncated, valTruncated, transferEncoding, mimetype);
+  });
 
   busboy.on('finish', async function () { 
     console.log('we done?')
-    query.UpdateProfile(req).then(result => {
-      if (req.body.name_of_ppa) {
-        req.session.name_of_ppa = req.body.name_of_ppa;
+    query.UpdateProfile(_profile_data).then(result => {
+      if (_profile_data.name_of_ppa) {
+        req.session.name_of_ppa = _profile_data.name_of_ppa;
       }
-      if (req.body.newstatecode) {
-        req.session.statecode = req.body.newstatecode.toUpperCase();
+      if (_profile_data.newstatecode) {
+        req.session.statecode = _profile_data.newstatecode.toUpperCase();
       }
       res.status(200).redirect(result); // redirectly appropriately if there's new statecode or not
     }, reject => {

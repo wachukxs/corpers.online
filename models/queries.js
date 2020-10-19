@@ -668,7 +668,7 @@ exports.AddPlace = async (req_body) => {
     return re;
 }
 
-exports.UpdateProfile = async (req) => {
+exports.UpdateProfile = async (_profile_data) => {
     let re = await new Promise((resolve, reject) => {
 // cater for fields we already have, so that we don't touch them eg. servicestate
     // UPDATE 'info' SET 'firstname'=[value-1],'lastname'=[value-2],'accomodation_location'=[value-3],'servicestate'=[value-4],'batch'=[value-5],'name_of_ppa'=[value-6],'statecode'=[value-7],'email'=[value-8],'middlename'=[value-9],'password'=[value-10],'phone'=[value-11],'dateofreg'=[value-12],'lga'=[value-13],'city_town'=[value-14],'region_street'=[value-15],'stream'=[value-16],'type_of_ppa'=[value-17],'ppa_address'=[value-18],'travel_from_state'=[value-19],'travel_from_city'=[value-20],'spaornot'=[value-21] WHERE email = req.body.email
@@ -678,33 +678,51 @@ exports.UpdateProfile = async (req) => {
     // let sqlquery = "UPDATE info SET accomodation_location = '" + req.body.accomodation_location + "', servicestate = '" + req.body.servicestate + "', name_of_ppa = '" + req.body.name_of_ppa + "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" + req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" + req.body.type_of_ppa + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" + req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city + "', spaornot = '" + req.body.spaornot + "' WHERE email = '" + req.body.email + "' " ;
 
     /*[req.body.accomodation_location, req.body.servicestate, req.body.name_of_ppa, req.body.lga, req.body.city_town, req.body.region_street, req.body.stream, req.body.type_of_ppa, req.body.ppa_address, req.body.travel_from_state, req.body.travel_from_city, req.body.spaornot, req.body.email],*/
-    console.log('\nthe req.body for /profile', req.body);
-    // console.log('\n\n', req);
-    let sqlquery = "UPDATE info SET accommodation_location = '" + req.body.accommodation_location +
-      (req.body.servicestate ? "', servicestate = '" + req.body.servicestate : '') // if there's service state(i.e. corper changed service state in real life and from front end), insert it.
+    console.log('\nthe form body for /profile', _profile_data);
+    /**
+     * the _profile_data for /profile [Object: null prototype] {
+  lga: 'Aba North',
+  city_town: '',
+  region_street: '',
+  stream: '',
+  newstatecode: '',
+  name_of_ppa: 'Rehoboth Model Academy',
+  type_of_ppa: 'School',
+  ppa_geodata: '',
+  ppa_address: '28B, Soleh Boneh Road, Salami Estate, Ibadan.',
+  ppadirections: 'Here... is the direction to Rehoboth Model Academy',
+  travel_from_state: 'Abia',
+  travel_from_city: 'Ibadan',
+  accomodation_location: '',
+  wantspaornot: 'yes',
+  paymentMethod: 'on',
+  bio: 'Okay',
+  profile_pic: ''
+}
+     */
+    let sqlquery = "UPDATE info SET accommodation_location = '" + _profile_data.accommodation_location +
+      (_profile_data.servicestate ? "', servicestate = '" + _profile_data.servicestate : '') // if there's service state(i.e. corper changed service state in real life and from front end), insert it.
       +
-      "', name_of_ppa = '" + req.body.name_of_ppa +
-      "', ppa_directions = '" + req.body.ppadirections +
-      "', bio = '" + req.body.bio +
-      "', public_profile = '" + req.body.public_profile +
-      "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" +
-      req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" +
-      req.body.type_of_ppa + "', ppa_geodata = '" + (req.body.ppa_geodata ? req.body.ppa_geodata : '') + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" +
-      req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city +
-      (req.body.newstatecode ? "', statecode = '" + req.body.newstatecode.toUpperCase() : '') + // if there's a new statecode ...
-      /* "', accommodationornot = '" + (req.body.accommodationornot ? req.body.accommodationornot : 'yes') + */
+      "', name_of_ppa = '" + _profile_data.name_of_ppa +
+      "', ppa_directions = '" + _profile_data.ppadirections +
+      "', bio = '" + _profile_data.bio +
+      "', public_profile = '" + _profile_data.public_profile +
+      "', lga = '" + _profile_data.lga + "', city_town = '" + _profile_data.city_town + "', region_street = '" +
+      _profile_data.region_street + "',   stream = '" + _profile_data.stream + "' , type_of_ppa = '" +
+      _profile_data.type_of_ppa + "', ppa_geodata = '" + (_profile_data.ppa_geodata ? _profile_data.ppa_geodata : '') + "', ppa_address = '" + _profile_data.ppa_address + "', travel_from_state = '" +
+      _profile_data.travel_from_state + "', travel_from_city = '" + _profile_data.travel_from_city +
+      (_profile_data.newstatecode ? "', statecode = '" + _profile_data.newstatecode.toUpperCase() : '') + // if there's a new statecode ...
+      /* "', accommodationornot = '" + (_profile_data.accommodationornot ? _profile_data.accommodationornot : 'yes') + */
       "', wantspaornot = '" +
-      req.body.wantspaornot + "' WHERE statecode = '" + req.session.statecode.toUpperCase() + "' "; // always change state code to uppercase, that's how it is in the db
+      _profile_data.wantspaornot + "' WHERE statecode = '" + _profile_data.statecode.toUpperCase() + "' "; // always change state code to uppercase, that's how it is in the db
 
 
     connectionPool.query(sqlquery, function (error, results, fields) {
       console.log('updated user profile data: ', results);
       if (error) throw error;
       // go back to the user's timeline
-      if (results.changedRows === 1 && !helpers.isEmpty(req.body)) {
-        if (req.body.name_of_ppa) {
-          req.session.name_of_ppa = req.body.name_of_ppa;
-        }
+      if (results.changedRows === 1 && !helpers.isEmpty(_profile_data)) {
+        
         /* 
         // todo later...
   
@@ -712,14 +730,14 @@ exports.UpdateProfile = async (req) => {
         servicestate: req.session.servicestate,
         batch: req.session.batch, */
 
-        if (req.body.newstatecode) { // if they are changing statecode to a different state, then their service state in the db should change and their ppa details too should change, tell them to change the ppa details if they don't change it
+        if (_profile_data.newstatecode) { // if they are changing statecode to a different state, then their service state in the db should change and their ppa details too should change, tell them to change the ppa details if they don't change it
           // change statecode in other places too
           // this works because rooms only have one instance for every two corpers or statecode, so there's no DD/17B/7778-AB/17B/2334 and AB/17B/2334-DD/17B/7778 only one of it, same reason why there's no LIMIT 1 in the SELECT statement in REPLACE function
-          let updatequery = "UPDATE chats SET room = (SELECT REPLACE( ( SELECT DISTINCT room WHERE room LIKE '%" + req.session.statecode.toUpperCase() + "%' ) ,'" + req.session.statecode.toUpperCase() + "','" + req.body.newstatecode.toUpperCase() + "')) ; " +
-            " UPDATE chats SET message_from = '" + req.body.newstatecode.toUpperCase() + "' WHERE message_from = '" + req.session.statecode.toUpperCase() + "' ; " +
-            " UPDATE chats SET message_to = '" + req.body.newstatecode.toUpperCase() + "' WHERE message_to = '" + req.session.statecode.toUpperCase() + "' ;" +
-            " UPDATE posts SET statecode = '" + req.body.newstatecode.toUpperCase() + "' WHERE statecode = '" + req.session.statecode.toUpperCase() + "' ; " +
-            " UPDATE accommodations SET statecode = '" + req.body.newstatecode.toUpperCase() + "' WHERE statecode = '" + req.session.statecode.toUpperCase() + "' ";
+          let updatequery = "UPDATE chats SET room = (SELECT REPLACE( ( SELECT DISTINCT room WHERE room LIKE '%" + _profile_data.statecode.toUpperCase() + "%' ) ,'" + _profile_data.statecode.toUpperCase() + "','" + _profile_data.newstatecode.toUpperCase() + "')) ; " +
+            " UPDATE chats SET message_from = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE message_from = '" + _profile_data.statecode.toUpperCase() + "' ; " +
+            " UPDATE chats SET message_to = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE message_to = '" + _profile_data.statecode.toUpperCase() + "' ;" +
+            " UPDATE posts SET statecode = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE statecode = '" + _profile_data.statecode.toUpperCase() + "' ; " +
+            " UPDATE accommodations SET statecode = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE statecode = '" + _profile_data.statecode.toUpperCase() + "' ";
           connectionPool.query(updatequery, function (error, results, fields) {
             console.log('updated statecode ', results);
             if (error) reject(error);
@@ -735,8 +753,7 @@ exports.UpdateProfile = async (req) => {
               console.log('we\'re really good with the update\t', results)
 
               // then change the session statecode
-              req.session.statecode = req.body.newstatecode.toUpperCase();
-                resolve(req.body.newstatecode.toUpperCase());
+                resolve(_profile_data.newstatecode.toUpperCase());
             } else {
               console.log('we\'re bad with the update') // we should find out what went wrong
               reject('we\'re bad with the update')
@@ -783,7 +800,7 @@ exports.UpdateProfile = async (req) => {
 
         } else { // if no newstatecode
           // res.status(200).redirect(req.session.statecode.toUpperCase() /* + '?e=y' */); // [e]dit=[y]es|[n]o
-          resolve(req.session.statecode.toUpperCase())
+          resolve(_profile_data.statecode.toUpperCase())
         }
         // res.sendStatus(200);
       } else {
