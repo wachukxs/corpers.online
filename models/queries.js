@@ -1107,7 +1107,7 @@ exports.GetPosts = async (data) => {
     console.log('are we here?');
     q = "SELECT * FROM accommodations \
     WHERE statecode LIKE '" + data.query.s.substring(0, 2) + "%' \
-    ORDER BY post_time DESC LIMIT 55; SELECT * \
+    ORDER BY post_time DESC LIMIT 55; SELECT *, '' as password \
     FROM info WHERE ppa_address != '' AND statecode LIKE '" + data.query.s.substring(0, 2) + "%' ;\
     SELECT * FROM posts WHERE statecode LIKE '" + data.query.s.substring(0, 2) + "%';";
   } else {
@@ -1116,7 +1116,7 @@ exports.GetPosts = async (data) => {
       const element = ngstates.states_short[index];
       q += "SELECT * FROM accommodations \
       WHERE statecode LIKE '" + element + "%' ORDER BY post_time DESC LIMIT 55; \
-      SELECT * FROM info \
+      SELECT *, '' as password FROM info \
       WHERE ppa_address != '' AND statecode LIKE '" + element + "%' ;\
       SELECT * FROM posts WHERE statecode LIKE '" + element + "%' ;"; // the trailing ';' is very important
     }
