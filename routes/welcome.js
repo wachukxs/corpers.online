@@ -63,7 +63,9 @@ router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN
         servicestate: req.session.servicestate,
         batch: req.session.batch,
         name_of_ppa: req.session.name_of_ppa,
-        total_num_unread_msg: result
+        total_num_unread_msg: result,
+        picture_id: req.session.picture_id, // if there's picture_id
+        
       });
     }, reject => {
       console.log('why TF?!', reject);
@@ -74,7 +76,8 @@ router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN
         servicestate: req.session.servicestate,
         batch: req.session.batch,
         name_of_ppa: req.session.name_of_ppa,
-        total_num_unread_msg: 0
+        total_num_unread_msg: 0,
+        picture_id: req.session.picture_id, // if there's picture_id
       });
     })
 
@@ -233,7 +236,7 @@ router.post('/login', /* bodyParser.urlencoded({ // edited
       req.session.name_of_ppa = result.response[0].name_of_ppa;
       req.session.firstname = result.response[0].firstname;
       req.session.location = req.session.servicestate + (result.response[0].city_town ? ', ' + result.response[0].city_town : '') /* + (results1[0].region_street ? ', ' + results1[0].region_street : '' ) */;
-
+      req.session.picture_id = result.response[0].picture_id;
       res.status(200).redirect(req.body.statecode.toUpperCase());
 
       query.LoginSession([req.body.statecode.toUpperCase(), req.session.id, req.headers["user-agent"]]).then(resolve => {

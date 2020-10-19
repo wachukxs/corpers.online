@@ -237,7 +237,7 @@ router.get('/profile', function (req, res) {
       let lgas = jkl.states[ngplaces.states_short.indexOf(jn.slice(0, 2))][ngplaces.states_long[ngplaces.states_short.indexOf(jn.slice(0, 2))]];
       res.set('Content-Type', 'text/html');
       query.GetPlacesByTypeInOurDB(req).then(data => {
-        res.render('pages/profile', {
+        let info = {
           statecode: req.session.statecode.toUpperCase(),
           servicestate: req.session.servicestate.toUpperCase(),
           batch: req.session.batch,
@@ -247,9 +247,11 @@ router.get('/profile', function (req, res) {
           regions_streets: data.regions_streets,
           states: ngplaces.states_long,
           lgas: lgas,
-          current_year: new Date().getFullYear()
+          current_year: new Date().getFullYear(),
+          picture_id: req.session.picture_id,
           // select all distinct ppa type / address / name and send it to the front end as suggestions for the input when the corpers type
-        });
+        }
+        res.render('pages/profile', info);
       }, reject => {
         res.render('pages/profile', {
           statecode: req.session.statecode.toUpperCase(),
@@ -257,7 +259,8 @@ router.get('/profile', function (req, res) {
           batch: req.session.batch,
           states: ngplaces.states_long,
           lgas: lgas,
-          current_year: new Date().getFullYear()
+          current_year: new Date().getFullYear(),
+          ...(req.session.picture_id) && {picture_id: req.session.picture_id},
         });
       })
     } else {
@@ -272,6 +275,123 @@ router.post('/profile', /* bodyParser.urlencoded({
   extended: true
 }), */ function (req, res) {
 
+  
+  const busboy = new Busboy({
+    headers: req.headers,
+    limits: { // set fields, fieldSize, and fieldNameSize later (security)
+      files: 1, // don't upload more than 12 media files
+      fileSize: 24 * 1024 * 1024 // 24MB
+    }
+  });
+
+  busboy.on('file', function (fieldname, filestream, filename, transferEncoding, mimetype) {
+
+    // there's also 'limit' and 'error' events https://www.codota.com/code/javascript/functions/busboy/Busboy/on
+    filestream.on('limit', function () {
+      console.log('the file was too large... nope');
+      
+      // don't listen to the data event anymore
+      /* filestream.off('data', (data) => { // doesn't work
+        console.log('should do nothing. what\'s data?', data)
+      }) */
+
+      // how should we send a response if one of the files/file is invalid [too big or not an accepted file type]?
+    });
+
+    if (filename !== '' && !helpers.acceptedfiles.includes(mimetype)) { // if mimetype it '' or undefined, it passes
+      console.log('we don\'t accept non-image files... nope');
+      
+      // don't listen to the data event
+      /* filestream.off('data', (data) => { // DOESN'T WORK!!!
+        console.log('should do nothing. what\'s data?', data)
+      }) */
+    }
+
+    /* filestream.on('readable', (what) => { // don't do this, unless, MABYE filestream.read() is called in the callback
+      console.log('\ncurious what happens here\n', what)
+    }) */
+
+
+    filestream.on('data', function (data) {
+      
+
+      console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
+    });
+
+    filestream.on('end', function (err) {
+      // if we listend for 'file', even if there's no file, we still come here
+      // so we're checking if it's empty before doing anything.
+      /* console.log('readabe?///// ?', filestream.read()) // filestram.read() is always null ... */
+
+      console.log('File [' + fieldname + '] Finished. Got ' + 'bytes');
+      if (err) { console.log('err in busboy file end', err); }
+    });
+
+
+    // this is not a good method
+
+    /**One thing you might be able to try is to read 0 bytes from the stream first and see if you get the appropriate 'end' event or not (perhaps on the next tick) */
+
+    if (filename != '' && helpers.acceptedfiles.includes(mimetype)) { // filename: 1848-1844-1-PB.pdf, encoding: 7bit, mimetype: application/pdf
+      /* let obj = {
+          filestream: file_stream,
+          mimetype: mimetype,
+          filename: filename
+      }; */
+      // let _id = authorize(JSON.parse(cred_content), uploadFile, obj)
+
+      let fileMetadata = {
+        'name': filename, // Date.now() + 'test.jpg',
+        parents: ['1mtYhohO0qpXIwt6NXZzo9vlU4IF0NX0D'] // upload to folder CorpersOnline Profile Pics
+      };
+      let media = {
+        mimeType: mimetype,
+        body: filestream // fs.createReadStream("C:\\Users\\NWACHUKWU\\Pictures\\ad\\IMG-20180511-WA0001.jpg")
+      };
+
+      const up = ggle.drive.files.create({
+        resource: fileMetadata,
+        media: media,
+        fields: 'id',
+      }).then(
+        function (file) {
+
+          // maybe send the upload progress to front end with sockets? https://github.com/googleapis/google-api-nodejs-client/blob/7ed5454834b534e2972746b28d0a1e4f332dce47/samples/drive/upload.js#L41
+
+          console.log('upload File Id: ', file.data.id); // save to db
+          // console.log('File: ', file);
+          req.session.picture_id = file.data.id
+
+          connectionPool.query('UPDATE info SET picture_id = ? WHERE statecode = ?', [file.data.id, req.session.statecode.toUpperCase()], function (error, results, fields) {
+            if (error) throw error;
+            // ...
+            console.log('updated pic')
+          });
+
+        }, function (err) {
+          // Handle error
+          console.error(err);
+
+        }
+      ).catch(function (err) {
+        console.log('some other error ??', err)
+      }).finally(() => {
+        console.log('upload finally')
+      });
+
+
+    }
+
+
+    // https://stackoverflow.com/questions/26859563/node-stream-data-from-busboy-to-google-drive
+    // https://stackoverflow.com/a/26859673/9259701
+    filestream.resume() // must always be last in this callback else server HANGS
+
+  });
+
+
+  busboy.on('finish', async function () { 
+    console.log('we done?')
     query.UpdateProfile(req).then(result => {
       if (req.body.name_of_ppa) {
         req.session.name_of_ppa = req.body.name_of_ppa;
@@ -281,9 +401,14 @@ router.post('/profile', /* bodyParser.urlencoded({
       }
       res.status(200).redirect(result); // redirectly appropriately if there's new statecode or not
     }, reject => {
+      console.error('what happened?', reject)
       res.status(500).redirect('/profile?e=n'); // [e]dit=[y]es|[n]o
     })
+   })
 
+    
+
+    return req.pipe(busboy)
 });
 
 router.post('/addplace', upload.none(), function (req, res) {

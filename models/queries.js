@@ -1,6 +1,8 @@
 const connectionPool = require('./db');
 const moment = require('moment');
+const Busboy = require('busboy');
 const helpers = require('../constants/helpers');
+const ggle = require('../helpers/uploadgdrive');
 const ngstates = require('../constants/ngstates');
 /**
  *
@@ -97,7 +99,7 @@ exports.CorpersSignUp = async (signupData) => {
 
 exports.CorpersLogin = async (req_body) => {
     let re = await new Promise((resolve, reject) => {
-        let sqlquery = "SELECT firstname, password, name_of_ppa, lga, region_street, city_town, servicestate, statecode FROM info WHERE statecode = ?";
+        let sqlquery = "SELECT picture_id, firstname, password, name_of_ppa, lga, region_street, city_town, servicestate, statecode FROM info WHERE statecode = ?";
         // .toUpperCase() is crucial
         connectionPool.query(sqlquery, [req_body.statecode.toUpperCase()], function (error, result, fields) {
             console.log('is login result be empty?', result);
@@ -178,8 +180,8 @@ exports.UnreadMessages = async (corpersData) => {
 exports.FetchPostsForTimeLine = async (timeLineInfo) => {
     let re = new Promise((resolve, reject) => {
         /**there's much work on this section maybe, just to make sure sql sees and calculates the value as they should (or NOT ????) */
-        let getpostsquery = "SELECT info.firstname, posts.itemname, posts.statecode, posts.type, posts.text, posts.media, posts.price, posts.location, posts.post_time FROM info RIGHT JOIN posts ON info.statecode = posts.statecode WHERE posts.statecode LIKE '%" + timeLineInfo.statecode_substr + "%'" + (timeLineInfo.last_post_time !== null ? ' AND post_time > "' + timeLineInfo.last_post_time + '" ORDER by posts.post_time ASC' : ' ORDER by posts.post_time ASC') +
-            "; SELECT info.firstname, accommodations.statecode, accommodations.type, accommodations.price, accommodations.rooms, accommodations.rentrange, accommodations.streetname, accommodations.address, accommodations.media, accommodations.tenure, accommodations.expire, accommodations.directions, accommodations.post_location, accommodations.post_time, accommodations.acc_geodata FROM info RIGHT JOIN accommodations ON info.statecode = accommodations.statecode WHERE accommodations.statecode LIKE '%" + timeLineInfo.statecode_substr + "%'" + (timeLineInfo.last_input_time !== null ? ' AND input_time > "' + timeLineInfo.last_input_time + '" ORDER by accommodations.input_time ASC' : ' ORDER BY accommodations.input_time ASC');
+        let getpostsquery = "SELECT info.firstname, info.picture_id, posts.itemname, posts.statecode, posts.type, posts.text, posts.media, posts.price, posts.location, posts.post_time FROM info RIGHT JOIN posts ON info.statecode = posts.statecode WHERE posts.statecode LIKE '%" + timeLineInfo.statecode_substr + "%'" + (timeLineInfo.last_post_time !== null ? ' AND post_time > "' + timeLineInfo.last_post_time + '" ORDER by posts.post_time ASC' : ' ORDER by posts.post_time ASC') +
+            "; SELECT info.firstname, info.picture_id, accommodations.statecode, accommodations.type, accommodations.price, accommodations.rooms, accommodations.rentrange, accommodations.streetname, accommodations.address, accommodations.media, accommodations.tenure, accommodations.expire, accommodations.directions, accommodations.post_location, accommodations.post_time, accommodations.acc_geodata FROM info RIGHT JOIN accommodations ON info.statecode = accommodations.statecode WHERE accommodations.statecode LIKE '%" + timeLineInfo.statecode_substr + "%'" + (timeLineInfo.last_input_time !== null ? ' AND input_time > "' + timeLineInfo.last_input_time + '" ORDER by accommodations.input_time ASC' : ' ORDER BY accommodations.input_time ASC');
 
         /* console.log(getpostsquery)
         SELECT * FROM posts WHERE statecode LIKE '%DT%' AND post_time > "null" ORDER by posts.post_time ASC; SELECT * FROM accommodations WHERE statecode LIKE '%DT%' AND input_time > "null" ORDER by accommodations.input_time ASC
@@ -678,7 +680,7 @@ exports.UpdateProfile = async (req) => {
     /*[req.body.accomodation_location, req.body.servicestate, req.body.name_of_ppa, req.body.lga, req.body.city_town, req.body.region_street, req.body.stream, req.body.type_of_ppa, req.body.ppa_address, req.body.travel_from_state, req.body.travel_from_city, req.body.spaornot, req.body.email],*/
     console.log('\nthe req.body for /profile', req.body);
     // console.log('\n\n', req);
-    let sqlquery = "UPDATE info SET accommodation_location = '" + (req.body.accommodation_location ? req.body.accommodation_location : '') +
+    let sqlquery = "UPDATE info SET accommodation_location = '" + req.body.accommodation_location +
       (req.body.servicestate ? "', servicestate = '" + req.body.servicestate : '') // if there's service state(i.e. corper changed service state in real life and from front end), insert it.
       +
       "', name_of_ppa = '" + req.body.name_of_ppa +
