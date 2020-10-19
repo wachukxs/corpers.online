@@ -676,13 +676,15 @@ exports.UpdateProfile = async (req) => {
     // let sqlquery = "UPDATE info SET accomodation_location = '" + req.body.accomodation_location + "', servicestate = '" + req.body.servicestate + "', name_of_ppa = '" + req.body.name_of_ppa + "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" + req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" + req.body.type_of_ppa + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" + req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city + "', spaornot = '" + req.body.spaornot + "' WHERE email = '" + req.body.email + "' " ;
 
     /*[req.body.accomodation_location, req.body.servicestate, req.body.name_of_ppa, req.body.lga, req.body.city_town, req.body.region_street, req.body.stream, req.body.type_of_ppa, req.body.ppa_address, req.body.travel_from_state, req.body.travel_from_city, req.body.spaornot, req.body.email],*/
-    console.log('\nthe req.body for /profile', req.body, '\n\n', req.body.statecode);
+    console.log('\nthe req.body for /profile', req.body);
     // console.log('\n\n', req);
     let sqlquery = "UPDATE info SET accommodation_location = '" + (req.body.accommodation_location ? req.body.accommodation_location : '') +
       (req.body.servicestate ? "', servicestate = '" + req.body.servicestate : '') // if there's service state(i.e. corper changed service state in real life and from front end), insert it.
       +
       "', name_of_ppa = '" + req.body.name_of_ppa +
       "', ppa_directions = '" + req.body.ppadirections +
+      "', bio = '" + req.body.bio +
+      "', public_profile = '" + req.body.public_profile +
       "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" +
       req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" +
       req.body.type_of_ppa + "', ppa_geodata = '" + (req.body.ppa_geodata ? req.body.ppa_geodata : '') + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" +
