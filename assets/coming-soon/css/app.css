@@ -262,7 +262,8 @@ body {
 
 .uplaunch__rock .subscribe_wrapper input {
   height: 100%;
-  width: calc(100% - 155px - 18px - 9px);
+  /* width: calc(100% - 155px - 18px - 9px); */
+  width: calc(100% - 264px);
   margin-left: 18px;
   margin-right: 9px
 }
@@ -270,7 +271,8 @@ body {
 .uplaunch__rock .subscribe_wrapper input:-webkit-autofill,
 .uplaunch__rock .subscribe_wrapper input:-webkit-autofill:focus,
 .uplaunch__rock .subscribe_wrapper input:-webkit-autofill:hover {
-  width: calc(100% - 155px - 18px - 9px);
+  /* width: calc(100% - 155px - 18px - 9px); */
+  width: calc(100% - 264px);
   font-size: 12px;
   -webkit-text-fill-color: #000!important;
   -webkit-transition: background-color 50000000s ease-in-out 0s;
