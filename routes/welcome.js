@@ -3,7 +3,13 @@ let router = express.Router();
 
 const query = require('../models/queries');
 
-router.get(['/', '/home', '/index', '/homepage'], function (req, res) {
+
+router.get(['/', '/home', '/index'], function (req, res) {
+  res.type('.html');
+  res.render('pages/coming-soon', { current_year: new Date().getFullYear() });
+});
+
+router.get(['/homepage'], function (req, res) {
   res.type('.html');
   res.render('pages/index', { current_year: new Date().getFullYear() });
 });
@@ -229,14 +235,22 @@ router.post('/login', /* bodyParser.urlencoded({ // edited
 
     query.CorpersLogin(req.body).then(result => {
 
-      req.session.statecode = req.body.statecode.toUpperCase();
+      /* req.session.statecode = req.body.statecode.toUpperCase();
       req.session.batch = result.response[0].batch;
       req.session.loggedin = true;
       req.session.servicestate = result.response[0].servicestate;
       req.session.name_of_ppa = result.response[0].name_of_ppa;
       req.session.firstname = result.response[0].firstname;
-      req.session.location = req.session.servicestate + (result.response[0].city_town ? ', ' + result.response[0].city_town : '') /* + (results1[0].region_street ? ', ' + results1[0].region_street : '' ) */;
+      req.session.location = req.session.servicestate + (result.response[0].city_town ? ', ' + result.response[0].city_town : ''); // + (results1[0].region_street ? ', ' + results1[0].region_street : '' )
       req.session.picture_id = result.response[0].picture_id;
+      req.session.lga = result.response[0].lga;
+      req.session.region_street = result.response[0].region_street;
+      req.session.city_town = result.response[0].city_town;
+      req.session.bio = result.response[0].bio; */
+
+      req.session.corper = result.response[0];
+      req.session.loggedin = true;
+
       res.status(200).redirect(req.body.statecode.toUpperCase());
 
       query.LoginSession([req.body.statecode.toUpperCase(), req.session.id, req.headers["user-agent"]]).then(resolve => {

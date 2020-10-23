@@ -99,7 +99,7 @@ exports.CorpersSignUp = async (signupData) => {
 
 exports.CorpersLogin = async (req_body) => {
     let re = await new Promise((resolve, reject) => {
-        let sqlquery = "SELECT picture_id, firstname, password, name_of_ppa, lga, region_street, city_town, servicestate, statecode FROM info WHERE statecode = ?";
+        let sqlquery = "SELECT * FROM info WHERE statecode = ?";
         // .toUpperCase() is crucial
         connectionPool.query(sqlquery, [req_body.statecode.toUpperCase()], function (error, result, fields) {
             console.log('is login result be empty?', result);

@@ -238,9 +238,9 @@ router.get('/profile', function (req, res) {
       res.set('Content-Type', 'text/html');
       query.GetPlacesByTypeInOurDB(req).then(data => {
         let info = {
-          statecode: req.session.statecode.toUpperCase(),
-          servicestate: req.session.servicestate.toUpperCase(),
-          batch: req.session.batch,
+          // statecode: req.session.statecode.toUpperCase(),
+          // servicestate: req.session.servicestate.toUpperCase(),
+          // batch: req.session.batch,
           names_of_ppas: data.names_of_ppas, // array of objects ie names_of_ppas[i].name_of_ppa
           ppa_addresses: data.ppa_addresses,
           cities_towns: data.cities_towns,
@@ -248,7 +248,8 @@ router.get('/profile', function (req, res) {
           states: ngplaces.states_long,
           lgas: lgas,
           current_year: new Date().getFullYear(),
-          picture_id: req.session.picture_id,
+          // picture_id: req.session.picture_id,
+          ...req.session
           // select all distinct ppa type / address / name and send it to the front end as suggestions for the input when the corpers type
         }
         res.render('pages/profile', info);

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Corpers Online - We're coming soon</title>
+    <link rel="icon" type="image/png" href="assets/images/logo32x32.png" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#fff">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" media="all" href="assets/coming-soon/css/app.css">
+    <meta name="description" content="Template Rock by itmeo.com">
+    <!--Twitter Card data-->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@itmeo">
+    <meta name="twitter:title" content="Uplaunch - Rock">
+    <meta name="twitter:description" content="Template Rock created by itmeo.com">
+    <meta name="twitter:creator" content="@mouver">
+    <meta name="twitter:image" content="https://avatars1.githubusercontent.com/u/24987115?s=200&amp;v=4">
+    <!--Open Graph data-->
+    <meta property="og:title" content="Uplaunch - Rock">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://artemouver.github.io/uplaunch_templates/">
+    <meta property="og:image" content="https://avatars1.githubusercontent.com/u/24987115?s=200&amp;v=4">
+    <meta property="og:description" content="Template Rock created by itmeo.com">
+    <meta property="og:site_name" content="Templates by itmeo.com">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:500|Rubik" rel="stylesheet">
+
+    <style>
+      .phone > img {
+        width: 313px;
+        height: 628px;
+      }
+
+      .subscribe_wrapper > input:nth-child(1) {
+        border-right: inherit;
+      }
+
+      .social a:nth-child(3) > img {
+        height: 19px;
+      }
+
+      /** tooltip */
+
+      .tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+    </style>
+  </head>
+  <body class="uplaunch__rock">
+    <!--CONTENT-->
+    <div class="page-wrapper">
+      <div class="content">
+        <div class="header">
+          <p class="soon soon_active">coming soon</p>
+          <div class="title title_active">Corpers Online</div>
+          <div class="description description_active">Corpers Online helps you easily get started/done with your service year</div>
+          <!-- FORM FOR EMAILS. Change link in "action" attribute -->
+          <!--  Zapier: https://hooks.zapier.com/hooks/catch/6252453/o6w75am/silent? -->
+          <!--  Mailchimp: https://itmeo.us13.list-manage.com/subscribe/post?u=c753049c0b6c0ccd061d10786&amp;id=8364e5b022 -->
+          <div class="form form_active" id="mc_embed_signup">
+            <form class="js-form validate subscribe subscribe_active" action="//mc.us4.list-manage.com/signup-form/subscribe?u=c01802b0a1ba9139b45117022&id=003edfe0f0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" target="_blank">
+              <div class="subscribe_wrapper">
+                <input type="email" name="EMAIL" id="mc-EMAIL" class="js-form__input form__input" placeholder="Enter Your Email" required>
+                <input type="text" name="FNAME" id="mc-FNAME" class="js-form__input form__input" placeholder="Your Firstname" required>
+                <button class="form__submit" type="submit" name="subscribe" id="mc-embedded-subscribe">
+                  <span class="form__submit_spinner">
+                    <span class="spinner"></span>
+                  </span>
+                  <span class="form__submit_text">
+                    Join Waiting List
+                  </span>
+                </button>
+                <div class="form__info form__info_hide">
+                  Your email was sent successfully.
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="features">
+          <div class="grid_container">
+            <div class="phone phone_active"><img src="assets/coming-soon/img/corpers-online-homepage.png" data-rjs="3"></div>
+            <div class="feature_1 feature feature_active">
+              <div class="features__title">Sell & buy your stuff</div>
+              <div class="features__description">Rather than juggle heavy loads back home, outgoing Corp members can easily sell out their mattresses, fridges, irons, desks, wardrobes and other items for quick cash to incoming corp members.</div>
+            </div>
+            <div class="feature_2 feature feature_active">
+              <div class="features__title">Explore Maps</div>
+              <div class="features__description">You can't get lost when you use our navigation system. Know and locate important places with ease.</div>
+            </div>
+            <div class="feature_3 feature feature_active">
+              <div class="features__title">Find Accommodation</div>
+              <div class="features__description">Escape the stress of finding and furnishing a house. With our free Accommodation service, you can locate available service apartments, corper lodges and Corper family houses nearest to you.</div>
+            </div>
+            <div class="feature_4 feature feature_active">
+              <div class="features__title">Corpers Connect</div>
+              <div class="features__description">Share experiences, create relationships, ask questions and learn from longer serving corpers every information you’d need about service year, PPAs, SPAs, etc.</div>
+            </div>
+          </div>
+        </div>
+        <div class="footer">
+          <div class="copyright copyright_active">© <%= current_year %> All rights reserved</div>
+          <ul class="navigation navigation_active">
+            <li><a href="#!" class="tooltip">
+              About
+              <span class="tooltiptext">Coming soon too!</span>
+            </a></li>
+            <li><a href="#!" class="tooltip">Blog
+              <span class="tooltiptext">Coming soon too!</span>
+            </a></li>
+            <li><a href="#!" class="tooltip">Privacy
+              <span class="tooltiptext">Coming soon too!</span>
+            </a></li>
+            <li><a href="#!" class="tooltip">Policy
+              <span class="tooltiptext">Coming soon too!</span>
+            </a></li>
+          </ul>
+          <div class="social social_active">
+            <a href="https://www.facebook.com/CorpersOnline" target="_blank"><img alt="" src="assets/coming-soon/img/facebook.svg"></a>
+            <a href="https://twitter.com/OnlineCorpers" target="_blank"><img alt="" src="assets/coming-soon/img/twitter.svg"></a>
+            <a href="https://www.instagram.com/corpersonline/" target="_blank"><img alt="" src="assets/coming-soon/img/instagram.svg"></a>
+          </div>
+        </div>
+        <div class="logo logo_active by-corpers">
+          With ❤️ by Corpers, for Corpers
+          <!-- <a href="https://itmeo.com" target="_blank">
+            <img src="assets/coming-soon/img/logo.svg">
+          </a> -->
+        </div>
+      </div>
+    </div>
+    <!--LOAD SCRIPTS-->
+    <script type="text/javascript" src="assets/coming-soon/js/app.js"></script>
+  </body>
+</html>
