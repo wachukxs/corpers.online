@@ -146,9 +146,6 @@ $RECYCLE.BIN/
 # eslint config file
 eslintrc.json
 
-# no more test images, they're becoming too much (done 25-10-2019)
-/img
-
 # random files
 Output.txt
 test*.html
@@ -161,7 +158,7 @@ test*.js
 # someone tryna steal? wow
 todo.txt
 
-# makes repo too large
-img/
-testimg/
+# makes repo too large # https://stackoverflow.com/a/26327728/9259701
+/img/
+/testimg/
 .git
