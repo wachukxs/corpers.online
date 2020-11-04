@@ -63,6 +63,8 @@ app.use(function (req, res, next) {
  * and allow you to tweak the ones that you need.
  * 
  * It’s incredibly simple to set up on an Express.js application:
+ * 
+ * open https://using-umami.herokuapp.com/ to set amazing metrics
  */
 var helmet = require('helmet');
 app.use(helmet());
