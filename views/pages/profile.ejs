@@ -419,9 +419,8 @@
                 <% } %>
               </datalist>
               <% } %>
-              <small class="text-muted">If you're there right now, help other corpers find it! Click the 'Geo' button to
-                locate your PPA on the
-                map.</small>
+              <small class="text-muted">If you're at your PPA right now, help other corpers find it! Click the 'Geo' button to
+                save your PPA on the map.</small>
               <!-- if we already have a very accurate location of the ppa, we don't need geo, but if we don't have then we can show geo and ask the user to help us locate it -->
               <!-- <div class="input-group">
                 <div class="input-group-prepend">
@@ -568,8 +567,6 @@
               document.getElementById('geo')
                 .onclick = function () {
                   console.log('position button clicked');
-                  // first find the user's current location/start tracking the add a marker
-
                   // first find the user's current location
 
                   function onLocationFound(e) {
@@ -596,77 +593,27 @@
                     delete e.sourceTarget;
                     delete e.target;
                     delete e.type;
-                    console.log('saving after deleting', e, JSON.stringify(e)
-                      .length);
+                    console.log('saving after deleting', e);
 
                     document.forms[0].elements["ppa_geodata"].value = JSON.stringify(e);
-
 
                     // var FD = new FormData(document.forms[0]);
                     // FD.append('coords', [e.longitude, e.latitude].toString());
 
-                    function onClk(e) {
-                      console.log('clicked addPlace Marker!');
-                    }
-
-                    function onPO() {
-                      // c.addTo(mymap2);
-                      if (document.getElementById('baptm')) {
-                        console.log('we wanna add a place');
-                      }
-                    }
                     // if user within 5 meters from location, add it. AND IF LOCATION ACCURACY IS NOT SO CORRECT THEN DON'T SHOW IT IN THE MAP !!! NOT EVERYONE IS IN LAGOS, ALSO SHOW THEM THE STATE THEY'RE IN AND THE lga FIRST
                     // Only display those icons when the user is in a good enough zoom level
-                    var p = L.marker(e.latlng)
-                      .on({
-                        click: onClk
-                      })
-                      .addTo(mymap)
-                      .bindPopup('<p> You\'re within ' +
-                        radius.toFixed(2) +
-                        ' meters from this point.</p>' +
-                        (radius.toFixed(2) <= 10.50 ?
-                          ' <hr/> <small><button data-toggle="modal" data-target="#AddPlace" id="baptm" class="btn btn-primary btn-sm"> Add location to map</button></small> ' :
-                          ''))
-                      .openPopup()
-                      .on({
-                        popupopen: onPO
-                      });
-
-                    var p2 = L.marker(e.latlng)
-                      .on({
-                        click: onClk
-                      })
-                      .addTo(mymap2)
-                      .bindPopup('<p> You\'re within ' +
-                        radius.toFixed(2) +
-                        ' meters from this point.</p>' +
-                        (radius.toFixed(2) <= 10.50 ?
-                          ' <hr/> <small><button data-toggle="modal" data-target="#AddPlace" id="baptm" class="btn btn-primary btn-sm"> Add location to map</button></small> ' :
-                          ''))
-                      .openPopup()
-                      .on({
-                        popupopen: onPO
-                      });
-                    // after 3.5 sec closePopup()
-                    setTimeout(() => {
-                      p.closePopup();
-
-                      p2.closePopup();
-                    }, 3500);
+                    
                     // if we couldn't get a so accurate location but got a resonable accurate info, then user can drag the marker to point. means we have to then make marker draggable
 
                     var c = L.circle(e.latlng, {
                       radius: radius,
                       stroke: false
-                    })
-                      .addTo(mymap);
+                    }).addTo(mymap);
 
                     var c2 = L.circle(e.latlng, {
                       radius: radius,
                       stroke: false
-                    })
-                      .addTo(mymap);
+                    }).addTo(mymap);
                     // after 3.5 sec remove circle
                     setTimeout(() => c.remove(), 3500);
 
