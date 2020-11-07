@@ -84,7 +84,7 @@
     <script src="/socket.io/socket.io.js"></script>
 
     <script>
-      var socket = io.connect("/map");
+      let socket = io.connect("/map");
     </script>
     <style>
       body {
@@ -352,7 +352,7 @@
              // https://stackoverflow.com/questions/31916149/how-to-show-busy-icon-when-leaflet-api-load-tile-images
 
              // check https://github.com/ebrelsford/Leaflet.loading for how loading is done so we can use leaflet's own custom looklike leaflet loading
-             var mymap = L.map( 'mapid', {
+             let mymap = L.map( 'mapid', {
                      tilt: true,
                      zoomControl: false,
                      // loadingControl: true // Tell the map to use a loading control
@@ -362,7 +362,7 @@
                  // https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
 
                  // https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg
-             var basemap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+             let basemap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                      attribution: 'Imagery & Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>', // Imagery © <a href="https://www.mapbox.com/">Mapbox</a>
                      maxZoom: 18,
                      id: 'mapbox.streets',
@@ -390,7 +390,7 @@
                  event ) { // based on where people expand in our maps, we'll know what they are intrested in, and we'd ask other corpers to provide info about such places.
                  console.log( "Map zoom level:", mymap.getZoom(), event );
                  // then maybe later, for optimization, just focus on the area the user is seeing, so we won't waste too much js memory
-                 var ilist = document.getElementsByClassName( 'custom-icons' );
+                 let ilist = document.getElementsByClassName( 'custom-icons' );
 
                  // https://fontawesome.com/how-to-use/on-the-web/styling/sizing-icons
                  switch ( mymap.getZoom() ) {
@@ -407,7 +407,7 @@
                      case ( 11 ):
                      case ( 12 ):
                      case ( 13 ):
-                         for ( var i = 0; i < ilist.length; i++ ) {
+                         for ( let i = 0; i < ilist.length; i++ ) {
                              document.getElementsByClassName( 'custom-icons' )
                                  .item( i )
                                  .style.display = "none";
@@ -415,7 +415,7 @@
                          }
                          break;
                      case ( 14 ):
-                         for ( var i = 0; i < ilist.length; i++ ) {
+                         for ( let i = 0; i < ilist.length; i++ ) {
                              document.getElementsByClassName( 'custom-icons' )[ i ].style.height = "15px";
                              document.getElementsByClassName( 'custom-icons' )
                                  .item( i )
@@ -426,7 +426,7 @@
                          }
                          break;
                      case ( 15 ):
-                         for ( var i = 0; i < ilist.length; i++ ) {
+                         for ( let i = 0; i < ilist.length; i++ ) {
                              document.getElementsByClassName( 'custom-icons' )[ i ].style.height = "18px";
                              document.getElementsByClassName( 'custom-icons' )
                                  .item( i )
@@ -437,7 +437,7 @@
                          }
                          break;
                      case ( 16 ):
-                         for ( var i = 0; i < ilist.length; i++ ) {
+                         for ( let i = 0; i < ilist.length; i++ ) {
                              document.getElementsByClassName( 'custom-icons' )[ i ].style.height = "20px";
                              document.getElementsByClassName( 'custom-icons' )
                                  .item( i )
@@ -450,7 +450,7 @@
                          break;
                      case ( 17 ):
                      case ( 18 ):
-                         for ( var i = 0; i < ilist.length; i++ ) {
+                         for ( let i = 0; i < ilist.length; i++ ) {
                              document.getElementsByClassName( 'custom-icons' )[ i ].style.height = "30px";
                              document.getElementsByClassName( 'custom-icons' )
                                  .item( i )
@@ -467,7 +467,7 @@
              } );
              
 /* 
-             var local_printshopIcon = L.divIcon({
+             let local_printshopIcon = L.divIcon({
                 html: '<ion-icon name="moon-outline"></ion-icon>',
                 popupAnchor: [ -7, -85 ],
                 className: 'custom-icons' // no space
@@ -478,7 +478,7 @@
                  .addTo( mymap )
                  .bindPopup( "A print shop." );
 
-             var local_pharmacyIcon = L.divIcon( {
+             let local_pharmacyIcon = L.divIcon( {
                 html: '<i class="fas fa-clinic-medical"></i>',
                 
                 className: 'custom-icons' // no space between class name
@@ -493,16 +493,17 @@
              } }); */
 
              // https://esri.github.io/esri-leaflet/api-reference/controls/geosearch.html
-             /* var geoCode = L.esri.Geocoding.geocodeServiceProvider({
+             let geoCode = L.esri.Geocoding.geocodeServiceProvider({
                  label: 'Geo Code', // Group suggestions under this header
              });
-             var mapService = L.esri.Geocoding.mapServiceProvider({
+             /* let mapService = L.esri.Geocoding.mapServiceProvider({
                  label: 'Map Service', // Group suggestions under this header
              }); */
-             var arcgisOnline = L.esri.Geocoding.arcgisOnlineProvider( {
-                 label: 'Arc', // Group suggestions under this header
+             let arcgisOnline = L.esri.Geocoding.arcgisOnlineProvider( {
+              countries: 'NG', // get results only from Nigeria
+              label: 'Arc', // Group suggestions under this header
              } );
-             var gisDay = L.esri.Geocoding.featureLayerProvider( {
+             let gisDay = L.esri.Geocoding.featureLayerProvider( {
                  url: 'https://services.arcgis.com/uCXeTVveQzP4IIcx/arcgis/rest/services/GIS_Day_Final/FeatureServer/0',
                  searchFields: [ 'Name', 'Organization' ], // Search these fields for text matches
                  maxResults: 7,
@@ -512,60 +513,59 @@
                      return feature.properties.Name + ' - ' + feature.properties
                          .Organization; // format suggestions like this.
                  }
-             } );
+             });
 
-             var searchControl = L.esri.Geocoding.geosearch( {
-                     providers: [ arcgisOnline, gisDay, /* geoCode, mapService */ ], // will geocode via ArcGIS Online and search the GIS Day feature service.
+             let searchControl = L.esri.Geocoding.geosearch( {
+                     providers: [ arcgisOnline, gisDay, geoCode/* , mapService */ ], // will geocode via ArcGIS Online and search the GIS Day feature service.
                      expanded: true,
                      collapseAfterResult: false,
+                     title: 'Input text to search places',
                      placeholder: 'Search for places'
                  } )
                  .addTo( mymap );
 
-             var results = L.layerGroup()
+             let results = L.layerGroup()
                  .addTo( mymap );
 
              searchControl.on( 'results', function( data ) {
                  console.log( 'uhmm', data )
                  results.clearLayers();
-                 for ( var i = data.results.length - 1; i >= 0; i-- ) {
+                 for ( let i = data.results.length - 1; i >= 0; i-- ) {
                      results.addLayer( L.marker( data.results[ i ].latlng ) );
                  }
              } );
 
-             var myLines2 = {
+             let myLines2 = {
                  "type": "LineString",
                  "coordinates": []
              };
 
-             var myStyleLines2 = {
+             let myStyleLines2 = {
                  "color": "#ff7800",
                  "weight": 2,
                  "opacity": 0.65
              };
 
-
-
              mymap.on( 'click', function( e ) { // do not delete
                  console.log( ( [ e.latlng.lng, e.latlng.lat ] )
                      .toString() );
                  /*
-         L.popup()
-             .setLatLng(e.latlng)
-             .setContent("You clicked the map at " + ([e.latlng.lng, e.latlng.lat]).toString() ) //say the name of the place they clicked!
-             .openOn(mymap);
+                  L.popup()
+                      .setLatLng(e.latlng)
+                      .setContent("You clicked the map at " + ([e.latlng.lng, e.latlng.lat]).toString() ) //say the name of the place they clicked!
+                      .openOn(mymap);
 
 
-             console.log(e);
-             myLines2.coordinates.push([e.latlng.lng, e.latlng.lat]);
-             console.log(myLines2);
+                      console.log(e);
+                      myLines2.coordinates.push([e.latlng.lng, e.latlng.lat]);
+                      console.log(myLines2);
 
-             L.geoJSON(myLines2, {
-                 style: myStyleLines2
-             }).addTo(mymap);
+                      L.geoJSON(myLines2, {
+                          style: myStyleLines2
+                      }).addTo(mymap);
 
-             //when user clicks another line, say you moved ).30 north and this distance.
-      */
+                      //when user clicks another line, say you moved ).30 north and this distance.
+                */
              } );
 
              //if the device tilts.
@@ -595,12 +595,12 @@
              */
              // Our handler can now be enabled by running map.tilt.enable() and disabled by map.tilt.disable()
 
-             var myLines = {
+             let myLines = {
                  "type": "LineString",
                  "coordinates": []
              };
 
-             var myStyleLines = {
+             let myStyleLines = {
                  "color": "#ff7800",
                  "weight": 2,
                  "opacity": 0.65
@@ -613,18 +613,18 @@
                  },
 
                  onAdd: function( mymap ) {
-                     var container = L.DomUtil.create( 'div', 'leaflet-bar leaflet-control leaflet-control-custom makehand' );
-                     var position = L.DomUtil.create( 'a', '', container );
+                     let container = L.DomUtil.create( 'div', 'leaflet-bar leaflet-control leaflet-control-custom makehand' );
+                     let position = L.DomUtil.create( 'a', '', container );
                      position.title = 'Get current position';
                      // position.innerHTML = '&#10991;' ; // &#x1f518;
-                     var track = L.DomUtil.create( 'a', '', container );
+                     let track = L.DomUtil.create( 'a', '', container );
                      track.title = 'Track your movement';
                      // track.innerHTML = '&#11005;' ; // &#11005; | &#8889;
 
-                     var positionImg = L.DomUtil.create( 'ion-icon', '', position );
-                     var trackImg = L.DomUtil.create( 'ion-icon', '', track );
+                     let positionImg = L.DomUtil.create( 'ion-icon', '', position );
+                     let trackImg = L.DomUtil.create( 'ion-icon', '', track );
 
-                     var stopTrackImg = L.DomUtil.create( 'ion-icon', '' );
+                     let stopTrackImg = L.DomUtil.create( 'ion-icon', '' );
                      stopTrackImg.name = 'close';
                      // stopTrackImg.alt = '%'; // it doesn't work
                      stopTrackImg.onerror = "imgErr()"; // TODO for trackImg too, it doesn't work
@@ -656,7 +656,7 @@
 
                          function onLocationFound( e ) {
 
-                             var radius = e.accuracy / 2; // measurement in meters
+                             let radius = e.accuracy / 2; // measurement in meters
                              console.log( e );
 
                              function onClk( e ) {
@@ -671,7 +671,7 @@
                              }
                              // if user within 5 meters from location, add it. AND IF LOCATION ACCURACY IS NOT SO CORRECT THEN DON'T SHOW IT IN THE MAP !!! NOT EVERYONE IS IN LAGOS, ALSO SHOW THEM THE STATE THEY'RE IN AND THE lga FIRST
                              // Only display those icons when the user is in a good enough zoom level
-                             var p = L.marker( e.latlng )
+                             let p = L.marker( e.latlng )
                                  .on( {
                                      click: onClk
                                  } )
@@ -692,7 +692,7 @@
                              }, 3500 );
                              // if we couldn't get a so accurate location but got a resonable accurate info, then user can drag the marker to point. means we have to then make marker draggable
 
-                             var c = L.circle( e.latlng, {
+                             let c = L.circle( e.latlng, {
                                      radius: radius,
                                      stroke: false
                                  } )
@@ -707,7 +707,7 @@
                              //then save it.
 
                              //then get the altitude and it's accuracy and determine if the apartment is an upstairs
-                             //then point the map in the direction of movement var e.heading
+                             //then point the map in the direction of movement let e.heading
                          }
 
                          mymap.on( 'locationfound', onLocationFound );
@@ -738,7 +738,7 @@
                          // first find the user's current location/start tracking the add a marker
                          //first find the user's current location
                          function onLocationFound( e ) {
-                             var radius = e.accuracy / 2;
+                             let radius = e.accuracy / 2;
                              console.log( e );
                              // instead show a small pop up telling them how many distance they move/ have moved overtime or for every change in position we record
                              /* L.marker(e.latlng)
@@ -844,11 +844,11 @@
 
              L.Control.AddPlace = L.Control.extend( {
                  onAdd: function( map ) {
-                     var container = L.DomUtil.create( 'div', 'leaflet-bar leaflet-control leaflet-control-custom makehand' );
-                     var addplace = L.DomUtil.create( 'a', '', container );
+                     let container = L.DomUtil.create( 'div', 'leaflet-bar leaflet-control leaflet-control-custom makehand' );
+                     let addplace = L.DomUtil.create( 'a', '', container );
                      addplace.title = 'Add current location to map' // or 'Add this place'; // if our map is used to get current location (and we don't have that place in our database) we can show the corper/user a pop up so they add the place to our records (for other corpers at least/for sure)
                      // position.innerHTML = '&#10991;' ; // &#x1f518;
-                     var addplaceImg = L.DomUtil.create( 'ion-icon', '', addplace );
+                     let addplaceImg = L.DomUtil.create( 'ion-icon', '', addplace );
 
                      // Stop the given event from propagation to parent element(s)
                      L.DomEvent.on( container, 'click dblclick', function( ev ) {
@@ -863,7 +863,7 @@
                          // first find the user's current location
 
                          function onLocationFound( e ) {
-                             var radius = e.accuracy / 2; // measurement in meters
+                             let radius = e.accuracy / 2; // measurement in meters
                              console.log(e);
 
                              function onClk(e) {
@@ -878,7 +878,7 @@
                              }
                              // if user within 5 meters from location, add it. AND IF LOCATION ACCURACY IS NOT SO CORRECT THEN DON'T SHOW IT IN THE MAP !!! NOT EVERYONE IS IN LAGOS, ALSO SHOW THEM THE STATE THEY'RE IN AND THE lga FIRST
                              // Only display those icons when the user is in a good enough zoom level
-                             var p = L.marker( e.latlng )
+                             let p = L.marker( e.latlng )
                                  .on( {
                                      click: onClk
                                  } )
@@ -895,7 +895,7 @@
                                  } );
                              if ( radius.toFixed( 2 ) <= 10.00 ) { // if they are within 10 meters, show the popup // don't forget to change >= to <= // >= for testing
 
-                             var savePoint = {
+                             let savePoint = {
                      "type": "Feature",
                      "properties": {},
                      "geometry": {
@@ -919,7 +919,7 @@
                              }, 5000 );
                              // if we couldn't get a so accurate location but got a resonable accurate info, then user can drag the marker to point. means we have to then make marker draggable
 
-                             var c = L.circle( e.latlng, {
+                             let c = L.circle( e.latlng, {
                                      radius: radius,
                                      stroke: false
                                  } )
@@ -934,7 +934,7 @@
                              //then save it.
 
                              //then get the altitude and it's accuracy and determine if the apartment is an upstairs
-                             //then point the map in the direction of movement var e.heading
+                             //then point the map in the direction of movement let e.heading
                          }
 
                          mymap.on( 'locationfound', onLocationFound );
@@ -1001,7 +1001,7 @@
 
              // ------change the icon, and the text that shows and what happens/shows when user clicks
 
-             var yes = [ {
+             let yes = [ {
                  "type": "Feature",
                  "properties": {
                      "name": "Coors Field",
@@ -1114,7 +1114,7 @@
                  .addTo( mymap );
 
              /*
-             var myStyle = {
+             let myStyle = {
                  "color": "#ff7800",
                  "weight": 5,
                  "opacity": 0.65
@@ -1155,21 +1155,21 @@
              // as user leaves from one field to another, add it to the geojson
              // use socket.io to send data to db
 
-             var street = document.getElementById( 'town' );
+             let street = document.getElementById( 'town' );
 
              function st() {
 
              }
              street.addEventListener( 'keyup', st, false );
 
-             var category = document.getElementById( 'category' );
+             let category = document.getElementById( 'category' );
 
              function cs() {
                  // offer suggetions and validate input
              }
              category.addEventListener( 'keyup', cs, false );
 
-             var nameOfPlace = document.getElementById( 'nameOfPlace' );
+             let nameOfPlace = document.getElementById( 'nameOfPlace' );
 
              function naop() {
 
@@ -1253,7 +1253,7 @@
              }
 
              // Access the form element...
-             // var form = document.forms[0]; // document.getElementById( "addplaceform" );
+             // let form = document.forms[0]; // document.getElementById( "addplaceform" );
 
              // ...and take over its submit event.
              console.log('adding sth')
@@ -1290,11 +1290,11 @@
 
       // submit form data for add places
 
-      var v = document.getElementById("spd");
+      let v = document.getElementById("spd");
       v.addEventListener(
         "click",
         function () {
-          var life = {
+          let life = {
             nameOfPlace: document.forms[0][1].value,
             geodata: document.forms[0][2].value,
             street: document.forms[0][2].value,
