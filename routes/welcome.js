@@ -53,9 +53,9 @@ router.get(['/AB/:batch', '/AD/:batch', '/AK/:batch', '/AN/:batch', '/BA/:batch'
 var years = parseInt(new Date(Date.now()).getFullYear().toFixed().slice(2, 4));
 var yearrange = '(' + (years - 1).toString() + '|' + years.toString() + ')';
 router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm))/:batch_stream((' + yearrange /**(18|19)*/ + '([abcACB])))/:lastfour(([0-9]{4}))', function (req, res) { // ['/AB/:batch/:code', '/AD/:batch/:code', '/AK/:batch/:code', '/AN/:batch/:code', '/BA/:batch/:code', '/BY/:batch/:code', '/BN/:batch/:code', '/BO/:batch/:code', '/CR/:batch/:code', '/DT/:batch/:code', '/EB/:batch/:code', '/ED/:batch/:code', '/EK/:batch/:code', '/EN/:batch/:code', '/FC/:batch/:code', '/GM/:batch/:code', '/IM/:batch/:code', '/JG/:batch/:code', '/KD/:batch/:code', '/KN/:batch/:code', '/KT/:batch/:code', '/KB/:batch/:code', '/KG/:batch/:code', '/KW/:batch/:code', '/LA/:batch/:code', '/NS/:batch/:code', '/NG/:batch/:code', '/OG/:batch/:code', '/OD/:batch/:code', '/OS/:batch/:code', '/OY/:batch/:code', '/PL/:batch/:code', '/RV/:batch/:code', '/SO/:batch/:code', '/TR/:batch/:code', '/YB/:batch/:code', '/ZM/:batch/:code']
-  // console.log('tryna login ', req.session.statecode, req.session.id, req.session.loggedin);
+  // console.log('tryna login ', req.session.corper.statecode, req.session.id, req.session.loggedin);
   // they should be able to change state code too !!!!!!!!!!!! --later
-  console.log('req.params/query', req.query, req.params) // req.path is shorthand for url.parse(req.url).pathname
+  console.log('req.params/session', req.session, req.params) // req.path is shorthand for url.parse(req.url).pathname
   // when they update their profile. it should immediately reflect. so set it in the session object after a successfully update
 
   if (req.session.loggedin) {
@@ -64,27 +64,30 @@ router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN
     /** this query runs so we can get the number of unread messages the user has */
     query.UnreadMessages([req.path.substring(1, 12).toUpperCase(), false]).then(result => {
       res.render('pages/account', {
-        statecode: req.session.statecode.toUpperCase(),
+        statecode: req.session.corper.statecode.toUpperCase(),
         statecode2: req.path.substring(1, 12).toUpperCase(),
-        servicestate: req.session.servicestate,
-        batch: req.session.batch,
-        name_of_ppa: req.session.name_of_ppa,
+        servicestate: req.session.corper.servicestate,
+        batch: req.session.corper.batch,
+        name_of_ppa: req.session.corper.name_of_ppa,
         total_num_unread_msg: result,
-        picture_id: req.session.picture_id, // if there's picture_id
+        picture_id: req.session.corper.picture_id, // if there's picture_id
         
       });
     }, reject => {
       console.log('why TF?!', reject);
 
       res.render('pages/account', {
-        statecode: req.session.statecode.toUpperCase(),
+        statecode: req.session.corper.statecode.toUpperCase(),
         statecode2: req.path.substring(1, 12).toUpperCase(),
-        servicestate: req.session.servicestate,
-        batch: req.session.batch,
-        name_of_ppa: req.session.name_of_ppa,
+        servicestate: req.session.corper.servicestate,
+        batch: req.session.corper.batch,
+        name_of_ppa: req.session.corper.name_of_ppa,
         total_num_unread_msg: 0,
-        picture_id: req.session.picture_id, // if there's picture_id
+        picture_id: req.session.corper.picture_id, // if there's picture_id
       });
+    }).catch((err) => { // we should have this .catch on every query
+      console.error('our system should\'ve crashed:', err)
+      res.redirect('/') // go back home, we should tell you an error occured
     })
 
   } else {
@@ -127,16 +130,16 @@ router.get(['/map', '/maps'], function (req, res) { // try to infer their locati
 
   query.GetMapData().then(result => {
     res.render('pages/map', {
-      statecode: req.session.statecode,
-      servicestate: req.session.servicestate,
+      statecode: req.session.corper.statecode,
+      servicestate: req.session.corper.servicestate,
       mapdata: result.mapdata,
       types: result.types
     });
   }, error => {
     console.log('there was an error getting /map', error); // but render regardless
     res.render('pages/map', {
-      statecode: req.session.statecode,
-      servicestate: req.session.servicestate,
+      statecode: req.session.corper.statecode,
+      servicestate: req.session.corper.servicestate,
       mapdata: {},
       types: []
     });
@@ -188,12 +191,12 @@ router.post('/signup', /* bodyParser.urlencoded({
     query.CorpersSignUp(req.body).then(result => {
       console.log('re:', result);
 
-      req.session.statecode = req.body.statecode.toUpperCase();
+      req.session.corper.statecode = req.body.statecode.toUpperCase();
       req.session.loggedin = true;
-      req.session.servicestate = result.theservicestate;
-      req.session.batch = req.body.statecode.toUpperCase().slice(3, 6);
+      req.session.corper.servicestate = result.theservicestate;
+      req.session.corper.batch = req.body.statecode.toUpperCase().slice(3, 6);
       req.session.loggedin = true;
-      req.session.location = req.session.servicestate; // really fix this, we should add some other data if we can
+      req.session.corper.location = req.session.corper.servicestate; // really fix this, we should add some other data if we can
 
       res.redirect(req.body.statecode.toUpperCase());
 

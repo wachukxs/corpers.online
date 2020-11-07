@@ -534,11 +534,11 @@ exports.GetChatData = async (req) => {
                 // so if the newchat has chatted before, i.e. is in oldchats, then just make it highlighted
                 // then send it to the chat page of the involved parties so they are remainded of what they want to buy
                 resolve({
-                    statecode: req.session.statecode.toUpperCase(),
+                    statecode: req.session.corper.statecode.toUpperCase(),
                     statecode2: req.query.s,
-                    servicestate: req.session.servicestate,
-                    batch: req.session.batch,
-                    name_of_ppa: req.session.name_of_ppa,
+                    servicestate: req.session.corper.servicestate,
+                    batch: req.session.corper.batch,
+                    name_of_ppa: req.session.corper.name_of_ppa,
                     postdetails: (helpers.isEmpty(results[0]) ? null : results[0]), // tell user the post no longer exists, maybe it was bought or something, we should delete it if it was bought, we hope not to use this function
                     newchat: {
                         statecode: req.query.posts.who.toUpperCase(),
@@ -560,7 +560,7 @@ exports.GetChatData = async (req) => {
         } else if (req.session.loggedin) {
             console.error('we should be getting here')
             
-            // console.log('wanna chat', req.session.statecode, req.query.s);
+            // console.log('wanna chat', req.session.corper.statecode, req.query.s);
             let query = // "SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL;"
                 "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;" +
                 "SELECT * FROM chats WHERE message_to = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
@@ -576,11 +576,11 @@ exports.GetChatData = async (req) => {
 
                 // then send it to the chat page of the involved parties so they are remainded of what they want to buy
                 resolve({ // having it named account.2 returns error cannot find module '2'
-                    statecode: req.session.statecode.toUpperCase(),
+                    statecode: req.session.corper.statecode.toUpperCase(),
                     statecode2: req.query.s,
-                    servicestate: req.session.servicestate,
-                    // batch: req.session.batch,
-                    name_of_ppa: req.session.name_of_ppa,
+                    servicestate: req.session.corper.servicestate,
+                    // batch: req.session.corper.batch,
+                    name_of_ppa: req.session.corper.name_of_ppa,
                     oldchats: results[0], // leave it like this!!
                     newchat: null,
                     oldunreadchats: results[1], // (helpers.isEmpty(results[1]) ? null : results[1])
@@ -726,9 +726,9 @@ exports.UpdateProfile = async (_profile_data) => {
         /* 
         // todo later...
   
-        statecode: req.session.statecode.toUpperCase(),
-        servicestate: req.session.servicestate,
-        batch: req.session.batch, */
+        statecode: req.session.corper.statecode.toUpperCase(),
+        servicestate: req.session.corper.servicestate,
+        batch: req.session.corper.batch, */
 
         if (_profile_data.newstatecode) { // if they are changing statecode to a different state, then their service state in the db should change and their ppa details too should change, tell them to change the ppa details if they don't change it
           // change statecode in other places too
@@ -799,7 +799,7 @@ exports.UpdateProfile = async (_profile_data) => {
 
 
         } else { // if no newstatecode
-          // res.status(200).redirect(req.session.statecode.toUpperCase() /* + '?e=y' */); // [e]dit=[y]es|[n]o
+          // res.status(200).redirect(req.session.corper.statecode.toUpperCase() /* + '?e=y' */); // [e]dit=[y]es|[n]o
           resolve(_profile_data.statecode.toUpperCase())
         }
         // res.sendStatus(200);
@@ -885,17 +885,17 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
                 user: {}
             };
 
-            if (req.session.statecode) {
-                ppa_details.user.statecode = req.session.statecode.toUpperCase();
+            if (req.session.corper.statecode) {
+                ppa_details.user.statecode = req.session.corper.statecode.toUpperCase();
             }
-            if (req.session.servicestate) {
-                ppa_details.user.servicestate = req.session.servicestate;
+            if (req.session.corper.servicestate) {
+                ppa_details.user.servicestate = req.session.corper.servicestate;
             }
-            if (req.session.batch) {
-                ppa_details.user.batch = req.session.batch;
+            if (req.session.corper.batch) {
+                ppa_details.user.batch = req.session.corper.batch;
             }
-            if (req.session.name_of_ppa) {
-                ppa_details.user.name_of_ppa = req.session.name_of_ppa;
+            if (req.session.corper.name_of_ppa) {
+                ppa_details.user.name_of_ppa = req.session.corper.name_of_ppa;
             }
             ppa_details.theacc = []; // make it empty
             ppa_details.theppa = results[3]; // JSON.stringify(results);
@@ -1180,11 +1180,11 @@ exports.GetPosts = async (data) => {
 
 exports.GetPlacesByTypeInOurDB = async (req) => {
     let re = await new Promise((resolve, reject) => {
-    // use the ones from their service state // AND servicestate = '" + req.session.servicestate + "'
+    // use the ones from their service state // AND servicestate = '" + req.session.corper.servicestate + "'
     connectionPool.query("SELECT name_of_ppa FROM info WHERE name_of_ppa != '';\
-      SELECT ppa_address from info WHERE ppa_address != '' AND servicestate = '" + req.session.servicestate + "';\
-      SELECT city_town FROM info WHERE city_town != '' AND servicestate = '" + req.session.servicestate + "';\
-      SELECT region_street FROM info WHERE region_street != '' AND servicestate = '" + req.session.servicestate + "'", function (error2, results2, fields2) {
+      SELECT ppa_address from info WHERE ppa_address != '' AND servicestate = '" + req.session.corper.servicestate + "';\
+      SELECT city_town FROM info WHERE city_town != '' AND servicestate = '" + req.session.corper.servicestate + "';\
+      SELECT region_street FROM info WHERE region_street != '' AND servicestate = '" + req.session.corper.servicestate + "'", function (error2, results2, fields2) {
 
         if (error2) reject(error2);
 
@@ -1208,7 +1208,7 @@ exports.SearchNOPs = async (req) => {
         // also if we don't have the geo data for a school, we can try searching else where for it...
         // also we should track where the search is from coming from
     
-        // use the ones from their service state // AND servicestate = '" + req.session.servicestate + "'
+        // use the ones from their service state // AND servicestate = '" + req.session.corper.servicestate + "'
         connectionPool.query("SELECT name_of_ppa, ppa_address, type_of_ppa, ppa_geodata FROM info WHERE name_of_ppa = '" + req.query.nop + "'", function (error, results, fields) {  // bring the results in ascending order
             console.log(results[0].ppa_geodata != '', 'we want to check', results)
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
@@ -1260,17 +1260,17 @@ exports.SearchNOPs = async (req) => {
       
             ppa_details = {};
       
-            if (req.session.statecode) {
-              ppa_details.user.statecode = req.session.statecode.toUpperCase();
+            if (req.session.corper.statecode) {
+              ppa_details.user.statecode = req.session.corper.statecode.toUpperCase();
             }
-            if (req.session.servicestate) {
-              ppa_details.user.servicestate = req.session.servicestate;
+            if (req.session.corper.servicestate) {
+              ppa_details.user.servicestate = req.session.corper.servicestate;
             }
-            if (req.session.batch) {
-              ppa_details.user.batch = req.session.batch;
+            if (req.session.corper.batch) {
+              ppa_details.user.batch = req.session.corper.batch;
             }
-            if (req.session.name_of_ppa) {
-              ppa_details.user.name_of_ppa = req.session.name_of_ppa;
+            if (req.session.corper.name_of_ppa) {
+              ppa_details.user.name_of_ppa = req.session.corper.name_of_ppa;
             }
             ppa_details.theppa = results[0]; // JSON.stringify(results);
       

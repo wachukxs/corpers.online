@@ -281,7 +281,9 @@
                       .disabled = true;
                     document.getElementById('newss')
                       .style.display = 'none';
-
+                    // set the value back to the default
+                    document.getElementById('servicestate')
+                      .value = "<%= servicestate %>";
                   }
 
                   // make this call once! how ? by putting it outside the change event listener, and always using it's results once we notice a change

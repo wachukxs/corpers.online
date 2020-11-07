@@ -231,16 +231,16 @@ router.get('/profile', function (req, res) {
     // let's hope there's no err
 
     if (req.session.loggedin) {
-      let jn = req.session.statecode.toUpperCase()
+      let jn = req.session.corper.statecode.toUpperCase()
 
       /**an array of all the local government in the state */
       let lgas = jkl.states[ngplaces.states_short.indexOf(jn.slice(0, 2))][ngplaces.states_long[ngplaces.states_short.indexOf(jn.slice(0, 2))]];
       res.set('Content-Type', 'text/html');
       query.GetPlacesByTypeInOurDB(req).then(data => {
         let info = {
-          // statecode: req.session.statecode.toUpperCase(),
-          // servicestate: req.session.servicestate.toUpperCase(),
-          // batch: req.session.batch,
+          // statecode: req.session.corper.statecode.toUpperCase(),
+          // servicestate: req.session.corper.servicestate.toUpperCase(),
+          // batch: req.session.corper.batch,
           names_of_ppas: data.names_of_ppas, // array of objects ie names_of_ppas[i].name_of_ppa
           ppa_addresses: data.ppa_addresses,
           cities_towns: data.cities_towns,
@@ -248,20 +248,20 @@ router.get('/profile', function (req, res) {
           states: ngplaces.states_long,
           lgas: lgas,
           current_year: new Date().getFullYear(),
-          // picture_id: req.session.picture_id,
-          ...req.session
+          // picture_id: req.session.corper.picture_id,
+          ...req.session.corper
           // select all distinct ppa type / address / name and send it to the front end as suggestions for the input when the corpers type
         }
         res.render('pages/profile', info);
       }, reject => {
         res.render('pages/profile', {
-          statecode: req.session.statecode.toUpperCase(),
-          servicestate: req.session.servicestate.toUpperCase(),
-          batch: req.session.batch,
+          statecode: req.session.corper.statecode.toUpperCase(),
+          servicestate: req.session.corper.servicestate.toUpperCase(),
+          batch: req.session.corper.batch,
           states: ngplaces.states_long,
           lgas: lgas,
           current_year: new Date().getFullYear(),
-          ...(req.session.picture_id) && {picture_id: req.session.picture_id},
+          ...(req.session.corper.picture_id) && {picture_id: req.session.corper.picture_id},
         });
       })
     } else {
@@ -286,7 +286,7 @@ router.post('/profile', /* bodyParser.urlencoded({
   });
 
   _profile_data = {
-    statecode: req.session.statecode
+    statecode: req.session.corper.statecode
   };
 
   busboy.on('file', function (fieldname, filestream, filename, transferEncoding, mimetype) {
@@ -365,9 +365,9 @@ router.post('/profile', /* bodyParser.urlencoded({
 
           console.log('upload File Id: ', file.data.id); // save to db
           // console.log('File: ', file);
-          req.session.picture_id = file.data.id
+          req.session.corper.picture_id = file.data.id
 
-          connectionPool.query('UPDATE info SET picture_id = ? WHERE statecode = ?', [file.data.id, req.session.statecode.toUpperCase()], function (error, results, fields) {
+          connectionPool.query('UPDATE info SET picture_id = ? WHERE statecode = ?', [file.data.id, req.session.corper.statecode.toUpperCase()], function (error, results, fields) {
             if (error) throw error;
             // ...
             console.log('updated pic')
@@ -406,10 +406,10 @@ router.post('/profile', /* bodyParser.urlencoded({
     console.log('we done?')
     query.UpdateProfile(_profile_data).then(result => {
       if (_profile_data.name_of_ppa) {
-        req.session.name_of_ppa = _profile_data.name_of_ppa;
+        req.session.corper.name_of_ppa = _profile_data.name_of_ppa;
       }
       if (_profile_data.newstatecode) {
-        req.session.statecode = _profile_data.newstatecode.toUpperCase();
+        req.session.corper.statecode = _profile_data.newstatecode.toUpperCase();
       }
       res.status(200).redirect(result); // redirectly appropriately if there's new statecode or not
     }, reject => {
@@ -418,9 +418,7 @@ router.post('/profile', /* bodyParser.urlencoded({
     })
    })
 
-    
-
-    return req.pipe(busboy)
+  return req.pipe(busboy)
 });
 
 router.post('/addplace', upload.none(), function (req, res) {
@@ -580,23 +578,23 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
       console.log('post_time', _text.post_time)
       query.InsertRowInPostsTable({
         media: (_media.length > 0 ? _media : _text.mapimage ? _text.mapimage : ''),
-        statecode: req.session.statecode,
+        statecode: req.session.corper.statecode,
         type: (_text.type ? _text.type : "sale"),
         text: _text.text,
         itemname: _text.itemname,
         price: (_text.price ? _text.price : ""),
-        location: req.session.location,
+        location: req.session.corper.location,
         post_time: _text.post_time
       }).then(result => {
         // then status code is good
         res.sendStatus(200);
 
         // once it saves in db them emit to other users
-        socket.of('/user').to(req.session.statecode.substring(0, 2)).emit('boardcast message', {
+        socket.of('/user').to(req.session.corper.statecode.substring(0, 2)).emit('boardcast message', {
           to: 'be received by everyone else',
           post: {
-            statecode: req.session.statecode,
-            location: req.session.location,
+            statecode: req.session.corper.statecode,
+            location: req.session.corper.location,
             media: false,
             post_time: _text.post_time,
             type: _text.type,
@@ -619,12 +617,12 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
 
       query.InsertRowInPostsTable({
         media: (_media.length > 0 ? _media.toString() : _text.mapimage ? _text.mapimage : ''),
-        statecode: req.session.statecode,
+        statecode: req.session.corper.statecode,
         type: (_text.type ? _text.type : "sale"),
         text: _text.text,
         itemname: _text.itemname,
         price: (_text.price ? _text.price : ""),
-        location: req.session.location,
+        location: req.session.corper.location,
         post_time: _text.post_time,
       }).then(resolve => {
 
@@ -632,11 +630,11 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
         res.sendStatus(200);
 
         // once it saves in db them emit to other users
-        socket.of('/user').to(req.session.statecode.substring(0, 2)).emit('boardcast message', {
+        socket.of('/user').to(req.session.corper.statecode.substring(0, 2)).emit('boardcast message', {
           to: 'be received by everyoneELSE',
           post: {
-            statecode: req.session.statecode,
-            location: req.session.location,
+            statecode: req.session.corper.statecode,
+            location: req.session.corper.location,
             media: (_media.length > 0 ? _media : false), // need to change this, just post _media, if it's empty, we'll check in frontend
             post_time: _text.post_time,
             type: _text.type,
@@ -816,7 +814,7 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
       console.log('what\'s _text?', _text)
       console.log('post_time', _text.post_time)
       query.InsertRowInAccommodationsTable({ // why are we boardcasting req ?
-        statecode: req.session.statecode,
+        statecode: req.session.corper.statecode,
         streetname: req.body.streetname,
         type: req.body.accommodationtype,
         price: req.body.price,
@@ -827,7 +825,7 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
         directions: req.body.directions,
         tenure: req.body.tenure,
         expire: (req.body.expiredate ? req.body.expiredate : ''),
-        post_location: req.session.location,
+        post_location: req.session.corper.location,
         post_time: req.body.post_time,
         acc_geodata: (req.body.acc_geodata ? req.body.acc_geodata : '')
       }).then(resolve => {
@@ -840,13 +838,13 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
         socket.of('/user').emit('boardcast message', { // or 'accommodation'
           to: 'be received by everyoneELSE',
           post: {
-            statecode: req.session.statecode,
+            statecode: req.session.corper.statecode,
             streetname: req.body.streetname,
             rentrange: req.body.rentrange,
             rooms: req.body.rooms,
             tenure: req.body.tenure,
             expiredate: (req.body.expiredate ? req.body.expiredate : ''),
-            post_location: req.session.location,
+            post_location: req.session.corper.location,
             media: [], // make an empty array 
             post_time: req.body.post_time,
             type: req.body.accommodationtype,
@@ -866,7 +864,7 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
       await Promise.all(uploadPromise);
 
       query.InsertRowInAccommodationsTable({
-        statecode: req.session.statecode,
+        statecode: req.session.corper.statecode,
         streetname: _text.streetname,
         type: _text.accommodationtype,
         price: _text.price,
@@ -877,7 +875,7 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
         directions: _text.directions,
         tenure: _text.tenure,
         expire: (_text.expiredate ? _text.expiredate : ''),
-        post_location: req.session.location,
+        post_location: req.session.corper.location,
         post_time: _text.post_time,
         acc_geodata: (_text.acc_geodata ? _text.acc_geodata : '')
       }).then(result => {
@@ -890,13 +888,13 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
         socket.of('/user').emit('boardcast message', { // or 'accommodation'
           to: 'be received by everyoneELSE',
           post: {
-            statecode: req.session.statecode,
+            statecode: req.session.corper.statecode,
             streetname: _text.streetname,
             rentrange: _text.rentrange,
             rooms: _text.rooms,
             tenure: _text.tenure,
             expiredate: (_text.expiredate ? _text.expiredate : ''),
-            post_location: req.session.location,
+            post_location: req.session.corper.location,
             media: _media,
             post_time: _text.post_time,
             type: _text.accommodationtype,
@@ -968,7 +966,7 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
             console.log('media array null ?', arraymedia);
 
             query.InsertRowInAccommodationsTable({
-              statecode: req.session.statecode,
+              statecode: req.session.corper.statecode,
               streetname: req.body.streetname,
               type: req.body.accommodationtype,
               price: req.body.price,
@@ -979,7 +977,7 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
               directions: req.body.directions,
               tenure: req.body.tenure,
               expire: (req.body.expiredate ? req.body.expiredate : ''),
-              post_location: req.session.location,
+              post_location: req.session.corper.location,
               post_time: req.body.post_time,
               acc_geodata: (req.body.acc_geodata ? req.body.acc_geodata : '')
             }).then(result => {
@@ -992,13 +990,13 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
               socket.of('/user').emit('boardcast message', { // or 'accommodation'
                 to: 'be received by everyoneELSE',
                 post: {
-                  statecode: req.session.statecode,
+                  statecode: req.session.corper.statecode,
                   streetname: req.body.streetname,
                   rentrange: req.body.rentrange,
                   rooms: req.body.rooms,
                   tenure: req.body.tenure,
                   expiredate: (req.body.expiredate ? req.body.expiredate : ''),
-                  post_location: req.session.location,
+                  post_location: req.session.corper.location,
                   media: arraymedia,
                   post_time: new Date().toLocaleString(), // not sure we need and make use of post time
                   type: req.body.accommodationtype,
@@ -1033,7 +1031,7 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
   } else {
 
     query.InsertRowInAccommodationsTable({
-      statecode: req.session.statecode,
+      statecode: req.session.corper.statecode,
       streetname: req.body.streetname,
       type: req.body.accommodationtype,
       price: req.body.price,
@@ -1044,7 +1042,7 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
       directions: req.body.directions,
       tenure: req.body.tenure,
       expire: (req.body.expiredate ? req.body.expiredate : ''),
-      post_location: req.session.location,
+      post_location: req.session.corper.location,
       post_time: req.body.post_time,
       acc_geodata: (req.body.acc_geodata ? req.body.acc_geodata : '')
     }).then(resolve => {
@@ -1058,13 +1056,13 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
       socket.of('/user').emit('boardcast message', { // or 'accommodation'
         to: 'be received by everyoneELSE',
         post: {
-          statecode: req.session.statecode,
+          statecode: req.session.corper.statecode,
           streetname: req.body.streetname,
           rentrange: req.body.rentrange,
           rooms: req.body.rooms,
           tenure: req.body.tenure,
           expiredate: (req.body.expiredate ? req.body.expiredate : ''),
-          post_location: req.session.location,
+          post_location: req.session.corper.location,
           media: [], // make an empty array or sth else ...just make it empty
           post_time: new Date().toLocaleString(), // not sure we need and make use of post time
           type: req.body.accommodationtype,
@@ -1084,7 +1082,7 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
   }
   // ----------------------------------------------- delete this later. not yet, until we so if else for when there are no files.
   /* pool.query("INSERT INTO accommodations( statecode, streetname, type, price, media, rentrange, rooms, address, tenure, expire) VALUES ('" +
-    req.session.statecode + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
+    req.session.corper.statecode + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
     arraymedia + "', '" + req.body.rentrange + "', '" + req.body.rooms + "','" + req.body.address + "','" + req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : '') +
     "')", function (error, results, fields) {
  
