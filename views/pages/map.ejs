@@ -499,11 +499,11 @@
              /* let mapService = L.esri.Geocoding.mapServiceProvider({
                  label: 'Map Service', // Group suggestions under this header
              }); */
-             let arcgisOnline = L.esri.Geocoding.arcgisOnlineProvider( {
+             let arcgisOnline = L.esri.Geocoding.arcgisOnlineProvider({
               countries: 'NG', // get results only from Nigeria
               label: 'Arc', // Group suggestions under this header
-             } );
-             let gisDay = L.esri.Geocoding.featureLayerProvider( {
+             });
+             let gisDay = L.esri.Geocoding.featureLayerProvider({
                  url: 'https://services.arcgis.com/uCXeTVveQzP4IIcx/arcgis/rest/services/GIS_Day_Final/FeatureServer/0',
                  searchFields: [ 'Name', 'Organization' ], // Search these fields for text matches
                  maxResults: 7,

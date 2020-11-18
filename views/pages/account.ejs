@@ -61,30 +61,30 @@
 
     <style type="text/css">
         /* 
-    .typeahead {
-      background-color: #FFFFFF;
-    }
-    .tt-query {
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
-    }
-    .tt-hint {
-      color: #999999;
-    }
-    .tt-menu {
-      background-color: #FFFFFF;
-      border: 1px solid rgba(0, 0, 0, 0.2);
-      border-radius: 8px;
-      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-      margin-top: 12px;
-    }
-    .tt-suggestion:hover {
-      cursor: pointer;
-      background-color: #0097CF;
-      color: #FFFFFF;
-    }
-    .tt-suggestion p {
-      margin: 0;
-    } */
+        .typeahead {
+        background-color: #FFFFFF;
+        }
+        .tt-query {
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+        }
+        .tt-hint {
+        color: #999999;
+        }
+        .tt-menu {
+        background-color: #FFFFFF;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        margin-top: 12px;
+        }
+        .tt-suggestion:hover {
+        cursor: pointer;
+        background-color: #0097CF;
+        color: #FFFFFF;
+        }
+        .tt-suggestion p {
+        margin: 0;
+        } */
 
         /* remove this and the onNavigation after to remove the scroll and up and down arrow navigation feature */
         .typeahead__list {
@@ -402,6 +402,15 @@
             -ms-hyphens: auto;
             hyphens: auto;
         }
+
+        .js-typeahead-search {
+            padding-right: 10px !important;
+            min-height: auto !important;
+        }
+
+        textarea#directions {
+            height: 125px;
+        }
     </style>
     <script async defer data-website-id="58dce5f5-c238-4e98-b2c6-e701c258f01d" src="https://using-umami.herokuapp.com/umami.js"></script>
 </head>
@@ -471,12 +480,12 @@
             <!-- hide on screens smaller than md -->
             <div class="d-none d-md-block">
                 <div class="btn-group" role="group" aria-label="Post buttons">
-                    <button id="bfp" type="button" class="btn btn-primary" data-toggle="modal" data-target="#postModalSale">Post a sale</button>
+                    <button id="bfp" type="button" class="btn btn-primary" data-toggle="modal" data-target="#saleModal">Post a sale</button>
                     <button id="place" type="button" class="btn btn-outline-primary">or space</button>
                 </div>
             </div>
             
-            <!-- <button id="bfp" class="btn btn-primary   d-none d-md-block" data-toggle="modal" data-target="#postModalSale">Post</button> -->
+            <!-- <button id="bfp" class="btn btn-primary   d-none d-md-block" data-toggle="modal" data-target="#saleModal">Post</button> -->
         </div>
     </nav>
 
@@ -646,10 +655,10 @@
                                                 </div>
                                             </fieldset>
                                             <!-- 
-      maybe a little map area to pin the location of the place if they're currently there
+                                                maybe a little map area to pin the location of the place if they're currently there
 
-      we can even try to show a route in the map based on what address is and information in the directions textarea, we can even auto route.
-  -->
+                                                we can even try to show a route in the map based on what address is and information in the directions textarea, we can even auto route.
+                                            -->
 
                                             <!-- //end form for accommodation -->
                                         </div>
@@ -855,7 +864,7 @@
     </script>
 
     <!-- the Modal for posting (sale)-->
-    <div class="modal fade" id="oldpostModalSale" tabindex="-1" role="dialog" aria-labelledby="oldpostModalLabelSale" aria-hidden="true">
+    <div class="modal fade" id="oldsaleModal" tabindex="-1" role="dialog" aria-labelledby="oldpostModalLabelSale" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <form id="oldpostform" name="oldpostform">
@@ -936,7 +945,7 @@
         </div>
     </div>
 
-    <div id="postModalSale" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="postModalLabelSale" aria-hidden="true">
+    <div id="saleModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="postModalLabelSale" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1019,7 +1028,7 @@ we can even try to show a route in the map based on what address is and informat
          */
         document.getElementById('place').addEventListener('click', function(event) {
             // close post modal and open accommodation modal
-            $('#postModalSale').modal('hide');
+            $('#saleModal').modal('hide');
 
             $('#accommodationModal').modal('show');
         })
@@ -1029,7 +1038,7 @@ we can even try to show a route in the map based on what address is and informat
         // script for submitting posts (not accommodation).
         function sendPost() {
             // close the modal first. this makes the site look 
-            $('#postModalSale').modal('hide');
+            $('#saleModal').modal('hide');
 
             // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
             const XHR = new XMLHttpRequest();
@@ -1039,7 +1048,10 @@ we can even try to show a route in the map based on what address is and informat
 
             // append post_time
             FD.append('post_time', Date.now()); // data type number
-
+            
+            // append first name
+            FD.append('firstname', '<%= firstname %>');
+            
             // append post type
             FD.append('type', 'sale');
 
@@ -1137,6 +1149,9 @@ we can even try to show a route in the map based on what address is and informat
 
             // append post_time
             FD1.append('post_time', Date.now()); // data type number
+
+            // append first name
+            FD1.append('firstname', '<%= firstname %>');
 
             // Define what happens on successful data submission
             XHR1.addEventListener("load", function(event) {
@@ -1411,7 +1426,7 @@ we can even try to show a route in the map based on what address is and informat
                 <i class="fa fa-home icon my-float"></i>
             </div>
             <!-- hide on screens wider than md -->
-            <div class="float sale-float d-md-none" data-toggle="modal" data-target="#postModalSale">
+            <div class="float sale-float d-md-none" data-toggle="modal" data-target="#saleModal">
                 <i class="fa fa-tag icon my-float"></i>
             </div>
         </main>
@@ -2165,14 +2180,14 @@ we can even try to show a route in the map based on what address is and informat
                 //append sent message to sender's timeline (not yet !! maybe when we do we'll make user know it hasn't been done)
         
                 //close modal
-                $('#postModalSale').modal('hide');
+                $('#saleModal').modal('hide');
                 //show that post has been made
         
               }
         
         
               // after post has been made and/or modal closed
-              $('#postModalSale').on('hidden.bs.modal', function (e) {
+              $('#saleModal').on('hidden.bs.modal', function (e) {
                 // do something...
                 console.log('post modal hidden');
                 txtFld.value = "";
@@ -2193,12 +2208,12 @@ we can even try to show a route in the map based on what address is and informat
         
               sendBtn.addEventListener("click", sendMsg, false); */
 
-        $('#postModalSale')
+        $('#saleModal')
             .on('shown.bs.modal', function(e) {
                 // txtFld.focus();
             });
 
-        $('#postModalSale')
+        $('#saleModal')
             .on('hidden.bs.modal', function(e) {
                 /* if (document.getElementById( 'previewParent' ).hasChildNodes()) {
                     document.getElementById( 'previewParent' )
@@ -2607,28 +2622,27 @@ we can even try to show a route in the map based on what address is and informat
                 }
                 //sendMsg();
                 /*
+                    // to convert to dataURI // https://davidwalsh.name/convert-image-data-uri-javascript https://ourcodeworld.com/articles/read/182/the-canvas-has-been-tainted-by-cross-origin-data-and-tainted-canvases-may-not-be-exported
+                    img.crossOrigin = "anonymous" ;
+                    img.onload = function () {
+                    let canvas = document.createElement('canvas');
+                    canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
+                    canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
 
-                      //to convert to dataURI // https://davidwalsh.name/convert-image-data-uri-javascript https://ourcodeworld.com/articles/read/182/the-canvas-has-been-tainted-by-cross-origin-data-and-tainted-canvases-may-not-be-exported
-                      img.crossOrigin = "anonymous" ;
-                      img.onload = function () {
-                        let canvas = document.createElement('canvas');
-                        canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
-                        canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
+                    canvas.getContext('2d').drawImage(this, 0, 0);
 
-                        canvas.getContext('2d').drawImage(this, 0, 0);
+                    // Get raw image data
+                    //callback(canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, ''));
 
-                        // Get raw image data
-                        //callback(canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, ''));
+                    // ... or get as Data URI
+                    canvas.toDataURL('image/png');
+                    //console.log(canvas.toDataURL('image/png')); //almosts crashes the browser, for some reasons, it keeps on logging
+                    img.src = canvas.toDataURL('image/png');
+                    preview.appendChild(img);
+                    previewParent.appendChild(preview);
+                    };
 
-                        // ... or get as Data URI
-                        canvas.toDataURL('image/png');
-                        //console.log(canvas.toDataURL('image/png')); //almosts crashes the browser, for some reasons, it keeps on logging
-                        img.src = canvas.toDataURL('image/png');
-                        preview.appendChild(img);
-                        previewParent.appendChild(preview);
-                      };
-
-                        https://stackoverflow.com/questions/27526281/websockets-and-apache-proxy-how-to-configure-mod-proxy-wstunnel/27534443#27534443
+                    https://stackoverflow.com/questions/27526281/websockets-and-apache-proxy-how-to-configure-mod-proxy-wstunnel/27534443#27534443
                 */
 
 

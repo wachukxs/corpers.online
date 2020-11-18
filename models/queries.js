@@ -286,7 +286,6 @@ exports.InsertRowInMediaTable = async (mediaData) => {
  * insert data in post table
  */
 exports.InsertRowInPostsTable = async (postData) => {
-    console.log('we posting now')
     let re = await new Promise((resolve, reject) => {
         connectionPool.query("INSERT INTO posts SET ?", postData, function (error, result, fields) {
             if (error) reject(error)
@@ -1096,32 +1095,32 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
 
 exports.GetPosts = async (data) => {
     let re = await new Promise((resolve, reject) => {
-          // get response
-  // so we're selecting posts newer than the ones currently in the user's timeline. or the server closed the connection error
+    // get response
+    // so we're selecting posts newer than the ones currently in the user's timeline. or the server closed the connection error
 
-  // SELECT * FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT ppa_address, ppa_geodata, type_of_ppa FROM info WHERE ppa_address != '' AND ppa_geodata != '' AND type_of_ppa != ''
-  // console.log('search query parameters', data.query)
-  let q = '', thisisit = {};
-  // maybe change the ORDER BYs since we're using post_time now =---
-  if (data.query.s) {
-    console.log('are we here?');
-    q = "SELECT * FROM accommodations \
-    WHERE statecode LIKE '" + data.query.s.substring(0, 2) + "%' \
-    ORDER BY post_time DESC LIMIT 55; SELECT *, '' as password \
-    FROM info WHERE ppa_address != '' AND statecode LIKE '" + data.query.s.substring(0, 2) + "%' ;\
-    SELECT * FROM posts WHERE statecode LIKE '" + data.query.s.substring(0, 2) + "%';";
-  } else {
-    
-    for (let index = 0; index < 36/* ngstates.states_short.length */; index++) {
-      const element = ngstates.states_short[index];
-      q += "SELECT * FROM accommodations \
-      WHERE statecode LIKE '" + element + "%' ORDER BY post_time DESC LIMIT 55; \
-      SELECT *, '' as password FROM info \
-      WHERE ppa_address != '' AND statecode LIKE '" + element + "%' ;\
-      SELECT * FROM posts WHERE statecode LIKE '" + element + "%' ;"; // the trailing ';' is very important
+    // SELECT * FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT ppa_address, ppa_geodata, type_of_ppa FROM info WHERE ppa_address != '' AND ppa_geodata != '' AND type_of_ppa != ''
+    // console.log('search query parameters', data.query)
+    let q = '', thisisit = {};
+    // maybe change the ORDER BYs since we're using post_time now =---
+    if (data.query.s) {
+        console.log('are we here?');
+        q = "SELECT * FROM accommodations \
+        WHERE statecode LIKE '" + data.query.s.substring(0, 2) + "%' \
+        ORDER BY post_time DESC LIMIT 55; SELECT *, '' as password \
+        FROM info WHERE ppa_address != '' AND statecode LIKE '" + data.query.s.substring(0, 2) + "%' ;\
+        SELECT * FROM posts WHERE statecode LIKE '" + data.query.s.substring(0, 2) + "%';";
+    } else {
+        
+        for (let index = 0; index < 36/* ngstates.states_short.length */; index++) {
+        const element = ngstates.states_short[index];
+        q += "SELECT * FROM accommodations \
+        WHERE statecode LIKE '" + element + "%' ORDER BY post_time DESC LIMIT 55; \
+        SELECT *, '' as password FROM info \
+        WHERE ppa_address != '' AND statecode LIKE '" + element + "%' ;\
+        SELECT * FROM posts WHERE statecode LIKE '" + element + "%' ;"; // the trailing ';' is very important
+        }
+        // let q = "SELECT streetname, type, input_time, statecode, price, rentrange FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != ''";
     }
-    // let q = "SELECT streetname, type, input_time, statecode, price, rentrange FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != ''";
-  }
 
   // console.log('search sql query ', q)
   connectionPool.query(q, function (error, results, fields) { // bring the results in ascending order
@@ -1131,7 +1130,6 @@ exports.GetPosts = async (data) => {
       reject(error)
       // throw error;
     } else if (!helpers.isEmpty(results)) {
-        console.log('AGAIN we should be here?');
       // res.json({er: 'er'}); // auto sets content-type header with the correct content-type
       // res.send({ user: 'tobi' });
 

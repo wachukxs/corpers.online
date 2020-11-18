@@ -71,7 +71,7 @@ router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN
         name_of_ppa: req.session.corper.name_of_ppa,
         total_num_unread_msg: result,
         picture_id: req.session.corper.picture_id, // if there's picture_id
-        
+        firstname: req.session.corper.firstname
       });
     }, reject => {
       console.log('why TF?!', reject);
@@ -84,6 +84,7 @@ router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN
         name_of_ppa: req.session.corper.name_of_ppa,
         total_num_unread_msg: 0,
         picture_id: req.session.corper.picture_id, // if there's picture_id
+        firstname: req.session.corper.firstname
       });
     }).catch((err) => { // we should have this .catch on every query
       console.error('our system should\'ve crashed:', err)
@@ -252,6 +253,7 @@ router.post('/login', /* bodyParser.urlencoded({ // edited
       req.session.bio = result.response[0].bio; */
 
       req.session.corper = result.response[0];
+      req.session.corper.location = result.response[0].servicestate + (result.response[0].city_town ? ', ' + result.response[0].city_town : ''); // + (results1[0].region_street ? ', ' + results1[0].region_street : '' )
       req.session.loggedin = true;
 
       res.status(200).redirect(req.body.statecode.toUpperCase());

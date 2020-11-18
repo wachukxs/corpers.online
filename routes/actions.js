@@ -357,14 +357,14 @@ router.post('/profile', /* bodyParser.urlencoded({
       const up = ggle.drive.files.create({
         resource: fileMetadata,
         media: media,
-        fields: 'id',
+        fields: 'id, thumbnailLink',
       }).then(
         function (file) {
 
           // maybe send the upload progress to front end with sockets? https://github.com/googleapis/google-api-nodejs-client/blob/7ed5454834b534e2972746b28d0a1e4f332dce47/samples/drive/upload.js#L41
 
           console.log('upload File Id: ', file.data.id); // save to db
-          // console.log('File: ', file);
+          console.log('thumbnailLink: ', file.data.thumbnailLink);
           req.session.corper.picture_id = file.data.id
 
           connectionPool.query('UPDATE info SET picture_id = ? WHERE statecode = ?', [file.data.id, req.session.corper.statecode.toUpperCase()], function (error, results, fields) {
@@ -484,7 +484,6 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
       if (!get) {
 
       }
-
       console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
     });
 
@@ -501,7 +500,6 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
     // this is not a good method
 
     /**One thing you might be able to try is to read 0 bytes from the stream first and see if you get the appropriate 'end' event or not (perhaps on the next tick) */
-
     if (filename != '' && helpers.acceptedfiles.includes(mimetype)) { // filename: 1848-1844-1-PB.pdf, encoding: 7bit, mimetype: application/pdf
       /* let obj = {
           filestream: file_stream,
@@ -666,7 +664,6 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
 
 router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (req, res) {
 
-
   const busboy = new Busboy({
     headers: req.headers,
     limits: { // set fields, fieldSize, and fieldNameSize later (security)
@@ -679,8 +676,6 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
   _text.rooms = []; // hot fix
   let uploadPromise = [];
   let get = true;
-
-
 
   busboy.on('file', function (fieldname, filestream, filename, transferEncoding, mimetype) {
 
@@ -812,46 +807,46 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
      */
     if (!helpers.isEmpty(_text) && helpers.isEmpty(uploadPromise)) {
       console.log('what\'s _text?', _text)
-      console.log('post_time', _text.post_time)
       query.InsertRowInAccommodationsTable({ // why are we boardcasting req ?
         statecode: req.session.corper.statecode,
-        streetname: req.body.streetname,
-        type: req.body.accommodationtype,
-        price: req.body.price,
+        // streetname: _text.streetname,
+        type: _text.accommodationtype,
+        price: _text.price,
         media: [].toString(), // same as '' but for consitenc sake
-        rentrange: req.body.rentrange,
-        rooms: [req.body.rooms].toString(), // hot fix
-        address: req.body.address,
-        directions: req.body.directions,
-        tenure: req.body.tenure,
-        expire: (req.body.expiredate ? req.body.expiredate : ''),
+        rentrange: _text.rentrange,
+        rooms: _text.rooms.toString(), // hot fix
+        address: _text.address,
+        directions: _text.directions,
+        tenure: _text.tenure,
+        expire: (_text.expiredate ? _text.expiredate : ''),
         post_location: req.session.corper.location,
-        post_time: req.body.post_time,
-        acc_geodata: (req.body.acc_geodata ? req.body.acc_geodata : '')
+        post_time: _text.post_time,
+        acc_geodata: (_text.acc_geodata ? _text.acc_geodata : '')
       }).then(resolve => {
         // then status code is good
         res.sendStatus(200);
   
-        // console.log('me before you', moment(Number(req.body.post_time)).fromNow(), req.body.post_time);
+        // console.log('me before you', moment(Number(_text.post_time)).fromNow(), _text.post_time);
   
         // once it saves in db them emit to other users
         socket.of('/user').emit('boardcast message', { // or 'accommodation'
           to: 'be received by everyoneELSE',
           post: {
+            firstname: _text.firstname,
             statecode: req.session.corper.statecode,
-            streetname: req.body.streetname,
-            rentrange: req.body.rentrange,
-            rooms: req.body.rooms,
-            tenure: req.body.tenure,
-            expiredate: (req.body.expiredate ? req.body.expiredate : ''),
+            // streetname: _text.streetname,
+            rentrange: _text.rentrange,
+            rooms: _text.rooms,
+            tenure: _text.tenure,
+            expiredate: (_text.expiredate ? _text.expiredate : ''),
             post_location: req.session.corper.location,
             media: [], // make an empty array 
-            post_time: req.body.post_time,
-            type: req.body.accommodationtype,
-            address: req.body.address,
-            directions: req.body.directions,
-            age: moment(Date.now()).fromNow(),
-            price: req.body.price
+            post_time: _text.post_time,
+            type: _text.accommodationtype,
+            address: _text.address,
+            directions: _text.directions,
+            age: moment(Date.now()).fromNow(), // is this correct?
+            price: _text.price
           }
         });
       }, reject => {
@@ -888,6 +883,7 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
         socket.of('/user').emit('boardcast message', { // or 'accommodation'
           to: 'be received by everyoneELSE',
           post: {
+            firstname: req.body.firstname,
             statecode: req.session.corper.statecode,
             streetname: _text.streetname,
             rentrange: _text.rentrange,
