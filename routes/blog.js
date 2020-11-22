@@ -9,17 +9,8 @@ let router = express.Router();
  * Career ie. jobs and opportunities
  * 
  */
-router.get('/blog', function (req, res) {
-    res.set('Content-Type', 'text/html');
-    res.render('pages/blog/home', { current_year: new Date().getFullYear() });
-});
-
-router.get('/hello', function (req, res) {
-    res.set('Content-Type', 'text/html');
-    res.render('pages/blog/hello', { 
-        current_year: new Date().getFullYear(),
-        tags: ['Travel', 'E-Commerce']
-    });
+router.get(['/blog', '/blogs', '/blogging'], function (req, res) {
+    res.redirect('https://blog.corpers.online')
 });
 
 module.exports = router;
