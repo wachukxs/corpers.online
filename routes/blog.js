@@ -10,7 +10,7 @@ let router = express.Router();
  * 
  */
 router.get(['/blog', '/blogs', '/blogging'], function (req, res) {
-    res.redirect('https://blog.corpers.online')
+    res.redirect(301, 'https://blog.corpers.online')
 });
 
 module.exports = router;

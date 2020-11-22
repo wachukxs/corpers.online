@@ -115,7 +115,7 @@
             height: 40vh;
         }
 
-        .p_pic {
+        .profile-pic {
             width: 45px;
             height: 45px;
         }
@@ -1804,7 +1804,7 @@ we can even try to show a route in the map based on what address is and informat
                 d.appendChild(h);
 
                 let c = document.createElement('img');
-                c.setAttribute('class', 'align-self-start mr-2 rounded-circle p_pic');
+                c.setAttribute('class', 'align-self-start mr-2 rounded-circle profile-pic');
                 // c.setAttribute('data-src','holder.js/64x64');
 
                 c.setAttribute('src',
@@ -1815,7 +1815,6 @@ we can even try to show a route in the map based on what address is and informat
                 // c.setAttribute('src', 'holder.js/45x45');
                 c.setAttribute('alt', data.post.statecode);
                 // c.setAttribute('style', 'font-size: 8px;');
-
 
                 let b = document.createElement('div');
                 b.setAttribute('class', 'mt-2 row');
@@ -1908,24 +1907,24 @@ we can even try to show a route in the map based on what address is and informat
 
 
                         // the descriptions [we aren't adding the right descriptions]
-                        //let thed = document.createElement('div');
-                        //thed.setAttribute('class', 'carousel-caption d-none d-md-block');
+                        // let thed = document.createElement('div');
+                        // thed.setAttribute('class', 'carousel-caption d-none d-md-block');
 
                         let hh5 = document.createElement('h3');
                         //// jk[i].includes(rms[ i ]);
                         //// let tr = jk[i].slice(parseInt(jk[i]).toString().length, jk[i].lastIndexOf('.'));
-                        //hh5.innerText = `${(rms[i] == undefined ? rms[0] : rms[i])}`;
+                        // hh5.innerText = `${(rms[i] == undefined ? rms[0] : rms[i])}`;
                         //// hh5.innerText = ( rms[ i ] == undefined ? rms[ 0 ] : rms[ i ] ); // this is not exactly correct, needs more work
 
                         //// let ppp = document.createElement( 'p' );
                         //// ppp.innerText = `Maybe some metric about ${(rms[i] == undefined ? rms[0] : rms[i])}`; // this is not exactly correct, needs more work
 
                         // append h5 and p to description div
-                        //thed.appendChild(hh5);
+                        // thed.appendChild(hh5);
                         //// thed.appendChild( ppp );
 
                         // then ...
-                        //ci.appendChild(thed);
+                        // ci.appendChild(thed);
                         // end of the descriptions
 
                     }
@@ -1952,8 +1951,6 @@ we can even try to show a route in the map based on what address is and informat
                         gg.appendChild(aind2);
                     }
 
-
-
                     g.appendChild(gg);
 
                 }
@@ -1963,7 +1960,7 @@ we can even try to show a route in the map based on what address is and informat
 
                 let z = document.createElement('h6');
                 z.setAttribute('class', 'mb-1');
-                z.innerHTML = data.post.firstname + ' <br> <small>' + data.post.statecode.toUpperCase() + ' &#183; ' + data.post.post_location + '</small>';
+                z.innerHTML = data.post.firstname + '<br> <small>' + data.post.statecode.toUpperCase() + ' &#183; ' + data.post.post_location + '</small>';
 
                 let y = document.createElement('small');
                 y.setAttribute('class', '');
@@ -1984,11 +1981,13 @@ we can even try to show a route in the map based on what address is and informat
                 d.appendChild(h);
 
                 let c = document.createElement('img');
-                c.setAttribute('class', 'align-self-start mr-2 rounded-circle');
+                c.setAttribute('class', 'align-self-start mr-2 rounded-circle profile-pic');
                 // c.setAttribute('data-src','holder.js/64x64');
 
                 c.setAttribute('src',
+                    (data.post.picture_id ? "https://drive.google.com/uc?id=" + data.post.picture_id :
                     'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E' + `${data.post.statecode.slice(0, 2).toUpperCase()}  ${data.post.statecode.slice(3, 5)}` + '%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E'
+                    )
                 );
                 // c.setAttribute('src', 'holder.js/45x45');
                 c.setAttribute('alt', data.post.statecode);
@@ -2081,7 +2080,7 @@ we can even try to show a route in the map based on what address is and informat
                 d.appendChild(h);
 
                 let c = document.createElement('img');
-                c.setAttribute('class', 'align-self-start mr-2 rounded-circle p_pic');
+                c.setAttribute('class', 'align-self-start mr-2 rounded-circle profile-pic');
                 // c.setAttribute('data-src','holder.js/64x64');
 
                 c.setAttribute('src',
