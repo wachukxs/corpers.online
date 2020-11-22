@@ -292,7 +292,7 @@ router.post('/login', /* bodyParser.urlencoded({ // edited
 
 router.get('/login', function (req, res) {
   res.set('Content-Type', 'text/html');
-  res.render('pages/login');
+  res.render('pages/login', { current_year: new Date().getFullYear() });
 });
 
 router.get('/contact', function (req, res) {

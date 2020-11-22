@@ -120,7 +120,7 @@
     <footer class="f text-center">
         <p>Corpers Online built by <a href="/contact">Corpers</a> for <a href="/login">Corpers</a>.</p>
         <p>
-            &copy; <span id="year">2020</span>
+            &copy; <span id="year"><%= current_year %></span>
         </p>
     </footer>
 
@@ -144,7 +144,6 @@
             let OK = sc.test(event.target.value);
             // console.log(sc, OK);
             if (OK) {
-
                 // console.log(event.target.value + ' is a valid state code!', OK);
                 document.getElementById('statecode').classList.remove('is-invalid');
                 document.getElementsByClassName('wrong')[0].textContent = "";

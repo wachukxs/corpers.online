@@ -478,8 +478,6 @@
                     </div>
                 </div>
             </form>
-
-
             <!-- Button trigger modal for posting-->
             <!-- hide on screens smaller than md -->
             <div class="d-none d-md-block">
@@ -743,9 +741,7 @@
                                                 for (let i = 0, max = radios.length; i < max; i++) {
                                                     radios[i].onclick = function() {
                                                         // using if-else because we have just two options, so if it isn't one, it's the other
-
                                                         // if expire date is showing, it means the rent isn't new, then it is required.
-
                                                         if (this.id == 'oldrent') {
                                                             console.log('an old rent [sublease]');
                                                             document.getElementById('expirediv')
@@ -766,24 +762,11 @@
                                     </div>
                                 </div>
 
-                                <!-- 
-                        <a class="carousel-control-prev" href="#accommodationFormCarousel" role="button" data-slide="prev">
-                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                          <span class="sr-only">Previous</span>
-                        </a>
-                        <a class="carousel-control-next" href="#accommodationFormCarousel" role="button" data-slide="next">
-                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                          <span class="sr-only">Next</span>
-                        </a> 
-                      -->
                             </div>
 
                         </div>
 
                         <div class="modal-footer">
-                            <!--             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary">Save changes</button> -->
-
                             <div class="btn-group" role="group" aria-label="Carousel navigation">
                                 <button class="btn btn-outline-primary" id="ap" href="#accommodationFormCarousel" data-slide="prev">
                                     Previous
