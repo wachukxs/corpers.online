@@ -42,9 +42,11 @@
         .head-pic {
           margin-left: 36%;
         }
-       }
+      }
 
-
+      textarea#bio {
+          min-height: 110px;
+      }
 
       #profile-picture-preview {
         width: 90px;
@@ -142,7 +144,7 @@
                     maxZoom: 18,
                     id: 'mapbox.streets',
                     accessToken: 'pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg'
-                })
+            })
             .addTo(mymap);
 
           L.control.zoom({
@@ -190,7 +192,7 @@
                 <label for="lgas">LGA</label>
                 <select name="lga" id="lgas" class="custom-select">
                   <% for (i = 0; i < lgas.length; i++) { %>
-                  <option value="<%= lgas[i] %>"><%= lgas[i] %></option>
+                  <option value="<%= lgas[i] %>" <%= (lga == lgas[i] ? 'selected="true"' : '') %>><%= lgas[i] %></option>
                   <% } %>
                 </select>
                 <div class="invalid-feedback">
@@ -202,15 +204,14 @@
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="city_town">City or Town</label>
-                <input type="text" class="form-control" name="city_town" id="city_town" placeholder="">
+                <input type="text" value="<%= city_town %>" class="form-control" name="city_town" id="city_town" placeholder="">
                 <!--not really required-->
                 <div class="invalid-feedback">
                   Please select a valid city or town.
                 </div>
               </div>
               <div class="col-md-6 mb-3">
-                <label for="region_street">Street
-                  <!-- or Region --> <span class="text-muted">(Optional)</span></label>
+                <label for="region_street">Street <!-- or Region --><span class="text-muted">(Optional)</span></label>
                 <input type="text" class="form-control" value="<%= region_street %>" name="region_street" id="region_street" placeholder="">
                 <div class="invalid-feedback">
                   Please provide a valid region or street name.
@@ -228,7 +229,7 @@
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="stream">Stream</label>
-                <input type="number" value="<%= stream %>" min="1" max="3" list="stream" class="form-control" name="stream" id=""
+                <input type="number" <%= (stream ? 'value=' + stream : '') %> min="1" max="3" list="stream" class="form-control" name="stream" id=""
                   placeholder="Select 1, 2 or 3">
                 <datalist id="stream">
                   <option value="1">1</option>
@@ -362,7 +363,7 @@
               <div class="col-md-6 mb-3">
                 <label for="name_of_ppa">Name of PPA</label>
                 <input type="text" class="form-control" list="names" name="name_of_ppa" id="name_of_ppa" placeholder=""
-                  required>
+                value="<%= name_of_ppa %>">
                 <% if (names_of_ppas.length > 0) { %>
                 <datalist id="names">
                   <% for (let q = 0; q < names_of_ppas.length; q++) { %>
@@ -379,14 +380,15 @@
                   <option value="3">3</option>
                 </datalist> -->
 
-                <small class="text-muted">Help other corpers find it too.</small>
+                <small class="text-muted">So other corpers can find it.</small>
                 <div class="invalid-feedback">
                   Please provide us with the name of your PPA
                 </div>
               </div>
               <div class="col-md-6 mb-3">
-                <label for="type_of_ppa">Type of Institution</label>
-                <input type="text" class="form-control" name="type_of_ppa" id="type_of_ppa" placeholder="" required>
+                <label for="type_of_ppa">Type of Institution</label> <!--Should be like a dropdown or have suggestions list-->
+                <input type="text" value="<%= type_of_ppa %>" class="form-control" name="type_of_ppa" id="type_of_ppa" <%= (type_of_ppa ? 'value=' + type_of_ppa : '') %> placeholder="" required>
+                <small class="text-muted">School, Bank, Hospital, Gov Institution, etc.</small>
                 <div class="invalid-feedback">
                   This helps us easily categorize.
                 </div>
@@ -395,8 +397,7 @@
 
             <div class="mb-3 d-none" style="display: none">
               <label for="ppa_geodata">Geo data <span class="text-muted">(Optional, but kinda important)</span></label>
-              <input type="text" name="ppa_geodata" class="form-control" id="ppa_geodata"
-                placeholder="What part of town is it?">
+              <input type="text" name="ppa_geodata" class="form-control" id="ppa_geodata">
               <small class="text-muted">We are trying to get an accurate as possible data, so we might ask you to try
                 again if what we got won't be of help to other corpers.</small>
             </div>
@@ -405,7 +406,7 @@
               <label for="ppa_address">PPA address</label>
               <div class="input-group">
                 <input type="text" class="form-control" list="ppaaddr" name="ppa_address" id="ppa_address"
-                  placeholder="Rehoboth Model Academy, Umuahia" required>
+                  placeholder="Rehoboth Model Academy, Umuahia" value="<%= ppa_address %>">
                 <div class="input-group-append">
                   <a id="geo" class="btn btn-secondary">Geo</a>
                 </div>
@@ -472,7 +473,7 @@
 
             <div class=" mb-3">
               <label for="lgas">Directions</label>
-              <textarea class="form-control" name="ppadirections" id="pd"
+              <textarea class="form-control" name="ppa_directions" id="pd" spellcheck="true" value="<%= ppa_directions %>"
                 placeholder="Please give directions to the PPA from a popular nearby junction or hard-to-miss building"></textarea>
 
             </div>
@@ -656,8 +657,7 @@
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="travel_from_state">Origin state</label>
-                <!-- <input type="text" class="form-control" name="travel_from_state" id="travel_from_state" placeholder="" required> -->
-                <select id="travel_from_state" name="travel_from_state" class="custom-select d-block w-100" required>
+                <select id="travel_from_state" name="travel_from_state" class="custom-select d-block w-100" value="<%= travel_from_state %>">
                   <option value="Abia">Abia</option>
                   <option value="Adamawa">Adamawa</option>
                   <option value="Akwa Ibom">Akwa Ibom</option>
@@ -702,17 +702,17 @@
               </div>
               <div class="col-md-6 mb-3">
                 <label for="travel_from_city">Origin city or town <span class="text-muted">(Optional)</span></label>
-                <input type="text" class="form-control" id="travel_from_city" name="travel_from_city" placeholder="">
+                <input type="text" class="form-control" id="travel_from_city" value="<%= travel_from_city %>" name="travel_from_city" placeholder="">
                 <div class="invalid-feedback">
                   Please name a place
                 </div>
               </div>
             </div>
             <div class="mb-3">
-              <label for="accomodation_location">Where did you find accomodation <span
+              <label for="accommodation_location">Where did you find accomodation <span
                   class="text-muted">(Optional)</span></label>
-              <input type="text" name="accomodation_location" class="form-control" id="accomodation_location"
-                placeholder="What part of town is it?">
+              <input type="text" name="accommodation_location" class="form-control" id="accomodation_location"
+                placeholder="What part of town is it?" <%= (accommodation_location ? 'value=' + accommodation_location : '') %>>
               <small class="text-muted">Please enter a known area, or be at least specific.</small>
               <div class="invalid-feedback">
                 Please enter the name of a place or an area.
@@ -720,21 +720,36 @@
             </div>
 
             <div class="row">
-              <div class="col-md-12 mb-3">
+              <div class="col-md-6 mb-3">
                 <label for="name_of_ppa">Want an SPA ?</label>
                 <div class="d-block">
                   <div class="custom-control custom-radio">
-                    <input id="yes" value="yes" name="wantspaornot" type="radio" class="custom-control-input" checked>
+                    <input id="yes" value="1" name="wantspaornot" type="radio" class="custom-control-input" <%= (wantspaornot === 1 ? "checked=true" : wantspaornot === 0 ? "checked=false" : "" ) %>>
                     <label class="custom-control-label" for="yes">Yes</label>
                   </div>
                   <div class="custom-control custom-radio">
-                    <input id="no" value="no" name="wantspaornot" type="radio" class="custom-control-input">
+                    <input id="no" value="0" name="wantspaornot" type="radio" class="custom-control-input" <%= (wantspaornot === 1 ? "checked=true" : wantspaornot === 0 ? "checked=false" : "" ) %>>
                     <label class="custom-control-label" for="no">No</label>
                   </div>
                 </div>
                 <small class="text-muted">An SPA is a side job you do during your Service Year for extra cash. A
                   <b>S</b>econdary <b>P</b>lace of
                   <b>A</b>ssignment.</small>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="name_of_ppa">In search for an accommodation ?</label>
+                <div class="d-block">
+                  <div class="custom-control custom-radio">
+                    <input id="yes" value="1" name="accommodationornot" type="radio" class="custom-control-input" <%= (accommodationornot === 1 ? "checked=true" : accommodationornot === 0 ? "checked=false" : "" ) %>>
+                    <label class="custom-control-label" for="yes">Yes</label>
+                  </div>
+                  <div class="custom-control custom-radio">
+                    <input id="no" value="0" name="accommodationornot" type="radio" class="custom-control-input" <%= (accommodationornot === 1 ? "checked=true" : accommodationornot === 0 ? "checked=false" : "" ) %>>
+                    <label class="custom-control-label" for="no">No</label>
+                  </div>
+                </div>
+                <small class="text-muted">Default is 'yes.' If you choose no, we'll stop showing you posts about accommodations up for rent.</small>
               </div>
 
             </div>
@@ -745,11 +760,11 @@
 
             <div class="d-block my-3">
               <div class="custom-control custom-radio">
-                <input id="credit" value="yes" name="public_profile" type="radio" class="custom-control-input" required>
+                <input id="credit" value="1" name="public_profile" type="radio" class="custom-control-input" <%= (public_profile === 1 ? "checked=true" : public_profile === 0 ? "checked=false" : "" ) %>>
                 <label class="custom-control-label" for="credit">Publicly visible</label>
               </div>
               <div class="custom-control custom-radio">
-                <input id="debit" value="no" name="public_profile" type="radio" class="custom-control-input" required>
+                <input id="debit" value="0" name="public_profile" type="radio" class="custom-control-input" <%= (public_profile === 1 ? "checked=true" : public_profile === 0 ? "checked=false" : "" ) %>>
                 <label class="custom-control-label" for="debit">Publicly invisible</label>
               </div>
               <small class="text-muted">A publicly visible profile means you can <b>search for other corpers</b> and <b>be seen by them too</b>.
@@ -759,7 +774,7 @@
               <div class="col-md-12 mb-3">
 
                 <label for="bio">Profile</label>
-                <textarea class="form-control" name="bio" id="bio"
+                <textarea class="form-control" name="bio" id="bio" value="<%= bio %>"
                   placeholder="I'm a graphic designer. Get in touch if you like to travel. I'm your plug for all things phones. I'd love to visit Idanre hills before the service year is over, who's in?"></textarea>
   
                 <small class="text-muted">What do you want other corpers to know about you? What you do, what you love doing?</small>

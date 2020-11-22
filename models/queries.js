@@ -98,7 +98,7 @@ exports.CorpersSignUp = async (signupData) => {
 }
 
 exports.CorpersLogin = async (req_body) => {
-    let re = await new Promise((resolve, reject) => {
+    let re = await new Promise((resolve, reject) => { // don't select password
         let sqlquery = "SELECT * FROM info WHERE statecode = ?";
         // .toUpperCase() is crucial
         connectionPool.query(sqlquery, [req_body.statecode.toUpperCase()], function (error, result, fields) {
@@ -124,6 +124,7 @@ exports.CorpersLogin = async (req_body) => {
                 reject({ message: 'sign up' }) // tell them they need to sign up or password or statecode is wrong
             } else if (result.length === 1) {
                 if (result[0].password === req_body.password) { // very crucial step!
+                    delete result[0].password  // very crucial step too!
                     resolve({ message: true, response: result })
                 } else {
                     reject({ message: 'wrong password' }) // wrong password
@@ -699,21 +700,26 @@ exports.UpdateProfile = async (_profile_data) => {
   profile_pic: ''
 }
      */
-    let sqlquery = "UPDATE info SET accommodation_location = '" + _profile_data.accommodation_location +
-      (_profile_data.servicestate ? "', servicestate = '" + _profile_data.servicestate : '') // if there's service state(i.e. corper changed service state in real life and from front end), insert it.
+    let sqlquery = "UPDATE info SET accommodation_location = " + connectionPool.escape(_profile_data.accommodation_location) +
+      (_profile_data.servicestate ? ", servicestate = " + connectionPool.escape(_profile_data.servicestate) : '') // if there's service state(i.e. corper changed service state in real life and from front end), insert it.
       +
-      "', name_of_ppa = '" + _profile_data.name_of_ppa +
-      "', ppa_directions = '" + _profile_data.ppadirections +
-      "', bio = '" + _profile_data.bio +
-      "', public_profile = '" + _profile_data.public_profile +
-      "', lga = '" + _profile_data.lga + "', city_town = '" + _profile_data.city_town + "', region_street = '" +
-      _profile_data.region_street + "',   stream = '" + _profile_data.stream + "' , type_of_ppa = '" +
-      _profile_data.type_of_ppa + "', ppa_geodata = '" + (_profile_data.ppa_geodata ? _profile_data.ppa_geodata : '') + "', ppa_address = '" + _profile_data.ppa_address + "', travel_from_state = '" +
-      _profile_data.travel_from_state + "', travel_from_city = '" + _profile_data.travel_from_city +
-      (_profile_data.newstatecode ? "', statecode = '" + _profile_data.newstatecode.toUpperCase() : '') + // if there's a new statecode ...
-      /* "', accommodationornot = '" + (_profile_data.accommodationornot ? _profile_data.accommodationornot : 'yes') + */
-      "', wantspaornot = '" +
-      _profile_data.wantspaornot + "' WHERE statecode = '" + _profile_data.statecode.toUpperCase() + "' "; // always change state code to uppercase, that's how it is in the db
+      ", name_of_ppa = " + connectionPool.escape(_profile_data.name_of_ppa) +
+      ", ppa_directions = " + connectionPool.escape(_profile_data.ppa_directions) +
+      ", bio = " + connectionPool.escape(_profile_data.bio) +
+      ", public_profile = " + connectionPool.escape(_profile_data.public_profile) +
+      ", lga = " + connectionPool.escape(_profile_data.lga) + 
+      ", city_town = " + connectionPool.escape(_profile_data.city_town) + 
+      ", region_street = " +  connectionPool.escape(_profile_data.region_street) + 
+      ", stream = " + connectionPool.escape(_profile_data.stream) + 
+      ", type_of_ppa = " + connectionPool.escape(_profile_data.type_of_ppa) + 
+      ", ppa_geodata = " +  connectionPool.escape(_profile_data.ppa_geodata) + 
+      ", ppa_address = " + connectionPool.escape(_profile_data.ppa_address) + 
+      ", travel_from_state = " + connectionPool.escape(_profile_data.travel_from_state) + 
+      ", travel_from_city = " + connectionPool.escape(_profile_data.travel_from_city) +
+      (_profile_data.newstatecode ? ", statecode = " + connectionPool.escape(_profile_data.newstatecode.toUpperCase()) : '') + // if there's a new statecode
+      ", accommodationornot = " +  connectionPool.escape(_profile_data.accommodationornot) +
+      ", wantspaornot = " + connectionPool.escape(_profile_data.wantspaornot) + 
+      " WHERE statecode = " + connectionPool.escape(_profile_data.statecode.toUpperCase()) ; // always change state code to uppercase, that's how it is in the db
 
 
     connectionPool.query(sqlquery, function (error, results, fields) {

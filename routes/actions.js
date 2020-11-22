@@ -252,6 +252,7 @@ router.get('/profile', function (req, res) {
           ...req.session.corper
           // select all distinct ppa type / address / name and send it to the front end as suggestions for the input when the corpers type
         }
+        console.log('data going to /profile page', info);
         res.render('pages/profile', info);
       }, reject => {
         res.render('pages/profile', {
@@ -405,9 +406,12 @@ router.post('/profile', /* bodyParser.urlencoded({
   busboy.on('finish', async function () { 
     console.log('we done?')
     query.UpdateProfile(_profile_data).then(result => {
-      if (_profile_data.name_of_ppa) {
-        req.session.corper.name_of_ppa = _profile_data.name_of_ppa;
+      
+      // update req.session
+      for (var key in _profile_data) {
+        req.session.corper[key] = _profile_data[key]
       }
+      
       if (_profile_data.newstatecode) {
         req.session.corper.statecode = _profile_data.newstatecode.toUpperCase();
       }
