@@ -473,7 +473,7 @@ h3, .h3 {
     margin-bottom: 23px;
   }
   .header_area .navbar {
-    background: #000000;
+    background: #f1f1f1;
   }
   .header_area .navbar .nav-item.active .nav-link {
     color: #6059f6 !important;

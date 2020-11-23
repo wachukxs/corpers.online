@@ -24,10 +24,8 @@ app.use(morgan('dev'));
 
 // The app.locals object has properties that are local variables within the application.
 app.locals.title = 'Corpers Online';
-// => 'My App'
 
 app.locals.email = process.env.THE_EMAIL;
-// => 'me@myapp.com'
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

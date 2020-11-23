@@ -10,15 +10,17 @@ router.get(['/', '/home', '/index'], function (req, res) {
 });
 
 router.get(['/homepage'], function (req, res) {
-  res.type('.html');
+  // res.type('.html');
+  res.set('Content-Type', 'text/html');
   res.render('pages/index', { current_year: new Date().getFullYear() });
 });
 
 // about.eje became index.ejs
-/* router.get(['/about', '/about-us'], function (req, res) {
-  res.type('html');
-  res.render('pages/about');
-}); */
+router.get(['/about', '/about-us'], function (req, res) {
+  // res.type('html');
+  res.set('Content-Type', 'text/html');
+  res.render('pages/about', { current_year: new Date().getFullYear() });
+});
 
 router.get(['/AB', '/AD', '/AK', '/AN', '/BA', '/BY', '/BN', '/BO', '/CR', '/DT', '/EB', '/ED', '/EK', '/EN', '/FC', '/GM', '/IM', '/JG', '/KD', '/KN', '/KT', '/KB', '/KG', '/KW', '/LA', '/NS', '/NG', '/OG', '/OD', '/OS', '/OY', '/PL', '/RV', '/SO', '/TR', '/YB', '/ZM'], function (req, res) {
   // console.log('tryna login ', req.session.id, req.session.loggedin);
@@ -98,7 +100,6 @@ router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN
 
 router.get('/chat', function (req, res) {
   res.set('Content-Type', 'text/html');
-  // res.sendFile(__dirname + '/chat.html');
   // req.query.posts.who and req.query.posts.when
 
   // to get old chats
@@ -127,7 +128,6 @@ router.get('/chat', function (req, res) {
 
 router.get(['/map', '/maps'], function (req, res) { // try to infer their location from their IP Address then send to the front end
   res.set('Content-Type', 'text/html');
-  // res.sendFile(__dirname + '/map.html');
 
   query.GetMapData().then(result => {
     res.render('pages/map', {
@@ -297,7 +297,7 @@ router.get('/login', function (req, res) {
 
 router.get('/contact', function (req, res) {
   res.set('Content-Type', 'text/html');
-  res.render('pages/contact');
+  res.render('pages/contact', { current_year: new Date().getFullYear() });
 });
 
 router.get('/count', function (req, res) {

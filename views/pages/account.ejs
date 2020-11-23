@@ -14,7 +14,7 @@
     <title>
         <%= statecode %> Online
     </title>
-    <link rel="icon" type="image/png" href="assets/images/logo32x32.png">
+    <link rel="icon" href="assets/images/1/favicon.ico" type="image/x-icon">
 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
@@ -203,14 +203,17 @@
 
         }
 
-        @media (max-width: 576px) {
-            #hereNow {}
-        }
-
 
         @media (max-width: 576px) {
             .app {
                 grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            }
+
+            form#form-search {
+                width: 100%;
+            }
+            .typeahead__container {
+                width: -webkit-fill-available;
             }
         }
 
@@ -445,18 +448,6 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/logout" aria-selected="true">Logout</a>
                 </li>
-                <!-- <li class="nav-item">
-                      <a class="nav-link active" id="sales-tab" data-toggle="tab" href="#sales" role="tab" aria-controls="sales" aria-selected="true">Sales</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" id="accommodation-tab" data-toggle="tab" href="#accommodation" role="tab" aria-controls="accommodation" aria-selected="false">accommodations</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" id="ppa-tab" data-toggle="tab" href="#ppa" role="tab" aria-controls="ppa" aria-selected="false">PPAs</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" id="spa-tab" data-toggle="tab" href="#spa" role="tab" aria-controls="spa" aria-selected="false">SPAs</a>
-                    </li> -->
             </ul>
             <!-- <form class="form-inline my-2 pr-2">
               <div id="bloodhound">
@@ -464,7 +455,7 @@
               </div>
             </form> -->
 
-            <form id="form-search" action="/places" name="form-search" class="mr-md-3">
+            <form id="form-search" action="/places" name="form-search" class="mr-md-3 form-inline">
                 <div class="typeahead__container">
                     <div class="typeahead__field">
                         <div class="typeahead__query">
