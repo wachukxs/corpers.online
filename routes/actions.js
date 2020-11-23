@@ -319,8 +319,6 @@ router.post('/profile', /* bodyParser.urlencoded({
 
 
     filestream.on('data', function (data) {
-      
-
       console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
     });
 
@@ -384,10 +382,7 @@ router.post('/profile', /* bodyParser.urlencoded({
       }).finally(() => {
         console.log('upload finally')
       });
-
-
     }
-
 
     // https://stackoverflow.com/questions/26859563/node-stream-data-from-busboy-to-google-drive
     // https://stackoverflow.com/a/26859673/9259701

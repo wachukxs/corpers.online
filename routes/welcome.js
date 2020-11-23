@@ -68,12 +68,13 @@ router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN
       res.render('pages/account', {
         statecode: req.session.corper.statecode.toUpperCase(),
         statecode2: req.path.substring(1, 12).toUpperCase(),
-        servicestate: req.session.corper.servicestate,
-        batch: req.session.corper.batch,
-        name_of_ppa: req.session.corper.name_of_ppa,
+        // servicestate: req.session.corper.servicestate,
+        batch: req.params['3'],
+        // name_of_ppa: req.session.corper.name_of_ppa,
         total_num_unread_msg: result,
-        picture_id: req.session.corper.picture_id, // if there's picture_id
-        firstname: req.session.corper.firstname
+        // picture_id: req.session.corper.picture_id, // if there's picture_id
+        // firstname: req.session.corper.firstname,
+        ...req.session.corper
       });
     }, reject => {
       console.log('why TF?!', reject);
@@ -82,7 +83,7 @@ router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN
         statecode: req.session.corper.statecode.toUpperCase(),
         statecode2: req.path.substring(1, 12).toUpperCase(),
         servicestate: req.session.corper.servicestate,
-        batch: req.session.corper.batch,
+        batch: req.params['3'],
         name_of_ppa: req.session.corper.name_of_ppa,
         total_num_unread_msg: 0,
         picture_id: req.session.corper.picture_id, // if there's picture_id
