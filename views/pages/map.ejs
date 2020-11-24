@@ -1,83 +1,57 @@
 <!DOCTYPE html>
 <HTML>
+
   <head>
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Search for PPA, Offices, Find yourself, explore</title>
     <link rel="icon" href="assets/images/1/favicon.ico" type="image/x-icon">
 
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"
       integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
-      crossorigin=""
-    />
+      crossorigin="" />
 
     <!-- ask questions about places on maps! -->
     <!-- Make sure you put this AFTER Leaflet's CSS -->
-    <script
-      src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
+    <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
       integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
-      crossorigin=""
-    ></script>
+      crossorigin=""></script>
 
     <!--icons for display on map-->
     <!--<link rel="stylesheet" href="/font-awesome.min.css">-->
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
-      integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
-      crossorigin="anonymous"
-    />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+      integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous" />
 
     <!-- leaflet toolbar npm package from https://github.com/Leaflet/Leaflet.toolbar -->
     <!-- <script src="/leaflet-toolbar/dist/leaflet.toolbar.js"></script>
        <link rel="stylesheet" href="/leaflet-toolbar/dist/leaflet.toolbar.css"/> -->
 
     <!--Leaflet Routing Machine is easy.--------------- -->
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css"
-    />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
     <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 
     <!-- Load Esri Leaflet from CDN -->
-    <script
-      src="https://unpkg.com/esri-leaflet@2.2.3/dist/esri-leaflet.js"
+    <script src="https://unpkg.com/esri-leaflet@2.2.3/dist/esri-leaflet.js"
       integrity="sha512-YZ6b5bXRVwipfqul5krehD9qlbJzc6KOGXYsDjU9HHXW2gK57xmWl2gU6nAegiErAqFXhygKIsWPKbjLPXVb2g=="
-      crossorigin=""
-    ></script>
+      crossorigin=""></script>
 
     <!--jquery-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
     <!--bootstrap-->
-    <link
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
-      crossorigin="anonymous"
-    />
-    <script
-      src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
       integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-      crossorigin="anonymous"
-    ></script>
+      crossorigin="anonymous"></script>
 
     <!-- Load Esri Leaflet Geocoder from CDN -->
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/esri-leaflet-geocoder@2.2.13/dist/esri-leaflet-geocoder.css"
+    <link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder@2.2.13/dist/esri-leaflet-geocoder.css"
       integrity="sha512-v5YmWLm8KqAAmg5808pETiccEohtt8rPVMGQ1jA6jqkWVydV5Cuz3nJ9fQ7ittSxvuqsvI9RSGfVoKPaAJZ/AQ=="
-      crossorigin=""
-    />
-    <script
-      src="https://unpkg.com/esri-leaflet-geocoder@2.2.13/dist/esri-leaflet-geocoder.js"
+      crossorigin="" />
+    <script src="https://unpkg.com/esri-leaflet-geocoder@2.2.13/dist/esri-leaflet-geocoder.js"
       integrity="sha512-zdT4Pc2tIrc6uoYly2Wp8jh6EPEWaveqqD3sT0lf5yei19BC1WulGuh5CesB0ldBKZieKGD7Qyf/G0jdSe016A=="
-      crossorigin=""
-    ></script>
+      crossorigin=""></script>
 
     <!--socket.io-->
     <script src="/socket.io/socket.io.js"></script>
@@ -165,7 +139,8 @@
         height: 2em;
       }
     </style>
-    <script async defer data-website-id="58dce5f5-c238-4e98-b2c6-e701c258f01d" src="https://using-umami.herokuapp.com/umami.js"></script>
+    <script async defer data-website-id="58dce5f5-c238-4e98-b2c6-e701c258f01d"
+      src="https://using-umami.herokuapp.com/umami.js"></script>
   </head>
 
   <body>
@@ -173,81 +148,43 @@
     <div class="modal fade" id="AddPlace" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <form
-            method="POST"
-            enctype="application/x-www-form-urlencoded"
-            id="addplaceform"
-            name="addplace"
-          >
+          <form method="POST" enctype="application/x-www-form-urlencoded" id="addplaceform" name="addplace">
             <div class="modal-header">
               <div>
                 <h5 class="modal-title">Add a place : accomodation/PPA/SPA</h5>
                 <small>Try to fill out all feilds</small>
               </div>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
               <div class="form-group">
                 <label for="name">Name of place:</label>
-                <input
-                  type="text"
-                  name="name"
-                  id="nameOfPlace"
-                  class="form-control"
-                  aria-describedby="Name Of Place"
-                  placeholder="e.g. OBMS Secondary School, Federal High Court Abuja"
-                  required
-                />
+                <input type="text" name="name" id="nameOfPlace" class="form-control" aria-describedby="Name Of Place"
+                  placeholder="e.g. OBMS Secondary School, Federal High Court Abuja" required />
               </div>
 
               <div class="form-group d-none">
                 <label for="geo_data">Geo data:</label>
-                <input
-                  type="text"
-                  name="geo_data"
-                  id="geo"
-                  class="form-control"
-                  aria-describedby="geo data"
-                  placeholder="e.g. {..., lat: 989834.32}"
-                />
+                <input type="text" name="geo_data" id="geo" class="form-control" aria-describedby="geo data"
+                  placeholder="e.g. {..., lat: 989834.32}" />
                 <!--required or not ??-->
               </div>
 
               <div class="form-group">
                 <label for="address">Address:</label>
-                <input
-                  type="text"
-                  name="address"
-                  id="address"
-                  class="form-control"
-                  aria-describedby="address"
-                  placeholder="e.g. Benson Road, D Line, Road D7, Nwachukwu Drive"
-                  required
-                />
+                <input type="text" name="address" id="address" class="form-control" aria-describedby="address"
+                  placeholder="e.g. Benson Road, D Line, Road D7, Nwachukwu Drive" required />
               </div>
 
               <div class="form-group">
                 <label for="type">Category/Type of place:</label>
-                <input
-                  type="text"
-                  name="type"
-                  list="category"
-                  id="categoryinput"
-                  class="form-control"
-                  aria-describedby="category"
-                  placeholder="School, Hospital, Corporate office, ATM"
-                  required
-                />
+                <input type="text" name="type" list="category" id="categoryinput" class="form-control"
+                  aria-describedby="category" placeholder="School, Hospital, Corporate office, ATM" required />
 
                 <datalist id="category">
-                  <%# console.log('types is not defined??', types); %> 
+                  <%# console.log('types is not defined??', types); %>
                   <% for (i = 0; i < types.length; i++) { %>
                   <option value="<%= types[i] %>">
                     <%= types[i] %>
@@ -260,30 +197,16 @@
                 Town or area
                 <small class="text-muted form-text">
                   Leave Town blank if the address is specific enough
-                </small><!--needs better description, it's for places where it's best know be a name-->
+                </small>
+                <!--needs better description, it's for places where it's best know be a name-->
               </label>
 
               <div class="input-group">
-                <input
-                  type="text"
-                  list="town"
-                  name="town"
-                  class="form-control"
-                  id="towninput"
-                  placeholder="Town"
-                  value=""
-                />
+                <input type="text" list="town" name="town" class="form-control" id="towninput" placeholder="Town"
+                  value="" />
                 <datalist id="town"> </datalist>
-                <input
-                  type="text"
-                  list="lga"
-                  name="lga"
-                  class="form-control"
-                  id="lga"
-                  placeholder="LGA"
-                  value=""
-                  required
-                />
+                <input type="text" list="lga" name="lga" class="form-control" id="lga" placeholder="LGA" value=""
+                  required />
                 <!-- we should be able to automatically draw up their LGA for them -->
                 <datalist id="lga"> </datalist>
               </div>
@@ -293,12 +216,7 @@
             </div>
             <div class="modal-footer">
               <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
-              <input
-                type="submit"
-                value="Save"
-                id="spd"
-                class="btn btn-primary"
-              />
+              <input type="submit" value="Save" id="spd" class="btn btn-primary" />
             </div>
           </form>
         </div>
@@ -306,31 +224,21 @@
     </div>
 
     <!-- Modal for location error-->
-    <div
-      class="modal fade"
-      id="LocationError"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="LocationErrorTitle"
-      aria-hidden="true"
-    >
+    <div class="modal fade" id="LocationError" tabindex="-1" role="dialog" aria-labelledby="LocationErrorTitle"
+      aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLongTitle">Ouch</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
             We couldn't locate you.
             <br />
-            <small id="AddError"> <!-- For ...error code ...reason. --></small>
+            <small id="AddError">
+              <!-- For ...error code ...reason. --></small>
           </div>
           <!-- <div class="modal-footer">
                         <button type="button" class="btn btn-primary btn-sm"><small>Try again when network
@@ -348,919 +256,919 @@
       </div>
     </div>
     <script>
-             // https://stackoverflow.com/questions/31916149/how-to-show-busy-icon-when-leaflet-api-load-tile-images
-
-             // check https://github.com/ebrelsford/Leaflet.loading for how loading is done so we can use leaflet's own custom looklike leaflet loading
-             let mymap = L.map( 'mapid', {
-                     tilt: true,
-                     zoomControl: false,
-                     // loadingControl: true // Tell the map to use a loading control
-                 } )
-                 .setView([ 5.5216578, 7.5066884 ], 16);
-
-                 // https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
-
-                 // https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg
-             let basemap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                     attribution: 'Imagery & Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>', // Imagery © <a href="https://www.mapbox.com/">Mapbox</a>
-                     maxZoom: 18,
-                     id: 'mapbox.streets',
-                     accessToken: 'pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg'
-                 } );
-             mymap.addLayer( basemap );
-
-             L.control.zoom( {
-                     position: 'topright'
-                 } )
-                 .addTo( mymap );
-
-             // loader for when map is loading
-             // maybe calculate the time it takes the tiles to load and be responsive and do something to help ... maybe prefetch when there's good enough network or show them a message
-             basemap.on( 'loading', function( event ) { // nothing on initial page load, only when the page is moved - and a request for more tiles to be loaded is made
-                 console.log( 'started loading tiles' );
-             } );
-             basemap.on( 'load', function( event ) { // once on intial page load after everything has shown and again when map is moved
-                 console.log( 'all tiles loaded' );
-             } );
-
-             console.log( <%- JSON.stringify(mapdata) %> ); // JSON.parse(JSON.stringify(mapdata))
-
-             mymap.on( 'zoom', function(
-                 event ) { // based on where people expand in our maps, we'll know what they are intrested in, and we'd ask other corpers to provide info about such places.
-                 console.log( "Map zoom level:", mymap.getZoom(), event );
-                 // then maybe later, for optimization, just focus on the area the user is seeing, so we won't waste too much js memory
-                 let ilist = document.getElementsByClassName( 'custom-icons' );
-
-                 // https://fontawesome.com/how-to-use/on-the-web/styling/sizing-icons
-                 switch ( mymap.getZoom() ) {
-                     case ( 1 ):
-                     case ( 2 ):
-                     case ( 3 ):
-                     case ( 4 ):
-                     case ( 5 ):
-                     case ( 6 ):
-                     case ( 7 ):
-                     case ( 8 ):
-                     case ( 9 ):
-                     case ( 10 ):
-                     case ( 11 ):
-                     case ( 12 ):
-                     case ( 13 ):
-                         for ( let i = 0; i < ilist.length; i++ ) {
-                             document.getElementsByClassName( 'custom-icons' )
-                                 .item( i )
-                                 .style.display = "none";
-                             // also close all open popUPs on the icons
-                         }
-                         break;
-                     case ( 14 ):
-                         for ( let i = 0; i < ilist.length; i++ ) {
-                             document.getElementsByClassName( 'custom-icons' )[ i ].style.height = "15px";
-                             document.getElementsByClassName( 'custom-icons' )
-                                 .item( i )
-                                 .style.display = "block";
-                             // or
-                             document.getElementsByClassName( 'custom-icons' )[ i ].classList.remove( 'fa-2x' );
-                             document.getElementsByClassName( 'custom-icons' )[ i ].classList.add( 'fa-xs' );
-                         }
-                         break;
-                     case ( 15 ):
-                         for ( let i = 0; i < ilist.length; i++ ) {
-                             document.getElementsByClassName( 'custom-icons' )[ i ].style.height = "18px";
-                             document.getElementsByClassName( 'custom-icons' )
-                                 .item( i )
-                                 .style.display = "block";
-                             // or
-                             document.getElementsByClassName( 'custom-icons' )[ i ].classList.remove( 'fa-2x' );
-                             document.getElementsByClassName( 'custom-icons' )[ i ].classList.add( 'fa-sm' );
-                         }
-                         break;
-                     case ( 16 ):
-                         for ( let i = 0; i < ilist.length; i++ ) {
-                             document.getElementsByClassName( 'custom-icons' )[ i ].style.height = "20px";
-                             document.getElementsByClassName( 'custom-icons' )
-                                 .item( i )
-                                 .style.display = "block";
-                             // or
-                             document.getElementsByClassName( 'custom-icons' )[ i ].classList.remove( 'fa-2x' );
-                             document.getElementsByClassName( 'custom-icons' )[ i ].classList.add( 'fa-lg' );
-                             // document.getElementsByClassName('custom-icons')[i].classList.replace('fa-2x', 'fa-lg');
-                         }
-                         break;
-                     case ( 17 ):
-                     case ( 18 ):
-                         for ( let i = 0; i < ilist.length; i++ ) {
-                             document.getElementsByClassName( 'custom-icons' )[ i ].style.height = "30px";
-                             document.getElementsByClassName( 'custom-icons' )
-                                 .item( i )
-                                 .style.display = "block";
-                             // or
-                             document.getElementsByClassName( 'custom-icons' )[ i ].classList.remove( 'oldClass',
-                                 'fa-2x' );
-                             document.getElementsByClassName( 'custom-icons' )[ i ].classList.add( 'fa-2x' );
-                         }
-                         break;
-                     default:
-                         break;
-                 }
-             } );
-             
-/* 
-             let local_printshopIcon = L.divIcon({
-                html: '<ion-icon name="moon-outline"></ion-icon>',
-                popupAnchor: [ -7, -85 ],
-                className: 'custom-icons' // no space
-             });
-             L.marker( [ 5.521697329407013, 7.514498233795167 ], {
-                     icon: local_printshopIcon
-                 } )
-                 .addTo( mymap )
-                 .bindPopup( "A print shop." );
-
-             let local_pharmacyIcon = L.divIcon( {
-                html: '<i class="fas fa-clinic-medical"></i>',
-                
-                className: 'custom-icons' // no space between class name
-             } );
-             L.marker( [ 5.521889552319924, 7.512137889862061 ], {
-                     icon: local_pharmacyIcon
-                 } )
-                 .addTo( mymap );
- */
-             /* mymap.on({zoom: function (event) {
-                 console.log("Map 6666zoom level:", mymap.getZoom(), event);
-             } }); */
-
-             // https://esri.github.io/esri-leaflet/api-reference/controls/geosearch.html
-             let geoCode = L.esri.Geocoding.geocodeServiceProvider({
-                 label: 'Geo Code', // Group suggestions under this header
-             });
-             /* let mapService = L.esri.Geocoding.mapServiceProvider({
-                 label: 'Map Service', // Group suggestions under this header
-             }); */
-             let arcgisOnline = L.esri.Geocoding.arcgisOnlineProvider({
-              countries: 'NG', // get results only from Nigeria
-              label: 'Arc', // Group suggestions under this header
-             });
-             let gisDay = L.esri.Geocoding.featureLayerProvider({
-                 url: 'https://services.arcgis.com/uCXeTVveQzP4IIcx/arcgis/rest/services/GIS_Day_Final/FeatureServer/0',
-                 searchFields: [ 'Name', 'Organization' ], // Search these fields for text matches
-                 maxResults: 7,
-                 label: 'GIS Day Events', // Group suggestions under this header
-                 formatSuggestion: function( feature ) {
-                     console.log( 'glory', feature )
-                     return feature.properties.Name + ' - ' + feature.properties
-                         .Organization; // format suggestions like this.
-                 }
-             });
-
-             let searchControl = L.esri.Geocoding.geosearch( {
-                     providers: [ arcgisOnline, gisDay, geoCode/* , mapService */ ], // will geocode via ArcGIS Online and search the GIS Day feature service.
-                     expanded: true,
-                     collapseAfterResult: false,
-                     title: 'Input text to search places',
-                     placeholder: 'Search for places'
-                 } )
-                 .addTo( mymap );
-
-             let results = L.layerGroup()
-                 .addTo( mymap );
-
-             searchControl.on( 'results', function( data ) {
-                 console.log( 'uhmm', data )
-                 results.clearLayers();
-                 for ( let i = data.results.length - 1; i >= 0; i-- ) {
-                     results.addLayer( L.marker( data.results[ i ].latlng ) );
-                 }
-             } );
-
-             let myLines2 = {
-                 "type": "LineString",
-                 "coordinates": []
-             };
-
-             let myStyleLines2 = {
-                 "color": "#ff7800",
-                 "weight": 2,
-                 "opacity": 0.65
-             };
-
-             mymap.on( 'click', function( e ) { // do not delete
-                 console.log( ( [ e.latlng.lng, e.latlng.lat ] )
-                     .toString() );
-                 /*
-                  L.popup()
-                      .setLatLng(e.latlng)
-                      .setContent("You clicked the map at " + ([e.latlng.lng, e.latlng.lat]).toString() ) //say the name of the place they clicked!
-                      .openOn(mymap);
-
-
-                      console.log(e);
-                      myLines2.coordinates.push([e.latlng.lng, e.latlng.lat]);
-                      console.log(myLines2);
-
-                      L.geoJSON(myLines2, {
-                          style: myStyleLines2
-                      }).addTo(mymap);
-
-                      //when user clicks another line, say you moved ).30 north and this distance.
-                */
-             } );
-
-             //if the device tilts.
-             L.TiltHandler = L.Handler.extend( {
-                 addHooks: function() {
-                     L.DomEvent.on( window, 'deviceorientation', this._tilt, this );
-                 },
-
-                 removeHooks: function() {
-                     L.DomEvent.off( window, 'deviceorientation', this._tilt, this );
-                 },
-
-                 _tilt: function( ev ) {
-                     // Treat Gamma angle as horizontal pan (1 degree = 1 pixel) and Beta angle as vertical pan
-                     this._map.panBy( L.point( ev.gamma, ev.beta ) );
-                 }
-             } );
-
-             L.Map.addInitHook( 'addHandler', 'tilt', L.TiltHandler );
-             /*
-                  L.Routing.control({
-                      waypoints: [
-                          L.latLng(5.52539227003423, 7.509562969207765),
-                          L.latLng(5.5270795473951795, 7.516322135925294)
-                      ]
-                  }).addTo(mymap);
-             */
-             // Our handler can now be enabled by running map.tilt.enable() and disabled by map.tilt.disable()
-
-             let myLines = {
-                 "type": "LineString",
-                 "coordinates": []
-             };
-
-             let myStyleLines = {
-                 "color": "#ff7800",
-                 "weight": 2,
-                 "opacity": 0.65
-             };
-
-             // add new toolbar
-             L.Control.Toolbar = L.Control.extend( {
-                 options: {
-                     position: 'bottomright' // control position - allowed: 'topleft', 'topright', 'bottomleft', 'bottomright'
-                 },
-
-                 onAdd: function( mymap ) {
-                     let container = L.DomUtil.create( 'div', 'leaflet-bar leaflet-control leaflet-control-custom makehand' );
-                     let position = L.DomUtil.create( 'a', '', container );
-                     position.title = 'Get current position';
-                     // position.innerHTML = '&#10991;' ; // &#x1f518;
-                     let track = L.DomUtil.create( 'a', '', container );
-                     track.title = 'Track your movement';
-                     // track.innerHTML = '&#11005;' ; // &#11005; | &#8889;
-
-                     let positionImg = L.DomUtil.create( 'ion-icon', '', position );
-                     let trackImg = L.DomUtil.create( 'ion-icon', '', track );
-
-                     let stopTrackImg = L.DomUtil.create( 'ion-icon', '' );
-                     stopTrackImg.name = 'close';
-                     // stopTrackImg.alt = '%'; // it doesn't work
-                     stopTrackImg.onerror = "imgErr()"; // TODO for trackImg too, it doesn't work
-
-                     // Stop the given event from propagation to parent element(s)
-                     L.DomEvent.on( container, 'click dblclick', function( ev ) {
-                         L.DomEvent.stopPropagation( ev );
-                     } );
-
-                     function imgErr() {
-                         console.log( 'seems there is an error' );
-                     }
-
-                     positionImg.name = 'locate';
-                     // positionImg.alt = '|'; // not working
-                     positionImg.onerror = "imgErr()"; // TODO for trackImg too, it doesn't work
-
-                     trackImg.name = 'navigate';
-                     // trackImg.alt = '/\\/'; // it doesn't work
-                     trackImg.onerror = "imgErr()"; // seems the browser ignores doing the onerror if there's an alt attr.
-
-
-                     // https://icon.now.sh/add_location
-                     position.onclick = function() {
-                         console.log( 'position button clicked' );
-                         // first find the user's current location/start tracking the add a marker
-
-                         // first find the user's current location
-
-                         function onLocationFound( e ) {
-
-                             let radius = e.accuracy / 2; // measurement in meters
-                             console.log( e );
-
-                             function onClk( e ) {
-                                 console.log( 'clicked addPlace Marker!' );
-                             }
-
-                             function onPO() {
-                                 // c.addTo(mymap);
-                                 if ( document.getElementById( 'baptm' ) ) {
-                                     console.log( 'we wanna add a place' );
-                                 }
-                             }
-                             // if user within 5 meters from location, add it. AND IF LOCATION ACCURACY IS NOT SO CORRECT THEN DON'T SHOW IT IN THE MAP !!! NOT EVERYONE IS IN LAGOS, ALSO SHOW THEM THE STATE THEY'RE IN AND THE lga FIRST
-                             // Only display those icons when the user is in a good enough zoom level
-                             let p = L.marker( e.latlng )
-                                 .on( {
-                                     click: onClk
-                                 } )
-                                 .addTo( mymap )
-                                 .bindPopup( '<p> You\'re within ' +
-                                     radius.toFixed( 2 ) +
-                                     ' meters from this point.</p>' +
-                                     ( radius.toFixed( 2 ) <= 10.50 ?
-                                         ' <hr/> <small><button data-toggle="modal" data-target="#AddPlace" id="baptm" class="btn btn-primary btn-sm"> Add location to map</button></small> ' :
-                                         '' ) )
-                                 .openPopup()
-                                 .on( {
-                                     popupopen: onPO
-                                 } );
-                             // after 3.5 sec closePopup()
-                             setTimeout( () => {
-                                 p.closePopup();
-                             }, 3500 );
-                             // if we couldn't get a so accurate location but got a resonable accurate info, then user can drag the marker to point. means we have to then make marker draggable
-
-                             let c = L.circle( e.latlng, {
-                                     radius: radius,
-                                     stroke: false
-                                 } )
-                                 .addTo( mymap );
-                             // after 3.5 sec remove circle
-                             setTimeout( () => c.remove(), 3500 );
-
-                             // p.on('popupopen', c.addTo(mymap) );
-
-                             // make it so that when ever the popUP is open, the event listerner is added ... also (if it doesn't work so that the app place button works even if it has been dismissed because of clicking the marker (to show the popUp) again n again.)
-
-                             //then save it.
-
-                             //then get the altitude and it's accuracy and determine if the apartment is an upstairs
-                             //then point the map in the direction of movement let e.heading
-                         }
-
-                         mymap.on( 'locationfound', onLocationFound );
-
-                         // error ?
-                         function onLocationError( e ) {
-                             document.getElementById( 'AddError' )
-                                 .innerHTML = e.message;
-                             $( "#LocationError" ).modal();
-                         }
-
-                         mymap.on( 'locationerror', onLocationError );
-
-                         // acutally finding it
-                         mymap.locate( {
-                             setView: true,
-                             enableHighAccuracy: true,
-                             timeout: 5000,
-                             maximumAge: 0
-                         } );
-
-                         // then save it.
-                     }
-
-                     // variable to toggle the track or not-track value
-                     trk = false;
-                     track.onclick = function( trackEvent ) {
-                         // first find the user's current location/start tracking the add a marker
-                         //first find the user's current location
-                         function onLocationFound( e ) {
-                             let radius = e.accuracy / 2;
-                             console.log( e );
-                             // instead show a small pop up telling them how many distance they move/ have moved overtime or for every change in position we record
-                             /* L.marker(e.latlng)
-                             .addTo(mymap)
-                             .bindPopup("You are within " + radius.toFixed(2) + " meters from this point")
-                             .openPopup();
-
-                         L.circle(e.latlng, radius).addTo(mymap); */
-
-                             myLines.coordinates.push([e.longitude, e.latitude]);
-
-                             console.log( myLines );
-
-                             L.geoJSON( myLines, {
-                                     style: myStyleLines
-                                 } )
-                                 .addTo( mymap );
-
-                             // send myLines to server after all the tracking has been done ORrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
-                             socket.emit( 'tracking', myLines, ( f ) => {
-                                 // this funtion will run here to show the server has gotten our message.
-                                 console.log( 'server got map data r in meters ?',
-                                     f ); // data will be argument of function on server
-                             } );
-
-                         }
-
-                         mymap.on( 'locationfound', onLocationFound );
-
-
-                         // error ?
-                         function onLocationError( e ) {
-                             alert( e.message );
-                         }
-
-                         mymap.on( 'locationerror', onLocationError );
-
-                         // Our tilt handler can now be enabled by running map.tilt.enable()
-
-
-                         // acutally tracking corper
-                         trk = !trk; // or trk ^= true; // but makes it 0 or 1
-                         console.log( 'track?', trk );
-                         if ( trk ) {
-                             mymap.locate( {
-                                 setView: true,
-                                 enableHighAccuracy: true,
-                                 watch: true
-                             } );
-
-                             // remove the track image
-                             L.DomUtil.remove( trackImg );
-
-                             // then put the stop track img
-                             track.append( stopTrackImg );
-
-                             // track.innerHTML = '#' ; // '&#8889;' or '#'
-                             track.title = 'Stop tracking movement';
-                         } else {
-                             console.log( 'send2server', myLines );
-
-                             // send myLines to server everytime, then server compiles all the LATLNG ooooooorrrrrrrrrrrrrrrrrrr
-                             socket.emit( 'tracking', myLines, ( f ) => {
-                                 // this funtion will run here to show the server has gotten our message.
-                                 console.log( 'server got map data r in meters ?',
-                                     f ); // data will be argument of function on server
-                             } );
-
-                             mymap.stopLocate();
-
-                             // remove the stop track image
-                             L.DomUtil.remove( stopTrackImg );
-
-                             // then put the track image
-                             track.append( trackImg );
-                             // track.innerHTML = '&#11005;' ;
-                             track.title = 'Track your movement';
-                         }
-
-
-                         // then save it.
-                     }
-
-                     return container;
-                 },
-
-                 onRemove: function( mymap ) {
-                     // Nothing to do here
-                 }
-             } );
-
-             L.control.toolbar = function( opts ) {
-                 return new L.Control.Toolbar( opts );
-             }
-
-             L.control.toolbar( {
-                     position: 'bottomright'
-                 } )
-                 .addTo( mymap );
-
-
-             // ------ add a new place
-
-             L.Control.AddPlace = L.Control.extend( {
-                 onAdd: function( map ) {
-                     let container = L.DomUtil.create( 'div', 'leaflet-bar leaflet-control leaflet-control-custom makehand' );
-                     let addplace = L.DomUtil.create( 'a', '', container );
-                     addplace.title = 'Add current location to map' // or 'Add this place'; // if our map is used to get current location (and we don't have that place in our database) we can show the corper/user a pop up so they add the place to our records (for other corpers at least/for sure)
-                     // position.innerHTML = '&#10991;' ; // &#x1f518;
-                     let addplaceImg = L.DomUtil.create( 'ion-icon', '', addplace );
-
-                     // Stop the given event from propagation to parent element(s)
-                     L.DomEvent.on( container, 'click dblclick', function( ev ) {
-                         L.DomEvent.stopPropagation( ev );
-                     });
-
-                     addplaceImg.name = 'location';
-                     // addplaceImg.alt = '*!*'; // it doesn't work
-
-                     addplace.onclick = function() {
-                         console.log( 'addplace button clicked' );
-                         // first find the user's current location
-
-                         function onLocationFound( e ) {
-                             let radius = e.accuracy / 2; // measurement in meters
-                             console.log(e);
-
-                             function onClk(e) {
-                                 console.log('clicked addPlace Marker!');
-                             }
-
-                             function onPO() {
-                                 // c.addTo(mymap);
-                                 if ( document.getElementById( 'baptm' ) ) {
-                                     console.log( 'we wanna add a place' );
-                                 }
-                             }
-                             // if user within 5 meters from location, add it. AND IF LOCATION ACCURACY IS NOT SO CORRECT THEN DON'T SHOW IT IN THE MAP !!! NOT EVERYONE IS IN LAGOS, ALSO SHOW THEM THE STATE THEY'RE IN AND THE lga FIRST
-                             // Only display those icons when the user is in a good enough zoom level
-                             let p = L.marker( e.latlng )
-                                 .on( {
-                                     click: onClk
-                                 } )
-                                 .addTo( mymap )
-                                 .bindPopup( 'You\'re within ' +
-                                     radius.toFixed( 2 ) +
-                                     ' meters from this point.' +
-                                     ( radius.toFixed( 2 ) <= 10.00 ? // ought to be <=
-                                         '' :
-                                         ' You need to be within 10 meters to add a location to map' ) ) // ask them if they want to try again ...maybe two more times (and probably reward their efforts if the location is getting better... by telling them to stop and try another time or they can continue trying if they want)
-                                 .openPopup()
-                                 .on( {
-                                     popupopen: onPO
-                                 } );
-                             if ( radius.toFixed( 2 ) <= 10.00 ) { // if they are within 10 meters, show the popup // don't forget to change >= to <= // >= for testing
-
-                             let savePoint = {
-                     "type": "Feature",
-                     "properties": {},
-                     "geometry": {
-                         "type": "Point",
-                         "coordinates": []
-                     }
-                 };
-                 console.log('the e', e);
-                             // remove sourceTarget and target from e
-                             delete e.sourceTarget;
-                             delete e.target;
-
-                            // add geodata to the form
-                            document.forms[0].elements['geodata'].value = JSON.stringify(e);
-
-                                 $("#AddPlace" ).modal();
-                             }
-                             // after 5 sec closePopup(), 5 sec so we give enough time to read the message
-                             setTimeout( () => {
-                                 p.closePopup();
-                             }, 5000 );
-                             // if we couldn't get a so accurate location but got a resonable accurate info, then user can drag the marker to point. means we have to then make marker draggable
-
-                             let c = L.circle( e.latlng, {
-                                     radius: radius,
-                                     stroke: false
-                                 } )
-                                 .addTo( mymap );
-                             // after 3.5 sec remove circle
-                             setTimeout( () => c.remove(), 3500 );
-
-                             // p.on('popupopen', c.addTo(mymap) );
-
-                             // make it so that when ever the popUP is open, the event listerner is added ... also (if it doesn't work so that the app place button works even if it has been dismissed because of clicking the marker (to show the popUp) again n again.)
-
-                             //then save it.
-
-                             //then get the altitude and it's accuracy and determine if the apartment is an upstairs
-                             //then point the map in the direction of movement let e.heading
-                         }
-
-                         mymap.on( 'locationfound', onLocationFound );
-
-                         // error ?
-                         function onLocationError( e ) {
-                             document.getElementById( 'AddError' )
-                                 .innerHTML = e.message;
-                             $( "#LocationError" ).modal();
-                         }
-
-                         mymap.on( 'locationerror', onLocationError );
-
-                         // acutally finding it
-                         mymap.locate( {
-                             setView: true,
-                             enableHighAccuracy: true,
-                             timeout: 5000,
-                             maximumAge: 0
-                         } );
-
-                         // then save it.
-                     }
-
-                     return container;
-                 },
-
-                 onRemove: function( map ) {
-                     // Nothing to do here
-                 }
-             } );
-
-             L.control.addplace = function( opts ) {
-                 return new L.Control.AddPlace( opts );
-             }
-
-             L.control.addplace( {
-                     position: 'bottomright'
-                 } )
-                 .addTo( mymap );
-
-
-             /*when user logs in, and owns an account. we can keep record of their data like PPA, SPA and whatever they want to save.*/
-
-             /**
-
-             Public mapbox access token:
-             pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg
-             */
-
-
-             /*
-             addHandler(<String> name, <Function> HandlerClass)
-
-             locate(<Locate options> options?)
-             locationerror
-             locationfound
-             stopLocate()
-
-             addControl(<Control> control)
-
-             removeControl(<Control> control)
-             */
-
-             // ------change the icon, and the text that shows and what happens/shows when user clicks
-
-             let yes = [ {
-                 "type": "Feature",
-                 "properties": {
-                     "name": "Coors Field",
-                     "amenity": "Hospital",
-                     "popupContent": "The Amenity [Hospital], then the location/street name."
-                 },
-                 "geometry": {
-                     "type": "Point",
-                     "coordinates": [ 7.5098633766174325, 5.515524804961825 ]
-                 }
-             }, {
-                 "type": "Feature",
-                 "properties": {
-                     "name": "Coors Field",
-                     "amenity": "School",
-                     "popupContent": "What kind of content should we show?"
-                 },
-                 "geometry": {
-                     "type": "Point",
-                     "coordinates": [ 7.505314350128175, 5.516827661490997 ]
-                 }
-             }, {
-                 "type": "Feature",
-                 "properties": {
-                     "name": "Coors Field",
-                     "amenity": "Hospital",
-                     "popupContent": "You know to find a dfr"
-                 },
-                 "geometry": {
-                     "type": "Point",
-                     "coordinates": [ 7.508361339569093, 5.523064246544109 ]
-                 }
-             } ];
-             // GENERAL RULES: THE popupAnchor for fas fa-[amenity] is [5, -2] for when it's big and [0, 0] (we're gonna try to find a middle ground) for when it's small and for icon.now.sh is [-7, -85]
-             let school = L.divIcon( {
-                 html: '<i class="fas fa-school"></i>',
-                 className: 'custom-icons',
-                 popupAnchor: [9 , 1],
-             } );
-             
-             let hospital = L.divIcon( {
-                 html: '<i class="fas fa-clinic-medical"></i>',
-                 className: 'custom-icons',
-                 popupAnchor: [5 , -2],
-             } );
-
-             let default_office = L.divIcon( {
-                 html: '<i class="fas fa-building"></i>',
-                 className: 'custom-icons',
-                 popupAnchor: [5 , -2],
-             } );
-
-             // you can set .my-div-icon styles in CSS
-             // L.marker([5.524986, 7.497182], { icon: university }).addTo(mymap);
-/* 
-             // sample way to add multiple icons
-             L.geoJSON( yes, {
-                     pointToLayer: function( feature, latlng ) {
-                         // console.log( feature, latlng );
-                         switch ( feature.properties.amenity ) {
-                             case 'Hospital':
-                                 return L.marker( latlng, {
-                                     icon: hospital,
-                                     alt: 'Hospital',
-                                     title: feature.properties.popupContent
-                                 } );
-                             case 'School':
-                                 return L.marker( latlng, {
-                                     icon: school,
-                                     alt: 'School',
-                                     title: feature.properties.popupContent
-                                 } );
-                         }
-                     }
-                 } )
-                 .bindPopup( function( layer ) {
-                     console.log( 'layer', layer ); // layer.defaultOptions.icon.options.popupAnchor = [0, 0] if layer.defaultOptions.icon.options.className.has()
-                     return layer.feature.properties.popupContent;
-                 } )
-                 .addTo( mymap );
- */
-             L.geoJSON( <%- mapdata %> , {
-                     pointToLayer: function( feature, latlng ) {
-                         // console.log( 'from server', feature, latlng );
-                        switch ( feature.properties.type ) {
-                             case 'Hospital':
-                                 return L.marker( latlng, {
-                                     icon: hospital,
-                                     title: feature.properties.address + ' (' + feature.properties.type + ')' // feature.properties.popupContent
-                                 } );
-                             case 'School':
-                                 return L.marker( latlng, {
-                                     icon: school,
-                                     title: feature.properties.address + ' (' + feature.properties.type + ')'
-                                 } );
-                            default:
-                                return L.marker( latlng, {
-                                     icon: default_office,
-                                     title: feature.properties.address + ' (' + feature.properties.type + ')'
-                                });
-                        }
-                     }
-                 } )
-                 .bindPopup( function( layer ) {
-                     console.log( 'layer', layer.defaultOptions.icon.options.className.includes( 'fa-sm' ), layer
-                         .defaultOptions.icon.options.className.includes( 'fa-xs' ), layer
-                     ); // layer.defaultOptions.icon.options.popupAnchor = [0, 0] if layer.defaultOptions.icon.options.className.has()
-                     return layer.feature.properties.address + ' (' + layer.feature.properties.type + ')';
-                 } )
-                 .addTo( mymap );
-
-             /*
-             let myStyle = {
-                 "color": "#ff7800",
-                 "weight": 5,
-                 "opacity": 0.65
-             };
-
-             L.geoJSON(yes, {
-                 style: myStyle
+      // https://stackoverflow.com/questions/31916149/how-to-show-busy-icon-when-leaflet-api-load-tile-images
+
+      // check https://github.com/ebrelsford/Leaflet.loading for how loading is done so we can use leaflet's own custom looklike leaflet loading
+      let mymap = L.map('mapid', {
+        tilt: true,
+        zoomControl: false,
+        // loadingControl: true // Tell the map to use a loading control
+      })
+        .setView([5.5216578, 7.5066884], 16);
+
+      // https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
+
+      // https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg
+      let basemap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Imagery & Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>', // Imagery © <a href="https://www.mapbox.com/">Mapbox</a>
+        maxZoom: 18,
+        id: 'mapbox.streets',
+        accessToken: 'pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg'
+      });
+      mymap.addLayer(basemap);
+
+      L.control.zoom({
+        position: 'topright'
+      })
+        .addTo(mymap);
+
+      // loader for when map is loading
+      // maybe calculate the time it takes the tiles to load and be responsive and do something to help ... maybe prefetch when there's good enough network or show them a message
+      basemap.on('loading', function (event) { // nothing on initial page load, only when the page is moved - and a request for more tiles to be loaded is made
+        console.log('started loading tiles');
+      });
+      basemap.on('load', function (event) { // once on intial page load after everything has shown and again when map is moved
+        console.log('all tiles loaded');
+      });
+
+      console.log( <% - JSON.stringify(mapdata) %> ); // JSON.parse(JSON.stringify(mapdata))
+
+      mymap.on('zoom', function (
+        event) { // based on where people expand in our maps, we'll know what they are intrested in, and we'd ask other corpers to provide info about such places.
+        console.log("Map zoom level:", mymap.getZoom(), event);
+        // then maybe later, for optimization, just focus on the area the user is seeing, so we won't waste too much js memory
+        let ilist = document.getElementsByClassName('custom-icons');
+
+        // https://fontawesome.com/how-to-use/on-the-web/styling/sizing-icons
+        switch (mymap.getZoom()) {
+          case (1):
+          case (2):
+          case (3):
+          case (4):
+          case (5):
+          case (6):
+          case (7):
+          case (8):
+          case (9):
+          case (10):
+          case (11):
+          case (12):
+          case (13):
+            for (let i = 0; i < ilist.length; i++) {
+              document.getElementsByClassName('custom-icons')
+                .item(i)
+                .style.display = "none";
+              // also close all open popUPs on the icons
+            }
+            break;
+          case (14):
+            for (let i = 0; i < ilist.length; i++) {
+              document.getElementsByClassName('custom-icons')[i].style.height = "15px";
+              document.getElementsByClassName('custom-icons')
+                .item(i)
+                .style.display = "block";
+              // or
+              document.getElementsByClassName('custom-icons')[i].classList.remove('fa-2x');
+              document.getElementsByClassName('custom-icons')[i].classList.add('fa-xs');
+            }
+            break;
+          case (15):
+            for (let i = 0; i < ilist.length; i++) {
+              document.getElementsByClassName('custom-icons')[i].style.height = "18px";
+              document.getElementsByClassName('custom-icons')
+                .item(i)
+                .style.display = "block";
+              // or
+              document.getElementsByClassName('custom-icons')[i].classList.remove('fa-2x');
+              document.getElementsByClassName('custom-icons')[i].classList.add('fa-sm');
+            }
+            break;
+          case (16):
+            for (let i = 0; i < ilist.length; i++) {
+              document.getElementsByClassName('custom-icons')[i].style.height = "20px";
+              document.getElementsByClassName('custom-icons')
+                .item(i)
+                .style.display = "block";
+              // or
+              document.getElementsByClassName('custom-icons')[i].classList.remove('fa-2x');
+              document.getElementsByClassName('custom-icons')[i].classList.add('fa-lg');
+              // document.getElementsByClassName('custom-icons')[i].classList.replace('fa-2x', 'fa-lg');
+            }
+            break;
+          case (17):
+          case (18):
+            for (let i = 0; i < ilist.length; i++) {
+              document.getElementsByClassName('custom-icons')[i].style.height = "30px";
+              document.getElementsByClassName('custom-icons')
+                .item(i)
+                .style.display = "block";
+              // or
+              document.getElementsByClassName('custom-icons')[i].classList.remove('oldClass',
+                'fa-2x');
+              document.getElementsByClassName('custom-icons')[i].classList.add('fa-2x');
+            }
+            break;
+          default:
+            break;
+        }
+      });
+
+      /* 
+                   let local_printshopIcon = L.divIcon({
+                      html: '<ion-icon name="moon-outline"></ion-icon>',
+                      popupAnchor: [ -7, -85 ],
+                      className: 'custom-icons' // no space
+                   });
+                   L.marker( [ 5.521697329407013, 7.514498233795167 ], {
+                           icon: local_printshopIcon
+                       } )
+                       .addTo( mymap )
+                       .bindPopup( "A print shop." );
+      
+                   let local_pharmacyIcon = L.divIcon( {
+                      html: '<i class="fas fa-clinic-medical"></i>',
+                      
+                      className: 'custom-icons' // no space between class name
+                   } );
+                   L.marker( [ 5.521889552319924, 7.512137889862061 ], {
+                           icon: local_pharmacyIcon
+                       } )
+                       .addTo( mymap );
+       */
+      /* mymap.on({zoom: function (event) {
+          console.log("Map 6666zoom level:", mymap.getZoom(), event);
+      } }); */
+
+      // https://esri.github.io/esri-leaflet/api-reference/controls/geosearch.html
+      let geoCode = L.esri.Geocoding.geocodeServiceProvider({
+        label: 'Geo Code', // Group suggestions under this header
+      });
+      /* let mapService = L.esri.Geocoding.mapServiceProvider({
+          label: 'Map Service', // Group suggestions under this header
+      }); */
+      let arcgisOnline = L.esri.Geocoding.arcgisOnlineProvider({
+        countries: 'NG', // get results only from Nigeria
+        label: 'Arc', // Group suggestions under this header
+      });
+      let gisDay = L.esri.Geocoding.featureLayerProvider({
+        url: 'https://services.arcgis.com/uCXeTVveQzP4IIcx/arcgis/rest/services/GIS_Day_Final/FeatureServer/0',
+        searchFields: ['Name', 'Organization'], // Search these fields for text matches
+        maxResults: 7,
+        label: 'GIS Day Events', // Group suggestions under this header
+        formatSuggestion: function (feature) {
+          console.log('glory', feature)
+          return feature.properties.Name + ' - ' + feature.properties
+            .Organization; // format suggestions like this.
+        }
+      });
+
+      let searchControl = L.esri.Geocoding.geosearch({
+        providers: [arcgisOnline, gisDay, geoCode/* , mapService */], // will geocode via ArcGIS Online and search the GIS Day feature service.
+        expanded: true,
+        collapseAfterResult: false,
+        title: 'Input text to search places',
+        placeholder: 'Search for places'
+      })
+        .addTo(mymap);
+
+      let results = L.layerGroup()
+        .addTo(mymap);
+
+      searchControl.on('results', function (data) {
+        console.log('uhmm', data)
+        results.clearLayers();
+        for (let i = data.results.length - 1; i >= 0; i--) {
+          results.addLayer(L.marker(data.results[i].latlng));
+        }
+      });
+
+      let myLines2 = {
+        "type": "LineString",
+        "coordinates": []
+      };
+
+      let myStyleLines2 = {
+        "color": "#ff7800",
+        "weight": 2,
+        "opacity": 0.65
+      };
+
+      mymap.on('click', function (e) { // do not delete
+        console.log(([e.latlng.lng, e.latlng.lat])
+          .toString());
+        /*
+         L.popup()
+             .setLatLng(e.latlng)
+             .setContent("You clicked the map at " + ([e.latlng.lng, e.latlng.lat]).toString() ) //say the name of the place they clicked!
+             .openOn(mymap);
+
+
+             console.log(e);
+             myLines2.coordinates.push([e.latlng.lng, e.latlng.lat]);
+             console.log(myLines2);
+
+             L.geoJSON(myLines2, {
+                 style: myStyleLines2
              }).addTo(mymap);
-             */
 
-             /*
-             also use either draggable markers and maybe static tiles to name junctions ...
+             //when user clicks another line, say you moved ).30 north and this distance.
+       */
+      });
 
-             use line string to name roads.
+      //if the device tilts.
+      L.TiltHandler = L.Handler.extend({
+        addHooks: function () {
+          L.DomEvent.on(window, 'deviceorientation', this._tilt, this);
+        },
 
-             from https://leafletjs.com/examples/choropleth/
+        removeHooks: function () {
+          L.DomEvent.off(window, 'deviceorientation', this._tilt, this);
+        },
 
-             http://www.liedman.net/leaflet-routing-machine/tutorials/basic-usage/
-             under "Custom Info Control"
-             use the real time info to show current infromation like speed, speed limit on certain roads, position e.g concerning position you can show info like : you're along ikot-epene road, you just passed Oando filling satation, it seems you just stopped at Ostrich bakery. stuffs like that
-             */
-             /*-------------------------------- routing -------------------------------------------------*/
-             /*
-              *
-             // http://www.liedman.net/leaflet-routing-machine/api/#l-routing-control
-             L.Routing.control({
-                 waypoints: [
+        _tilt: function (ev) {
+          // Treat Gamma angle as horizontal pan (1 degree = 1 pixel) and Beta angle as vertical pan
+          this._map.panBy(L.point(ev.gamma, ev.beta));
+        }
+      });
+
+      L.Map.addInitHook('addHandler', 'tilt', L.TiltHandler);
+      /*
+           L.Routing.control({
+               waypoints: [
                    L.latLng(5.52539227003423, 7.509562969207765),
                    L.latLng(5.5270795473951795, 7.516322135925294)
-                 ]
-               }).addTo(mymap);
-             */
+               ]
+           }).addTo(mymap);
+      */
+      // Our handler can now be enabled by running map.tilt.enable() and disabled by map.tilt.disable()
 
-             /*-------------------------------- add place -------------------------------------------------*/
-             // name a road feature too. there must be restrictions, like you can only name a [relatively] straight road, cause if it's bemt then th ebent road has a different name. you can only name roads. [[[[how can we even add roads????]]]]
+      let myLines = {
+        "type": "LineString",
+        "coordinates": []
+      };
 
-             // add change event listners to the fields so we know what's up and can be proactive.
-             // as user leaves from one field to another, add it to the geojson
-             // use socket.io to send data to db
+      let myStyleLines = {
+        "color": "#ff7800",
+        "weight": 2,
+        "opacity": 0.65
+      };
 
-             let street = document.getElementById( 'town' );
+      // add new toolbar
+      L.Control.Toolbar = L.Control.extend({
+        options: {
+          position: 'bottomright' // control position - allowed: 'topleft', 'topright', 'bottomleft', 'bottomright'
+        },
 
-             function st() {
+        onAdd: function (mymap) {
+          let container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom makehand');
+          let position = L.DomUtil.create('a', '', container);
+          position.title = 'Get current position';
+          // position.innerHTML = '&#10991;' ; // &#x1f518;
+          let track = L.DomUtil.create('a', '', container);
+          track.title = 'Track your movement';
+          // track.innerHTML = '&#11005;' ; // &#11005; | &#8889;
 
-             }
-             street.addEventListener( 'keyup', st, false );
+          let positionImg = L.DomUtil.create('ion-icon', '', position);
+          let trackImg = L.DomUtil.create('ion-icon', '', track);
 
-             let category = document.getElementById( 'category' );
+          let stopTrackImg = L.DomUtil.create('ion-icon', '');
+          stopTrackImg.name = 'close';
+          // stopTrackImg.alt = '%'; // it doesn't work
+          stopTrackImg.onerror = "imgErr()"; // TODO for trackImg too, it doesn't work
 
-             function cs() {
-                 // offer suggetions and validate input
-             }
-             category.addEventListener( 'keyup', cs, false );
+          // Stop the given event from propagation to parent element(s)
+          L.DomEvent.on(container, 'click dblclick', function (ev) {
+            L.DomEvent.stopPropagation(ev);
+          });
 
-             let nameOfPlace = document.getElementById( 'nameOfPlace' );
+          function imgErr() {
+            console.log('seems there is an error');
+          }
 
-             function naop() {
+          positionImg.name = 'locate';
+          // positionImg.alt = '|'; // not working
+          positionImg.onerror = "imgErr()"; // TODO for trackImg too, it doesn't work
 
-             }
-             nameOfPlace.addEventListener( 'keyup', naop, false );
+          trackImg.name = 'navigate';
+          // trackImg.alt = '/\\/'; // it doesn't work
+          trackImg.onerror = "imgErr()"; // seems the browser ignores doing the onerror if there's an alt attr.
 
-             /////test modal events to know when they fire and use appropraitely
-             $( '#AddPlace' )
-                 .on( 'show.bs.modal', function( e ) {
-                     // do something...
-                     console.log( 'show.bs.modal' );
-                 } )
-             $( '#AddPlace' )
-                 .on( 'shown.bs.modal', function( e ) {
-                     // do something...after it has shown
-                     console.log( 'shown.bs.modal' );
-                     $( '#nameOfPlace' )
-                         .trigger( 'focus' );
 
-                     /* document.forms[0][0].onchange = function (event) {
-                         console.log(event);
-                     }
+          // https://icon.now.sh/add_location
+          position.onclick = function () {
+            console.log('position button clicked');
+            // first find the user's current location/start tracking the add a marker
 
-                     document.forms[0][1].onchange = function (event) {
-                         console.log(event);
-                     }
+            // first find the user's current location
 
-                     document.forms[0][2].onchange = function (event) {
-                         console.log(event);
-                     } */
-                 } )
-             $( '#AddPlace' )
-                 .on('hide.bs.modal', function(e) {
-                     // do something...
-                     console.log('hide.bs.modal');
+            function onLocationFound(e) {
 
-                 } )
-             $('#AddPlace')
-                 .on('hidden.bs.modal', function(e) {
-                     // do something...
-                     console.log('hidden.bs.modal');
-                 } )
+              let radius = e.accuracy / 2; // measurement in meters
+              console.log(e);
 
-             // script for submitting
-             function sendPlace() {
+              function onClk(e) {
+                console.log('clicked addPlace Marker!');
+              }
 
-                 // close the modal
-                 $('#AddPlace').modal('hide');
+              function onPO() {
+                // c.addTo(mymap);
+                if (document.getElementById('baptm')) {
+                  console.log('we wanna add a place');
+                }
+              }
+              // if user within 5 meters from location, add it. AND IF LOCATION ACCURACY IS NOT SO CORRECT THEN DON'T SHOW IT IN THE MAP !!! NOT EVERYONE IS IN LAGOS, ALSO SHOW THEM THE STATE THEY'RE IN AND THE lga FIRST
+              // Only display those icons when the user is in a good enough zoom level
+              let p = L.marker(e.latlng)
+                .on({
+                  click: onClk
+                })
+                .addTo(mymap)
+                .bindPopup('<p> You\'re within ' +
+                  radius.toFixed(2) +
+                  ' meters from this point.</p>' +
+                  (radius.toFixed(2) <= 10.50 ?
+                    ' <hr/> <small><button data-toggle="modal" data-target="#AddPlace" id="baptm" class="btn btn-primary btn-sm"> Add location to map</button></small> ' :
+                    ''))
+                .openPopup()
+                .on({
+                  popupopen: onPO
+                });
+              // after 3.5 sec closePopup()
+              setTimeout(() => {
+                p.closePopup();
+              }, 3500);
+              // if we couldn't get a so accurate location but got a resonable accurate info, then user can drag the marker to point. means we have to then make marker draggable
 
-                 // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
-                 const XHR = new XMLHttpRequest();
+              let c = L.circle(e.latlng, {
+                radius: radius,
+                stroke: false
+              })
+                .addTo(mymap);
+              // after 3.5 sec remove circle
+              setTimeout(() => c.remove(), 3500);
 
-                 // Bind the FormData object and the form element
-                 const FD = new FormData(document.forms[0]);
+              // p.on('popupopen', c.addTo(mymap) );
 
-                 // Define what happens on successful data submission
-                 XHR.addEventListener("load", function(event) {
-                     // alert(event.target.responseText);
-                     console.log('event.target.responseText', event.target.responseText);
+              // make it so that when ever the popUP is open, the event listerner is added ... also (if it doesn't work so that the app place button works even if it has been dismissed because of clicking the marker (to show the popUp) again n again.)
 
-                     // alert that the place has been added, then add the place to the map
-                     L.marker( latlng, { // "latlng":{"lat":7.413782299999999,"lng":3.9155568}
-                                     icon: hospital, // use the correct icon based on the type of places added!!, not just hardcoded hospital
-                                     title: feature.properties.popupContent
-                                 } );
+              //then save it.
 
-                     // and reset the form
-                     document.forms[0].reset();
-                 } );
+              //then get the altitude and it's accuracy and determine if the apartment is an upstairs
+              //then point the map in the direction of movement let e.heading
+            }
 
-                 // Define what happens in case of error
-                 XHR.addEventListener( "error", function( event ) {
-                     alert( 'Oops! we couldn\'t submit the form.' );
-                 } );
+            mymap.on('locationfound', onLocationFound);
 
-                 // Set up our request
-                 XHR.open( 'POST', '/addplace', true ); // true makes it async request
+            // error ?
+            function onLocationError(e) {
+              document.getElementById('AddError')
+                .innerHTML = e.message;
+              $("#LocationError").modal();
+            }
 
-                 // The data sent is what the user provided in the form
-                 XHR.send( FD );
-             }
+            mymap.on('locationerror', onLocationError);
 
-             // Access the form element...
-             // let form = document.forms[0]; // document.getElementById( "addplaceform" );
+            // acutally finding it
+            mymap.locate({
+              setView: true,
+              enableHighAccuracy: true,
+              timeout: 5000,
+              maximumAge: 0
+            });
 
-             // ...and take over its submit event.
-             console.log('adding sth')
-             document.forms[0].addEventListener( "submit", function( event ) {
-                 event.preventDefault(); // the default behaviour is refreshing the page and adding search params to the url
-                 console.log('k')
-                 sendPlace();
-             }, false ); // https://developer.mozilla.org/en-US/docs/Web/Events/submit
+            // then save it.
+          }
+
+          // variable to toggle the track or not-track value
+          trk = false;
+          track.onclick = function (trackEvent) {
+            // first find the user's current location/start tracking the add a marker
+            //first find the user's current location
+            function onLocationFound(e) {
+              let radius = e.accuracy / 2;
+              console.log(e);
+              // instead show a small pop up telling them how many distance they move/ have moved overtime or for every change in position we record
+              /* L.marker(e.latlng)
+              .addTo(mymap)
+              .bindPopup("You are within " + radius.toFixed(2) + " meters from this point")
+              .openPopup();
+
+          L.circle(e.latlng, radius).addTo(mymap); */
+
+              myLines.coordinates.push([e.longitude, e.latitude]);
+
+              console.log(myLines);
+
+              L.geoJSON(myLines, {
+                style: myStyleLines
+              })
+                .addTo(mymap);
+
+              // send myLines to server after all the tracking has been done ORrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
+              socket.emit('tracking', myLines, (f) => {
+                // this funtion will run here to show the server has gotten our message.
+                console.log('server got map data r in meters ?',
+                  f); // data will be argument of function on server
+              });
+
+            }
+
+            mymap.on('locationfound', onLocationFound);
+
+
+            // error ?
+            function onLocationError(e) {
+              alert(e.message);
+            }
+
+            mymap.on('locationerror', onLocationError);
+
+            // Our tilt handler can now be enabled by running map.tilt.enable()
+
+
+            // acutally tracking corper
+            trk = !trk; // or trk ^= true; // but makes it 0 or 1
+            console.log('track?', trk);
+            if (trk) {
+              mymap.locate({
+                setView: true,
+                enableHighAccuracy: true,
+                watch: true
+              });
+
+              // remove the track image
+              L.DomUtil.remove(trackImg);
+
+              // then put the stop track img
+              track.append(stopTrackImg);
+
+              // track.innerHTML = '#' ; // '&#8889;' or '#'
+              track.title = 'Stop tracking movement';
+            } else {
+              console.log('send2server', myLines);
+
+              // send myLines to server everytime, then server compiles all the LATLNG ooooooorrrrrrrrrrrrrrrrrrr
+              socket.emit('tracking', myLines, (f) => {
+                // this funtion will run here to show the server has gotten our message.
+                console.log('server got map data r in meters ?',
+                  f); // data will be argument of function on server
+              });
+
+              mymap.stopLocate();
+
+              // remove the stop track image
+              L.DomUtil.remove(stopTrackImg);
+
+              // then put the track image
+              track.append(trackImg);
+              // track.innerHTML = '&#11005;' ;
+              track.title = 'Track your movement';
+            }
+
+
+            // then save it.
+          }
+
+          return container;
+        },
+
+        onRemove: function (mymap) {
+          // Nothing to do here
+        }
+      });
+
+      L.control.toolbar = function (opts) {
+        return new L.Control.Toolbar(opts);
+      }
+
+      L.control.toolbar({
+        position: 'bottomright'
+      })
+        .addTo(mymap);
+
+
+      // ------ add a new place
+
+      L.Control.AddPlace = L.Control.extend({
+        onAdd: function (map) {
+          let container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom makehand');
+          let addplace = L.DomUtil.create('a', '', container);
+          addplace.title = 'Add current location to map' // or 'Add this place'; // if our map is used to get current location (and we don't have that place in our database) we can show the corper/user a pop up so they add the place to our records (for other corpers at least/for sure)
+          // position.innerHTML = '&#10991;' ; // &#x1f518;
+          let addplaceImg = L.DomUtil.create('ion-icon', '', addplace);
+
+          // Stop the given event from propagation to parent element(s)
+          L.DomEvent.on(container, 'click dblclick', function (ev) {
+            L.DomEvent.stopPropagation(ev);
+          });
+
+          addplaceImg.name = 'location';
+          // addplaceImg.alt = '*!*'; // it doesn't work
+
+          addplace.onclick = function () {
+            console.log('addplace button clicked');
+            // first find the user's current location
+
+            function onLocationFound(e) {
+              let radius = e.accuracy / 2; // measurement in meters
+              console.log(e);
+
+              function onClk(e) {
+                console.log('clicked addPlace Marker!');
+              }
+
+              function onPO() {
+                // c.addTo(mymap);
+                if (document.getElementById('baptm')) {
+                  console.log('we wanna add a place');
+                }
+              }
+              // if user within 5 meters from location, add it. AND IF LOCATION ACCURACY IS NOT SO CORRECT THEN DON'T SHOW IT IN THE MAP !!! NOT EVERYONE IS IN LAGOS, ALSO SHOW THEM THE STATE THEY'RE IN AND THE lga FIRST
+              // Only display those icons when the user is in a good enough zoom level
+              let p = L.marker(e.latlng)
+                .on({
+                  click: onClk
+                })
+                .addTo(mymap)
+                .bindPopup('You\'re within ' +
+                  radius.toFixed(2) +
+                  ' meters from this point.' +
+                  (radius.toFixed(2) <= 10.00 ? // ought to be <=
+                    '' :
+                    ' You need to be within 10 meters to add a location to map')) // ask them if they want to try again ...maybe two more times (and probably reward their efforts if the location is getting better... by telling them to stop and try another time or they can continue trying if they want)
+                .openPopup()
+                .on({
+                  popupopen: onPO
+                });
+              if (radius.toFixed(2) <= 10.00) { // if they are within 10 meters, show the popup // don't forget to change >= to <= // >= for testing
+
+                let savePoint = {
+                  "type": "Feature",
+                  "properties": {},
+                  "geometry": {
+                    "type": "Point",
+                    "coordinates": []
+                  }
+                };
+                console.log('the e', e);
+                // remove sourceTarget and target from e
+                delete e.sourceTarget;
+                delete e.target;
+
+                // add geodata to the form
+                document.forms[0].elements['geodata'].value = JSON.stringify(e);
+
+                $("#AddPlace").modal();
+              }
+              // after 5 sec closePopup(), 5 sec so we give enough time to read the message
+              setTimeout(() => {
+                p.closePopup();
+              }, 5000);
+              // if we couldn't get a so accurate location but got a resonable accurate info, then user can drag the marker to point. means we have to then make marker draggable
+
+              let c = L.circle(e.latlng, {
+                radius: radius,
+                stroke: false
+              })
+                .addTo(mymap);
+              // after 3.5 sec remove circle
+              setTimeout(() => c.remove(), 3500);
+
+              // p.on('popupopen', c.addTo(mymap) );
+
+              // make it so that when ever the popUP is open, the event listerner is added ... also (if it doesn't work so that the app place button works even if it has been dismissed because of clicking the marker (to show the popUp) again n again.)
+
+              //then save it.
+
+              //then get the altitude and it's accuracy and determine if the apartment is an upstairs
+              //then point the map in the direction of movement let e.heading
+            }
+
+            mymap.on('locationfound', onLocationFound);
+
+            // error ?
+            function onLocationError(e) {
+              document.getElementById('AddError')
+                .innerHTML = e.message;
+              $("#LocationError").modal();
+            }
+
+            mymap.on('locationerror', onLocationError);
+
+            // acutally finding it
+            mymap.locate({
+              setView: true,
+              enableHighAccuracy: true,
+              timeout: 5000,
+              maximumAge: 0
+            });
+
+            // then save it.
+          }
+
+          return container;
+        },
+
+        onRemove: function (map) {
+          // Nothing to do here
+        }
+      });
+
+      L.control.addplace = function (opts) {
+        return new L.Control.AddPlace(opts);
+      }
+
+      L.control.addplace({
+        position: 'bottomright'
+      })
+        .addTo(mymap);
+
+
+      /*when user logs in, and owns an account. we can keep record of their data like PPA, SPA and whatever they want to save.*/
+
+      /**
+
+      Public mapbox access token:
+      pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg
+      */
+
+
+      /*
+      addHandler(<String> name, <Function> HandlerClass)
+
+      locate(<Locate options> options?)
+      locationerror
+      locationfound
+      stopLocate()
+
+      addControl(<Control> control)
+
+      removeControl(<Control> control)
+      */
+
+      // ------change the icon, and the text that shows and what happens/shows when user clicks
+
+      let yes = [{
+        "type": "Feature",
+        "properties": {
+          "name": "Coors Field",
+          "amenity": "Hospital",
+          "popupContent": "The Amenity [Hospital], then the location/street name."
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [7.5098633766174325, 5.515524804961825]
+        }
+      }, {
+        "type": "Feature",
+        "properties": {
+          "name": "Coors Field",
+          "amenity": "School",
+          "popupContent": "What kind of content should we show?"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [7.505314350128175, 5.516827661490997]
+        }
+      }, {
+        "type": "Feature",
+        "properties": {
+          "name": "Coors Field",
+          "amenity": "Hospital",
+          "popupContent": "You know to find a dfr"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [7.508361339569093, 5.523064246544109]
+        }
+      }];
+      // GENERAL RULES: THE popupAnchor for fas fa-[amenity] is [5, -2] for when it's big and [0, 0] (we're gonna try to find a middle ground) for when it's small and for icon.now.sh is [-7, -85]
+      let school = L.divIcon({
+        html: '<i class="fas fa-school"></i>',
+        className: 'custom-icons',
+        popupAnchor: [9, 1],
+      });
+
+      let hospital = L.divIcon({
+        html: '<i class="fas fa-clinic-medical"></i>',
+        className: 'custom-icons',
+        popupAnchor: [5, -2],
+      });
+
+      let default_office = L.divIcon({
+        html: '<i class="fas fa-building"></i>',
+        className: 'custom-icons',
+        popupAnchor: [5, -2],
+      });
+
+      // you can set .my-div-icon styles in CSS
+      // L.marker([5.524986, 7.497182], { icon: university }).addTo(mymap);
+      /* 
+                   // sample way to add multiple icons
+                   L.geoJSON( yes, {
+                           pointToLayer: function( feature, latlng ) {
+                               // console.log( feature, latlng );
+                               switch ( feature.properties.amenity ) {
+                                   case 'Hospital':
+                                       return L.marker( latlng, {
+                                           icon: hospital,
+                                           alt: 'Hospital',
+                                           title: feature.properties.popupContent
+                                       } );
+                                   case 'School':
+                                       return L.marker( latlng, {
+                                           icon: school,
+                                           alt: 'School',
+                                           title: feature.properties.popupContent
+                                       } );
+                               }
+                           }
+                       } )
+                       .bindPopup( function( layer ) {
+                           console.log( 'layer', layer ); // layer.defaultOptions.icon.options.popupAnchor = [0, 0] if layer.defaultOptions.icon.options.className.has()
+                           return layer.feature.properties.popupContent;
+                       } )
+                       .addTo( mymap );
+       */
+      L.geoJSON( <% - mapdata %> , {
+        pointToLayer: function (feature, latlng) {
+          // console.log( 'from server', feature, latlng );
+          switch (feature.properties.type) {
+            case 'Hospital':
+              return L.marker(latlng, {
+                icon: hospital,
+                title: feature.properties.address + ' (' + feature.properties.type + ')' // feature.properties.popupContent
+              });
+            case 'School':
+              return L.marker(latlng, {
+                icon: school,
+                title: feature.properties.address + ' (' + feature.properties.type + ')'
+              });
+            default:
+              return L.marker(latlng, {
+                icon: default_office,
+                title: feature.properties.address + ' (' + feature.properties.type + ')'
+              });
+          }
+        }
+      })
+        .bindPopup(function (layer) {
+          console.log('layer', layer.defaultOptions.icon.options.className.includes('fa-sm'), layer
+            .defaultOptions.icon.options.className.includes('fa-xs'), layer
+          ); // layer.defaultOptions.icon.options.popupAnchor = [0, 0] if layer.defaultOptions.icon.options.className.has()
+          return layer.feature.properties.address + ' (' + layer.feature.properties.type + ')';
+        })
+        .addTo(mymap);
+
+      /*
+      let myStyle = {
+          "color": "#ff7800",
+          "weight": 5,
+          "opacity": 0.65
+      };
+
+      L.geoJSON(yes, {
+          style: myStyle
+      }).addTo(mymap);
+      */
+
+      /*
+      also use either draggable markers and maybe static tiles to name junctions ...
+
+      use line string to name roads.
+
+      from https://leafletjs.com/examples/choropleth/
+
+      http://www.liedman.net/leaflet-routing-machine/tutorials/basic-usage/
+      under "Custom Info Control"
+      use the real time info to show current infromation like speed, speed limit on certain roads, position e.g concerning position you can show info like : you're along ikot-epene road, you just passed Oando filling satation, it seems you just stopped at Ostrich bakery. stuffs like that
+      */
+      /*-------------------------------- routing -------------------------------------------------*/
+      /*
+       *
+      // http://www.liedman.net/leaflet-routing-machine/api/#l-routing-control
+      L.Routing.control({
+          waypoints: [
+            L.latLng(5.52539227003423, 7.509562969207765),
+            L.latLng(5.5270795473951795, 7.516322135925294)
+          ]
+        }).addTo(mymap);
+      */
+
+      /*-------------------------------- add place -------------------------------------------------*/
+      // name a road feature too. there must be restrictions, like you can only name a [relatively] straight road, cause if it's bemt then th ebent road has a different name. you can only name roads. [[[[how can we even add roads????]]]]
+
+      // add change event listners to the fields so we know what's up and can be proactive.
+      // as user leaves from one field to another, add it to the geojson
+      // use socket.io to send data to db
+
+      let street = document.getElementById('town');
+
+      function st() {
+
+      }
+      street.addEventListener('keyup', st, false);
+
+      let category = document.getElementById('category');
+
+      function cs() {
+        // offer suggetions and validate input
+      }
+      category.addEventListener('keyup', cs, false);
+
+      let nameOfPlace = document.getElementById('nameOfPlace');
+
+      function naop() {
+
+      }
+      nameOfPlace.addEventListener('keyup', naop, false);
+
+      /////test modal events to know when they fire and use appropraitely
+      $('#AddPlace')
+        .on('show.bs.modal', function (e) {
+          // do something...
+          console.log('show.bs.modal');
+        })
+      $('#AddPlace')
+        .on('shown.bs.modal', function (e) {
+          // do something...after it has shown
+          console.log('shown.bs.modal');
+          $('#nameOfPlace')
+            .trigger('focus');
+
+          /* document.forms[0][0].onchange = function (event) {
+              console.log(event);
+          }
+
+          document.forms[0][1].onchange = function (event) {
+              console.log(event);
+          }
+
+          document.forms[0][2].onchange = function (event) {
+              console.log(event);
+          } */
+        })
+      $('#AddPlace')
+        .on('hide.bs.modal', function (e) {
+          // do something...
+          console.log('hide.bs.modal');
+
+        })
+      $('#AddPlace')
+        .on('hidden.bs.modal', function (e) {
+          // do something...
+          console.log('hidden.bs.modal');
+        })
+
+      // script for submitting
+      function sendPlace() {
+
+        // close the modal
+        $('#AddPlace').modal('hide');
+
+        // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
+        const XHR = new XMLHttpRequest();
+
+        // Bind the FormData object and the form element
+        const FD = new FormData(document.forms[0]);
+
+        // Define what happens on successful data submission
+        XHR.addEventListener("load", function (event) {
+          // alert(event.target.responseText);
+          console.log('event.target.responseText', event.target.responseText);
+
+          // alert that the place has been added, then add the place to the map
+          L.marker(latlng, { // "latlng":{"lat":7.413782299999999,"lng":3.9155568}
+            icon: hospital, // use the correct icon based on the type of places added!!, not just hardcoded hospital
+            title: feature.properties.popupContent
+          });
+
+          // and reset the form
+          document.forms[0].reset();
+        });
+
+        // Define what happens in case of error
+        XHR.addEventListener("error", function (event) {
+          alert('Oops! we couldn\'t submit the form.');
+        });
+
+        // Set up our request
+        XHR.open('POST', '/addplace', true); // true makes it async request
+
+        // The data sent is what the user provided in the form
+        XHR.send(FD);
+      }
+
+      // Access the form element...
+      // let form = document.forms[0]; // document.getElementById( "addplaceform" );
+
+      // ...and take over its submit event.
+      console.log('adding sth')
+      document.forms[0].addEventListener("submit", function (event) {
+        event.preventDefault(); // the default behaviour is refreshing the page and adding search params to the url
+        console.log('k')
+        sendPlace();
+      }, false); // https://developer.mozilla.org/en-US/docs/Web/Events/submit
     </script>
 
     <!--our icons from font awesome for markers-->
@@ -1332,7 +1240,7 @@
           console.log("the response", response);
         });
       };
-      /* 
+      /*
             /// - delete later
             const controller = new AbortController();
             const signal = controller.signal;
@@ -1364,4 +1272,5 @@
     </script>
     <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
   </body>
+
 </HTML>
