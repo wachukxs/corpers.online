@@ -599,7 +599,9 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
             text: _text.text,
             itemname: _text.itemname,
             age: moment(Number(_text.post_time)).fromNow(),
-            price: (_text.price ? _text.price : '')
+            price: (_text.price ? _text.price : ''),
+            firstname: _text.firstname,
+            picture_id: req.session.corper.picture_id
           }
         });
       }, reject => {
@@ -620,7 +622,7 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
         itemname: _text.itemname,
         price: (_text.price ? _text.price : ""),
         location: req.session.corper.location,
-        post_time: _text.post_time,
+        post_time: _text.post_time
       }).then(resolve => {
 
         // then status code is good
@@ -639,7 +641,9 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
             mapdata: (_text.mapimage ? _text.mapimage : ''),
             text: _text.text,
             age: moment(Number(_text.post_time)).fromNow(),
-            price: (_text.price ? _text.price : '')
+            price: (_text.price ? _text.price : ''),
+            firstname: _text.firstname,
+            picture_id: req.session.corper.picture_id
           }
         });
       }, reject => {
@@ -845,7 +849,8 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
             address: _text.address,
             directions: _text.directions,
             age: moment(Date.now()).fromNow(), // is this correct?
-            price: _text.price
+            price: _text.price,
+            picture_id: req.session.corper.picture_id
           }
         });
       }, reject => {
@@ -882,7 +887,7 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
         socket.of('/user').emit('boardcast message', { // or 'accommodation'
           to: 'be received by everyoneELSE',
           post: {
-            firstname: req.body.firstname,
+            firstname: _text.firstname,
             statecode: req.session.corper.statecode,
             streetname: _text.streetname,
             rentrange: _text.rentrange,
@@ -895,8 +900,9 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
             type: _text.accommodationtype,
             address: _text.address,
             directions: _text.directions,
-            age: moment(Date.now()).fromNow(),
-            price: _text.price
+            age: moment(_text.post_time).fromNow(),
+            price: _text.price,
+            picture_id: req.session.corper.picture_id
           }
         });
       }, reject => { // give proper feedback based on error

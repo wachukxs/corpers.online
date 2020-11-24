@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" type="image/png" href="assets/images/logo32x32.png" />
+    <link rel="icon" href="assets/images/1/favicon.ico" type="image/x-icon">
 
     <title><%= statecode2 %> chat</title>
 
@@ -17,14 +17,12 @@
     <!-- Custom styles for this template -->
     <link href="assets/css/chat-sidebar.css" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
-
     <script src="/socket.io/socket.io.js"></script>
-
     <style>
         .nl {
             max-width: 60%;
         }
-        .messages{
+        .messages {
             height: 70vh;
             overflow-y: scroll;
         }
@@ -40,7 +38,6 @@
     </nav>
 
     <div class="d-flex" id="wrapper" style="padding-top: 55px;">
-
         <!-- Sidebar -->
         <div class="bg-light border-right" id="sidebar-wrapper">
             <%# var total_num_unread_msg = oldunreadchats.filter((value, index, array) => { return value.message_to == statecode2 && value.message_sent == 0 }).length ; %>
@@ -50,7 +47,6 @@
                     <span id="totalunreadmsg" class="float-right badge badge-secondary badge-pill"><%= (total_num_unread_msg > 0 ? total_num_unread_msg : '') %></span>
                 </div>
             </div>
-
 
             <!-- maybe put a search box here, clone whatsapp -->
             <div class="list-group list-group-flush" style="height: 91vh;overflow-y: scroll;">
@@ -104,8 +100,9 @@
                     <%# if an unread message is part of the old message, color the tab orange  %>
                     <a data-statecode="<%= newwer[newweri] %>" class="<%= ( newwunread.includes(newwer[newweri]) ? 'bg-warning' : '' ) %> nav-link list-group-item list-group-item-action old" id="v-pills-<%= newwer[newweri].replace(/\//g, '-') %>-tab" data-toggle="pill" href="#v-pills-<%= newwer[newweri].replace(/\//g, '-') %>" role="tab" aria-controls="v-pills-<%= newwer[newweri].replace(/\//g, '-') %>" aria-selected="false">
                         <%# get fullname from oldchats, iterate through the objects' properties %>
-                        <% var f = oldchats.find(x => x.message_from == newwer[newweri] );  %>
-                        <%# console.log('\nf===', f); %>
+                        <% console.log('\noldchats===', oldchats); %>
+                        <% var f = oldchats.concat(oldunreadchats).find(x => x.message_from == newwer[newweri] );  %>
+                        <% console.log('\nf===', f); %>
                         <div><%= ( f ? `${f.sender_lastname} ${f.sender_firstname}` : '' ) %></div>
                         <div>
                             <small class="text-muted"><%= newwer[newweri] %></small>
@@ -441,48 +438,47 @@
         var send = document.getElementsByClassName( 'send' ); // document.getElementById( 'send' );
         var notify = document.getElementById( 'notifications' );
 
-        chat.on( 'connect', function() { // get fallback from davidwalsh's blog if URLSearchParams isn't in browser
-            chat.emit( 'hi', 'replace with something useful, like notifying the other user that they are online' );
-            chat.emit( 'ferret', 'aeee', 'tobi', ( data ) => {
+        chat.on('connect', function() { // get fallback from davidwalsh's blog if URLSearchParams isn't in browser
+            chat.emit('hi', 'replace with something useful, like notifying the other user that they are online' );
+            chat.emit('ferret', 'aeee', 'tobi', ( data ) => {
                 // this funtion will run here to show the server has gotten our message.
                 console.log( data ); // data will be 'woot ...'
-            } );
-            chat.emit( 'room', 'rofsddsfaom' );
+            });
+            chat.emit('room', 'rofsddsfaom' );
         } );
 
         //-----
-        chat.on( 'a message', function( data ) { // when we receive 'a message'
-            console.log( data );
-            chat.emit( 'my other event', {
+        chat.on('a message', function( data ) { // when we receive 'a message'
+            console.log(data);
+            chat.emit('my other event', {
                 my: 'data-chat'
-            } ); // send 'my other event' to everyone in /chat
-        } );
+            }); // send 'my other event' to everyone in /chat
+        });
 
-        chat.on( 'hi', function( data ) { // when we receive 'a message'
-            console.log( data );
-        } );
+        chat.on('hi', function(data) { // when we receive 'a message'
+            console.log(data);
+        });
 
-        chat.on( 'oldmessages', function( data ) { //
-            console.log( data );
-        } );
+        chat.on('oldmessages', function(data) { //
+            console.log(data);
+        });
 
 
-        chat.on( 'message', function( data ) { //when we receive a boardcast message
-            console.log( 'we received message! ', data ); // add text-right later and text-center later
+        chat.on('message', function(data) { //when we receive a boardcast message
+            console.log('we received message!',data ); // add text-right later and text-center later
 
             // if the sender has messaged before and is present
-            var thetab = $( `#v-pills-tab > a[data-statecode="${data.from.statecode}"]` );
-            if ( thetab.length == 1 ) {
-                if ( !thetab.hasClass( 'active' ) ) { // check if it isn't the present open tab
-
+            var thetab = $(`#v-pills-tab > a[data-statecode="${data.from.statecode}"]`);
+            if (thetab.length == 1) {
+                if (!thetab.hasClass('active')) { // check if it isn't the present open tab
                     // select the innerHTML of span and incremnent if there is a number
                     // if it was there before, just move it --not clone
-                    var num_msg = $( `#v-pills-tab > a[data-statecode="${data.from.statecode}"] span` );
-                    if ( !num_msg.html() == '' ) { // if it is not empty, i.e. there was a number there, there's been unread messages
-                        var c = parseInt( num_msg.html() );
-                        num_msg.html( c + 1 ); // increase the number of unread messages by one
+                    var num_msg = $(`#v-pills-tab > a[data-statecode="${data.from.statecode}"] span`);
+                    if (!num_msg.html() == '' ) { // if it is not empty, i.e. there was a number there, there's been unread messages
+                        var c = parseInt(num_msg.html());
+                        num_msg.html(c + 1); // increase the number of unread messages by one
                     } else { // i.e. no new messages before, make it one
-                        num_msg.html( 1 );
+                        num_msg.html(1);
                     }
                     // increment the total number of unread messages
                     var total_num_unread_msg = $( "#totalunreadmsg" );

@@ -129,19 +129,18 @@ router.get('/chat', function (req, res) {
 
 router.get(['/map', '/maps'], function (req, res) { // try to infer their location from their IP Address then send to the front end
   res.set('Content-Type', 'text/html');
-
   query.GetMapData().then(result => {
     res.render('pages/map', {
-      statecode: req.session.corper.statecode,
-      servicestate: req.session.corper.servicestate,
+      ...(req.session.corper) && {statecode: req.session.corper.statecode}, // we aren't using in the front end yet
+      ...(req.session.corper) && {servicestate: req.session.corper.servicestate}, // we aren't using in the front end yet
       mapdata: result.mapdata,
       types: result.types
     });
   }, error => {
     console.log('there was an error getting /map', error); // but render regardless
     res.render('pages/map', {
-      statecode: req.session.corper.statecode,
-      servicestate: req.session.corper.servicestate,
+      ...(req.session.corper) && {statecode: req.session.corper.statecode}, // we aren't using in the front end yet
+      ...(req.session.corper) && {servicestate: req.session.corper.servicestate}, // we aren't using in the front end yet
       mapdata: {},
       types: []
     });
