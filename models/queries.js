@@ -678,27 +678,27 @@ exports.UpdateProfile = async (_profile_data) => {
     // let sqlquery = "UPDATE info SET accomodation_location = '" + req.body.accomodation_location + "', servicestate = '" + req.body.servicestate + "', name_of_ppa = '" + req.body.name_of_ppa + "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" + req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" + req.body.type_of_ppa + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" + req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city + "', spaornot = '" + req.body.spaornot + "' WHERE email = '" + req.body.email + "' " ;
 
     /*[req.body.accomodation_location, req.body.servicestate, req.body.name_of_ppa, req.body.lga, req.body.city_town, req.body.region_street, req.body.stream, req.body.type_of_ppa, req.body.ppa_address, req.body.travel_from_state, req.body.travel_from_city, req.body.spaornot, req.body.email],*/
-    console.log('\nthe form body for /profile', _profile_data);
+    // console.log('\nthe form body for /profile', _profile_data);
     /**
      * the _profile_data for /profile [Object: null prototype] {
-  lga: 'Aba North',
-  city_town: '',
-  region_street: '',
-  stream: '',
-  newstatecode: '',
-  name_of_ppa: 'Rehoboth Model Academy',
-  type_of_ppa: 'School',
-  ppa_geodata: '',
-  ppa_address: '28B, Soleh Boneh Road, Salami Estate, Ibadan.',
-  ppadirections: 'Here... is the direction to Rehoboth Model Academy',
-  travel_from_state: 'Abia',
-  travel_from_city: 'Ibadan',
-  accomodation_location: '',
-  wantspaornot: 'yes',
-  paymentMethod: 'on',
-  bio: 'Okay',
-  profile_pic: ''
-}
+        lga: 'Aba North',
+        city_town: '',
+        region_street: '',
+        stream: '',
+        newstatecode: '',
+        name_of_ppa: 'Rehoboth Model Academy',
+        type_of_ppa: 'School',
+        ppa_geodata: '',
+        ppa_address: '28B, Soleh Boneh Road, Salami Estate, Ibadan.',
+        ppadirections: 'Here... is the direction to Rehoboth Model Academy',
+        travel_from_state: 'Abia',
+        travel_from_city: 'Ibadan',
+        accomodation_location: '',
+        wantspaornot: 'yes',
+        paymentMethod: 'on',
+        bio: 'Okay',
+        profile_pic: ''
+        }
      */
     let sqlquery = "UPDATE info SET accommodation_location = " + connectionPool.escape(_profile_data.accommodation_location) +
       (_profile_data.servicestate ? ", servicestate = " + connectionPool.escape(_profile_data.servicestate) : '') // if there's service state(i.e. corper changed service state in real life and from front end), insert it.
@@ -707,24 +707,27 @@ exports.UpdateProfile = async (_profile_data) => {
       ", ppa_directions = " + connectionPool.escape(_profile_data.ppa_directions) +
       ", bio = " + connectionPool.escape(_profile_data.bio) +
       ", public_profile = " + connectionPool.escape(_profile_data.public_profile) +
-      ", lga = " + connectionPool.escape(_profile_data.lga) + 
-      ", city_town = " + connectionPool.escape(_profile_data.city_town) + 
-      ", region_street = " +  connectionPool.escape(_profile_data.region_street) + 
-      ", stream = " + connectionPool.escape(_profile_data.stream) + 
-      ", type_of_ppa = " + connectionPool.escape(_profile_data.type_of_ppa) + 
-      ", ppa_geodata = " +  connectionPool.escape(_profile_data.ppa_geodata) + 
-      ", ppa_address = " + connectionPool.escape(_profile_data.ppa_address) + 
-      ", travel_from_state = " + connectionPool.escape(_profile_data.travel_from_state) + 
+      ", lga = " + connectionPool.escape(_profile_data.lga) +
+      ", city_town = " + connectionPool.escape(_profile_data.city_town) +
+      ", region_street = " +  connectionPool.escape(_profile_data.region_street) +
+      ", stream = " + connectionPool.escape(_profile_data.stream) +
+      ", type_of_ppa = " + connectionPool.escape(_profile_data.type_of_ppa) +
+      ", ppa_geodata = " +  connectionPool.escape(_profile_data.ppa_geodata) +
+      ", ppa_address = " + connectionPool.escape(_profile_data.ppa_address) +
+      ", travel_from_state = " + connectionPool.escape(_profile_data.travel_from_state) +
       ", travel_from_city = " + connectionPool.escape(_profile_data.travel_from_city) +
       (_profile_data.newstatecode ? ", statecode = " + connectionPool.escape(_profile_data.newstatecode.toUpperCase()) : '') + // if there's a new statecode
       ", accommodationornot = " +  connectionPool.escape(_profile_data.accommodationornot) +
-      ", wantspaornot = " + connectionPool.escape(_profile_data.wantspaornot) + 
+      ", wantspaornot = " + connectionPool.escape(_profile_data.wantspaornot) +
       " WHERE statecode = " + connectionPool.escape(_profile_data.statecode.toUpperCase()) ; // always change state code to uppercase, that's how it is in the db
 
 
     connectionPool.query(sqlquery, function (error, results, fields) {
       console.log('updated user profile data: ', results);
-      if (error) throw error;
+        if (error) {
+            console.error('update profile error', error);
+            reject(error); // throw error;
+        }
       // go back to the user's timeline
       if (results.changedRows === 1 && !helpers.isEmpty(_profile_data)) {
         
@@ -807,11 +810,10 @@ exports.UpdateProfile = async (_profile_data) => {
           // res.status(200).redirect(req.session.corper.statecode.toUpperCase() /* + '?e=y' */); // [e]dit=[y]es|[n]o
           resolve(_profile_data.statecode.toUpperCase())
         }
-        // res.sendStatus(200);
-      } else {
-        // res.sendStatus(500);
-        // res.status(500).redirect('/profile' + '?e=n'); // [e]dit=[y]es|[n]o
-        reject('?e=n')
+      } else { // everything went well, but it was only the profile pic that was updated, not text
+        // reject('no row changed in update')
+        resolve(_profile_data.statecode.toUpperCase())
+        // we need to optimize this, because before the pic is uploaded and updated, our server must have redirected
       }
     });
     })

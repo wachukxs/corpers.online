@@ -4,6 +4,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const morgan = require('morgan');
+const crypto = require('crypto')
 
 const welcomeRoutes = require('../routes/welcome');
 const actionsRoutes = require('../routes/actions');

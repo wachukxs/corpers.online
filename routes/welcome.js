@@ -1,8 +1,8 @@
 const express = require('express');
 let router = express.Router();
-
+const jwt = require('jsonwebtoken')
 const query = require('../models/queries');
-
+const auth = require('../helpers/auth')
 
 router.get(['/', '/home', '/index'], function (req, res) {
   res.type('.html');
@@ -23,57 +23,43 @@ router.get(['/about', '/about-us'], function (req, res) {
 });
 
 router.get(['/AB', '/AD', '/AK', '/AN', '/BA', '/BY', '/BN', '/BO', '/CR', '/DT', '/EB', '/ED', '/EK', '/EN', '/FC', '/GM', '/IM', '/JG', '/KD', '/KN', '/KT', '/KB', '/KG', '/KW', '/LA', '/NS', '/NG', '/OG', '/OD', '/OS', '/OY', '/PL', '/RV', '/SO', '/TR', '/YB', '/ZM'], function (req, res) {
-  // console.log('tryna login ', req.session.id, req.session.loggedin);
-  if (req.session.loggedin) {
     res.set('Content-Type', 'text/html');
     // res.sendFile(__dirname + '/state.html');
     res.render('pages/state', {
       // houses: results1,
       // pictures: results2
     });
-  } else {
-    res.redirect('/login');
-  }
 });
 
 router.get(['/AB/:batch', '/AD/:batch', '/AK/:batch', '/AN/:batch', '/BA/:batch', '/BY/:batch', '/BN/:batch', '/BO/:batch', '/CR/:batch', '/DT/:batch', '/EB/:batch', '/ED/:batch', '/EK/:batch', '/EN/:batch', '/FC/:batch', '/GM/:batch', '/IM/:batch', '/JG/:batch', '/KD/:batch', '/KN/:batch', '/KT/:batch', '/KB/:batch', '/KG/:batch', '/KW/:batch', '/LA/:batch', '/NS/:batch', '/NG/:batch', '/OG/:batch', '/OD/:batch', '/OS/:batch', '/OY/:batch', '/PL/:batch', '/RV/:batch', '/SO/:batch', '/TR/:batch', '/YB/:batch', '/ZM/:batch'], function (req, res) {
-  // console.log('tryna login ', req.session.id, req.session.loggedin);
-  if (req.session.loggedin) {
     res.set('Content-Type', 'text/html');
     // res.sendFile(__dirname + '/state.html');
     res.render('pages/state', {
       // houses: results1,
       // pictures: results2
     });
-  } else {
-    res.redirect('/login');
-  }
 });
 
 
 /**great resource for express route regex https://www.kevinleary.net/regex-route-express/ & https://forbeslindesay.github.io/express-route-tester/ */
 var years = parseInt(new Date(Date.now()).getFullYear().toFixed().slice(2, 4));
 var yearrange = '(' + (years - 1).toString() + '|' + years.toString() + ')';
-router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm))/:batch_stream((' + yearrange /**(18|19)*/ + '([abcACB])))/:lastfour(([0-9]{4}))', function (req, res) { // ['/AB/:batch/:code', '/AD/:batch/:code', '/AK/:batch/:code', '/AN/:batch/:code', '/BA/:batch/:code', '/BY/:batch/:code', '/BN/:batch/:code', '/BO/:batch/:code', '/CR/:batch/:code', '/DT/:batch/:code', '/EB/:batch/:code', '/ED/:batch/:code', '/EK/:batch/:code', '/EN/:batch/:code', '/FC/:batch/:code', '/GM/:batch/:code', '/IM/:batch/:code', '/JG/:batch/:code', '/KD/:batch/:code', '/KN/:batch/:code', '/KT/:batch/:code', '/KB/:batch/:code', '/KG/:batch/:code', '/KW/:batch/:code', '/LA/:batch/:code', '/NS/:batch/:code', '/NG/:batch/:code', '/OG/:batch/:code', '/OD/:batch/:code', '/OS/:batch/:code', '/OY/:batch/:code', '/PL/:batch/:code', '/RV/:batch/:code', '/SO/:batch/:code', '/TR/:batch/:code', '/YB/:batch/:code', '/ZM/:batch/:code']
-  // console.log('tryna login ', req.session.corper.statecode, req.session.id, req.session.loggedin);
-  // they should be able to change state code too !!!!!!!!!!!! --later
+router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm))/:batch_stream((' + yearrange /*(18|19)*/ + '([abcACB])))/:lastfour(([0-9]{4}))', function (req, res) {
   console.log('req.params/session', req.session, req.params) // req.path is shorthand for url.parse(req.url).pathname
-  // when they update their profile. it should immediately reflect. so set it in the session object after a successfully update
 
   if (req.session.loggedin) {
     res.set('Content-Type', 'text/html');
 
     /** this query runs so we can get the number of unread messages the user has */
     query.UnreadMessages([req.path.substring(1, 12).toUpperCase(), false]).then(result => {
+      jwt.sign({statecode: req.path.toUpperCase()}, process.env.SESSION_SECRET, (err, token) => {
+        if (err) throw err
+        console.log('token generated', token);
+      })
       res.render('pages/account', {
-        statecode: req.session.corper.statecode.toUpperCase(),
-        statecode2: req.path.substring(1, 12).toUpperCase(),
-        // servicestate: req.session.corper.servicestate,
+        statecode: req.session.corper.statecode.toUpperCase(), // or req.path.substring(1, 12).toUpperCase()
         batch: req.params['3'],
-        // name_of_ppa: req.session.corper.name_of_ppa,
         total_num_unread_msg: result,
-        // picture_id: req.session.corper.picture_id, // if there's picture_id
-        // firstname: req.session.corper.firstname,
         ...req.session.corper
       });
     }, reject => {
@@ -81,7 +67,6 @@ router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN
 
       res.render('pages/account', {
         statecode: req.session.corper.statecode.toUpperCase(),
-        statecode2: req.path.substring(1, 12).toUpperCase(),
         servicestate: req.session.corper.servicestate,
         batch: req.params['3'],
         name_of_ppa: req.session.corper.name_of_ppa,
@@ -111,7 +96,7 @@ router.get('/chat', function (req, res) {
    * utc + 1 is our time zone [when converting], or use moment .js
    */
 
-  console.log('??', req.session.loggedin, req.query, '\n??')
+  console.log('logged in?', req.session.loggedin, 'req.query =>', req.query, '\n??')
 
   query.GetChatData(req).then(result => {
     res.set('Content-Type', 'text/html');
@@ -196,7 +181,6 @@ router.post('/signup', /* bodyParser.urlencoded({
       req.session.loggedin = true;
       req.session.corper.servicestate = result.theservicestate;
       req.session.corper.batch = req.body.statecode.toUpperCase().slice(3, 6);
-      req.session.loggedin = true;
       req.session.corper.location = req.session.corper.servicestate; // really fix this, we should add some other data if we can
 
       res.redirect(req.body.statecode.toUpperCase());

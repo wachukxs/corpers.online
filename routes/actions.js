@@ -2,6 +2,7 @@ const express = require('express');
 const Busboy = require('busboy');
 const multer = require('multer');
 inspect = require('util').inspect;
+const jwt = require('jsonwebtoken')
 const helpers = require('../constants/helpers')
 const socket = require('../sockets/routes')
 const ngplaces = require('../constants/ngstates')
@@ -252,7 +253,7 @@ router.get('/profile', function (req, res) {
           ...req.session.corper
           // select all distinct ppa type / address / name and send it to the front end as suggestions for the input when the corpers type
         }
-        console.log('data going to /profile page', info);
+        // console.log('data going to /profile page', info);
         res.render('pages/profile', info);
       }, reject => {
         res.render('pages/profile', {
@@ -266,7 +267,7 @@ router.get('/profile', function (req, res) {
         });
       })
     } else {
-      res.render('pages/login');
+      res.redirect('/login');
     }
 
   })
@@ -364,7 +365,7 @@ router.post('/profile', /* bodyParser.urlencoded({
 
           console.log('upload File Id: ', file.data.id); // save to db
           console.log('thumbnailLink: ', file.data.thumbnailLink);
-          req.session.corper.picture_id = file.data.id
+          req.session.corper.picture_id = file.data.id // or we could add picture_id to _profile_data
 
           connectionPool.query('UPDATE info SET picture_id = ? WHERE statecode = ?', [file.data.id, req.session.corper.statecode.toUpperCase()], function (error, results, fields) {
             if (error) throw error;
@@ -398,7 +399,7 @@ router.post('/profile', /* bodyParser.urlencoded({
     console.warn('fielddname Truncated:', fieldnameTruncated, valTruncated, transferEncoding, mimetype);
   });
 
-  busboy.on('finish', async function () { 
+  busboy.on('finish', async function () {
     console.log('we done?')
     query.UpdateProfile(_profile_data).then(result => {
       
@@ -410,7 +411,8 @@ router.post('/profile', /* bodyParser.urlencoded({
       if (_profile_data.newstatecode) {
         req.session.corper.statecode = _profile_data.newstatecode.toUpperCase();
       }
-      res.status(200).redirect(result); // redirectly appropriately if there's new statecode or not
+      console.log('new pic id?', req.session.corper.picture_id);
+      res.status(200).redirect(result);
     }, reject => {
       console.error('what happened?', reject)
       res.status(500).redirect('/profile?e=n'); // [e]dit=[y]es|[n]o

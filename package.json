@@ -20,7 +20,11 @@
   "engines": {
     "node": "12.14.x"
   },
-  "author": "@wachukx, Mogaba Juliet",
+  "author": "@wachukxs, Mogaba Juliet, Chukwugbogum Blessing",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wachukxs/corpers.online.git"
+  },
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
