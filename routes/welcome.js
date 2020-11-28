@@ -3,7 +3,7 @@ let router = express.Router();
 const jwt = require('jsonwebtoken')
 const query = require('../models/queries');
 const auth = require('../helpers/auth')
-
+const ngstates = require('../constants/ngstates')
 router.get(['/', '/home', '/index'], function (req, res) {
   res.type('.html');
   res.render('pages/coming-soon', { current_year: new Date().getFullYear() });
@@ -22,18 +22,17 @@ router.get(['/about', '/about-us'], function (req, res) {
   res.render('pages/about', { current_year: new Date().getFullYear() });
 });
 
-router.get(['/AB', '/AD', '/AK', '/AN', '/BA', '/BY', '/BN', '/BO', '/CR', '/DT', '/EB', '/ED', '/EK', '/EN', '/FC', '/GM', '/IM', '/JG', '/KD', '/KN', '/KT', '/KB', '/KG', '/KW', '/LA', '/NS', '/NG', '/OG', '/OD', '/OS', '/OY', '/PL', '/RV', '/SO', '/TR', '/YB', '/ZM'], function (req, res) {
+router.get(ngstates.states_short_paths_regex, function (req, res) {
     res.set('Content-Type', 'text/html');
-    // res.sendFile(__dirname + '/state.html');
     res.render('pages/state', {
       // houses: results1,
       // pictures: results2
     });
 });
 
-router.get(['/AB/:batch', '/AD/:batch', '/AK/:batch', '/AN/:batch', '/BA/:batch', '/BY/:batch', '/BN/:batch', '/BO/:batch', '/CR/:batch', '/DT/:batch', '/EB/:batch', '/ED/:batch', '/EK/:batch', '/EN/:batch', '/FC/:batch', '/GM/:batch', '/IM/:batch', '/JG/:batch', '/KD/:batch', '/KN/:batch', '/KT/:batch', '/KB/:batch', '/KG/:batch', '/KW/:batch', '/LA/:batch', '/NS/:batch', '/NG/:batch', '/OG/:batch', '/OD/:batch', '/OS/:batch', '/OY/:batch', '/PL/:batch', '/RV/:batch', '/SO/:batch', '/TR/:batch', '/YB/:batch', '/ZM/:batch'], function (req, res) {
+router.get(ngstates.states_short_paths_batch_regex_stringed, function (req, res) { // work with the batch
+    console.log(req.path, '23');
     res.set('Content-Type', 'text/html');
-    // res.sendFile(__dirname + '/state.html');
     res.render('pages/state', {
       // houses: results1,
       // pictures: results2
@@ -42,8 +41,8 @@ router.get(['/AB/:batch', '/AD/:batch', '/AK/:batch', '/AN/:batch', '/BA/:batch'
 
 
 /**great resource for express route regex https://www.kevinleary.net/regex-route-express/ & https://forbeslindesay.github.io/express-route-tester/ */
-var years = parseInt(new Date(Date.now()).getFullYear().toFixed().slice(2, 4));
-var yearrange = '(' + (years - 1).toString() + '|' + years.toString() + ')';
+let years = parseInt(new Date(Date.now()).getFullYear().toFixed().slice(2, 4));
+let yearrange = '(' + (years - 1).toString() + '|' + years.toString() + ')';
 router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm))/:batch_stream((' + yearrange /*(18|19)*/ + '([abcACB])))/:lastfour(([0-9]{4}))', function (req, res) {
   console.log('req.params/session', req.session, req.params) // req.path is shorthand for url.parse(req.url).pathname
 

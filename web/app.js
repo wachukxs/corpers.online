@@ -17,7 +17,11 @@ app.set('view engine', 'ejs');
 app.use(session({
     secret: process.env.SESSION_SECRET || 'sth%shh@shhhs"shhh==|skf$kinda,£right?',
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    httpOnly: true,
+    secure: true,
+    // domain: 'localhost' || 'corpers.online',
+    // path: '',
 }));
 
 // set morgan to log info about our requests for development use.
@@ -61,13 +65,39 @@ app.use(function (req, res, next) {
  * Helmet will set them all to sensible defaults for you,
  * and allow you to tweak the ones that you need.
  * 
- * It’s incredibly simple to set up on an Express.js application:
+ * It's incredibly simple to set up on an Express.js application:
  * 
- * open https://using-umami.herokuapp.com/ to set amazing metrics
+ * open https://using-umami.herokuapp.com/ to see amazing metrics
  */
 var helmet = require('helmet');
 app.use(helmet());
 
+const ngstates = require('../constants/ngstates');
+let r1 = ngstates.states_short_paths_regex.toString()
+const sitemap = require('express-sitemap')({ // comes last, after setting up express
+    http: 'https',
+    url: 'corpers.online',
+    sitemapSubmission: '/sitemap.xml',
+    hideByRegex: [ ngstates.states_short_paths_regex, /\/^AB$/, '/about' ],
+    route: {
+        '/[A-Z]{2}$/': {
+            hide: true
+        },
+        '/[A-Z]{2}$/': {
+            hide: true
+        },
+        r1: {
+            hide: true
+        },
+        '/about': {
+            hide: true
+        }
+    }
+});
+sitemap.generate4(welcomeRoutes)
+sitemap.generate4(actionsRoutes)
+sitemap.generate4(blogRoutes)
+// sitemap.toFile() // uncomment when we figure out sitemap or use a diffrent library
 module.exports = app;
 
 /**
