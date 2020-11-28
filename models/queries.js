@@ -1101,7 +1101,12 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
     return re;
 }
 
-exports.GetPosts = async (data) => {
+/**
+ * 
+ * @param {req.body} data 
+ * This function currently is handling searching of posts
+ */
+exports.GetPosts = async (data) => { // we're meant to be saving every search! probably with morgan? or look for a library
     let re = await new Promise((resolve, reject) => {
     // get response
     // so we're selecting posts newer than the ones currently in the user's timeline. or the server closed the connection error
@@ -1168,7 +1173,7 @@ exports.GetPosts = async (data) => {
             }
             
           } */
-          console.log('\n', index, k)
+          // console.log('\n', index, k)
           thisisit.data[ngstates.states_long[k]] = results[index].concat(results[index + 1]).concat(results[index + 2])
           // thisisit.data[ngstates.states_long[index+1]] = results[index+1]
           // the last result of thisisit is undefined because states_long[37 + 1] is above the last index of results

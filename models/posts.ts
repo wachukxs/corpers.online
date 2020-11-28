@@ -8,5 +8,5 @@ interface Sale {
 
 type T = {
     text: string,
-    time: string
+    time: number
 }
