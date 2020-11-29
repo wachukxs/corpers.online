@@ -4,6 +4,8 @@ const Busboy = require('busboy');
 const helpers = require('../constants/helpers');
 const ggle = require('../helpers/uploadgdrive');
 const ngstates = require('../constants/ngstates');
+const bcrypt = require('bcrypt');
+const saltRounds = 5;
 /**
  *
  * func to handle signup of corpers
@@ -34,7 +36,7 @@ exports.CorpersSignUp = async (signupData) => {
     signupData.statecode = signupData.statecode.trim().toUpperCase(); // convert statecode to uppercase, very important!
     // signupData.batch = signupData.statecode.slice(3, 6).toUpperCase(); // we don't need batch, can be inferred from statecode
 
-    // var sqlquery = "INSERT INTO info(email, firstname, middlename, password, lastname, statecode, batch, servicestate, stream) VALUES ('" + signupData.email + "', '" + signupData.firstname + "', '" + signupData.middlename + "', '" + signupData.password + "', '" + signupData.lastname + "', '" + signupData.statecode.toUpperCase() + "', '" + signupData.statecode.slice(3, 6).toUpperCase() + "', '" + theservicestate + "' , '" + getstream(thestream) + "'  )";
+    // let sqlquery = "INSERT INTO info(email, firstname, middlename, password, lastname, statecode, batch, servicestate, stream) VALUES ('" + signupData.email + "', '" + signupData.firstname + "', '" + signupData.middlename + "', '" + signupData.password + "', '" + signupData.lastname + "', '" + signupData.statecode.toUpperCase() + "', '" + signupData.statecode.slice(3, 6).toUpperCase() + "', '" + theservicestate + "' , '" + getstream(thestream) + "'  )";
     /**[re]sponse for this funtion CorpersSignUp() */
     let re = await new Promise((resolve, reject) => {
         /**[r]esponse */
@@ -49,49 +51,69 @@ exports.CorpersSignUp = async (signupData) => {
             reject({ message: 'invalid statecode' })
         }
 
-        connectionPool.query('INSERT INTO info SET ?', signupData, function (error, results, fields) {
-            console.log('inserted data result: ', results);
-            if (error) {
-                console.log('the error code:', error.code, error.sqlMessage)
-                switch (error.code) { // do more here
-                    case 'ER_DUP_ENTRY': // ER_DUP_ENTRY if a statecode or email exists already
-                        if (error.sqlMessage.includes(signupData.statecode.toUpperCase())) { // Duplicate entry 'TR/19A/1234' for key 'PRIMARY'
-                            // res.redirect('/signup?m=ds'); // [m]essage = [d]uplicate [s]tatecode
-                            r = {
-                                message: 'duplicate statecode'
-                            };
-                        } else if (error.sqlMessage.includes(signupData.email)) { // Duplicate entry 'uyu@yud.eww' for key 'email'
-                            // res.redirect('/signup?m=de'); // [m]essage = [d]uplicate [e]mail
-                            r = {
-                                message: 'duplicate email'
-                            };
-                        }
-
-                        break;
-                    default:
-                        r = {
-                            message: `${error.code} ${error.sqlMessage}`
-                        };
-                        break;
-                    // ER_BAD_FIELD_ERROR
+        bcrypt.genSalt(saltRounds, function(err, salt) {
+            if (err) {
+                console.error(err)
+                reject(err)
+            }
+            bcrypt.hash(signupData.password, salt, function(err, hash) {
+                if (err) {
+                    console.error(err)
+                    reject(err)
                 }
-                // throw error; // ? // breaks server
+                // Store hash in your password DB.
+                console.log('hash', hash, 'salt', salt)
+                signupData.salt = salt
+                // replace password
+                signupData.password = hash
 
-                reject(r);
-            }
+                connectionPool.query('INSERT INTO info SET ?', signupData, function (error, results, fields) {
+                    console.log('inserted data result: ', results);
+                    if (error) {
+                        console.log('the error code:', error.code, error.sqlMessage)
+                        switch (error.code) { // do more here
+                            case 'ER_DUP_ENTRY': // ER_DUP_ENTRY if a statecode or email exists already
+                                if (error.sqlMessage.includes(signupData.statecode.toUpperCase())) { // Duplicate entry 'TR/19A/1234' for key 'PRIMARY'
+                                    // res.redirect('/signup?m=ds'); // [m]essage = [d]uplicate [s]tatecode
+                                    r = {
+                                        message: 'duplicate statecode'
+                                    };
+                                } else if (error.sqlMessage.includes(signupData.email)) { // Duplicate entry 'uyu@yud.eww' for key 'email'
+                                    // res.redirect('/signup?m=de'); // [m]essage = [d]uplicate [e]mail
+                                    r = {
+                                        message: 'duplicate email'
+                                    };
+                                }
+        
+                                break;
+                            default:
+                                r = {
+                                    message: `${error.code} ${error.sqlMessage}`
+                                };
+                                break;
+                            // ER_BAD_FIELD_ERROR
+                        }
+                        // throw error; // ? // breaks server
+        
+                        reject(r);
+                    }
+        
+                    // "else if" is very important
+                    else if (results.affectedRows === 1) {
+        
+                        // helpers.email(signupData.email, signupData.firstname, theservicestate).catch(console.error);
+                        r = {
+                            message: true,
+                            theservicestate: theservicestate
+                        };
+                        resolve(r);
+                    }
+        
+                });
 
-            // "else if" is very important
-            else if (results.affectedRows === 1) {
-
-                // helpers.email(signupData.email, signupData.firstname, theservicestate).catch(console.error);
-                r = {
-                    message: true,
-                    theservicestate: theservicestate
-                };
-                resolve(r);
-            }
-
+            });
         });
+
     })
 
     return re;
@@ -101,7 +123,8 @@ exports.CorpersLogin = async (req_body) => {
     let re = await new Promise((resolve, reject) => { // don't select password
         let sqlquery = "SELECT * FROM info WHERE statecode = ?";
         // .toUpperCase() is crucial
-        connectionPool.query(sqlquery, [req_body.statecode.toUpperCase()], function (error, result, fields) {
+        let retries = 2;
+        let loginQuery = connectionPool.query(sqlquery, [req_body.statecode.toUpperCase()], function (error, result, fields) {
             console.log('is login result be empty?', result);
             // console.log('selected data from db, logging In...', results1); // error sometimes, maybe when there's no db conn: ...
             if (error) {
@@ -110,6 +133,19 @@ exports.CorpersLogin = async (req_body) => {
                     case 'ER_ACCESS_DENIED_ERROR':
                         break;
                     case 'ECONNREFUSED': // maybe send an email to myself or the delegated developer // try to connect again multiple times first
+                        
+                        connectionPool.ping(function (err) {
+                            if (err) {
+                                console.error(err);
+                                // email or notify developer
+                                reject(err)
+                            };
+                            console.info('Server responded to ping, re-trying db conn...', retries);
+                            while (retries > 0) {
+                                loginQuery()
+                                retries--
+                            }
+                        })
                         break;
                     case 'PROTOCOL_CONNECTION_LOST':
                         break;
@@ -121,13 +157,36 @@ exports.CorpersLogin = async (req_body) => {
 
                 reject({ message: 'backend error' })
             } else if (helpers.isEmpty(result)) {
-                reject({ message: 'sign up' }) // tell them they need to sign up or password or statecode is wrong
+                reject({ message: 'sign up' }) // tell them they need to sign up or statecode is wrong cause it doesn't exist
             } else if (result.length === 1) {
-                if (result[0].password === req_body.password) { // very crucial step!
-                    delete result[0].password  // very crucial step too!
-                    resolve({ message: true, response: result })
-                } else {
+                // for passwords that haven't been hashed...
+                if (result[0].salt === '' && result[0].password === req_body.password) {
+                    bcrypt.genSalt(saltRounds, function(err, salt) {
+                        bcrypt.hash(req_body.password, salt, function(err, hash) {
+                            // Store hash in your password DB. Basically update db
+                            let q = "UPDATE info SET password = '" + hash + "', salt = '" + salt + "' WHERE statecode = '" + req_body.statecode.toUpperCase() + "'";
+                            connectionPool.query(q, function (err, rslts, flds) {
+                                if (err) reject(err);
+                                if (rslts.changedRows === 1) { // when we've saved it, the corper can now logged in
+                                    console.log('\n\nupdated password & salt');
+                                    delete result[0].password  // very crucial step too!
+                                    resolve({ message: true, response: result })
+                                }
+                            });
+                        });
+                    });
+                } else if (result[0].salt === '' && result[0].password !== req_body.password) {
                     reject({ message: 'wrong password' }) // wrong password
+                } else {
+                    bcrypt.compare(req_body.password, result[0].password, function(err, rslt) {
+                        // rslt == true | false
+                        if (rslt) { // very crucial step!
+                            delete result[0].password  // very crucial step too!
+                            resolve({ message: true, response: result })
+                        } else {
+                            reject({ message: 'wrong password' }) // wrong password
+                        }
+                    });
                 }
             }
         });
@@ -140,16 +199,14 @@ exports.LoginSession = async (loginData) => {
     let re = await new Promise((resolve, reject) => {
         // insert login time and session id into db for usage details
         connectionPool.query("INSERT INTO session_usage_details( statecode, session_id, user_agent) VALUES (?, ?, ?)", loginData, function (error2, results2, fields2) {
-
             if (error2) reject({ message: false });
-
             if (results2.affectedRows === 1) {
-
                 resolve({ message: true })
             }
-
         });
     })
+
+    return re;
 }
 
 /**calculate the number of unread messages a corper has when they log in
@@ -236,7 +293,7 @@ exports.FetchPostsForTimeLine = async (timeLineInfo) => {
                     }
                 );
 
-                var allposts = results[0].concat(results[1]);
+                let allposts = results[0].concat(results[1]);
 
                 /**
                  * "It's also worth noting that unlike many other JavaScript array functions, 
@@ -354,7 +411,7 @@ exports.InsertRowInChatTable = async (chatData) => {
 
 exports.UpdateChatReadReceipts = async (chatInfo) => {
     let re = await new Promise((resolve, reject) => {
-        var q = "UPDATE chats SET message_sent = true WHERE message IS NOT NULL AND message_from = '" + chatInfo.message_from + "' AND message_to = '" + chatInfo.message_to + "'";
+        let q = "UPDATE chats SET message_sent = true WHERE message IS NOT NULL AND message_from = '" + chatInfo.message_from + "' AND message_to = '" + chatInfo.message_to + "'";
         connectionPool.query(q, function (error, results, fields) {
             if (error) reject(error);
             // connected!
@@ -366,6 +423,8 @@ exports.UpdateChatReadReceipts = async (chatInfo) => {
             }
         });
     })
+
+    return re;
 }
 
 exports.InsertRowInAccommodationsTable = async (postData) => {
@@ -630,7 +689,7 @@ exports.AllPPAs = async () => {
 
             if (error) reject(error);
             console.log('ppa types:', results)
-            var listoftypesofppas = [];
+            let listoftypesofppas = [];
             for (let index = 0; index < results.length; index++) {
                 const element = results[index].type_of_ppa;
                 listoftypesofppas.push(element);
