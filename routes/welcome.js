@@ -4,6 +4,19 @@ const jwt = require('jsonwebtoken')
 const query = require('../models/queries');
 const auth = require('../helpers/auth')
 const ngstates = require('../constants/ngstates')
+
+/**options for setting JWT cookies */
+let cookieOptions = {
+  httpOnly: true, // frontend js can't access
+  maxAge: auth.maxAge,
+  sameSite: 'strict',
+  // path: '' // until we figure out how to add multiple path
+}
+
+if (process.env.NODE_ENV === 'production') {
+  cookieOptions.secure = true // localhost, too, won't work if true
+}
+
 router.get(['/', '/home', '/index'], function (req, res) {
   res.type('.html');
   res.render('pages/coming-soon', { current_year: new Date().getFullYear() });
@@ -184,13 +197,7 @@ router.post('/signup', /* bodyParser.urlencoded({
         else {
           console.log('token generated', token);
           // res.setHeader('Set-Cookie', 'name=value')
-          res.cookie('_online', token, {
-            secure: true, // localhost too won't work
-            httpOnly: true, // frontend js can't access
-            maxAge: auth.maxAge,
-            sameSite: 'strict',
-            // path: '' // until we figure out how to add multiple path
-          })
+          res.cookie('_online', token, cookieOptions)
 
           res.status(200).redirect(req.body.statecode.toUpperCase());
         }
@@ -243,13 +250,7 @@ router.post('/login', /* bodyParser.urlencoded({ // edited
         else {
           console.log('token generated', token);
           // res.setHeader('Set-Cookie', 'name=value')
-          res.cookie('_online', token, {
-            secure: true, // localhost too won't work
-            httpOnly: true, // frontend js can't access
-            maxAge: auth.maxAge,
-            sameSite: 'strict',
-            // path: '' // until we figure out how to add multiple path
-          })
+          res.cookie('_online', token, cookieOptions)
 
           res.status(200).redirect(req.body.statecode.toUpperCase());
         }

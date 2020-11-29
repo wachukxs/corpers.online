@@ -2,10 +2,11 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser')
 const session = require('express-session');
 const morgan = require('morgan');
 const crypto = require('crypto')
+const MySQLStore = require('express-mysql-session')(session);
 
 const welcomeRoutes = require('../routes/welcome');
 const actionsRoutes = require('../routes/actions');
@@ -14,19 +15,29 @@ const blogRoutes = require('../routes/blog');
 
 app.set('view engine', 'ejs');
 
+const connectionPool = require('../models/db');
+let sessionStore = new MySQLStore({}, connectionPool);
 // express-session deprecated req.secret; provide secret option server.js:449:9
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'sth%shh@shhhs"shhh==|skf$kinda,£right?',
+    secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     httpOnly: true,
-    secure: true,
-    // domain: 'localhost' || 'corpers.online',
+    secure: true, // hmmm
+    key: 'you_online',
+    store: sessionStore,
+    domain: 'corpers.online',
     // path: '',
 }));
 
+// sessionStore.close(); // when would we ever need this?
+
+let morganFormat = 'tiny'
+if (process.env.NODE_ENV === 'production') {
+    morganFormat = ':remote-addr - :remote-user [:date[web]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"'
+}
 // set morgan to log info about our requests for development use.
-app.use(morgan(':remote-addr - :remote-user [:date[web]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"'))
+app.use(morgan(morganFormat))
 
 // The app.locals object has properties that are local variables within the application.
 app.locals.title = 'Corpers Online';
@@ -52,23 +63,6 @@ app.use(function (req, res) {
 });
 
 /**
- * If you’re writing a web application,
- * there are a lot of common best practices
- * that you should follow to secure your application:
- * (1)XSS Protection
- * (2)Prevent Clickingjacking using X-Frame-Options
- * (3)Enforcing all connections to be HTTPS
- * (4)Setting a Context-Security-Policy header
- * 
- * Disabling the X-Powered-By header
- * so attackers can’t narrow down their attacks to specific software
- * 
- * Instead of remembering to configure all these headers,
- * Helmet will set them all to sensible defaults for you,
- * and allow you to tweak the ones that you need.
- * 
- * It's incredibly simple to set up on an Express.js application:
- * 
  * open https://using-umami.herokuapp.com/ to see amazing metrics
  * 
  * should we be using res.locals as opposed to req.session?
@@ -103,8 +97,7 @@ sitemap.generate4(actionsRoutes)
 sitemap.generate4(blogRoutes)
 // sitemap.toFile() // uncomment when we figure out sitemap or use a diffrent library
 
-console.log('env mode', app.get('env'));
-module.exports = app;
+module.exports = app; // app.get('env')
 
 /**
  * running on heroku at
