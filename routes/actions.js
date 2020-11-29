@@ -3,6 +3,7 @@ const Busboy = require('busboy');
 const multer = require('multer');
 inspect = require('util').inspect;
 const jwt = require('jsonwebtoken')
+const auth = require('../helpers/auth')
 const helpers = require('../constants/helpers')
 const socket = require('../sockets/routes')
 const ngplaces = require('../constants/ngstates')
@@ -226,12 +227,12 @@ router.get('/posts', function (req, res) {
 });
 
 /**the new profile page */
-router.get('/profile', function (req, res) {
+router.get('/profile', auth.verifyJWT, function (req, res) {
   fs.readFile('./constants/ngstateslga.json', (err, data) => {
     let jkl = JSON.parse(data);
     // let's hope there's no err
 
-    if (req.session.loggedin) {
+    /* if (req.session.loggedin) { */
       let jn = req.session.corper.statecode.toUpperCase()
 
       /**an array of all the local government in the state */
@@ -266,9 +267,9 @@ router.get('/profile', function (req, res) {
           ...(req.session.corper.picture_id) && {picture_id: req.session.corper.picture_id},
         });
       })
-    } else {
+    /* } else {
       res.redirect('/login');
-    }
+    } */
 
   })
 });

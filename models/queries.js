@@ -61,7 +61,6 @@ exports.CorpersSignUp = async (signupData) => {
                             reject(err)
                         } else {
                             // Store hash in your password DB.
-                            console.log('hash', hash, 'salt', salt)
                             signupData.salt = salt
                             // replace password
                             signupData.password = hash
@@ -125,7 +124,7 @@ exports.CorpersLogin = async (req_body) => {
         // .toUpperCase() is crucial
         let retries = 2;
         let loginQuery = connectionPool.query(sqlquery, [req_body.statecode.toUpperCase()], function (error, result, fields) {
-            console.log('is login result be empty?', result);
+            console.log('Is login result be empty?', result.length);
             // console.log('selected data from db, logging In...', results1); // error sometimes, maybe when there's no db conn: ...
             if (error) {
                 console.log('the error code:', error.code)
@@ -545,7 +544,7 @@ exports.GetMapData = async () => {
  */
 exports.GetChatData = async (req) => {
     let re = await new Promise((resolve, reject) => {
-        if (req.session.loggedin && req.query.posts) { // we need to be sure that they clicked from /account
+        if (/* req.session.loggedin && */ req.query.posts) { // we need to be sure that they clicked from /account
 
             let query = '';
             // console.log('\n\n\n\n\n uhmmmm', req.query.posts.who, req.query.posts.when, req.query.posts.type, moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss'));

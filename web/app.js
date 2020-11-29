@@ -2,6 +2,7 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser')
 const session = require('express-session');
 const morgan = require('morgan');
 const crypto = require('crypto')
@@ -34,6 +35,7 @@ app.locals.email = process.env.THE_EMAIL;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cookieParser(process.env.SESSION_SECRET))
 
 // https://stackoverflow.com/a/55787532/9259701
 app.use('/assets', express.static('assets'))
@@ -68,6 +70,8 @@ app.use(function (req, res, next) {
  * It's incredibly simple to set up on an Express.js application:
  * 
  * open https://using-umami.herokuapp.com/ to see amazing metrics
+ * 
+ * should we be using res.locals as opposed to req.session?
  */
 var helmet = require('helmet');
 app.use(helmet());
@@ -98,10 +102,12 @@ sitemap.generate4(welcomeRoutes)
 sitemap.generate4(actionsRoutes)
 sitemap.generate4(blogRoutes)
 // sitemap.toFile() // uncomment when we figure out sitemap or use a diffrent library
+
+console.log('env mode', app.get('env'));
 module.exports = app;
 
 /**
  * running on heroku at
- * Creating app... done, ⬢ powerful-castle-11756
- * https://powerful-castle-11756.herokuapp.com/ | https://git.heroku.com/powerful-castle-11756.git
+ * Creating app... done, ⬢ corpers-online
+ * https://corpers-online.herokuapp.com/ | https://git.heroku.com/corpers-online.git
  */

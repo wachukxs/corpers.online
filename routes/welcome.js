@@ -43,18 +43,15 @@ router.get(ngstates.states_short_paths_batch_regex_stringed, function (req, res)
 /**great resource for express route regex https://www.kevinleary.net/regex-route-express/ & https://forbeslindesay.github.io/express-route-tester/ */
 let years = parseInt(new Date(Date.now()).getFullYear().toFixed().slice(2, 4));
 let yearrange = '(' + (years - 1).toString() + '|' + years.toString() + ')';
-router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm))/:batch_stream((' + yearrange /*(18|19)*/ + '([abcACB])))/:lastfour(([0-9]{4}))', function (req, res) {
-  console.log('req.params/session', req.session, req.params) // req.path is shorthand for url.parse(req.url).pathname
+router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm))/:batch_stream((' + yearrange /*(18|19)*/ + '([abcACB])))/:lastfour(([0-9]{4}))', 
+auth.verifyJWT, function (req, res) {
+  // console.log('req.params/session', req.session, req.params) // req.path is shorthand for url.parse(req.url).pathname
 
-  if (req.session.loggedin) {
+  /* if (req.session.loggedin) { */
     res.set('Content-Type', 'text/html');
 
     /** this query runs so we can get the number of unread messages the user has */
     query.UnreadMessages([req.path.substring(1, 12).toUpperCase(), false]).then(result => {
-      jwt.sign({statecode: req.path.toUpperCase()}, process.env.SESSION_SECRET, (err, token) => {
-        if (err) throw err
-        console.log('token generated', token);
-      })
       res.render('pages/account', {
         statecode: req.session.corper.statecode.toUpperCase(), // or req.path.substring(1, 12).toUpperCase()
         batch: req.params['3'],
@@ -78,12 +75,12 @@ router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN
       res.redirect('/') // go back home, we should tell you an error occured
     })
 
-  } else {
+  /* } else {
     res.redirect('/login');
-  }
+  } */
 });
 
-router.get('/chat', function (req, res) {
+router.get('/chat', auth.verifyJWT, function (req, res) {
   res.set('Content-Type', 'text/html');
   // req.query.posts.who and req.query.posts.when
 
@@ -177,12 +174,27 @@ router.post('/signup', /* bodyParser.urlencoded({
       console.log('re:', result);
 
       req.session.corper.statecode = req.body.statecode.toUpperCase();
-      req.session.loggedin = true;
+      // req.session.loggedin = true;
       req.session.corper.servicestate = result.theservicestate;
       req.session.corper.batch = req.body.statecode.toUpperCase().slice(3, 6);
       req.session.corper.location = req.session.corper.servicestate; // really fix this, we should add some other data if we can
 
-      res.redirect(req.body.statecode.toUpperCase());
+      jwt.sign({statecode: req.body.statecode.toUpperCase()}, process.env.SESSION_SECRET, (err, token) => {
+        if (err) throw err
+        else {
+          console.log('token generated', token);
+          // res.setHeader('Set-Cookie', 'name=value')
+          res.cookie('_online', token, {
+            // secure: true, // localhost too won't work
+            httpOnly: true, // frontend js can't access
+            maxAge: auth.maxAge,
+            sameSite: 'strict',
+            // path: '' // until we figure out how to add multiple path
+          })
+
+          res.status(200).redirect(req.body.statecode.toUpperCase());
+        }
+      })
 
     }, error => {
       console.log('well some error happened', error);
@@ -222,24 +234,26 @@ router.post('/login', /* bodyParser.urlencoded({ // edited
 
     query.CorpersLogin(req.body).then(result => {
 
-      /* req.session.statecode = req.body.statecode.toUpperCase();
-      req.session.batch = result.response[0].batch;
-      req.session.loggedin = true;
-      req.session.servicestate = result.response[0].servicestate;
-      req.session.name_of_ppa = result.response[0].name_of_ppa;
-      req.session.firstname = result.response[0].firstname;
-      req.session.location = req.session.servicestate + (result.response[0].city_town ? ', ' + result.response[0].city_town : ''); // + (results1[0].region_street ? ', ' + results1[0].region_street : '' )
-      req.session.picture_id = result.response[0].picture_id;
-      req.session.lga = result.response[0].lga;
-      req.session.region_street = result.response[0].region_street;
-      req.session.city_town = result.response[0].city_town;
-      req.session.bio = result.response[0].bio; */
-
       req.session.corper = result.response[0];
       req.session.corper.location = result.response[0].servicestate + (result.response[0].city_town ? ', ' + result.response[0].city_town : ''); // + (results1[0].region_street ? ', ' + results1[0].region_street : '' )
-      req.session.loggedin = true;
+      // req.session.loggedin = true;
 
-      res.status(200).redirect(req.body.statecode.toUpperCase());
+      jwt.sign({statecode: req.body.statecode.toUpperCase()}, process.env.SESSION_SECRET, (err, token) => {
+        if (err) throw err
+        else {
+          console.log('token generated', token);
+          // res.setHeader('Set-Cookie', 'name=value')
+          res.cookie('_online', token, {
+            // secure: true, // localhost too won't work
+            httpOnly: true, // frontend js can't access
+            maxAge: auth.maxAge,
+            sameSite: 'strict',
+            // path: '' // until we figure out how to add multiple path
+          })
+
+          res.status(200).redirect(req.body.statecode.toUpperCase());
+        }
+      })
 
       query.LoginSession([req.body.statecode.toUpperCase(), req.session.id, req.headers["user-agent"]]).then(resolve => {
         console.log('saved login session info', resolve);
