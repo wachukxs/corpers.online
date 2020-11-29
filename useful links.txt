@@ -1,0 +1,2 @@
+About Promises in JS, and how the can still continue execution after resolving/rejecting
+https://stackoverflow.com/a/32536083/9259701

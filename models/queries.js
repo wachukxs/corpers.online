@@ -49,70 +49,70 @@ exports.CorpersSignUp = async (signupData) => {
 
         if (valid_statecode === null) {
             reject({ message: 'invalid statecode' })
-        }
-
-        bcrypt.genSalt(saltRounds, function(err, salt) {
-            if (err) {
-                console.error(err)
-                reject(err)
-            }
-            bcrypt.hash(signupData.password, salt, function(err, hash) {
+        } else {
+            bcrypt.genSalt(saltRounds, function(err, salt) {
                 if (err) {
                     console.error(err)
                     reject(err)
-                }
-                // Store hash in your password DB.
-                console.log('hash', hash, 'salt', salt)
-                signupData.salt = salt
-                // replace password
-                signupData.password = hash
-
-                connectionPool.query('INSERT INTO info SET ?', signupData, function (error, results, fields) {
-                    console.log('inserted data result: ', results);
-                    if (error) {
-                        console.log('the error code:', error.code, error.sqlMessage)
-                        switch (error.code) { // do more here
-                            case 'ER_DUP_ENTRY': // ER_DUP_ENTRY if a statecode or email exists already
-                                if (error.sqlMessage.includes(signupData.statecode.toUpperCase())) { // Duplicate entry 'TR/19A/1234' for key 'PRIMARY'
-                                    // res.redirect('/signup?m=ds'); // [m]essage = [d]uplicate [s]tatecode
+                } else {
+                    bcrypt.hash(signupData.password, salt, function(err, hash) {
+                        if (err) {
+                            console.error(err)
+                            reject(err)
+                        } else {
+                            // Store hash in your password DB.
+                            console.log('hash', hash, 'salt', salt)
+                            signupData.salt = salt
+                            // replace password
+                            signupData.password = hash
+            
+                            connectionPool.query('INSERT INTO info SET ?', signupData, function (error, results, fields) {
+                                console.log('inserted data result: ', results);
+                                if (error) {
+                                    console.log('the error code:', error.code, error.sqlMessage)
+                                    switch (error.code) { // do more here
+                                        case 'ER_DUP_ENTRY': // ER_DUP_ENTRY if a statecode or email exists already
+                                            if (error.sqlMessage.includes(signupData.statecode.toUpperCase())) { // Duplicate entry 'TR/19A/1234' for key 'PRIMARY'
+                                                // res.redirect('/signup?m=ds'); // [m]essage = [d]uplicate [s]tatecode
+                                                r = {
+                                                    message: 'duplicate statecode'
+                                                };
+                                            } else if (error.sqlMessage.includes(signupData.email)) { // Duplicate entry 'uyu@yud.eww' for key 'email'
+                                                // res.redirect('/signup?m=de'); // [m]essage = [d]uplicate [e]mail
+                                                r = {
+                                                    message: 'duplicate email'
+                                                };
+                                            }
+                    
+                                            break;
+                                        default:
+                                            r = {
+                                                message: `${error.code} ${error.sqlMessage}`
+                                            };
+                                            break;
+                                        // ER_BAD_FIELD_ERROR
+                                    }
+                                    // throw error; // ? // breaks server
+                    
+                                    reject(r);
+                                } else if (results.affectedRows === 1) { // "else if" is very important
+                    
+                                    // helpers.email(signupData.email, signupData.firstname, theservicestate).catch(console.error);
                                     r = {
-                                        message: 'duplicate statecode'
+                                        message: true,
+                                        theservicestate: theservicestate
                                     };
-                                } else if (error.sqlMessage.includes(signupData.email)) { // Duplicate entry 'uyu@yud.eww' for key 'email'
-                                    // res.redirect('/signup?m=de'); // [m]essage = [d]uplicate [e]mail
-                                    r = {
-                                        message: 'duplicate email'
-                                    };
+                                    resolve(r);
                                 }
-        
-                                break;
-                            default:
-                                r = {
-                                    message: `${error.code} ${error.sqlMessage}`
-                                };
-                                break;
-                            // ER_BAD_FIELD_ERROR
+                    
+                            });
                         }
-                        // throw error; // ? // breaks server
         
-                        reject(r);
-                    }
-        
-                    // "else if" is very important
-                    else if (results.affectedRows === 1) {
-        
-                        // helpers.email(signupData.email, signupData.firstname, theservicestate).catch(console.error);
-                        r = {
-                            message: true,
-                            theservicestate: theservicestate
-                        };
-                        resolve(r);
-                    }
-        
-                });
-
+                    });
+                }
+                
             });
-        });
+        }
 
     })
 
@@ -139,11 +139,12 @@ exports.CorpersLogin = async (req_body) => {
                                 console.error(err);
                                 // email or notify developer
                                 reject(err)
-                            };
-                            console.info('Server responded to ping, re-trying db conn...', retries);
-                            while (retries > 0) {
-                                loginQuery()
-                                retries--
+                            } else {
+                                console.info('Server responded to ping, re-trying db conn...', retries);
+                                while (retries > 0) {
+                                    loginQuery()
+                                    retries--
+                                }
                             }
                         })
                         break;
@@ -166,8 +167,8 @@ exports.CorpersLogin = async (req_body) => {
                             // Store hash in your password DB. Basically update db
                             let q = "UPDATE info SET password = '" + hash + "', salt = '" + salt + "' WHERE statecode = '" + req_body.statecode.toUpperCase() + "'";
                             connectionPool.query(q, function (err, rslts, flds) {
-                                if (err) reject(err);
-                                if (rslts.changedRows === 1) { // when we've saved it, the corper can now logged in
+                                if (err) reject(err)
+                                else if (rslts.changedRows === 1) { // when we've saved it, the corper can now logged in
                                     console.log('\n\nupdated password & salt');
                                     delete result[0].password  // very crucial step too!
                                     resolve({ message: true, response: result })
@@ -199,8 +200,8 @@ exports.LoginSession = async (loginData) => {
     let re = await new Promise((resolve, reject) => {
         // insert login time and session id into db for usage details
         connectionPool.query("INSERT INTO session_usage_details( statecode, session_id, user_agent) VALUES (?, ?, ?)", loginData, function (error2, results2, fields2) {
-            if (error2) reject({ message: false });
-            if (results2.affectedRows === 1) {
+            if (error2) reject({ message: false })
+            else if (results2.affectedRows === 1) {
                 resolve({ message: true })
             }
         });
@@ -219,13 +220,14 @@ exports.UnreadMessages = async (corpersData) => {
 
         connectionPool.query("SELECT * FROM chats WHERE message_to = ? AND message IS NOT NULL AND message_sent = ?", corpersData, function (error, results, fields) {
 
-            if (error) reject(error);
-
-            const total_num_unread_msg = results.filter((value, index, array) => {
-                return value.message_to == corpersData[0].toUpperCase() && value.message_sent == 0
-            }).length;
-
-            resolve(total_num_unread_msg);
+            if (error) reject(error)
+            else {
+                const total_num_unread_msg = results.filter((value, index, array) => {
+                    return value.message_to == corpersData[0].toUpperCase() && value.message_sent == 0
+                }).length;
+    
+                resolve(total_num_unread_msg);
+            }
         });
     })
 
@@ -245,9 +247,8 @@ exports.FetchPostsForTimeLine = async (timeLineInfo) => {
         SELECT * FROM posts WHERE statecode LIKE '%DT%' AND post_time > "null" ORDER by posts.post_time ASC; SELECT * FROM accommodations WHERE statecode LIKE '%DT%' AND input_time > "null" ORDER by accommodations.input_time ASC
          */
         connectionPool.query(getpostsquery, function (error, results, fields) {
-            if (error) reject(error);
-
-            if (!helpers.isEmpty(results[0]) || !helpers.isEmpty(results[1])) {
+            if (error) reject(error)
+            else if (!helpers.isEmpty(results[0]) || !helpers.isEmpty(results[1])) {
 
                 // FOR THE POSTS - sales just converting their post time value to a worded age & making the media value okay
                 Object.entries(results[0]).forEach(
@@ -330,7 +331,6 @@ exports.InsertRowInMediaTable = async (mediaData) => {
     let re = await new Promise((resolve, reject) => {
         connectionPool.query("INSERT INTO media SET ?", mediaData, function (error, result, fields) {
             if (error) reject(error)
-
             else if (result.affectedRows === 1) {
                 resolve()
             }
@@ -347,7 +347,6 @@ exports.InsertRowInPostsTable = async (postData) => {
     let re = await new Promise((resolve, reject) => {
         connectionPool.query("INSERT INTO posts SET ?", postData, function (error, result, fields) {
             if (error) reject(error)
-
             else if (result.affectedRows === 1) {
                 resolve()
             }
@@ -380,11 +379,9 @@ exports.GetStatecodeChatRooms = async (statecode) => {
         connectionPool.query("SELECT DISTINCT room FROM chats WHERE room LIKE '%" + statecode + "%' AND message IS NOT NULL", function (error, results, fields) {
 
             if (error) reject(error);
-
             else if (!helpers.isEmpty(results)) { // an array of objects with the columns as keys
                 console.info('got rooms from db successfully', results);
                 resolve(results)
-
             } else if (helpers.isEmpty(results)) {
                 // console.info('got empty rooms from db successfully', results);
                 reject()
@@ -399,7 +396,6 @@ exports.InsertRowInChatTable = async (chatData) => {
     let re = await new Promise((resolve, reject) => {
         connectionPool.query("INSERT INTO chats SET ?", chatData, function (error, result, fields) {
             if (error) reject(error)
-
             else if (result.affectedRows === 1) {
                 resolve()
             }
@@ -413,9 +409,9 @@ exports.UpdateChatReadReceipts = async (chatInfo) => {
     let re = await new Promise((resolve, reject) => {
         let q = "UPDATE chats SET message_sent = true WHERE message IS NOT NULL AND message_from = '" + chatInfo.message_from + "' AND message_to = '" + chatInfo.message_to + "'";
         connectionPool.query(q, function (error, results, fields) {
-            if (error) reject(error);
+            if (error) reject(error)
             // connected!
-            if (results.changedRows > 0) { // when we've saved it, the corper can now join the room
+            else if (results.changedRows > 0) { // when we've saved it, the corper can now join the room
                 console.log('\n\nupdated messages delivered');
                 resolve()
                 // emit to the message_from if online to know that the message_to has read the message [so double tick on both ends]
@@ -431,7 +427,6 @@ exports.InsertRowInAccommodationsTable = async (postData) => {
     let re = await new Promise((resolve, reject) => {
         connectionPool.query("INSERT INTO accommodations SET ?", postData, function (error, result, fields) {
             if (error) reject(error)
-
             else if (result.affectedRows === 1) {
                 resolve()
             }
@@ -459,7 +454,7 @@ exports.GetMapData = async () => {
 
             // console.log(results.length, 'map result =>', results)
 
-            if (!helpers.isEmpty(results[1])) {
+            else if (!helpers.isEmpty(results[1])) {
                 // console.log('geo data for map', results);
 
                 // for the results from places table
@@ -587,31 +582,31 @@ exports.GetChatData = async (req) => {
                 if (error) {
                     console.error('got unread chats from db UNsuccessfully-00, rejecting', error);
                     reject(error)
+                } else {
+                    // console.info('\nold chats', results[1], '\nfrom db successfully');
+                    // so if the newchat has chatted before, i.e. is in oldchats, then just make it highlighted
+                    // then send it to the chat page of the involved parties so they are remainded of what they want to buy
+                    resolve({
+                        statecode: req.session.corper.statecode.toUpperCase(),
+                        statecode2: req.query.s,
+                        servicestate: req.session.corper.servicestate,
+                        batch: req.session.corper.batch,
+                        name_of_ppa: req.session.corper.name_of_ppa,
+                        postdetails: (helpers.isEmpty(results[0]) ? null : results[0]), // tell user the post no longer exists, maybe it was bought or something, we should delete it if it was bought, we hope not to use this function
+                        newchat: {
+                            statecode: req.query.posts.who.toUpperCase(),
+                            name: results[4][0]
+                        },
+                        posttime: req.query.posts.when,
+                        posttype: req.query.posts.type,
+                        oldchats: results[1], // leave it like this!!
+                        oldunreadchats: results[2], // messages that was sent to this user but this user hasn't seen them
+                        oldunsentchats: results[3], // messages this user sent but hasn't deliver, i.e. the receipent hasn't seen it
+                        total_num_unread_msg: results[2].filter((value, index, array) => {
+                            return value.message_to == req.query.s && value.message_sent == 0
+                        }).length
+                    });
                 }
-
-                // console.info('\nold chats', results[1], '\nfrom db successfully');
-                // so if the newchat has chatted before, i.e. is in oldchats, then just make it highlighted
-                // then send it to the chat page of the involved parties so they are remainded of what they want to buy
-                resolve({
-                    statecode: req.session.corper.statecode.toUpperCase(),
-                    statecode2: req.query.s,
-                    servicestate: req.session.corper.servicestate,
-                    batch: req.session.corper.batch,
-                    name_of_ppa: req.session.corper.name_of_ppa,
-                    postdetails: (helpers.isEmpty(results[0]) ? null : results[0]), // tell user the post no longer exists, maybe it was bought or something, we should delete it if it was bought, we hope not to use this function
-                    newchat: {
-                        statecode: req.query.posts.who.toUpperCase(),
-                        name: results[4][0]
-                    },
-                    posttime: req.query.posts.when,
-                    posttype: req.query.posts.type,
-                    oldchats: results[1], // leave it like this!!
-                    oldunreadchats: results[2], // messages that was sent to this user but this user hasn't seen them
-                    oldunsentchats: results[3], // messages this user sent but hasn't deliver, i.e. the receipent hasn't seen it
-                    total_num_unread_msg: results[2].filter((value, index, array) => {
-                        return value.message_to == req.query.s && value.message_sent == 0
-                    }).length
-                });
 
 
             });
@@ -629,25 +624,25 @@ exports.GetChatData = async (req) => {
                 if (error) {
                     console.error('got unread chats from db UNsuccessfully-1', error);
                     reject(error)
+                } else {
+                    console.info('got unread chats from db successfully', results[1]);
+
+                    // then send it to the chat page of the involved parties so they are remainded of what they want to buy
+                    resolve({ // having it named account.2 returns error cannot find module '2'
+                        statecode: req.session.corper.statecode.toUpperCase(),
+                        statecode2: req.query.s,
+                        servicestate: req.session.corper.servicestate,
+                        // batch: req.session.corper.batch,
+                        name_of_ppa: req.session.corper.name_of_ppa,
+                        oldchats: results[0], // leave it like this!!
+                        newchat: null,
+                        oldunreadchats: results[1], // (helpers.isEmpty(results[1]) ? null : results[1])
+                        oldunsentchats: results[2],
+                        total_num_unread_msg: results[1].filter((value, index, array) => {
+                            return value.message_to == req.query.s && value.message_sent == 0
+                        }).length
+                    })
                 }
-
-                console.info('got unread chats from db successfully', results[1]);
-
-                // then send it to the chat page of the involved parties so they are remainded of what they want to buy
-                resolve({ // having it named account.2 returns error cannot find module '2'
-                    statecode: req.session.corper.statecode.toUpperCase(),
-                    statecode2: req.query.s,
-                    servicestate: req.session.corper.servicestate,
-                    // batch: req.session.corper.batch,
-                    name_of_ppa: req.session.corper.name_of_ppa,
-                    oldchats: results[0], // leave it like this!!
-                    newchat: null,
-                    oldunreadchats: results[1], // (helpers.isEmpty(results[1]) ? null : results[1])
-                    oldunsentchats: results[2],
-                    total_num_unread_msg: results[1].filter((value, index, array) => {
-                        return value.message_to == req.query.s && value.message_sent == 0
-                    }).length
-                })
             });
 
         } else {
@@ -672,8 +667,10 @@ exports.SubscribeToEmailUpdates = async (req_body) => {
             // console.log('NOT empthy');
             connectionPool.query("INSERT INTO subscribers SET ?", { email: req_body.email }, function (error, results, fields) {
                 if (error) reject(error)
-                if (results.affectedRows === 1) {
+                else if (results.affectedRows === 1) {
                     resolve()
+                } else {
+                    reject('no edit occured')
                 }
             });
 
@@ -688,21 +685,23 @@ exports.AllPPAs = async () => {
         connectionPool.query("SELECT type_of_ppa FROM info WHERE type_of_ppa != ''", function (error, results, fields) {
 
             if (error) reject(error);
-            console.log('ppa types:', results)
-            let listoftypesofppas = [];
-            for (let index = 0; index < results.length; index++) {
-                const element = results[index].type_of_ppa;
-                listoftypesofppas.push(element);
+            else {
+                console.log('ppa types:', results)
+                let listoftypesofppas = [];
+                for (let index = 0; index < results.length; index++) {
+                    const element = results[index].type_of_ppa;
+                    listoftypesofppas.push(element);
 
+                }
+                /**
+                 *  [ RowDataPacket { type_of_ppa: 'Radio Station' },
+                     RowDataPacket { type_of_ppa: 'School' },
+                    RowDataPacket { type_of_ppa: 'rew qrqew' } ]
+                */
+                let jkl = JSON.parse(JSON.stringify(listoftypesofppas));
+                // let's hope there's no err
+                resolve(jkl);
             }
-            /**
-             *  [ RowDataPacket { type_of_ppa: 'Radio Station' },
-                  RowDataPacket { type_of_ppa: 'School' },
-                  RowDataPacket { type_of_ppa: 'rew qrqew' } ]
-            */
-            let jkl = JSON.parse(JSON.stringify(listoftypesofppas));
-            // let's hope there's no err
-            resolve(jkl);
         })
 
     })
@@ -716,10 +715,10 @@ exports.AddPlace = async (req_body) => {
         connectionPool.query("INSERT INTO places SET ?", req_body, function (error, results, fields) {
             console.log('inserted data from: ', results);
             if (error) reject(error);
-            if (results.affectedRows === 1) {
+            else if (results.affectedRows === 1) {
                 resolve()
             } else {
-                reject()
+                reject('no edit occured')
             }
         });
     })
@@ -787,99 +786,107 @@ exports.UpdateProfile = async (_profile_data) => {
             console.error('update profile error', error);
             reject(error); // throw error;
         }
-      // go back to the user's timeline
-      if (results.changedRows === 1 && !helpers.isEmpty(_profile_data)) {
-        
-        /* 
-        // todo later...
-  
-        statecode: req.session.corper.statecode.toUpperCase(),
-        servicestate: req.session.corper.servicestate,
-        batch: req.session.corper.batch, */
+        // go back to the user's timeline
+        else if (results.changedRows === 1 && !helpers.isEmpty(_profile_data)) {
+            
+            /* 
+            // todo later...
+    
+            statecode: req.session.corper.statecode.toUpperCase(),
+            servicestate: req.session.corper.servicestate,
+            batch: req.session.corper.batch, */
 
-        if (_profile_data.newstatecode) { // if they are changing statecode to a different state, then their service state in the db should change and their ppa details too should change, tell them to change the ppa details if they don't change it
-          // change statecode in other places too
-          // this works because rooms only have one instance for every two corpers or statecode, so there's no DD/17B/7778-AB/17B/2334 and AB/17B/2334-DD/17B/7778 only one of it, same reason why there's no LIMIT 1 in the SELECT statement in REPLACE function
-          let updatequery = "UPDATE chats SET room = (SELECT REPLACE( ( SELECT DISTINCT room WHERE room LIKE '%" + _profile_data.statecode.toUpperCase() + "%' ) ,'" + _profile_data.statecode.toUpperCase() + "','" + _profile_data.newstatecode.toUpperCase() + "')) ; " +
-            " UPDATE chats SET message_from = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE message_from = '" + _profile_data.statecode.toUpperCase() + "' ; " +
-            " UPDATE chats SET message_to = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE message_to = '" + _profile_data.statecode.toUpperCase() + "' ;" +
-            " UPDATE posts SET statecode = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE statecode = '" + _profile_data.statecode.toUpperCase() + "' ; " +
-            " UPDATE accommodations SET statecode = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE statecode = '" + _profile_data.statecode.toUpperCase() + "' ";
-          connectionPool.query(updatequery, function (error, results, fields) {
-            console.log('updated statecode ', results);
-            if (error) reject(error);
-            // connected!
-            // at least ONE or ALL of these MUST update, not necessarily all that why we are using || and NOT && because it could be possible they've not chatted or posted anything at all, but they must have at least registered!
-            if (results[0].affectedRows > 0 
-                || results[1].affectedRows > 0 
-                || results[2].affectedRows > 0 
-                || results[3].affectedRows > 0 
-                || results[4].affectedRows > 0
-                ) {
-              // then status code is good
-              console.log('we\'re really good with the update\t', results)
+            if (_profile_data.newstatecode) { // if they are changing statecode to a different state, then their service state in the db should change and their ppa details too should change, tell them to change the ppa details if they don't change it
+            // change statecode in other places too
+            // this works because rooms only have one instance for every two corpers or statecode, so there's no DD/17B/7778-AB/17B/2334 and AB/17B/2334-DD/17B/7778 only one of it, same reason why there's no LIMIT 1 in the SELECT statement in REPLACE function
+            let updatequery = "UPDATE chats SET room = (SELECT REPLACE( ( SELECT DISTINCT room WHERE room LIKE '%" + _profile_data.statecode.toUpperCase() + "%' ) ,'" + _profile_data.statecode.toUpperCase() + "','" + _profile_data.newstatecode.toUpperCase() + "')) ; " +
+                " UPDATE chats SET message_from = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE message_from = '" + _profile_data.statecode.toUpperCase() + "' ; " +
+                " UPDATE chats SET message_to = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE message_to = '" + _profile_data.statecode.toUpperCase() + "' ;" +
+                " UPDATE posts SET statecode = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE statecode = '" + _profile_data.statecode.toUpperCase() + "' ; " +
+                " UPDATE accommodations SET statecode = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE statecode = '" + _profile_data.statecode.toUpperCase() + "' ";
+            connectionPool.query(updatequery, function (error, results, fields) {
+                console.log('updated statecode ', results);
+                if (error) reject(error)
+                // connected!
+                // at least ONE or ALL of these MUST update, not necessarily all that why we are using || and NOT && because it could be possible they've not chatted or posted anything at all, but they must have at least registered!
+                else if (results[0].affectedRows > 0 
+                    || results[1].affectedRows > 0 
+                    || results[2].affectedRows > 0 
+                    || results[3].affectedRows > 0 
+                    || results[4].affectedRows > 0
+                    ) {
+                // then status code is good
+                console.log('we\'re really good with the update\t', results)
 
-              // then change the session statecode
-                resolve(_profile_data.newstatecode.toUpperCase());
-            } else {
-              console.log('we\'re bad with the update') // we should find out what went wrong
-              reject('we\'re bad with the update')
-              /**
-               * 
-               * 
-               * results looks like:
-               * 
-               * OkPacket {
-                  fieldCount: 0,
-                  affectedRows: 1,
-                  insertId: 0,
-                  serverStatus: 2,
-                  warningCount: 1,
-                  message: '',
-                  protocol41: true,
-                  changedRows: 0 
+                // then change the session statecode
+                    resolve(_profile_data.newstatecode.toUpperCase());
+                } else {
+                console.log('we\'re bad with the update') // we should find out what went wrong
+                reject('we\'re bad with the update')
+                /**
+                 * 
+                 * 
+                 * results looks like:
+                 * 
+                 * OkPacket {
+                     fieldCount: 0,
+                    affectedRows: 1,
+                    insertId: 0,
+                    serverStatus: 2,
+                    warningCount: 1,
+                    message: '',
+                    protocol41: true,
+                    changedRows: 0 
+                    }
+    
+                    so we'd want to check out message attribute
+                */
+
+                // we should redirect to somewhere and not just block the whole system!!!!!!!!!!
                 }
-  
-                so we'd want to check out message attribute
-               */
+            });
+            // should we save every change of statecode that ever occured ?
+            // SELECT room FROM `chats` WHERE message_from = 'AB/17B/1234' or message_to = 'AB/17B/1234'
 
-              // we should redirect to somewhere and not just block the whole system!!!!!!!!!!
+            // UPDATE `chats` SET `room`=[value-1],`message_from`=[value-3],`message_to`=[value-4] WHERE message_from = 'AB/17B/1234' or message_to = 'AB/17B/1234'
+            //- UPDATE `chats` SET `message_from`=[value-3] WHERE message_from = 'AB/17B/1234'
+            //- UPDATE `chats` SET `message_to`=[value-4] WHERE message_to = 'AB/17B/1234'
+
+            // SELECT room from chats WHERE message_from = 'AB/17B/1234' or message_to = 'AB/17B/1234'
+            // SELECT `room` FROM `chats` WHERE room LIKE '%AB/17B/1234%'
+
+            // should know when who they are chatting with is online and when they are typing
+
+            // for room change, consider using REPLACE('str', 'str_to_replace', 'replacement_str')
+            // for room change, consider using REPLACE(SELECT `room` FROM `chats` WHERE room LIKE '%AB/17B/1234%', 'AB/17B/1234', 'OD/19B/7778')
+            //- REPLACE(SELECT `room` FROM `chats` WHERE room LIKE '%AB/17B/1234%', 'AB/17B/1234', 'OD/19B/7778')
+
+            // for room formation, concat('str1', 'str2', ..., 'strN'), or concat_ws('seperator', 'str1', 'str2', ..., 'strN')
+
+
+            } else { // if no newstatecode
+            // res.status(200).redirect(req.session.corper.statecode.toUpperCase() /* + '?e=y' */); // [e]dit=[y]es|[n]o
+            resolve(_profile_data.statecode.toUpperCase())
             }
-          });
-          // should we save every change of statecode that ever occured ?
-          // SELECT room FROM `chats` WHERE message_from = 'AB/17B/1234' or message_to = 'AB/17B/1234'
-
-          // UPDATE `chats` SET `room`=[value-1],`message_from`=[value-3],`message_to`=[value-4] WHERE message_from = 'AB/17B/1234' or message_to = 'AB/17B/1234'
-          //- UPDATE `chats` SET `message_from`=[value-3] WHERE message_from = 'AB/17B/1234'
-          //- UPDATE `chats` SET `message_to`=[value-4] WHERE message_to = 'AB/17B/1234'
-
-          // SELECT room from chats WHERE message_from = 'AB/17B/1234' or message_to = 'AB/17B/1234'
-          // SELECT `room` FROM `chats` WHERE room LIKE '%AB/17B/1234%'
-
-          // should know when who they are chatting with is online and when they are typing
-
-          // for room change, consider using REPLACE('str', 'str_to_replace', 'replacement_str')
-          // for room change, consider using REPLACE(SELECT `room` FROM `chats` WHERE room LIKE '%AB/17B/1234%', 'AB/17B/1234', 'OD/19B/7778')
-          //- REPLACE(SELECT `room` FROM `chats` WHERE room LIKE '%AB/17B/1234%', 'AB/17B/1234', 'OD/19B/7778')
-
-          // for room formation, concat('str1', 'str2', ..., 'strN'), or concat_ws('seperator', 'str1', 'str2', ..., 'strN')
-
-
-        } else { // if no newstatecode
-          // res.status(200).redirect(req.session.corper.statecode.toUpperCase() /* + '?e=y' */); // [e]dit=[y]es|[n]o
-          resolve(_profile_data.statecode.toUpperCase())
+        } else { // everything went well, but it was only the profile pic that was updated, not text
+            // reject('no row changed in update')
+            resolve(_profile_data.statecode.toUpperCase())
+            // we need to optimize this, because before the pic is uploaded and updated, our server must have redirected
         }
-      } else { // everything went well, but it was only the profile pic that was updated, not text
-        // reject('no row changed in update')
-        resolve(_profile_data.statecode.toUpperCase())
-        // we need to optimize this, because before the pic is uploaded and updated, our server must have redirected
-      }
     });
     })
 
     return re;
 }
 
+/**
+ * 
+ * @param {object} req 
+ * Takes the req object as parameter
+ * 
+ * @description 
+ * Get PPA data from database with acutal values
+ */
 exports.DistinctNotNullDataFromPPAs = async (req) => {
     
     let re = await new Promise((resolve, reject) => {
@@ -1162,8 +1169,8 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
 
 /**
  * 
- * @param {req.body} data 
- * This function currently is handling searching of posts
+ * @param {object} data 
+ * This function, takes req.body, is currently handling searching of posts
  */
 exports.GetPosts = async (data) => { // we're meant to be saving every search! probably with morgan? or look for a library
     let re = await new Promise((resolve, reject) => {
@@ -1256,14 +1263,15 @@ exports.GetPlacesByTypeInOurDB = async (req) => {
       SELECT city_town FROM info WHERE city_town != '' AND servicestate = '" + req.session.corper.servicestate + "';\
       SELECT region_street FROM info WHERE region_street != '' AND servicestate = '" + req.session.corper.servicestate + "'", function (error2, results2, fields2) {
 
-        if (error2) reject(error2);
-
-        resolve({
-            names_of_ppas: results2[0], // is array of objects ie names_of_ppas[i].name_of_ppa
-            ppa_addresses: results2[1],
-            cities_towns: results2[2],
-            regions_streets: results2[3]
-        });
+        if (error2) reject(error2)
+        else {
+            resolve({
+                names_of_ppas: results2[0], // is array of objects ie names_of_ppas[i].name_of_ppa
+                ppa_addresses: results2[1],
+                cities_towns: results2[2],
+                regions_streets: results2[3]
+            });
+        }
       });
     })
 
@@ -1357,10 +1365,12 @@ exports.SearchAcc = async (req) => {
     let re = await new Promise((resolve, reject) => {
         // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
         connectionPool.query("SELECT * FROM accommodations WHERE rentrange = '" + req.query.rr + "' AND post_time = '" + req.query.pt + "'", function (error, results, fields) {
-        if (error) reject(error);
-        accommodation_details = {};
-        accommodation_details.nop = []; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
-        resolve(accommodation_details);
+        if (error) reject(error)
+        else {
+            accommodation_details = {};
+            accommodation_details.nop = []; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
+            resolve(accommodation_details);
+        }
       })
     })
 
@@ -1374,14 +1384,15 @@ exports.SearchDefault = async () => {
 
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
               reject(error);
+            } else {
+                console.log('looking for ooo', results)
+                _details = {};
+                _details.ppas = results[0];
+                _details.accommodations = results[1];
+                _details.theppa = [];
+                _details.nop = []; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
+                resolve(_details);
             }
-            console.log('looking for ooo', results)
-            _details = {};
-            _details.ppas = results[0];
-            _details.accommodations = results[1];
-            _details.theppa = [];
-            _details.nop = []; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
-            resolve(_details);
           })
     })
 
@@ -1394,11 +1405,12 @@ exports.GetSales = async () => {
 
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
               reject(error);
+            } else {
+                // console.log('looking for sales', results)
+                resolve({
+                    sales: results
+                });
             }
-            // console.log('looking for sales', results)
-            resolve({
-                sales: results
-            });
           })
     })
 
@@ -1411,12 +1423,13 @@ exports.GetAllSalesAndOneSale = async (req_query) => {
 
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
               reject(error);
+            } else {
+                // console.log('looking for sales', results)
+                resolve({
+                    sale: results[1],
+                    sales: results[0]
+                });
             }
-            // console.log('looking for sales', results)
-            resolve({
-                sale: results[1],
-                sales: results[0]
-            });
           })
     })
 
