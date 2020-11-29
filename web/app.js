@@ -17,27 +17,30 @@ app.set('view engine', 'ejs');
 
 const connectionPool = require('../models/db');
 let sessionStore = new MySQLStore({}, connectionPool);
-// express-session deprecated req.secret; provide secret option server.js:449:9
-app.use(session({
+let sessionOptions = {
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    httpOnly: true,
-    secure: true, // hmmm
-    key: 'you_online',
     store: sessionStore,
-    domain: 'corpers.online',
-    // path: '',
-}));
-
-// sessionStore.close(); // when would we ever need this?
-
+    cookie: {
+        httpOnly: true,
+        key: 'you_online',
+        sameSite: 'strict'
+        // domain: 'corpers.online',
+        // path: '',
+    }
+}
 let morganFormat = 'tiny'
 if (process.env.NODE_ENV === 'production') {
+    sessionOptions.cookie.secure = true; // hmmm
     morganFormat = ':remote-addr - :remote-user [:date[web]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"'
 }
 // set morgan to log info about our requests for development use.
 app.use(morgan(morganFormat))
+
+app.use(session(sessionOptions));
+
+// sessionStore.close(); // when would we ever need this?
 
 // The app.locals object has properties that are local variables within the application.
 app.locals.title = 'Corpers Online';
