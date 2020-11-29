@@ -26,7 +26,7 @@ app.use(session({
 }));
 
 // set morgan to log info about our requests for development use.
-app.use(morgan('dev'));
+app.use(morgan('combined'))
 
 // The app.locals object has properties that are local variables within the application.
 app.locals.title = 'Corpers Online';

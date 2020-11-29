@@ -11,7 +11,7 @@ router.get('/logout', function (req, res) {
       // cannot access session here
       console.log('session destroyed');
       res.cookie('_online', '', { // clear the JWT value
-        expires: 1 // remove the JWT ASAP
+        maxAge: 1 // remove the JWT ASAP
       })
       res.redirect('/');
     });
