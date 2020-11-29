@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser')
 const session = require('express-session');
 const morgan = require('morgan');
-const crypto = require('crypto')
+// const crypto = require('crypto')
 const MySQLStore = require('express-mysql-session')(session);
 
 const welcomeRoutes = require('../routes/welcome');

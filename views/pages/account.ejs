@@ -423,13 +423,18 @@
             #accommodationFormCarousel .carousel-item {
                 height: 350px;
             }
+
+            .small-alt-text {
+                display: inherit;
+                font-size: 7px;
+            }
         </style>
         <script async defer data-website-id="58dce5f5-c238-4e98-b2c6-e701c258f01d"
             src="https://using-umami.herokuapp.com/umami.js"></script>
     </head>
 
 
-    <body class="">
+    <body >
         <nav class="navbar navbar-expand-sm navbar-light bg-light active">
             <a class="navbar-brand" href="/">Corpers Online</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample03"
@@ -500,13 +505,13 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="">Put up an accommodation</h5>
+                        <h5 class="modal-title" >Put up an accommodation</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
 
-                    <div class="">
+                    <div >
                         <form id="accommodationform" enctype="multipart/form-data">
                             <div class="progress" style="height: 2px;">
                                 <div class="progress-bar" id="accommodation-progress-bar" role="progressbar"
@@ -671,7 +676,7 @@
                                                                 what we got won't be of help to other corpers.</small>
                                                         </div>
 
-                                                        <div class="">
+                                                        <div >
                                                             <label for="address">Address <small
                                                                     class="form-text text-muted">If you're there right
                                                                     now click 'Geo' to locate in maps</small> </label>
@@ -688,7 +693,7 @@
                                                             <small id="accinfo"></small>
 
                                                         </div>
-                                                        <div class="">
+                                                        <div >
                                                             <label for="directions">Directions</label>
                                                             <textarea class="form-control" name="directions"
                                                                 id="directions"
@@ -750,7 +755,7 @@
                                                 <fieldset>
                                                     <h2>Current Status</h2>
                                                     <div class="form-group">
-                                                        <small id="" class="form-text text-muted">Are you leasing out
+                                                        <small  class="form-text text-muted">Are you leasing out
                                                             your active rent tenure or is this a
                                                             new rent?</small>
                                                         <!-- //form for accommodation -->
@@ -922,7 +927,7 @@
                         <input type="text" name="type" id="ptype" value="sale" hidden>
 
                         <div class="modal-header">
-                            <h5 class="modal-title" id="">Create post</h5>
+                            <h5 class="modal-title" >Create post</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -1005,12 +1010,12 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="">Put up a sale</h5>
+                        <h5 class="modal-title" >Put up a sale</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="">
+                    <div >
                         <form id="postform" name="postform">
                             <div class="modal-body">
 
@@ -1050,7 +1055,7 @@
                                                     multiple id="IMG">
                                             </div>
 
-                                            <div class="">
+                                            <div >
                                                 <label for="directions">Description <span
                                                         class="text-muted">(optional)</span></label>
                                                 <textarea class="form-control" name="text" type="text"
@@ -1307,16 +1312,16 @@ we can even try to show a route in the map based on what address is and informat
                             <!-- put the corper's information. let them see their profile (and be able to change it) -->
                             <div class="card shadow" id="profilecard">
                                 <div class="card-body">
-                                    <h6 class="">About <small> &#183; <a href="/profile" id="">Edit</a></small></h6>
-                                    <ul class="" id="profile">
+                                    <h6 >About <small> &#183; <a href="/profile" >Edit</a></small></h6>
+                                    <ul  id="profile">
                                         <li>
-                                            <span class=""></span>Serving at <a href="#!"> <%= servicestate %> </a> <!--link should do what?-->
+                                            Serving at <a href="#!"> <%= servicestate %> </a> <!--link should do what?-->
                                         </li>
                                         <li>
-                                            <span class=""></span>Batch <a href="#!"> <%= batch %> </a> <!--link should take to /state/batch-->
+                                            Batch <a href="#!"> <%= batch %> </a> <!--link should take to /state/batch-->
                                         </li>
                                         <li>
-                                            <span class=""></span>PPA at <a
+                                            PPA at <a
                                                 href="<%= ( name_of_ppa ? '#!/places?nop=' + name_of_ppa : '/profile#PPA' ) %>">
                                                 <%= ( name_of_ppa ? name_of_ppa : '?' ) %> </a>
                                         </li>
@@ -1380,10 +1385,10 @@ we can even try to show a route in the map based on what address is and informat
                                   <div class="media-body">
                                     <div class="d-flex w-100 justify-content-between">
                                       <h6 class="mb-1">AB/12F/9478</h6>
-                                      <small class="">2 days ago</small>
+                                      <small >2 days ago</small>
                                     </div>
                                     <p>f f sad a bbbbbb</p>
-                                    <div class="">
+                                    <div >
                                       <div class="media-content"></div>
                                     </div>
                                   </div>
@@ -1400,9 +1405,9 @@ we can even try to show a route in the map based on what address is and informat
                                             <h6 class="mb-1">List group item heading <br> <small>Umuahia, Abia State</small></h6>
                                             <small>3 days ago</small>
                                         </div>
-                                        <p class="">Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
+                                        <p >Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
                                         <p>Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
-                                        <div class="">
+                                        <div >
                                             <div class="media-content">
                                               <div class="app">
                                                   <img data-action="zoom" src="/5.png" class="img-fluid border" alt="Responsive image">
@@ -1451,7 +1456,7 @@ we can even try to show a route in the map based on what address is and informat
     
                                         </ul>
                                       </p>
-                                      <a href="#!" class="">Go somewhere</a>
+                                      <a href="#!" >Go somewhere</a>
                                       <a href="#!" class="card-link">Card link</a>
                                       <a href="#!" class="card-link">Another link</a> -->
                                     <div> <small id="tco"></small> </div>
@@ -1518,13 +1523,10 @@ we can even try to show a route in the map based on what address is and informat
             };
             // Replace source
             // to replace that with a "missing image" graphic that you are sure exists so there is better visual feedback that something is wrong
-            $('img')
-                .on("error", function () {
-                    $(this)
-                        .attr('src', '/images/missing.png');
-
-                    // you may wish to trigger some kind of Ajax action to send an email to a site admin when this occurs.
-                });
+            $('img').on("error", function () {
+                $(this).attr('src', 'assets/images/2/favicon-16x16.png');
+                // you may wish to trigger some kind of Ajax action to send an email to a site admin when this occurs.
+            });
 
             // to do ;; lazy load images
 
@@ -1865,6 +1867,8 @@ we can even try to show a route in the map based on what address is and informat
                     d.appendChild(k); //the text from sender
                     d.appendChild(h);
 
+                    let _c = document.createElement('div');
+                    _c.setAttribute('class', 'small-alt-text');
                     let c = document.createElement('img');
                     c.setAttribute('class', 'align-self-start mr-2 rounded-circle profile-pic');
                     // c.setAttribute('data-src','holder.js/64x64');
@@ -1902,7 +1906,8 @@ we can even try to show a route in the map based on what address is and informat
 
                     let a = document.createElement('div');
                     a.setAttribute('class', 'media mb-4');
-                    a.appendChild(c);
+                    _c.appendChild(c);
+                    a.appendChild(_c);
                     a.appendChild(d);
 
                     newFeed.appendChild(a);
@@ -2042,6 +2047,8 @@ we can even try to show a route in the map based on what address is and informat
                     d.appendChild(k); // the text from sender
                     d.appendChild(h);
 
+                    let _c = document.createElement('div');
+                    _c.setAttribute('class', 'small-alt-text');
                     let c = document.createElement('img');
                     c.setAttribute('class', 'align-self-start mr-2 rounded-circle profile-pic');
                     // c.setAttribute('data-src','holder.js/64x64');
@@ -2078,7 +2085,8 @@ we can even try to show a route in the map based on what address is and informat
 
                     let a = document.createElement('div');
                     a.setAttribute('class', 'media mb-4');
-                    a.appendChild(c);
+                    _c.appendChild(c);
+                    a.appendChild(_c);
                     a.appendChild(d);
 
                     newFeed.appendChild(a);
@@ -2087,12 +2095,11 @@ we can even try to show a route in the map based on what address is and informat
                     //right now, we'll append every post together
                     feeds.insertBefore(newFeed, feeds.children[0]); // we need to append chronologically
                 } else if (data.post.type == 'location') {
-                    console.info('got a location', data);
+                    // console.info('got a location', data);
                     if (true) {
                         let gg = document.createElement('div');
                         gg.setAttribute('class', 'app');
 
-                        // let ii = 'img' + i.toString();
                         ii = document.createElement('img');
                         ii.setAttribute('class', 'img-fluid border');
 
@@ -2141,6 +2148,8 @@ we can even try to show a route in the map based on what address is and informat
                     d.appendChild(k); //the text from sender
                     d.appendChild(h);
 
+                    let _c = document.createElement('div');
+                    _c.setAttribute('class', 'small-alt-text');
                     let c = document.createElement('img');
                     c.setAttribute('class', 'align-self-start mr-2 rounded-circle profile-pic');
                     // c.setAttribute('data-src','holder.js/64x64');
@@ -2179,7 +2188,8 @@ we can even try to show a route in the map based on what address is and informat
 
                     let a = document.createElement('div');
                     a.setAttribute('class', 'media mb-4');
-                    a.appendChild(c);
+                    _c.appendChild(c);
+                    a.appendChild(_c);
                     a.appendChild(d);
 
                     newFeed.appendChild(a);
@@ -2413,10 +2423,10 @@ we can even try to show a route in the map based on what address is and informat
 
                         return function (event) {
                             $('#hereNow').prepend(`<div class="card">
-                                                <div class="">
+                                                <div >
                                                     <img src="${event.target.result}" class="card-img-top" alt="..." data-order=0 data-id="${file.lastModified}" />
                                                 </div>
-                                                <div class="">
+                                                <div >
                                                         <select class="accviews custom-select" id="${file.lastModified}" name="${file.size}" style="border-radius: 0rem;">
                                                             <option selected>Choose...</option>
                                                             <option value="Bathroom">Bathroom</option>
