@@ -185,7 +185,7 @@ router.post('/signup', /* bodyParser.urlencoded({
           console.log('token generated', token);
           // res.setHeader('Set-Cookie', 'name=value')
           res.cookie('_online', token, {
-            // secure: true, // localhost too won't work
+            secure: true, // localhost too won't work
             httpOnly: true, // frontend js can't access
             maxAge: auth.maxAge,
             sameSite: 'strict',
@@ -244,7 +244,7 @@ router.post('/login', /* bodyParser.urlencoded({ // edited
           console.log('token generated', token);
           // res.setHeader('Set-Cookie', 'name=value')
           res.cookie('_online', token, {
-            // secure: true, // localhost too won't work
+            secure: true, // localhost too won't work
             httpOnly: true, // frontend js can't access
             maxAge: auth.maxAge,
             sameSite: 'strict',
