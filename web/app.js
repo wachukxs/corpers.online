@@ -26,7 +26,7 @@ app.use(session({
 }));
 
 // set morgan to log info about our requests for development use.
-app.use(morgan('combined'))
+app.use(morgan(':remote-addr - :remote-user [:date[web]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"'))
 
 // The app.locals object has properties that are local variables within the application.
 app.locals.title = 'Corpers Online';
@@ -46,7 +46,7 @@ app.use(byeRoutes);
 app.use(welcomeRoutes);
 app.use(blogRoutes);
 // must always be last route, must be last route because of 404 pages/error
-app.use(function (req, res, next) {
+app.use(function (req, res) {
     res.render('pages/404', { // check the url they navigated to that got them lost, and try to offer suggestions in the front end that'll match why they got lost... maybe they missed a letter in their statecode url
     });
 });
