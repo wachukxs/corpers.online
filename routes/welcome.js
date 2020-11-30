@@ -64,7 +64,7 @@ auth.verifyJWT, function (req, res) {
     res.set('Content-Type', 'text/html');
 
     /** this query runs so we can get the number of unread messages the user has */
-    query.UnreadMessages([req.path.substring(1, 12).toUpperCase(), false]).then(result => {
+    query.UnreadMessages([req.statecode, false]).then(result => {
       res.render('pages/account', {
         statecode: req.session.corper.statecode.toUpperCase(), // or req.path.substring(1, 12).toUpperCase()
         batch: req.params['3'],
@@ -85,7 +85,7 @@ auth.verifyJWT, function (req, res) {
       });
     }).catch((err) => { // we should have this .catch on every query
       console.error('our system should\'ve crashed:', err)
-      res.redirect('/') // go back home, we should tell you an error occured
+      res.redirect('/?e') // go back home, we should tell you an error occured
     })
 
   /* } else {
@@ -140,7 +140,6 @@ router.get(['/map', '/maps'], function (req, res) { // try to infer their locati
     });
   }).catch(reason => {
     console.log('do we have a problem?', reason);
-
     res.render('pages/map')
   })
 
@@ -165,12 +164,15 @@ router.post('/subscribe', /* upload.none(), */ function (req, res) {
         res.status(500).send('Internal Server Error');
         break;
     }
+  }).catch((err) => { // we should have this .catch on every query
+    console.error('our system should\'ve crashed:', err)
+    res.redirect('/?e') // go back home, we should tell you an error occured
   })
 });
 
 router.get('/signup', function (req, res) {
   res.set('Content-Type', 'text/html');
-  res.render('pages/register');
+  res.render('pages/signup');
 });
 
 // edited
@@ -226,6 +228,7 @@ router.post('/signup', /* bodyParser.urlencoded({
       }
     }).catch(reason => {
       console.log('catching this err because:', reason);
+      res.redirect('/signup?m=ue')
     });
 
 
@@ -285,6 +288,7 @@ router.post('/login', /* bodyParser.urlencoded({ // edited
 
     }).catch(reason => {
       console.log('catching this err because:', reason);
+      res.status(502).redirect('/login?t=a')
     })
 });
 

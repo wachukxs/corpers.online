@@ -63,9 +63,13 @@ let router = express.Router();
 router.get('/allstateslgas', function (req, res) {
   res.set('Content-Type', 'application/json');
   fs.readFile('places.json', (err, data) => {
-    let jkl = JSON.parse(data);
-    // let's hope there's no err
-    res.send(jkl);
+    if (err) {
+      res.status(500)
+    } else {
+      let jkl = JSON.parse(data);
+      // let's hope there's no err
+      res.send(jkl);
+    }
   })
 });
 
@@ -94,10 +98,10 @@ router.get('/places', function (req, res) {
   query.DistinctNotNullDataFromPPAs(req).then(result => {
     res.render('pages/newsearch2', result)
   }, reject => {
-    console.log(reject)
+    console.info(reject)
     res.sendStatus(500);
   }).catch(error => {
-    console.log('///', error)
+    console.error('///', error)
     res.sendStatus(500);
   })
 
@@ -126,7 +130,10 @@ router.get('/items', function (req, res) {
       }
       res.render('pages/search', result); // having it named 'pages/account.2' returns error cannot find module '2'
     }, error => {
-      res.render('pages/search');
+      res.status(502).render('pages/search');
+    }).catch((err) => { // we should have this .catch on every query
+      console.error('our system should\'ve crashed:', err)
+      res.status(502).render('pages/search') // we should tell you an error occured
     })
   } 
   // if it's an accomodation 
@@ -145,6 +152,9 @@ router.get('/items', function (req, res) {
         }
       }
       res.render('pages/search', result);
+    }).catch((err) => { // we should have this .catch on every query
+      console.error('our system should\'ve crashed:', err)
+      res.status(502).render('pages/search') // we should tell you an error occured
     })
     
   } else if(req.query.pt) {
@@ -155,7 +165,10 @@ router.get('/items', function (req, res) {
       }
       res.render('pages/search', result);
     }, error => {
-      res.render('pages/search');
+      res.status(500).render('pages/search');
+    }).catch((err) => { // we should have this .catch on every query
+      console.error('our system should\'ve crashed:', err)
+      res.status(502).render('pages/search') // we should tell you an error occured
     })
   } else { // we only use here
     query.GetSales().then(sales => {
@@ -166,6 +179,9 @@ router.get('/items', function (req, res) {
       res.render('pages/search', result);
     }, error => {
       res.render('pages/search');
+    }).catch((err) => { // we should have this .catch on every query
+      console.error('our system should\'ve crashed:', err)
+      res.status(502).render('pages/search') // we should tell you an error occured
     })
 
   }
@@ -266,6 +282,9 @@ router.get('/profile', auth.verifyJWT, function (req, res) {
           current_year: new Date().getFullYear(),
           ...(req.session.corper.picture_id) && {picture_id: req.session.corper.picture_id},
         });
+      }).catch((err) => { // we should have this .catch on every query
+        console.error('our system should\'ve crashed:', err)
+        res.status(502).render('pages/profile') // we should tell you an error occured
       })
     /* } else {
       res.redirect('/login');
@@ -417,6 +436,9 @@ router.post('/profile', /* bodyParser.urlencoded({
     }, reject => {
       console.error('what happened?', reject)
       res.status(500).redirect('/profile?e=n'); // [e]dit=[y]es|[n]o
+    }).catch((err) => { // we should have this .catch on every query
+      console.error('our system should\'ve crashed:', err)
+      res.status(502).render('pages/profile?e=n') // we should tell you an error occured
     })
    })
 
@@ -652,11 +674,10 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
       }, reject => {
         // this is really important for the form to get response
         console.log('why?', reject)
-        res.sendStatus(500);
-        // === res.status(500).send('Internal Server Error')
+        res.sendStatus(500); // === res.status(500).send('Internal Server Error')
       }).catch(reason => {
-        // res.sendStatus(500); //  Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
-        console.log('what happened?', reason)
+        res.sendStatus(500); //  Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+        console.error('what happened?', reason)
       })
     }
   });
@@ -768,7 +789,7 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
 
         }
       ).catch(function (err) {
-        console.log('some other error ??', err)
+        console.error('some other error ??', err)
       }).finally(() => {
         console.log('upload finally')
       });
@@ -859,7 +880,8 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
       }, reject => {
         res.sendStatus(500);
       }).catch((reason) => {
-        console.log('what happened?', reason)
+        console.error('what happened?', reason)
+        res.sendStatus(500)
       })
 
     } else if (!helpers.isEmpty(_text) && !helpers.isEmpty(uploadPromise)) {
@@ -913,6 +935,7 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
         res.sendStatus(500);
       }).catch(reason => {
         console.log('insert row failed', reason);
+        res.sendStatus(500)
       })
 
     }
@@ -1014,6 +1037,7 @@ router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (r
               res.sendStatus(500);
             }).catch(reason => {
               console.log('insert row failed', reason);
+              res.sendStatus(500)
             })
 
 

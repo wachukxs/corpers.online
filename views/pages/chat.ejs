@@ -433,7 +433,7 @@
                 .toUpperCase() : '' )
         }
         
-        console.log( 'chat socket', chat );
+        // console.log( 'chat socket', chat );
         var inputtextarea = document.getElementsByClassName( 'text' );
         var send = document.getElementsByClassName( 'send' ); // document.getElementById( 'send' );
         var notify = document.getElementById( 'notifications' );
@@ -442,30 +442,30 @@
             chat.emit('hi', 'replace with something useful, like notifying the other user that they are online' );
             chat.emit('ferret', 'aeee', 'tobi', ( data ) => {
                 // this funtion will run here to show the server has gotten our message.
-                console.log( data ); // data will be 'woot ...'
+                // console.log( data ); // data will be 'woot ...'
             });
             chat.emit('room', 'rofsddsfaom' );
         } );
 
         //-----
         chat.on('a message', function( data ) { // when we receive 'a message'
-            console.log(data);
+            // console.log(data);
             chat.emit('my other event', {
                 my: 'data-chat'
             }); // send 'my other event' to everyone in /chat
         });
 
         chat.on('hi', function(data) { // when we receive 'a message'
-            console.log(data);
+            // console.log(data);
         });
 
         chat.on('oldmessages', function(data) { //
-            console.log(data);
+            // console.log(data);
         });
 
 
         chat.on('message', function(data) { //when we receive a boardcast message
-            console.log('we received message!',data ); // add text-right later and text-center later
+            // console.log('we received message!',data ); // add text-right later and text-center later
 
             // if the sender has messaged before and is present
             var thetab = $(`#v-pills-tab > a[data-statecode="${data.from.statecode}"]`);
@@ -573,8 +573,8 @@
         document.querySelectorAll( '.send' ).forEach( item => {
                 item.addEventListener( 'click', event => {
                     //handle click
-                    console.log( 'event', event, event.srcElement.attributes[ 'sc' ].value );
-                    console.log( 'h', document.querySelector( `input[sc='${event.srcElement.attributes['sc'].value}']` ) )
+                    // console.log( 'event', event, event.srcElement.attributes[ 'sc' ].value );
+                    // console.log( 'h', document.querySelector( `input[sc='${event.srcElement.attributes['sc'].value}']` ) )
                     // an alternative to using document.querySelector to long chain from event to the inputtextarea.value attribute and clear it// event.srcElement.parentElement.offsetParent.parentElement.children[0].lastElementChild.value
 
                     k.message = document.querySelector( `input[sc='${event.srcElement.attributes['sc'].value}']` ).value, //inputtextarea.value,
@@ -582,7 +582,7 @@
                     chat.emit( 'message', k, ( data ) => {
                         // this funtion will run here to show the server has gotten our message.
                         // this message means this corper sent the message, so pad the msg box from the left
-                        console.log( 'g', data ); // data will be 'true, msg'
+                        // console.log( 'g', data ); // data will be 'true, msg'
                         $( `#v-pills-${data.to.statecode.replace(/\//g, '-')} > .wall > .messages` ) // data.to... because we're appending to the receipient's wall/timeline in this corper's page
                             .append( `<div class="pl-5"><div class="card mb-2"><div class="card-body">
                   <div class="float-right">${data.it.message}</div>
@@ -679,14 +679,14 @@
                 if ( !total_num_unread_msg.html() == '' ) { // if it is not empty, i.e. there was a number there, there's been unread messages
                     var c = parseInt( total_num_unread_msg.html() );
                     var remove = parseInt( ( e.target.children[ 1 ].children[ 1 ].innerText == '' ? 0 : e.target.children[ 1 ].children[ 1 ].innerText ) );
-                    console.log( 'total messages', e.target.children[ 1 ].children[ 1 ].innerText, c - remove )
+                    // console.log( 'total messages', e.target.children[ 1 ].children[ 1 ].innerText, c - remove )
                     total_num_unread_msg.html( ( c - remove == 0 ? '' : c - remove ) ); // if it'll be zero, show nothing
                 } else { //
                     // total_num_unread_msg.html( 1 );
                 }
 
                 // also remove number of unread messages once the chat is opened // use namedItem() instead not [1]
-                console.log( e.target.children, '89', e.target.children[ 1 ].children[ 1 ].innerText )
+                // console.log( e.target.children, '89', e.target.children[ 1 ].children[ 1 ].innerText )
                 e.target.children[ 1 ].children[ 1 ].innerText = '';
 
                 // if unread messages, emit that the messages have been read!!
@@ -696,7 +696,7 @@
                     message_to: '<%= statecode2 %>'
                 }, ( data ) => {
                     // this funtion will run here to show the server has gotten our message.
-                    console.log( 'was just read', data ); // data will be 'woot ...' // then double tick
+                    // console.log( 'was just read', data ); // data will be 'woot ...' // then double tick
                 } );
                 // for a scenerio where you click the chat icon from account page... what if your new chat has sent you an unread message before? does the number of unread message show? i think yes... is this shown event run, to sh0w that the message has been read ?... maybe, find out! ---did, answer is no ...what we can do now it to check if the new chat is in the oldunread array and maybe put a settimeout function to remove the number of unread messages the tab is in the user's view, i.e. the user has seen it
             } )

@@ -610,7 +610,7 @@ exports.GetChatData = async (req) => {
 
             });
 
-        } else if (req.session.loggedin) {
+        } else/*  if (req.session.loggedin) */ {
             console.error('we should be getting here')
             
             // console.log('wanna chat', req.session.corper.statecode, req.query.s);
@@ -644,10 +644,10 @@ exports.GetChatData = async (req) => {
                 }
             });
 
-        } else {
+        } /* else {
             console.info('what? not logged in & wanna chat?!?!???!')
             reject();
-        }
+        } */
     })
 
     return re;

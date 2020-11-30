@@ -807,12 +807,12 @@
                                                             // using if-else because we have just two options, so if it isn't one, it's the other
                                                             // if expire date is showing, it means the rent isn't new, then it is required.
                                                             if (this.id == 'oldrent') {
-                                                                console.log('an old rent [sublease]');
+                                                                // console.log('an old rent [sublease]');
                                                                 document.getElementById('expirediv')
                                                                     .style.display = 'block';
                                                                 document.forms["accommodationform"].elements["expiredate"].required = true;
                                                             } else {
-                                                                console.log('new rent [lease]');
+                                                                // console.log('new rent [lease]');
                                                                 document.getElementById('expirediv')
                                                                     .style.display = 'none';
                                                                 document.forms["accommodationform"].elements["expiredate"].required = false;
@@ -910,7 +910,7 @@
 
             $('#accommodationModal')
                 .on('hidden.bs.modal', function (e) {
-                    console.info('acc modal hidden');
+                    // console.info('acc modal hidden');
                     // document.getElementById('ap').disabled = true;
 
                 });
@@ -1140,7 +1140,7 @@ we can even try to show a route in the map based on what address is and informat
                 // Define what happens on successful data submission
                 XHR.addEventListener("load", function (event) {
                     // alert(event.target.responseText);
-                    console.log(event.target.responseText, event.target, event.timeStamp); // calculate the time a post was clicked, when it was submitted and when the response was given to the user
+                    // console.log(event.target.responseText, event.target, event.timeStamp); // calculate the time a post was clicked, when it was submitted and when the response was given to the user
 
                     // and reset the form
                     document.forms['postform'].reset();
@@ -1505,7 +1505,7 @@ we can even try to show a route in the map based on what address is and informat
             /** tell the user they are the first to show up from their state and they should start using the platform, basically give them a tour */
             let tell = function () {
                 if (!document.getElementById("1or0msg")) { // if it isn't there before
-                    //console.log('teeeeelllllllllllll');
+                    // console.log('teeeeelllllllllllll');
                     // create a new div element 
                     let newDiv = document.createElement("div");
                     newDiv.id = '1or0msg'
@@ -1595,7 +1595,7 @@ we can even try to show a route in the map based on what address is and informat
 
 
             let pathArray = window.location.pathname.split('/');
-            console.log('user = ' + pathArray[2]);
+            // console.log('user = ', pathArray[2]);
 
             // start: bm[0], //oldest post in user's timeline
             // end: bm[bm.length - 1] //newest post in user's timeline
@@ -1627,35 +1627,30 @@ we can even try to show a route in the map based on what address is and informat
             });
 
             socket.on('totalunreadmsg', function (data) {
-                console.log('got an unread message', data);
+                // console.log('got an unread message', data);
                 // (data.count == 1 ? '' : 's') adds 's' to 'corpers' if there are more than one corpers online.
 
-                let ph = document.getElementById('totalunreadmsg')
-                    .innerHTML;
+                let ph = document.getElementById('totalunreadmsg').innerHTML;
                 if (!ph == '') { // if it is not empty, i.e. there was a number there, there's been unread messages
                     let c = parseInt(ph);
-                    document.getElementById('totalunreadmsg')
-                        .innerHTML = c + 1; // increment the number of messages
+                    document.getElementById('totalunreadmsg').innerHTML = c + 1; // increment the number of messages
                 } else {
-                    document.getElementById('totalunreadmsg')
-                        .innerHTML = 1;
+                    document.getElementById('totalunreadmsg').innerHTML = 1;
                 }
             });
 
             socket.on('connect', function () {
 
-                console.log('connected', new Date(Date.now())
-                    .toLocaleString(), Date.now());
+                // console.log('connected', new Date(Date.now()).toLocaleString(), Date.now());
 
-                console.log('the socket object:', socket);
+                // console.log('the socket object:', socket);
                 // trying sth --{first_post: bm[0], last_post: bm[bm.length - 1]}
 
             });
             socket.on('reconnect', (attemptNumber) => {
-                console.log('connetce again')
+                // console.log('connetce again')
 
-                console.log(attemptNumber, 'reconnection, re-connected :', new Date(Date.now())
-                    .toLocaleString());
+                // console.log(attemptNumber, 'reconnection, re-connected :', new Date(Date.now()).toLocaleString());
 
                 $('#offlinealert').alert('close'); // Closes an alert by removing it from the DOM
 
@@ -1672,7 +1667,7 @@ we can even try to show a route in the map based on what address is and informat
             //reason (String) either 'io server disconnect' or 'io client disconnect'
             socket.on('disconnect', (reason) => {
                 //find a really good way to handle sessions - in server and client -- if user disconnects for too long and session expires, take user to login, if user closes this window, he shouldn't be able to open it unless it's thesame computer  --- just handle sessions effectively
-                console.log('disconnected!', reason);
+                // console.log('disconnected!', reason);
 
                 // check if the alert is there already before adding it so there is no redundancy (so it doens't appear twice)
                 if ($("#offlinealert").length) {
@@ -1701,7 +1696,7 @@ we can even try to show a route in the map based on what address is and informat
             });
 
             socket.on('corpersCount', function (data) {
-                console.log('got corpers count');
+                // console.log('got corpers count');
                 // (data.count == 1 ? '' : 's') adds 's' to 'corpers' if there are more than one corpers online.
                 document.getElementById('tco')
                     .innerHTML = data.count + ' corper' + (data.count == 1 ? '' : 's') +
@@ -1710,11 +1705,11 @@ we can even try to show a route in the map based on what address is and informat
 
             socket.emit('ferret', 'aeee', 'tobi', (data) => {
                 // this funtion will run here to show the server has gotten our message.
-                console.log(data); // data will be 'woot ...'
+                // console.log(data); // data will be 'woot ...'
             });
 
             let cb = function (params) {
-                console.log('the callback', params);
+                // console.log('the callback', params);
             };
             socket.on('callback', cb);
 
@@ -1726,17 +1721,17 @@ we can even try to show a route in the map based on what address is and informat
 
                 // know when they are the first user in their state or if no one has posted on their state
                 if (typeof data.post === 'object') {
-                    console.log('wahat w egogt', data);
+                    // console.log('wahat w egogt', data);
 
                     if ((JSON.stringify(data.post) === '{}' || JSON.stringify(data.post) === '[]') && !document.getElementById("tl")
                         .contains(document.getElementsByClassName('list-group-item')[0])) {
                         // return true; // give them a tour guide
-                        console.log('got heree e ;')
+                        // console.log('got heree e ;')
                         tell();
                     } else if (!data.post && !document.getElementById("tl")
                         .contains(document.getElementsByClassName('list-group-item')[0])) {
                         // return true; // give them a tour guide
-                        console.log('got heree e ;==')
+                        // console.log('got heree e ;==')
                         tell();
                     } else {
                         // return false; // remove the element div that tells them they are the first if the div exists
@@ -1758,7 +1753,7 @@ we can even try to show a route in the map based on what address is and informat
                     bn.push(data.post.input_time);
                 }
                 // console.log(data.post.type == "sale", data.post.type === "sale")
-                console.log('received boardcast message', data); // uncomment if we wanna see what we got
+                // console.log('received boardcast message', data); // uncomment if we wanna see what we got
 
                 let feeds = document.getElementById('tl');
 
@@ -1794,7 +1789,7 @@ we can even try to show a route in the map based on what address is and informat
                 } */
                 if (data.post.type == "sale") {
 
-                    console.info('got sale', data.post.media);
+                    // console.info('got sale', data.post.media);
                     if (data.post.media && Array.isArray(data.post.media)) {
                         let gg = document.createElement('div');
                         gg.setAttribute('class', 'app');
@@ -1826,8 +1821,6 @@ we can even try to show a route in the map based on what address is and informat
                                 // then use a placeholder image
                                 // initialise var a to a placeholder image
                             }
-
-
                             ii.setAttribute('src', a); // add the trailing slash for normal images that was uploaded.
                             ii.setAttribute('alt', 'user\'s posted image'); // do better
                             gg.appendChild(ii);
@@ -1897,12 +1890,9 @@ we can even try to show a route in the map based on what address is and informat
                             cv.setAttribute('class', (index == 0 ? 'far fa-bookmark' : index == 1 ? 'far fa-comment-alt' : 'fas fa-ellipsis-h'));
 
                             zx.appendChild(cv);
-
                             b.appendChild(zx);
                         }
                     }
-
-
 
                     let a = document.createElement('div');
                     a.setAttribute('class', 'media mb-4');
@@ -1917,7 +1907,7 @@ we can even try to show a route in the map based on what address is and informat
                     feeds.insertBefore(newFeed, feeds.children[0]);
 
                 } else if (data.post.rentrange && data.post.rooms) {
-                    console.log('accommodation', data);
+                    // console.log('accommodation', data);
 
                     // rooms is an array already!! how and when ?
                     // check if it's an array, else split
@@ -1926,7 +1916,7 @@ we can even try to show a route in the map based on what address is and informat
 
                     let rms = (Array.isArray(data.post.rooms) ? data.post.rooms : data.post.rooms.split(','));
 
-                    // let jk = ( Array.isArray( data.post.media ) ? data.post.media : data.post.media.split( ',' ) );
+                    // let jk = (Array.isArray( data.post.media ) ? data.post.media : data.post.media.split( ',' ));
                     // if there are no rooms, no need to split, it causes an array to be made regardless
                     let jk = (Array.isArray(data.post.media) ? data.post.media : data.post.media == '' ? data.post.media : data.post.media.split(','));
 
@@ -2106,10 +2096,10 @@ we can even try to show a route in the map based on what address is and informat
                         // if what's coming is already a url (like our mapbox pictures) // change later maybe...
                         try {
                             let a = new URL(data.post.media || data.post.mapdata).toString();
-                            console.log('good url?')
+                            // console.log('good url?')
                             ii.setAttribute('src', a);
                         } catch (error) { // if it's not already a url
-                            console.error('err image map', error);
+                            // console.error('err image map', error);
                             // with holder.js set the src attr of the image to display an appropriate err msg
                             // ii.setAttribute('src', a); // set a with error image
                         }
@@ -2320,7 +2310,7 @@ we can even try to show a route in the map based on what address is and informat
                 // console.log( 'created!' );
 
                 let fileList = this.files; /* now you can work with the file list */
-                console.log('picture(s) picked!');
+                // console.log('picture(s) picked!');
 
                 // remove what was there (pics to post) before
                 $('#previewPostPics').html('');
@@ -2437,14 +2427,14 @@ we can even try to show a route in the map based on what address is and informat
                                                     </div>
                                                 </div>`);
                             $('.accviews').change(function (evt) {
-                                console.log('name of change', evt, evt.target.attributes['id'].value)
+                                // console.log('name of change', evt, evt.target.attributes['id'].value)
                                 // the picture choosen
                                 let farr = document.forms[1].elements["roomsmedia"].files;
                                 for (let index = 0; index < farr.length; index++) {
                                     const f = farr[index];
-                                    console.log('fname', f.name, f.lastModified)
+                                    // console.log('fname', f.name, f.lastModified)
                                     if (f.lastModified == evt.target.attributes['id'].value) {
-                                        console.log('changed name')
+                                        // console.log('changed name')
                                         // get extenstion s.substring(s.lastIndexOf('.'), s.length);
                                         f.name = evt.target.value + f.name.substring(f.name.lastIndexOf('.'), f.name.length);
                                     }
@@ -2474,7 +2464,7 @@ we can even try to show a route in the map based on what address is and informat
             $('[data-spy="scroll"]')
                 .on('activate.bs.scrollspy', function () {
                     // do something
-                    console.log('passed');
+                    // console.log('passed');
                 });
         </script>
         <script>
@@ -2531,17 +2521,16 @@ we can even try to show a route in the map based on what address is and informat
                 let one = 0;
                 let geoPointError = function (error) {
 
-                    console.log(error);
+                    // console.error(error);
                     switch (error.code) {
                         case error.TIMEOUT:
                             //try again with a longer timeout
 
                             document.getElementById(infoElement)
-                                .innerText =
-                                'TIMEOUT Error. We\'re trying again...'; //add or 'never mind?' option in the sentence so corper can quit
+                                .innerText = 'TIMEOUT Error. We\'re trying again...'; //add or 'never mind?' option in the sentence so corper can quit
                             if (one <= 1) {
                                 one++;
-                                console.log('timeout ' + one + ' times');
+                                // console.log('timeout', one, 'times');
                                 navigator.geolocation.getCurrentPosition(geoPoint, geoPointError, geo_options_to);
                             }
 
@@ -2549,24 +2538,21 @@ we can even try to show a route in the map based on what address is and informat
                         case error.PERMISSION_DENIED: // it could be the user denied permission by not accpting location prompt and that the browser denied because of http and not https
                             // The user didn't accept the callout //showNudgeBanner();
                             document.getElementById(infoElement)
-                                .innerText =
-                                'Please you\'d need to allow location on your broswer. Let\'s do this again';
+                                .innerText = 'Please you\'d need to allow location on your broswer. Let\'s do this again';
                             // (put loc function in showNudgeBanner() callback) ?, so when corper click ok\close for the banner, we get loc
                             // navigator.geolocation.getCurrentPosition(geoPoint, geoPointError, geo_options);
                             break;
                         case error.POSITION_UNAVAILABLE:
                             //say there's no network n try again when there is ?!!!?
                             document.getElementById(infoElement)
-                                .innerText =
-                                'You seem to be offline. Try again when you\'re online.'; //maybe find how we can auto get the user's location after telling them they're offline
+                                .innerText = 'You seem to be offline. Try again when you\'re online.'; //maybe find how we can auto get the user's location after telling them they're offline
                             //google said : [Violation] Only request geolocation information in response to a user gesture.
                             //window.addEventListener('online',  navigator.geolocation.getCurrentPosition(geoPoint, geoPointError));
                             break;
                         case 0: //unknown error
                             //just try again
                             document.getElementById(infoElement)
-                                .innerText =
-                                'Something went wrong and we don\'t know what. We\'ll just try again.';
+                                .innerText = 'Something went wrong and we don\'t know what. We\'ll just try again.';
                             locate();
                             break;
                     }
@@ -2582,7 +2568,7 @@ we can even try to show a route in the map based on what address is and informat
                     // delete e.sourceTarget;
                     // delete e.target;
                     // delete e.type;
-                    console.log('normal position', position);
+                    // console.log('normal position', position);
                     // savePoint.properties.geo = position.coords;
                     // savePoint.properties.geo = JSON.parse(JSON.stringify(position.coords));
 
@@ -2601,7 +2587,7 @@ we can even try to show a route in the map based on what address is and informat
 
                     //savePoint.geometry.coordinates[0] = position.coords.longitude.toString() ;
                     //savePoint.geometry.coordinates[1] = position.coords.latitude.toString() ;
-                    console.log('savePoint', savePoint, JSON.stringify(savePoint).length);
+                    // console.log('savePoint', savePoint, JSON.stringify(savePoint).length);
 
                     // do this only if the event came from accommodation form
                     if (infoElement == 'accinfo') {
@@ -2610,7 +2596,7 @@ we can even try to show a route in the map based on what address is and informat
 
                     // only do that image thinghy if the request came from the share location button
                     if (infoElement == 'locinfo') {
-                        console.log('weeeee;');
+                        // console.log('weeeee');
                         // how can I know if and when the fetch api was aborted https://developers.google.com/web/updates/2017/09/abortable-fetch
                         // commented out because the next block of code is where we use it, and we aren't using the next block of code now
                         /* const controller = new AbortController();
@@ -2640,16 +2626,16 @@ we can even try to show a route in the map based on what address is and informat
                                         });
                                 }
                             ).catch(function(err) {
-                                //console.log('Fetch Error :-S', err);
+                                // console.log('Fetch Error :-S', err);
                                 if (err.name === 'AbortError') {
                                     console.log('Fetch aborted');
                                 } else {
                                     console.error('Uh oh, an error! Fetch Error :', err);
                                 }
                             }); */
-                        //save to db
+                        // save to db
 
-                        //do the image
+                        // do the image
                         let img = new Image();
                         img.id = 'mapboximage';
                         // get map if location is accurate enough, but if it isn't then ask user where they are. | Retrieve a map at gotten longitude and latitude, with zoom 14.24, bearing 0, and pitch 60. The map will be 460 pixels wide and 460 pixels high (for mobile screen, 310px by 290px)
@@ -2707,7 +2693,7 @@ we can even try to show a route in the map based on what address is and informat
     
                         // ... or get as Data URI
                         canvas.toDataURL('image/png');
-                        //console.log(canvas.toDataURL('image/png')); //almosts crashes the browser, for some reasons, it keeps on logging
+                        // console.log(canvas.toDataURL('image/png')); //almosts crashes the browser, for some reasons, it keeps on logging
                         img.src = canvas.toDataURL('image/png');
                         preview.appendChild(img);
                         previewParent.appendChild(preview);
@@ -2743,7 +2729,7 @@ we can even try to show a route in the map based on what address is and informat
             let type = connection.effectiveType;
 
             function updateConnectionStatus() {
-                console.log("Connection type changed from " + type + " to " + connection.type);
+                // console.log("Connection type changed from " + type + " to " + connection.type);
             }
 
             connection.addEventListener('change', updateConnectionStatus);

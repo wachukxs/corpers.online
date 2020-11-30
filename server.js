@@ -1432,7 +1432,7 @@ app.post('/subscribe', upload.none(), function (req, res) {
 app.get('/signup', upload.none(), function (req, res) {
   res.set('Content-Type', 'text/html');
   // res.sendFile(__dirname + '/register.html');
-  res.render('pages/register');
+  res.render('pages/signup');
 });
 
 // somehow logout doesn't work because the app/broswer doesn't go through app.get('/user/:who') when the back button is clicked after loggin out socket.io('/user) picks up the request first ...somehow

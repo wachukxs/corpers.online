@@ -43,6 +43,15 @@ module.exports.verifyJWT = (req, res, next) => {
                 res.redirect('/login')
             } else {
                 // console.info('trusted request', decodedToken)
+                /**
+                 * TODO:
+                 * populate res.locals with all the data needed from  the db here. everything.
+                 * probably do that based on the path the user wants to navigate to.
+                 * 
+                 * and we might not need req.statecode = decodedToken.statecode
+                 */
+                console.log(req);
+                req.statecode = decodedToken.statecode // very crucial, so they don't navigate to others dashboard
                 next(); // very important we call this
             }
         })
