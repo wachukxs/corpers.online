@@ -60,13 +60,12 @@ router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN
 auth.verifyJWT, function (req, res) {
   // console.log('req.params/session', req.session, req.params) // req.path is shorthand for url.parse(req.url).pathname
 
-  /* if (req.session.loggedin) { */
     res.set('Content-Type', 'text/html');
 
     /** this query runs so we can get the number of unread messages the user has */
-    query.UnreadMessages([req.statecode, false]).then(result => {
+    query.UnreadMessages([req.session.corper.statecode.toUpperCase(), false]).then(result => {
       res.render('pages/account', {
-        statecode: req.session.corper.statecode.toUpperCase(), // or req.path.substring(1, 12).toUpperCase()
+        statecode: req.session.corper.statecode.toUpperCase(),
         batch: req.params['3'],
         total_num_unread_msg: result,
         ...req.session.corper
@@ -79,8 +78,8 @@ auth.verifyJWT, function (req, res) {
         servicestate: req.session.corper.servicestate,
         batch: req.params['3'],
         name_of_ppa: req.session.corper.name_of_ppa,
-        total_num_unread_msg: 0,
-        picture_id: req.session.corper.picture_id, // if there's picture_id
+        total_num_unread_msg: 0, // really ??? Zero?
+        picture_id: req.session.corper.picture_id, // if there's picture_id // hmmm
         firstname: req.session.corper.firstname
       });
     }).catch((err) => { // we should have this .catch on every query
@@ -88,9 +87,6 @@ auth.verifyJWT, function (req, res) {
       res.redirect('/?e') // go back home, we should tell you an error occured
     })
 
-  /* } else {
-    res.redirect('/login');
-  } */
 });
 
 router.get('/chat', auth.verifyJWT, function (req, res) {
@@ -200,7 +196,6 @@ router.post('/signup', /* bodyParser.urlencoded({
           console.log('token generated', token);
           // res.setHeader('Set-Cookie', 'name=value')
           res.cookie('_online', token, cookieOptions)
-
           res.status(200).redirect(req.body.statecode.toUpperCase());
         }
       })
@@ -254,7 +249,6 @@ router.post('/login', /* bodyParser.urlencoded({ // edited
           console.log('token generated', token);
           // res.setHeader('Set-Cookie', 'name=value')
           res.cookie('_online', token, cookieOptions)
-
           res.status(200).redirect(req.body.statecode.toUpperCase());
         }
       })

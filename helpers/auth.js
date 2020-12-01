@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken')
+const query = require('../models/queries');
+
 // FORMAT OF TOKEN
 // Authorization: Bearer <access_token>
 module.exports.verifyToken = (req, res, next) => {
@@ -41,18 +43,29 @@ module.exports.verifyJWT = (req, res, next) => {
             if (err) {
                 console.error(err);
                 res.redirect('/login')
+            } else if ( req.path !== '/' + decodedToken.statecode ) { // should we display a message asking them if they meant decodedToken.statecode ? or security flaw if we do that ?
+                console.log('catching this err because:');
+                res.status(502).redirect('/login?n=y') // [n]ot = [y]ou
             } else {
-                // console.info('trusted request', decodedToken)
                 /**
-                 * TODO:
-                 * populate res.locals with all the data needed from  the db here. everything.
-                 * probably do that based on the path the user wants to navigate to.
-                 * 
-                 * and we might not need req.statecode = decodedToken.statecode
+                 * TODO: res.locals or req.session ?
                  */
-                console.log(req);
-                req.statecode = decodedToken.statecode // very crucial, so they don't navigate to others dashboard
-                next(); // very important we call this
+                query.AutoLogin(decodedToken.statecode).then(result => {
+
+                    req.session.corper = result.response[0];
+                    req.session.corper.location = result.response[0].servicestate + (result.response[0].city_town ? ', ' + result.response[0].city_town : ''); // + (results1[0].region_street ? ', ' + results1[0].region_street : '' )
+                  
+                  }, reject => {
+              
+                    console.log('catching this err because:', reject);
+                    res.status(502).redirect('/login?t=a')
+              
+                  }).catch(reason => {
+                    console.log('catching this err because:', reason);
+                    res.status(502).redirect('/login?t=a')
+                  }).finally(() => {
+                      next() // very crucial
+                  })
             }
         })
     } else {

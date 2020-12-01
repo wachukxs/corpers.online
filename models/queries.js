@@ -118,12 +118,29 @@ exports.CorpersSignUp = async (signupData) => {
     return re;
 }
 
-exports.CorpersLogin = async (req_body) => {
+exports.AutoLogin = async (statecode) => {
+    let re = await new Promise((resolve, reject) => {
+        let sqlquery = "SELECT * FROM info WHERE statecode = ?";
+        let autologinquery = connectionPool.query(sqlquery, [statecode], function (error, result, fields) {
+            if (error) {
+                reject(error)
+            } else if (result.length === 1) {
+                delete result[0].password  // very crucial step too!
+                delete result[0].salt  // very crucial step too!
+                resolve({ message: true, response: result })
+            }
+        })
+    })
+
+    return re;
+}
+
+exports.CorpersLogin = async (data) => {
     let re = await new Promise((resolve, reject) => { // don't select password
         let sqlquery = "SELECT * FROM info WHERE statecode = ?";
         // .toUpperCase() is crucial
         let retries = 2;
-        let loginQuery = connectionPool.query(sqlquery, [req_body.statecode.toUpperCase()], function (error, result, fields) {
+        let loginQuery = connectionPool.query(sqlquery, [data.statecode.toUpperCase()], function (error, result, fields) {
             console.log('Is login result be empty?', result.length);
             // console.log('selected data from db, logging In...', results1); // error sometimes, maybe when there's no db conn: ...
             if (error) {
@@ -131,8 +148,7 @@ exports.CorpersLogin = async (req_body) => {
                 switch (error.code) { // do more here
                     case 'ER_ACCESS_DENIED_ERROR':
                         break;
-                    case 'ECONNREFUSED': // maybe send an email to myself or the delegated developer // try to connect again multiple times first
-                        
+                    case 'ECONNREFUSED': // maybe send an email to myself or the delegated developer // try to connect again multiple times first                     
                         connectionPool.ping(function (err) {
                             if (err) {
                                 console.error(err);
@@ -160,28 +176,30 @@ exports.CorpersLogin = async (req_body) => {
                 reject({ message: 'sign up' }) // tell them they need to sign up or statecode is wrong cause it doesn't exist
             } else if (result.length === 1) {
                 // for passwords that haven't been hashed...
-                if (result[0].salt === '' && result[0].password === req_body.password) {
+                if (result[0].salt === '' && result[0].password === data.password) {
                     bcrypt.genSalt(saltRounds, function(err, salt) {
-                        bcrypt.hash(req_body.password, salt, function(err, hash) {
+                        bcrypt.hash(data.password, salt, function(err, hash) {
                             // Store hash in your password DB. Basically update db
-                            let q = "UPDATE info SET password = '" + hash + "', salt = '" + salt + "' WHERE statecode = '" + req_body.statecode.toUpperCase() + "'";
+                            let q = "UPDATE info SET password = '" + hash + "', salt = '" + salt + "' WHERE statecode = '" + data.statecode.toUpperCase() + "'";
                             connectionPool.query(q, function (err, rslts, flds) {
                                 if (err) reject(err)
                                 else if (rslts.changedRows === 1) { // when we've saved it, the corper can now logged in
                                     console.log('\n\nupdated password & salt');
                                     delete result[0].password  // very crucial step too!
+                                    delete result[0].salt  // very crucial step too!
                                     resolve({ message: true, response: result })
                                 }
                             });
                         });
                     });
-                } else if (result[0].salt === '' && result[0].password !== req_body.password) {
+                } else if (result[0].salt === '' && result[0].password !== data.password) {
                     reject({ message: 'wrong password' }) // wrong password
                 } else {
-                    bcrypt.compare(req_body.password, result[0].password, function(err, rslt) {
+                    bcrypt.compare(data.password, result[0].password, function(err, rslt) {
                         // rslt == true | false
                         if (rslt) { // very crucial step!
                             delete result[0].password  // very crucial step too!
+                            delete result[0].salt  // very crucial step too!
                             resolve({ message: true, response: result })
                         } else {
                             reject({ message: 'wrong password' }) // wrong password
@@ -655,16 +673,16 @@ exports.GetChatData = async (req) => {
 
 /**
  * 
- * @param {*} req_body 
+ * @param {*} data 
  * subscribing to email updates
  */
-exports.SubscribeToEmailUpdates = async (req_body) => {
+exports.SubscribeToEmailUpdates = async (data) => {
     let re = await new Promise((resolve, reject) => {
-        if (helpers.isEmpty(req_body.email)) {
+        if (helpers.isEmpty(data.email)) {
             res.status(406).send('Not Acceptable');
         } else {
             // console.log('NOT empthy');
-            connectionPool.query("INSERT INTO subscribers SET ?", { email: req_body.email }, function (error, results, fields) {
+            connectionPool.query("INSERT INTO subscribers SET ?", { email: data.email }, function (error, results, fields) {
                 if (error) reject(error)
                 else if (results.affectedRows === 1) {
                     resolve()
@@ -708,10 +726,10 @@ exports.AllPPAs = async () => {
     return re;
 }
 
-exports.AddPlace = async (req_body) => {
+exports.AddPlace = async (data) => {
     let re = await new Promise((resolve, reject) => {
 
-        connectionPool.query("INSERT INTO places SET ?", req_body, function (error, results, fields) {
+        connectionPool.query("INSERT INTO places SET ?", data, function (error, results, fields) {
             console.log('inserted data from: ', results);
             if (error) reject(error);
             else if (results.affectedRows === 1) {
