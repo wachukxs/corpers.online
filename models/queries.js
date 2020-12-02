@@ -628,7 +628,7 @@ exports.GetChatData = async (req) => {
 
             });
 
-        } else/*  if (req.session.loggedin) */ {
+        } else {
             console.error('we should be getting here')
             
             // console.log('wanna chat', req.session.corper.statecode, req.query.s);
@@ -662,10 +662,7 @@ exports.GetChatData = async (req) => {
                 }
             });
 
-        } /* else {
-            console.info('what? not logged in & wanna chat?!?!???!')
-            reject();
-        } */
+        }
     })
 
     return re;
@@ -1097,7 +1094,7 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
                 console.log(error);
                 throw error;
             }
-            console.log('looking for ooo', results)
+            // console.log('looking for ooo', results)
             _details = {};
             _details.ppas = results[0];
             _details.accommodations = results[1];
@@ -1335,7 +1332,7 @@ exports.SearchDefault = async () => {
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
               reject(error);
             } else {
-                console.log('looking for ooo', results)
+                // console.log('looking for ooo', results)
                 _details = {};
                 _details.ppas = results[0];
                 _details.accommodations = results[1];

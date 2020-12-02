@@ -93,7 +93,7 @@ router.get('/search', auth.checkJWT, function (req, res) {
   // "/search?type=" + item.group + "&it=" + item.input_time + "&sn=" + item.address + "&sc=" + item.statecode; // sn sc it
   res.set('Content-Type', 'text/html');
   // res.sendFile(__dirname + '/search and places/index.html');
-  console.log('req.query:', req.query); // find every thing that is req.query.search.query
+  console.log('keyword searched:', req.query.search.query); // find every thing that is req.query.search.query
   
   query.DistinctNotNullDataFromPPAs(req).then(result => {
     result.current_year = new Date().getFullYear()

@@ -183,7 +183,7 @@ router.post('/signup', /* bodyParser.urlencoded({
 
     query.CorpersSignUp(req.body).then(result => {
       console.log('re:', result);
-
+      req.session.corper = {}
       req.session.corper.statecode = req.body.statecode.toUpperCase();
       // req.session.loggedin = true;
       req.session.corper.servicestate = result.theservicestate;
