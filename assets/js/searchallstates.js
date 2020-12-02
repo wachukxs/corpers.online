@@ -47,7 +47,7 @@ $.typeahead({
         template: "{{group}} STATE"
     },
     // template: "{{address}} {{ppa_address}} <br> <small class='text-muted text-uppercase'>{{group}}</small>",
-    // href: "/places?title={{display}}",
+    // href: "/search?title={{display}}",
 
     // Typeahead can also search deep inside an object, just separate the keys with "." like display: ['string', 'deeper.key.level']
     // display: ["streetname", "ppa_address"], // or be specific in the group objects
@@ -77,13 +77,13 @@ $.typeahead({
             href: function (item) {
                 console.log('=href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
 
             },
@@ -117,13 +117,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -155,13 +155,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -194,13 +194,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -232,13 +232,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -271,13 +271,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -309,13 +309,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -348,13 +348,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -386,13 +386,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -425,13 +425,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -463,13 +463,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -502,13 +502,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -540,13 +540,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -579,13 +579,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -617,13 +617,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -656,13 +656,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -695,13 +695,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -734,13 +734,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -773,13 +773,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -813,13 +813,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -852,13 +852,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -892,13 +892,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -931,13 +931,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -971,13 +971,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -1010,13 +1010,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -1050,13 +1050,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -1089,13 +1089,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -1129,13 +1129,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -1168,13 +1168,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -1208,13 +1208,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -1247,13 +1247,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -1287,13 +1287,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -1326,13 +1326,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -1366,13 +1366,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },
@@ -1405,13 +1405,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
             },
             ajax: {
@@ -1445,13 +1445,13 @@ $.typeahead({
             href: function (item) {
                 // console.log('href', item);
                 if (item.name_of_ppa) { // if it's a ppa
-                    return "/places?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
+                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
                 } else if (item.rentrange) { // if it's an accommodation
-                    return "/places?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
+                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
-                    return "/items?sc=" + item.statecode + "&pt=" + item.post_time;
+                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
                 }
                     
             },

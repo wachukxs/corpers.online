@@ -261,7 +261,7 @@ exports.FetchPostsForTimeLine = async (timeLineInfo) => {
             "; SELECT info.firstname, info.picture_id, accommodations.statecode, accommodations.type, accommodations.price, accommodations.rooms, accommodations.rentrange, accommodations.streetname, accommodations.address, accommodations.media, accommodations.tenure, accommodations.expire, accommodations.directions, accommodations.post_location, accommodations.post_time, accommodations.acc_geodata FROM info RIGHT JOIN accommodations ON info.statecode = accommodations.statecode WHERE accommodations.statecode LIKE '%" + timeLineInfo.statecode_substr + "%'" + (timeLineInfo.last_input_time !== null ? ' AND input_time > "' + timeLineInfo.last_input_time + '" ORDER by accommodations.input_time ASC' : ' ORDER BY accommodations.input_time ASC');
 
         /* console.log(getpostsquery)
-        SELECT * FROM posts WHERE statecode LIKE '%DT%' AND post_time > "null" ORDER by posts.post_time ASC; SELECT * FROM accommodations WHERE statecode LIKE '%DT%' AND input_time > "null" ORDER by accommodations.input_time ASC
+        SELECT * FROM posts WHERE statecode LIKE '%DT%' AND post_time > "null" ORDER by posts.post_time ASC; SELECT * FROM accommodations WHERE expire > NOW() AND statecode LIKE '%DT%' AND input_time > "null" ORDER by accommodations.input_time ASC
          */
         connectionPool.query(getpostsquery, function (error, results, fields) {
             if (error) reject(error)
@@ -570,7 +570,7 @@ exports.GetChatData = async (req) => {
 
             // ALSO SELECT OLDMESSAGES THAT ARE NOT SENT... THEN COUNT THEM... 
             if (req.query.posts.type == 'accommodation') {
-                query = "SELECT * FROM accommodations WHERE statecode = '" + req.query.posts.who + "' AND input_time = '" + moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss') + "' ; "
+                query = "SELECT * FROM accommodations WHERE expire > NOW() AND statecode = '" + req.query.posts.who + "' AND input_time = '" + moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss') + "' ; "
                     // + "SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL ;"
                     +
                     "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;"
@@ -905,10 +905,10 @@ exports.UpdateProfile = async (_profile_data) => {
  * Get PPA data from database with acutal values
  */
 exports.DistinctNotNullDataFromPPAs = async (req) => {
-    
+    let return_data = {}
     let re = await new Promise((resolve, reject) => {
         const mustRunQuery = "SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null); \
-        SELECT * FROM accommodations WHERE expire > UTC_DATE ; \
+        SELECT * FROM accommodations WHERE expire > NOW() ; \
         SELECT `geo_data`, `when` FROM places WHERE geo_data != '' ;"
         ;
 
@@ -916,12 +916,11 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
         if (req.query.nop) {
             // should we only be getting data from info ? how about [ppas in] places table ?????????????
             // we have req.query.nop=name_of_ppa + req.query.pa=ppa_address + req.query.top=type_of_ppa // also select ppa closer to it and other relevant info we'll find later
-            connectionPool.query(mustRunQuery + "SELECT name_of_ppa, ppa_address, type_of_ppa, ppa_geodata, ppa_directions FROM info WHERE name_of_ppa = '" + req.query.nop + "';", function (error, results, fields) { // bring the results in ascending order
+            connectionPool.query(mustRunQuery + "SELECT name_of_ppa, ppa_address, type_of_ppa, ppa_geodata, ppa_directions FROM info WHERE name_of_ppa = '" + req.query.nop + "'; SELECT * FROM posts WHERE type = 'sale';", function (error, results, fields) { // bring the results in ascending order
                 console.log('we do get here', results)
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
-                console.log(error);
-                reject(error)
-                // throw error;
+                console.error(error);
+                reject(error) // throw error;
             } else if (!helpers.isEmpty(results) /* && results[3].ppa_geodata != '' */) {
                 // we're not adding the GeoJSON results to an array because it's only one result
                 for (index = 0; index < results[3].length; index++) {
@@ -971,38 +970,29 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
                 }
             }
 
-            ppa_details = {
-                user: {}
-            };
+            
 
-            if (req.session.corper.statecode) {
-                ppa_details.user.statecode = req.session.corper.statecode.toUpperCase();
+            if (req.session.corper) {
+                return_data.user = req.session.corper;
             }
-            if (req.session.corper.servicestate) {
-                ppa_details.user.servicestate = req.session.corper.servicestate;
-            }
-            if (req.session.corper.batch) {
-                ppa_details.user.batch = req.session.corper.batch;
-            }
-            if (req.session.corper.name_of_ppa) {
-                ppa_details.user.name_of_ppa = req.session.corper.name_of_ppa;
-            }
-            ppa_details.theacc = []; // make it empty
-            ppa_details.theppa = results[3]; // JSON.stringify(results);
-            ppa_details.nop = results[3]; // this variable is ambigious, nop == name of place, or name of ppa ... but we need it for now, just rush work for now
-            ppa_details.ppas = results[0];
-            ppa_details.accommodations = results[1];
-            ppa_details.places = results[2];
+            return_data.sale = []; // make it empty
+            return_data.theacc = []; // make it empty
+            return_data.theppa = results[3]; // JSON.stringify(results);
+            return_data.sales = results[4];
+            // return_data.nop = results[3]; // this variable is ambigious, nop == name of place, or name of ppa ... but we need it for now, just rush work for now
+            return_data.ppas = results[0];
+            return_data.accommodations = results[1];
+            return_data.places = results[2];
 
-            console.log('let\'s see nop that was searched for', ppa_details.theppa);
+            console.log('let\'s see nop that was searched for', return_data.theppa);
             // having it named 'pages/account.2' returns error cannot find module '2'
-            resolve(ppa_details);
-            // res.render('pages/newsearch2', ppa_details);
+            resolve(return_data);
+            // res.render('pages/newsearch2', return_data);
 
             });
         } else if (req.query.rr) { // if it's an accomodation
             // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
-            connectionPool.query(mustRunQuery + "SELECT * FROM accommodations WHERE rentrange = '" + req.query.rr + "' AND post_time = '" + req.query.pt + "'", function (error, results, fields) {
+            connectionPool.query(mustRunQuery + "SELECT * FROM accommodations WHERE expire > NOW() AND rentrange = '" + req.query.rr + "' AND post_time = '" + req.query.pt + "' ; SELECT * FROM posts WHERE type = 'sale';", function (error, results, fields) {
 
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
                 console.log(error);
@@ -1064,102 +1054,43 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
                 }
             }
 
-            accommodation_details = {};
-            accommodation_details.ppas = results[0];
-            accommodation_details.accommodations = results[1];
-            accommodation_details.places = results[2];
-            accommodation_details.theacc = results[3];
-            accommodation_details.nop = results[3]; // this variable is ambigious, nop == name of place, or name of ppa ... but we need it for now, just rush work for now
-            accommodation_details.theppa = [];
-            // accommodation_details.nop = '[]' // || undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
-            resolve(accommodation_details)
-            // res.render('pages/newsearch2', accommodation_details);
+            return_data.ppas = results[0];
+            return_data.accommodations = results[1];
+            return_data.places = results[2];
+            return_data.theacc = results[3];
+            // return_data.nop = results[3]; // this variable is ambigious, nop == name of place, or name of ppa ... but we need it for now, just rush work for now
+            return_data.theppa = [];
+            return_data.sale = [];
+            return_data.sales = results[4]
+            // return_data.nop = '[]' // || undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
+            resolve(return_data)
+            // res.render('pages/newsearch2', return_data);
             })
 
-        } else if (req.query.type === 'accommodations') { // if it's an accomodation
-            // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
-            // inputing time from js to sql causes ish
-            connectionPool.query(mustRunQuery + "SELECT * FROM accommodations WHERE statecode = '" + req.query.sc + "' AND post_time = '" + req.query.pt + "'", function (error, results, fields) {
-            console.log('should be here', results[3])
-            if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
-                console.log('error', error);
-                reject(error);
-            } else if (!helpers.isEmpty(results) /* && results[3].acc_geodata != '' */) {
-                // we're not adding the GeoJSON results to an array because it's only one result
-                for (index = 0; index < results[3].length; index++) {
-                /**
-                * {
-                        "type": "Feature",
-                        "properties": {
-                            "name": "Coors Field",
-                            "amenity": "Hospital",
-                            "popupContent": "The Amenity [Hospital], then the location/street name."
-                        },
-                        "geometry": {
-                            "type": "Point",
-                            "coordinates": [ 7.5098633766174325, 5.515524804961825 ]
-                        }
-                    }
-                */
-                // unstringify the acc_geodata entry
-                // results[index]['acc_geodata'] = JSON.parse(results[index].acc_geodata);
+        } else if (req.query.pt) { // for getting sales items
+            connectionPool.query(mustRunQuery + "SELECT * FROM posts WHERE type = 'sale'; SELECT * FROM posts WHERE statecode = ? AND post_time = ?",Object.values(req.query), function (error, results, fields) {
 
-                // re-arrange to GeoJSON Format
-                // results[3][index].type = "Feature"; // we don't need this for acc, even for ppa
-                // here needs work
-                results[3][index].properties = {};
-
-                if (results[3][index].acc_geodata != '') {
-                    results[3][index].properties.acc_geodata = JSON.parse(results[3][index].acc_geodata);
-                    results[3][index].properties.acc_geodata.latlng = {
-                    "lat": results[3][index].properties.acc_geodata.geometry.coordinates[1],
-                    "lng": results[3][index].properties.acc_geodata.geometry.coordinates[0]
-                    }
-
-                    results[3][index].geometry = {};
-                    results[3][index].geometry.type = "Point";
-                    results[3][index].geometry.coordinates = [JSON.parse(results[3][index].acc_geodata).longitude, JSON.parse(results[3][index].acc_geodata).latitude];
+                if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
+                  reject(error);
                 } else {
-                    // results[3][index].properties.acc_geodata = '';
+                    return_data.ppas = results[0];
+                    return_data.accommodations = results[1];
+                    return_data.places = results[2];
+                    return_data.theppa = [];
+                    return_data.theacc = [];
+                    return_data.nop = [];
+                    // console.log('looking for sales', results)
+                    return_data.sales = results[3];
+                    return_data.sale = results[4]
+                    resolve(return_data);
                 }
-
-                results[3][index].properties.address = results[3][index].address;
-                results[3][index].properties.type = results[3][index].type;
-                results[3][index].properties.price = results[3][index].price;
-
-                // shouldn't we add name of PPA and other details as well ?!?!?
-
-                if (results[3][index].acc_geodata != '') {
-                    console.log(JSON.parse(results[3][index].acc_geodata).latlng, '======++++++++====', JSON.parse(results[3][index]['acc_geodata']).longitude, JSON.parse(results[3][index]['acc_geodata']).latitude);
-                }
-
-                // delete results[3][index]['acc_geodata'];
-                // delete results[3][index]['type'];
-                // delete results[3][index]['address'];
-
-                // delete redundate data like longitude, latitude, and latlng in acc_geodata after reassigning values
-                }
-            }
-
-            accommodation_details = {};
-            accommodation_details.ppas = results[0];
-            accommodation_details.accommodations = results[1];
-            accommodation_details.places = results[2];
-            accommodation_details.theacc = results[3];
-            accommodation_details.nop = results[3]; // this variable is ambigious, nop == name of place, or name of ppa ... but we need it for now, just rush work for now
-            accommodation_details.theppa = [];
-            // accommodation_details.nop = '[]' // || undefined; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
-            // console.log('what we shold see');
-            resolve(accommodation_details)
-            // res.render('pages/newsearch2', accommodation_details);
-            })
-
+              })
         } else {
             // SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address,ppa_geodata FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null)
 
             connectionPool.query("SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions FROM info \
             WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null);\
-            SELECT * FROM accommodations WHERE expire > UTC_DATE ; SELECT `geo_data`, `when` FROM places \
+            SELECT * FROM accommodations WHERE expire > UTC_DATE() ; SELECT `geo_data`, `when` FROM places \
             WHERE geo_data != '' ;", function (error, results, fields) {
 
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
@@ -1194,14 +1125,14 @@ exports.GetPosts = async (data) => { // we're meant to be saving every search! p
     // get response
     // so we're selecting posts newer than the ones currently in the user's timeline. or the server closed the connection error
 
-    // SELECT * FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT ppa_address, ppa_geodata, type_of_ppa FROM info WHERE ppa_address != '' AND ppa_geodata != '' AND type_of_ppa != ''
+    // SELECT * FROM accommodations WHERE expire > NOW() ORDER BY input_time DESC LIMIT 55; SELECT ppa_address, ppa_geodata, type_of_ppa FROM info WHERE ppa_address != '' AND ppa_geodata != '' AND type_of_ppa != ''
     // console.log('search query parameters', data.query)
     let q = '', thisisit = {};
     // maybe change the ORDER BYs since we're using post_time now =---
     if (data.query.s) {
         console.log('are we here?');
         q = "SELECT * FROM accommodations \
-        WHERE statecode LIKE '" + data.query.s.substring(0, 2) + "%' \
+        WHERE expire > NOW() AND statecode LIKE '" + data.query.s.substring(0, 2) + "%' \
         ORDER BY post_time DESC LIMIT 55; SELECT *, '' as password \
         FROM info WHERE ppa_address != '' AND statecode LIKE '" + data.query.s.substring(0, 2) + "%' ;\
         SELECT * FROM posts WHERE statecode LIKE '" + data.query.s.substring(0, 2) + "%';";
@@ -1210,7 +1141,7 @@ exports.GetPosts = async (data) => { // we're meant to be saving every search! p
         for (let index = 0; index < 36/* ngstates.states_short.length */; index++) {
         const element = ngstates.states_short[index];
         q += "SELECT * FROM accommodations \
-        WHERE statecode LIKE '" + element + "%' ORDER BY post_time DESC LIMIT 55; \
+        WHERE expire > NOW() AND statecode LIKE '" + element + "%' ORDER BY post_time DESC LIMIT 55; \
         SELECT *, '' as password FROM info \
         WHERE ppa_address != '' AND statecode LIKE '" + element + "%' ;\
         SELECT * FROM posts WHERE statecode LIKE '" + element + "%' ;"; // the trailing ';' is very important
@@ -1378,10 +1309,10 @@ exports.SearchNOPs = async (req) => {
     return re;
 }
 
-exports.SearchAcc = async (req) => {
+exports.SearchAcc = async (req) => { // doing nothing, really
     let re = await new Promise((resolve, reject) => {
         // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
-        connectionPool.query("SELECT * FROM accommodations WHERE rentrange = '" + req.query.rr + "' AND post_time = '" + req.query.pt + "'", function (error, results, fields) {
+        connectionPool.query("SELECT * FROM accommodations WHERE expire > NOW() AND rentrange = '" + req.query.rr + "' AND post_time = '" + req.query.pt + "'", function (error, results, fields) {
         if (error) reject(error)
         else {
             accommodation_details = {};
@@ -1397,7 +1328,7 @@ exports.SearchAcc = async (req) => {
 
 exports.SearchDefault = async () => {
     let re = await new Promise((resolve, reject) => {
-        connectionPool.query("SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null); SELECT * FROM accommodations WHERE expire > UTC_DATE", function (error, results, fields) {
+        connectionPool.query("SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null); SELECT * FROM accommodations WHERE expire > UTC_DATE()", function (error, results, fields) {
 
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
               reject(error);

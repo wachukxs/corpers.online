@@ -38,7 +38,7 @@
 
     <meta name="twitter:image:alt" content="Corpers helping other corpers">
 
-    <title>Corpers Online</title>
+    <title>Corpers Online &middot; Search</title>
 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
@@ -46,7 +46,6 @@
     
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js" integrity="sha384-pjaaA8dDz/5BgdFUPX6M/9SUZv4d12SUPF0axWc+VRZkx5xU3daN+lYb49+Ax+Tl" crossorigin="anonymous">
     </script>
-
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin="" />
 
@@ -62,10 +61,6 @@
     <script src="https://unpkg.com/esri-leaflet@2.2.3/dist/esri-leaflet.js" integrity="sha512-YZ6b5bXRVwipfqul5krehD9qlbJzc6KOGXYsDjU9HHXW2gK57xmWl2gU6nAegiErAqFXhygKIsWPKbjLPXVb2g==" crossorigin=""></script>
 
     <style>
-        #mapid {
-            height: 200px;
-            /* phones should be 140px */
-        }
 
         .os {
             /* <!-- style="display: -webkit-inline-box; overflow-x: scroll;" --> <!-- to make it scroll and overflow --> */
@@ -168,6 +163,10 @@
             border-width: medium;
             max-width: fit-content;
         }
+
+        .nav.nav-tabs.nav-justified.container {
+            padding-left: 15px;
+        }
     </style>
     <script async defer data-website-id="58dce5f5-c238-4e98-b2c6-e701c258f01d" src="https://using-umami.herokuapp.com/umami.js"></script>
 </head>
@@ -183,6 +182,7 @@
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
             <ul class="navbar-nav mr-auto">
                 <ul class="navbar-nav mr-auto">
+                    <!-- if they're logged in, instead of showing login/signup ...ask them if they want to be notified for new posts relating to what they've just searched ...increase notifications ...also, should we put a search bar here so even people that aren't corpers can look for stuff-->
                     <li class="nav-item">
                       <a class="nav-link" href="/login">Log in</a>
                     </li>
@@ -206,140 +206,257 @@
         </div>
     </nav>
 
+
+    <nav class="mt-2">
+        <div class="nav nav-tabs nav-justified container" id="nav-tab" role="tablist">
+          <a class="nav-item nav-link <%= sale.length > 0 ? ' active ' : '' %>" id="nav-sales-tab" data-toggle="tab" href="#nav-sales" role="tab" aria-controls="nav-sales" aria-selected="true">Sales <%- sales.length > 0 ? '&middot; ' + sales.length : '' %></a>
+          <a class="nav-item nav-link <%= theppa.length > 0 ? ' active ' : '' %>" id="nav-ppas-tab" data-toggle="tab" href="#nav-ppas" role="tab" aria-controls="nav-ppas" aria-selected="false">PPAs <%- ppas.length > 0 ? '&middot; ' + ppas.length : '' %></a>
+          <a class="nav-item nav-link <%= theacc.length > 0 ? ' active ' : '' %> " id="nav-acc-tab" data-toggle="tab" href="#nav-acc" role="tab" aria-controls="nav-accommodations" aria-selected="false">Accommodations <%- accommodations.length > 0 ? '&middot; ' + accommodations.length : '' %></a>
+        </div>
+      </nav>
+
     <main role="main">
 
-        <div class="">
-            <!-- <div class="" id="mapid">
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade <%= sale.length > 0 ? ' show active ' : '' %> " id="nav-sales" role="tabpanel" aria-labelledby="nav-sales-tab">
                 
-            </div> -->
-
-          <!-- <p><a class="btn btn-primary btn-lg" href="#!" role="button">Learn more &raquo;</a></p> -->
-        </div>
-
-        <script>
-            /* let mymap = L.map( 'mapid', {
-                    tilt: true,
-                    zoomControl: false
-                } )
-                .setView( [ 5.5216578, 7.5066884 ], 16 );
-
-
-            let basemap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '<a href="https://www.openstreetmap.org/">OpenStreetMap</a>, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, <a href="https://www.mapbox.com/">Mapbox</a>',
-                maxZoom: 18,
-                id: 'mapbox.streets',
-                accessToken: 'pk.eyJ1IjoiY2h1a3MwMDciLCJhIjoiY2psOW1iZ2x0MXRoczNycGJwdzhpOGZhbCJ9.z03GKFAu-scE70Z1JKagOg'
-            })
-            .addTo( mymap );
-
-            L.control.scale()
-                .addTo( mymap ); */
-        </script>
-
-        <% if (result.data.sale) {%>
-            <div class="container mt-4">
-                <div class="card flex-md-row mb-4 box-shadow h-md-250 hit-item" style="flex-direction: row;">
-                    <div class="card-body d-flex flex-column align-items-start">
-                        <strong class="d-inline-block mb-2 text-primary"><%=  result.data.sale[0].itemname  %></strong>
-                        <h3 class="mb-0">
-                            <a class="text-dark" href="#!">&#8358; <%= result.data.sale[0].price %></a>
-                        </h3>
-                        <div class="mb-1 text-muted"><%= result.data.sale[0].statecode %> selling</div>
-                        <p class="card-text mb-auto truncate-overflow">
-                            <%- (result.data.sale[0].text.trim() === '' ? "<i>No description available</i>" : result.data.sale[0].text.trim() ) %>
-                        </p>
-                        <a href="/login">Login to buy</a>
-                    </div>
-                    <img class="card-img-right flex-auto" alt="Picture of <%= result.data.sale[0].itemname %>" style="width: auto; height: 250px;" src="<%= ( result.data.sale[0].media ? 'https://drive.google.com/uc?id=' + result.data.sale[0].media.split(',')[0] : 'holder.js/200x250?theme=gray&text=No%20image%20available' ) %>" data-holder-rendered="true">
-                </div>
-            </div>
-        <% } %>
-        <div class="container mt-4">
-
-            <% let categories = Array.from(new Set(result.data.sales.map(item => item.itemname))); %>
-            <% if(categories.length > 0) { %>
-               <% for (let index = 0; index < categories.length; index++) { %>
-                <% const category = categories[index]; %>
-
-                    <%  let items = result.data.sales.filter(item => item.itemname === category) %>
-                    <h2 class="mt-4"><%= category %> &#183; (<%= items.length %>)</h2>
-                    
-                    <div class="wrapper" style="overflow-x: scroll;">
-
-                    <%  for (let index = 0; index < items.length; index++) { %>
-                        <% const element = items[index]; %>
-                        
-                        <div class="card flex-md-row mb-4 box-shadow h-md-250">
-                            <div class="card-body d-flex flex-column align-items-start">
-                                <strong class="d-inline-block mb-2 text-primary"><%= (element.itemname ? element.itemname : 'Unnamed items' ) %></strong>
+                <% console.log('one sale?', sale.length) %>
+                <% if (sale.length > 0) {%>
+                    <div class="container mt-4">
+                        <div class="card mb-4 box-shadow h-md-250 hit-item" style="flex-direction: row;">
+                            <div class="card-body align-items-start">
+                                <strong class="d-inline-block mb-2 text-primary"><%=  sale[0].itemname  %></strong>
                                 <h3 class="mb-0">
-                                    <a class="text-dark" href="#!">&#8358; <%= element.price %></a>
+                                    <a class="text-dark" href="#!">&#8358; <%= sale[0].price %></a>
                                 </h3>
-                                <div class="mb-1 text-muted"><%= element.statecode %> selling</div>
+                                <div class="mb-1 text-muted"><%= sale[0].statecode %> selling</div>
                                 <p class="card-text mb-auto truncate-overflow">
-                                    <%= element.text %>
+                                    <%- (sale[0].text.trim() === '' ? "<i>No description available</i>" : sale[0].text.trim() ) %>
                                 </p>
                                 <a href="/login">Login to buy</a>
                             </div>
-                            <img class="card-img-right flex-auto d-none d-lg-block" alt="Picture of <%= element.itemname %>" style="width: 200px; height: 250px;" src="<%= ( element.media ? 'https://drive.google.com/uc?id=' + element.media.split(',')[0] : 'holder.js/200x250?theme=gray&text=No%20image%20available' ) %>" data-holder-rendered="true">
-                        </div>
-                    <%  } %>
-
-                    </div>
-                <%  } %>
-
-                <% } else {%>
-                    <h2>No item on sale yet! Wanna sell something? <a href="/login">Login.</a></h2>
-                    <% } %>
-            
-            <!-- a heading and ... -->
-            <!-- <h2>Accommodations</h2> -->
-            
-            <!-- the content -->
-            <!-- <div>
-                <div class="row mb-2 os">
-                    <div class="col-md-6 w-75">
-                        <div class="card flex-md-row mb-4 box-shadow h-md-250">
-                            <div class="card-body d-flex flex-column align-items-start">
-                                <strong class="d-inline-block mb-2 text-primary">World</strong>
-                                <h3 class="mb-0">
-                                    <a class="text-dark" href="#!">Featured post</a>
-                                </h3>
-                                <div class="mb-1 text-muted">Nov 12</div>
-                                <p class="card-text mb-auto">This is a wider card with supporting text below as a natural lead-in to
-                                    additional content.</p>
-                                <a href="#!">Continue reading</a>
-                            </div>
-                            <img class="card-img-right flex-auto d-none d-lg-block" data-src="holder.js/200x250?theme=thumb" alt="Thumbnail [200x250]" style="width: 200px; height: 250px;" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22200%22%20height%3D%22250%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20200%20250%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_16a1e6ceebf%20text%20%7B%20fill%3A%23eceeef%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A13pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_16a1e6ceebf%22%3E%3Crect%20width%3D%22200%22%20height%3D%22250%22%20fill%3D%22%2355595c%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%2256.203125%22%20y%3D%22131%22%3EThumbnail%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" data-holder-rendered="true">
+                            <img class="card-img-right flex-auto" alt="Picture of <%= sale[0].itemname %>" style="width: auto; height: 250px;" src="<%= ( sale[0].media ? 'https://drive.google.com/uc?id=' + sale[0].media.split(',')[0] : 'holder.js/200x250?theme=gray&text=No%20image%20available' ) %>" data-holder-rendered="true">
                         </div>
                     </div>
-                    <div class="col-md-6 w-75">
-                        <div class="card flex-md-row mb-4 box-shadow h-md-250">
-                            <div class="card-body d-flex flex-column align-items-start">
-                                <strong class="d-inline-block mb-2 text-success">Design</strong>
-                                <h3 class="mb-0">
-                                    <a class="text-dark" href="#!">Post title</a>
-                                </h3>
-                                <div class="mb-1 text-muted">Nov 11</div>
-                                <p class="card-text mb-auto">This is a wider card with supporting text below as a natural lead-in to
-                                    additional content.</p>
-                                <a href="#!">Continue reading</a>
+                <% } %>
+                <div class="container mt-4">
+        
+                    <% let categories = Array.from(new Set(sales.map(item => item.itemname))); %>
+                    <% if(categories.length > 0) { %>
+                       <% for (let index = 0; index < categories.length; index++) { %>
+                        <% const category = categories[index]; %>
+        
+                            <%  let items = sales.filter(item => item.itemname === category) %>
+                            <h2 class="mt-4"><%= category %> &#183; (<%= items.length %>)</h2>
+                            
+                            <div class="wrapper" style="overflow-x: scroll;">
+        
+                            <%  for (let index = 0; index < items.length; index++) { %>
+                                <% const element = items[index]; %>
+                                
+                                <div class="card mb-4 box-shadow h-md-250">
+                                    <div class="card-body align-items-start">
+                                        <strong class="d-inline-block mb-2 text-primary"><%= (element.itemname ? element.itemname : 'Unnamed items' ) %></strong>
+                                        <h3 class="mb-0">
+                                            <a class="text-dark" href="#!">&#8358; <%= element.price %></a>
+                                        </h3>
+                                        <div class="mb-1 text-muted"><%= element.statecode %> selling</div>
+                                        <p class="card-text mb-auto truncate-overflow">
+                                            <%= element.text %>
+                                        </p>
+                                        <a href="/login">Login to buy</a>
+                                    </div>
+                                    <img class="card-img-right flex-auto d-none d-lg-block" alt="Picture of <%= element.itemname %>" style="width: 200px; height: 250px;" src="<%= ( element.media ? 'https://drive.google.com/uc?id=' + element.media.split(',')[0] : 'holder.js/200x250?theme=gray&text=No%20image%20available' ) %>" data-holder-rendered="true">
+                                </div>
+                            <%  } %>
+        
                             </div>
-                            <img class="card-img-right flex-auto d-none d-lg-block" data-src="holder.js/200x250?theme=thumb" alt="Thumbnail [200x250]" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22200%22%20height%3D%22250%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20200%20250%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_16a1e6ceec2%20text%20%7B%20fill%3A%23eceeef%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A13pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_16a1e6ceec2%22%3E%3Crect%20width%3D%22200%22%20height%3D%22250%22%20fill%3D%22%2355595c%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%2256.203125%22%20y%3D%22131%22%3EThumbnail%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" data-holder-rendered="true" style="width: 200px; height: 250px;">
-                        </div>
+                        <%  } %>
+        
+                        <% } else {%>
+                            <h2>No item on sale yet! Wanna sell something? <a href="/login">Login.</a></h2>
+                            <% } %>
+                    
+                   
+                </div> 
+        
+            </div>
+            <div class="tab-pane fade <%= theppa.length > 0 ? ' show active ' : '' %> " id="nav-ppas" role="tabpanel" aria-labelledby="nav-ppas-tab">
+                <div class="container mt-4">
+                    <div class="card-columns">
+                       
+                                
                     </div>
                 </div>
-            </div>
- -->
-
-
+                <div class="container">
+                    <div class="section-one item">
         
-        </div> <!-- /container -->
+                            <% console.log('what is theppa', theppa.length); %>
+                            <% if (theppa.length > 0){ %>
+                                <div class="card mb-4 box-shadow h-md-250 border-success">
+        
+                                        <% if ( theppa[0].ppa_geodata != '' ) { %>
+                                            <% console.log( 'pppa', theppa[0].ppa_geodata  )  %>
+                                            <% var ppa_geo1 = JSON.parse(theppa[0].ppa_geodata); %>
+                                            
+                                                <div data-lat="<%= ppa_geo1.latitude %>" data-lng="<%= ppa_geo1.longitude %>" data-accuracy="<%= ppa_geo1.accuracy %>" ></div>
+                                            <% } %>
+        
+                                        <div class="card-body align-items-start hover">
+                                            <strong class="d-inline-block mb-2 text-primary"><%= theppa[0].type_of_ppa %></strong>
+                                            <h3 class="mb-0">
+                                                <a class="text-dark" href="#!"><%= theppa[0].name_of_ppa %></a>
+                                                <% if ( theppa[0].ppa_geodata != '' ) { %>
+                                                    <span class="oi oi-map-marker" title="accommodation map marker" aria-hidden="true"></span>
+                                                <% } %>
+                                            </h3>
+                                            <div class="mb-1 text-muted"><%= theppa[0].ppa_address %></div>
+                                            <p class="card-text mb-auto"><%= theppa[0].ppa_directions %></p>
+                                            <!-- <a href="#!">Continue reading</a> -->
+                                        </div>
+                                    </div>
+                                
+                            <%  }%>
+        
+                        <div class="thelist" id="tl">
+                                    <% if ( ppas.length > 0 ) { %>
+                                        <%# should we remove the selected ppa from the other ppas? %>
+                                        <% if ( theppa.length > 0 ) { // %>
+                                            
+                                            <% var containsPPA = ppas.filter((value, index, array) => { return value.name_of_ppa == theppa[0].name_of_ppa && value.ppa_address == theppa[0].ppa_address }) ; %>
+                                            <% if ( containsPPA.length > 0 ) { // %>
+                                                <%# "it's in it" %>
+                                            <% } %>
 
+                                        <% } %>
+                                        
+
+                                    <% for (i = 0; i < ppas.length; i++) { %>
+                                        <div class="card mb-4 box-shadow h-md-250">
+
+                                                <% if ( ppas[i].ppa_geodata != '' ) { %>
+                                                    
+                                                    <% var ppa_geo = JSON.parse(ppas[i].ppa_geodata); %>
+                                                    <%#console.log( 'pppa', ppa_geo  )  %>
+                                                        <div data-lat="<%= ppa_geo.latitude %>" data-lng="<%= ppa_geo.longitude %>" data-accuracy="<%= ppa_geo.accuracy %>" ></div>
+                                                    <% } %>
+
+                                                <div class="card-body align-items-start hover">
+                                                    <strong class="d-inline-block mb-2 text-primary"><%= ppas[i].type_of_ppa %></strong>
+                                                    <h3 class="mb-0">
+                                                        <a class="text-dark" href="#!"><%= ppas[i].name_of_ppa %></a>
+                                                        <% if ( ppas[i].ppa_geodata != '' ) { %>
+                                                            <span class="oi oi-map-marker" title="accommodation map marker" aria-hidden="true"></span>
+                                                        <% } %>
+                                                    </h3>
+                                                    <div class="mb-1 text-muted"><%= ppas[i].ppa_address %></div>
+                                                    <p class="card-text mb-auto"><%= ppas[i].ppa_directions %></p>
+                                                    <!-- <a href="#!">Continue reading</a> -->
+                                                </div>
+                                            </div>
+                                        <% } %>
+                                    <% } else { %>
+                                        <a>There's nothing for now. Check back later and you can also add a PPA.</a>
+                                    <% } %> %>
+                               
+                        </div>
+            
+                    </div>
+                </div>
+        
+            </div>
+            <div class="tab-pane fade <%= theacc.length > 0 ? ' show active ' : '' %> " id="nav-acc" role="tabpanel" aria-labelledby="nav-acc-tab">
+                <div class="container mt-4">
+
+                        <% console.log('what is theacc', theacc, theacc.length, accommodations); %>
+                            <% if (theacc.length > 0){ %>
+                                <div class="card mb-4 box-shadow h-md-250 border-success">
+        
+                                        <% if ( theacc[0].acc_geodata != '' ) { %>
+                                            <% console.log('l', theacc[0], theacc[0].acc_geodata); %>
+                                            <% var acc_geo1 = JSON.parse(theacc[0].acc_geodata); %>
+                                                <div data-lat="<%= acc_geo1.geometry.coordinates[1] %>" data-lng="<%= acc_geo1.geometry.coordinates[0] %>" ></div>
+                                            <% } %>
+                                        <div class="card-body align-items-start hover">
+                                                            
+                                                <strong class="d-inline-block mb-2 text-primary mr-auto"><%= theacc[0].type %></strong>
+                                                
+                                            <h3 class="mb-0">
+                                                <a class="text-dark" href="#!"><%= theacc[0].address %></a>
+                                                <% if ( theacc[0].acc_geodata != '' ) { %>
+                                                    <span class="oi oi-map-marker" title="accommodation map marker" aria-hidden="true"></span>
+                                                <% } %>
+                                            </h3>
+                                            <div class="mb-1 text-muted">with <%= theacc[0].rooms.replace('', 'and ').split(',').reverse().toString().replace(/,/g, ', ') %></div>
+                                            <p class="card-text mb-auto"> &#8358;<%= theacc[0].price%> <%= theacc[0].rentrange %></p>
+                    
+                                            <% if ( theacc[0].directions != ('' || null ) ) { %>
+                                                <p class="card-text mb-auto font-italic font-weight-bold" style="display: none;" id="<%= new Date(theacc[0].input_time).getTime() %>"><%= theacc[0].directions %></p>
+                                            <a href="#!" onclick="toggle_visibility('<%= new Date(theacc[0].input_time).getTime() %>')">See directions</a>
+                                            <% } %>
+                                            
+                                        </div>
+                                </div>
+                                
+                            <%  }  %>
+
+                    <% if ( accommodations.length > 0 ) { // for when they open up a new chat and if they've never chatted before // i.e. this guy has no old chat AT ALL they possibly couldn't have chatted before %>
+                <% for (i = 0; i < accommodations.length; i++) { %>
+        
+                    <div class="card mb-4 box-shadow h-md-250" >
+                            
+                        <% if ( accommodations[i].acc_geodata != '' ) { %>
+                            <% var acc_geo = JSON.parse(accommodations[i].acc_geodata); %>
+                                <div data-lat="<%= acc_geo.geometry.coordinates[1] %>" data-lng="<%= acc_geo.geometry.coordinates[0] %>" ></div>
+                            <% } %>
+
+                        <div class="card-body align-items-start hover">
+                                
+                                    <strong class="d-inline-block mb-2 text-primary mr-auto"><%= accommodations[i].type %></strong>
+                                    
+                                <h3 class="mb-0">
+                                    <a class="text-dark" href="#!"><%= accommodations[i].address %></a>
+                                    <% if ( accommodations[i].acc_geodata != '' ) { %>
+                                        <span class="oi oi-map-marker" title="accommodation map marker" aria-hidden="true"></span>
+                                    <% } %>
+                                </h3>
+                                <div class="mb-1 text-muted">with <%= accommodations[i].rooms.replace('', 'and ').split(',').reverse().toString().replace(/,/g, ', ') %></div>
+                                <p class="card-text mb-auto"> &#8358;<%= accommodations[i].price%> <%= accommodations[i].rentrange %></p>
+
+                                <% if ( accommodations[i].directions != ('' || null ) ) { %>
+                                    <p class="card-text mb-auto font-italic font-weight-bold" style="display: none;" id="<%= new Date(accommodations[i].input_time).getTime() %>"><%= accommodations[i].directions %></p>
+                                <a href="#!" onclick="toggle_visibility('<%= new Date(accommodations[i].input_time).getTime() %>')">See directions</a>
+                                <% } %>
+                                
+                                
+                            </div>
+                        </div>
+                    <% } %>
+
+                    <script>
+                        function toggle_visibility(id) {
+                            var e = document.getElementById(id);
+                            if (e.style.display == 'block') {
+                                e.style.display = 'none';
+                                e.nextElementSibling.innerHTML = 'See directions';
+                            } else {
+                                e.style.display = 'block';
+                                e.nextElementSibling.innerHTML = 'Got it';
+                                
+                            }
+                        }
+                    </script>
+                <% } else { %>
+                    <a>There's nothing for now. If you have an accommodations, please consider posting it.</a>
+                <% } %> %>
+                </div>
+            </div>
+
+        </div>
     </main>
 
     <footer class="container">
-        <p>&copy; <%= result.current_year %> Corpers Online
+        <p>&copy; <%= current_year %> Corpers Online
         </p>
     </footer>
 

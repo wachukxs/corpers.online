@@ -85,7 +85,7 @@ router.get('/allppas', function (req, res) {
 
 });
 
-router.get('/places', function (req, res) {
+router.get('/search', function (req, res) {
   // maybe make use of [req.originalUrl .baseUrl .path] later. req.params too
 
   // "/search?type=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address + "&top=" + item.type_of_ppa; // nop type pa
@@ -96,12 +96,13 @@ router.get('/places', function (req, res) {
   console.log('req.query:', req.query); // find every thing that is req.query.search.query
   
   query.DistinctNotNullDataFromPPAs(req).then(result => {
-    res.render('pages/newsearch2', result)
+    result.current_year = new Date().getFullYear()
+    res.render('pages/search', result)
   }, reject => {
     console.info(reject)
     res.sendStatus(500);
   }).catch(error => {
-    console.error('///', error)
+    console.error('/search', error)
     res.sendStatus(500);
   })
 
@@ -158,7 +159,7 @@ router.get('/items', function (req, res) {
     })
     
   } else if(req.query.pt) {
-    query.GetAllSalesAndOneSale(req.query).then(data => {
+    query.GetAllSalesAndOneSale(req.query).then(data => { // we use here for /items
       result = {
         data: data,
         current_year: new Date().getFullYear()
@@ -196,15 +197,14 @@ router.post('/sayhi', /* bodyParser.urlencoded({
     console.log('the message', req.body);
     if (helpers.isEmpty(req.body.message)) {
       // console.log('empty');
-      res.status(406).send('Not Acceptable'); //.render('pages/404'); // returns Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+      res.status(406).send('Not Acceptable'); // returns Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
       // res.render('pages/404');
     } else {
       // console.log('NOT empthy');
       pool.query("INSERT INTO feedbacks ( message ) VALUES (" + pool.escape(req.body.message) + ")", function (error, results, fields) {
         if (error) throw error;
-
-        if (results.affectedRows === 1) {
-          res.status(200).send('OK'); //.render('pages/404');
+        else if (results.affectedRows === 1) {
+          res.status(200).send('OK');
         }
       });
 
@@ -223,7 +223,7 @@ router.post('/contact', /* bodyParser.urlencoded({ // edited
       if (error) throw error;
 
       if (results.affectedRows === 1) {
-        res.status(200).send('OK'); //.render('pages/404');
+        res.status(200).send('OK');
       }
     });
 });
@@ -248,7 +248,6 @@ router.get('/profile', auth.verifyJWT, function (req, res) {
     let jkl = JSON.parse(data);
     // let's hope there's no err
 
-    /* if (req.session.loggedin) { */
       let jn = req.session.corper.statecode.toUpperCase()
 
       /**an array of all the local government in the state */
@@ -286,9 +285,6 @@ router.get('/profile', auth.verifyJWT, function (req, res) {
         console.error('our system should\'ve crashed:', err)
         res.status(502).render('pages/profile') // we should tell you an error occured
       })
-    /* } else {
-      res.redirect('/login');
-    } */
 
   })
 });
@@ -297,8 +293,6 @@ router.get('/profile', auth.verifyJWT, function (req, res) {
 router.post('/profile', /* bodyParser.urlencoded({
   extended: true
 }), */ function (req, res) {
-
-  
   const busboy = new Busboy({
     headers: req.headers,
     limits: { // set fields, fieldSize, and fieldNameSize later (security)
@@ -337,7 +331,6 @@ router.post('/profile', /* bodyParser.urlencoded({
     /* filestream.on('readable', (what) => { // don't do this, unless, MABYE filestream.read() is called in the callback
       console.log('\ncurious what happens here\n', what)
     }) */
-
 
     filestream.on('data', function (data) {
       console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
@@ -389,19 +382,19 @@ router.post('/profile', /* bodyParser.urlencoded({
 
           connectionPool.query('UPDATE info SET picture_id = ? WHERE statecode = ?', [file.data.id, req.session.corper.statecode.toUpperCase()], function (error, results, fields) {
             if (error) throw error;
-            // ...
-            console.log('updated pic')
+            else {
+              console.log('updated pic')
+            }
           });
 
         }, function (err) {
           // Handle error
           console.error(err);
-
         }
       ).catch(function (err) {
         console.log('some other error ??', err)
       }).finally(() => {
-        console.log('upload finally')
+        console.log('upload finally block')
       });
     }
 
@@ -449,7 +442,6 @@ router.post('/addplace', upload.none(), function (req, res) {
   // handle post request, add data to database.
   console.log('came here /addplace', req.body);
   if (!helpers.isEmpty(req.body)) {
-
     query.AddPlace(req.body).then(result => {
       res.status(200).send('OK');
     }, reject => {
