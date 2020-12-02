@@ -1078,7 +1078,7 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
                     return_data.places = results[2];
                     return_data.theppa = [];
                     return_data.theacc = [];
-                    return_data.nop = [];
+                    // return_data.nop = [];
                     // console.log('looking for sales', results)
                     return_data.sales = results[3];
                     return_data.sale = results[4]
@@ -1091,7 +1091,7 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
             connectionPool.query("SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions FROM info \
             WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null);\
             SELECT * FROM accommodations WHERE expire > UTC_DATE() ; SELECT `geo_data`, `when` FROM places \
-            WHERE geo_data != '' ;", function (error, results, fields) {
+            WHERE geo_data != '' ; SELECT * FROM posts WHERE type = 'sale';", function (error, results, fields) {
 
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
                 console.log(error);
@@ -1104,7 +1104,9 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
             _details.places = results[2];
             _details.theppa = []; // empty
             _details.theacc = []; // empty
-            _details.nop = []; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
+            _details.sale = []
+            _details.sales = results[3]
+            // _details.nop = []; // initialize to empty because the frontend is expecting nop to be somthing. // somehow it's an array when it get to the front end, not string!!!!
             resolve(_details)
             // res.render('pages/newsearch2', _details);
             })
