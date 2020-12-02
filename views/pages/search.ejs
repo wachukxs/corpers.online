@@ -183,12 +183,17 @@
             <ul class="navbar-nav mr-auto">
                 <ul class="navbar-nav mr-auto">
                     <!-- if they're logged in, instead of showing login/signup ...ask them if they want to be notified for new posts relating to what they've just searched ...increase notifications ...also, should we put a search bar here so even people that aren't corpers can look for stuff-->
-                    <li class="nav-item">
-                      <a class="nav-link" href="/login">Log in</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="/signup">Sign up</a>
-                    </li>
+                    
+                    <% if(corper) { %>
+                        <% %>
+                    <% } else { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">Log in</a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link" href="/signup">Sign up</a>
+                          </li>
+                    <% }  %>
                   </ul>
                 <!-- <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
@@ -223,7 +228,7 @@
                 <% console.log('one sale?', sale.length) %>
                 <% if (sale.length > 0) {%>
                     <div class="container mt-4">
-                        <div class="card mb-4 box-shadow h-md-250 hit-item" style="flex-direction: row;">
+                        <div class="card mb-4 flex-md-row box-shadow h-md-250 hit-item" style="flex-direction: row;">
                             <div class="card-body align-items-start">
                                 <strong class="d-inline-block mb-2 text-primary"><%=  sale[0].itemname  %></strong>
                                 <h3 class="mb-0">
@@ -233,7 +238,11 @@
                                 <p class="card-text mb-auto truncate-overflow">
                                     <%- (sale[0].text.trim() === '' ? "<i>No description available</i>" : sale[0].text.trim() ) %>
                                 </p>
-                                <a href="/login">Login to buy</a>
+                                <% if(corper) { %>
+                                    <a href="<%= `/chat?s=${corper.statecode}&posts[type]=sale&posts[who]=${sale[0].statecode}&posts[when]=${(sale[0].post_time || Date.parse(sale[0].input_time))}` %>">Chat to buy</a>
+                                <% } else { %>
+                                    <a href="/login">Login to buy</a>
+                                <% }  %>
                             </div>
                             <img class="card-img-right flex-auto" alt="Picture of <%= sale[0].itemname %>" style="width: auto; height: 250px;" src="<%= ( sale[0].media ? 'https://drive.google.com/uc?id=' + sale[0].media.split(',')[0] : 'holder.js/200x250?theme=gray&text=No%20image%20available' ) %>" data-holder-rendered="true">
                         </div>
@@ -254,7 +263,7 @@
                             <%  for (let index = 0; index < items.length; index++) { %>
                                 <% const element = items[index]; %>
                                 
-                                <div class="card mb-4 box-shadow h-md-250">
+                                <div class="card mb-4 flex-md-row flex-md-row box-shadow h-md-250">
                                     <div class="card-body align-items-start">
                                         <strong class="d-inline-block mb-2 text-primary"><%= (element.itemname ? element.itemname : 'Unnamed items' ) %></strong>
                                         <h3 class="mb-0">
@@ -264,7 +273,11 @@
                                         <p class="card-text mb-auto truncate-overflow">
                                             <%= element.text %>
                                         </p>
-                                        <a href="/login">Login to buy</a>
+                                        <% if (corper) { %>
+                                            <a href="<%= `/chat?s=${corper.statecode}&posts[type]=sale&posts[who]=${element.statecode}&posts[when]=${(element.post_time || Date.parse(element.input_time))}` %>">Chat to buy</a>
+                                        <% } else { %>
+                                            <a href="/login">Login to buy</a>
+                                        <% }  %>
                                     </div>
                                     <img class="card-img-right flex-auto d-none d-lg-block" alt="Picture of <%= element.itemname %>" style="width: 200px; height: 250px;" src="<%= ( element.media ? 'https://drive.google.com/uc?id=' + element.media.split(',')[0] : 'holder.js/200x250?theme=gray&text=No%20image%20available' ) %>" data-holder-rendered="true">
                                 </div>
@@ -392,8 +405,14 @@
                     
                                             <% if ( theacc[0].directions != ('' || null ) ) { %>
                                                 <p class="card-text mb-auto font-italic font-weight-bold" style="display: none;" id="<%= new Date(theacc[0].input_time).getTime() %>"><%= theacc[0].directions %></p>
-                                            <a href="#!" onclick="toggle_visibility('<%= new Date(theacc[0].input_time).getTime() %>')">See directions</a>
+                                                <a href="#!" onclick="toggle_visibility('<%= new Date(theacc[0].input_time).getTime() %>')">See directions</a>
                                             <% } %>
+                                                <br />
+                                            <% if (corper) { %>
+                                                <a href="<%= `/chat?s=${corper.statecode}&posts[type]=accommodation&posts[who]=${theacc[0].statecode}&posts[when]=${(theacc[0].post_time || Date.parse(theacc[0].input_time))}` %>">Chat to rent</a>
+                                            <% } else { %>
+                                                <a href="/login">Login to rent</a>
+                                            <% }  %>
                                             
                                         </div>
                                 </div>
@@ -425,8 +444,14 @@
 
                                 <% if ( accommodations[i].directions != ('' || null ) ) { %>
                                     <p class="card-text mb-auto font-italic font-weight-bold" style="display: none;" id="<%= new Date(accommodations[i].input_time).getTime() %>"><%= accommodations[i].directions %></p>
-                                <a href="#!" onclick="toggle_visibility('<%= new Date(accommodations[i].input_time).getTime() %>')">See directions</a>
+                                    <a href="#!" onclick="toggle_visibility('<%= new Date(accommodations[i].input_time).getTime() %>')">See directions</a>
                                 <% } %>
+                                    <br />
+                                <% if (corper) { %>
+                                    <a href="<%= `/chat?s=${corper.statecode}&posts[type]=accommodation&posts[who]=${accommodations[i].statecode}&posts[when]=${(accommodations[i].post_time || Date.parse(accommodations[i].input_time))}` %>">Chat to rent</a>
+                                <% } else { %>
+                                    <a href="/login">Login to rent</a>
+                                <% }  %>
                                 
                                 
                             </div>

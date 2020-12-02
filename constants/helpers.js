@@ -22,7 +22,7 @@ exports.isEmpty = function (data) {
     }
 };
 
-// exports.statecodeFormat = /^(ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/(19|20)[abcACB]\/\d\d\d\d$/gi; // still fix this
+exports.statecodeFormat = /^(ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/\d\d[abcACB]\/\d\d\d\d$/gi; // still fix this
 
 /**function to send welcome email after successful user sign up */
 // async..await is not allowed in global scope, must use a wrapper

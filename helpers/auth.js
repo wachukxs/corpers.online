@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const query = require('../models/queries');
-
+const helpers = require('../constants/helpers')
 // FORMAT OF TOKEN
 // Authorization: Bearer <access_token>
 module.exports.verifyToken = (req, res, next) => {
@@ -43,7 +43,7 @@ module.exports.verifyJWT = (req, res, next) => {
             if (err) {
                 console.error(err);
                 res.redirect('/login')
-            } else if ( req.path !== '/' + decodedToken.statecode ) { // should we display a message asking them if they meant decodedToken.statecode ? or security flaw if we do that ?
+            } else if (helpers.statecodeFormat.test(req.path.substring(1)) && req.path !== '/' + decodedToken.statecode ) { // should we display a message asking them if they meant decodedToken.statecode ? or security flaw if we do that ?
                 console.log('catching this err because:');
                 res.status(502).redirect('/login?n=y') // [n]ot = [y]ou
             } else {
@@ -70,6 +70,52 @@ module.exports.verifyJWT = (req, res, next) => {
         })
     } else {
         res.redirect('/login')
+    }
+}
+
+/**
+ * 
+ * @param {object} req 
+ * http req object
+ * @param {object} res 
+ * http res object
+ * @param {function} next 
+ * next() to continue execution
+ * 
+ * @description
+ * a middleware to check jwt cookies in req object, to provide better servies to users(corpers). in pages like /search, helping to pre-populate some data
+ */
+module.exports.checkJWT = (req, res, next) => {
+    // Cookies that have not been signed
+    console.log('Cookies: ', req.cookies)
+    
+    // Cookies that have been signed
+    console.log('Signed Cookies: ', req.signedCookies)
+    if (req.session.corper) {
+        next()
+    } else if (req.cookies._online) {
+        // we could also use req.cookies, but req.signedCookies is just an extra layer of security
+        jwt.verify(req.cookies._online, process.env.SESSION_SECRET, function(err, decodedToken) {
+            if (err) {
+                next()
+            } else {
+                /**
+                 * TODO: res.locals or req.session ?
+                 */
+                query.AutoLogin(decodedToken.statecode).then(result => {
+                    req.session.corper = result.response[0];
+                    req.session.corper.location = result.response[0].servicestate + (result.response[0].city_town ? ', ' + result.response[0].city_town : ''); // + (results1[0].region_street ? ', ' + results1[0].region_street : '' )
+                  }, reject => {
+                    next()
+                  }).catch(reason => {
+                    next()
+                  }).finally(() => {
+                      next()
+                  })
+            }
+        })
+    } else {
+        next()
     }
 }
 

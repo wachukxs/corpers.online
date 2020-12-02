@@ -85,7 +85,7 @@ router.get('/allppas', function (req, res) {
 
 });
 
-router.get('/search', function (req, res) {
+router.get('/search', auth.checkJWT, function (req, res) {
   // maybe make use of [req.originalUrl .baseUrl .path] later. req.params too
 
   // "/search?type=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address + "&top=" + item.type_of_ppa; // nop type pa
@@ -97,6 +97,10 @@ router.get('/search', function (req, res) {
   
   query.DistinctNotNullDataFromPPAs(req).then(result => {
     result.current_year = new Date().getFullYear()
+    result.corper = null
+    if (req.session.corper) {
+      result.corper = req.session.corper
+    }
     res.render('pages/search', result)
   }, reject => {
     console.info(reject)
