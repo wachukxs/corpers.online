@@ -232,7 +232,7 @@ router.post('/contact', /* bodyParser.urlencoded({ // edited
     });
 });
 
-router.get('/posts', function (req, res) {
+router.get('/posts', auth.verifyJWT, function (req, res) {
   // set resposnse type to application/json
   res.setHeader('Content-Type', 'application/json');
 
@@ -294,7 +294,7 @@ router.get('/profile', auth.verifyJWT, function (req, res) {
 });
 
 /**handles updating the corper's profile */
-router.post('/profile', /* bodyParser.urlencoded({
+router.post('/profile', auth.verifyJWT, /* bodyParser.urlencoded({
   extended: true
 }), */ function (req, res) {
   const busboy = new Busboy({
@@ -337,7 +337,7 @@ router.post('/profile', /* bodyParser.urlencoded({
     }) */
 
     filestream.on('data', function (data) {
-      console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
+      // console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
     });
 
     filestream.on('end', function (err) {
@@ -346,7 +346,7 @@ router.post('/profile', /* bodyParser.urlencoded({
       /* console.log('readabe?///// ?', filestream.read()) // filestram.read() is always null ... */
 
       console.log('File [' + fieldname + '] Finished. Got ' + 'bytes');
-      if (err) { console.log('err in busboy file end', err); }
+      if (err) { console.error('err in busboy file end', err); }
     });
 
 
@@ -380,8 +380,8 @@ router.post('/profile', /* bodyParser.urlencoded({
 
           // maybe send the upload progress to front end with sockets? https://github.com/googleapis/google-api-nodejs-client/blob/7ed5454834b534e2972746b28d0a1e4f332dce47/samples/drive/upload.js#L41
 
-          console.log('upload File Id: ', file.data.id); // save to db
-          console.log('thumbnailLink: ', file.data.thumbnailLink);
+          // console.log('upload File Id: ', file.data.id); // save to db
+          // console.log('thumbnailLink: ', file.data.thumbnailLink);
           req.session.corper.picture_id = file.data.id // or we could add picture_id to _profile_data
 
           connectionPool.query('UPDATE info SET picture_id = ? WHERE statecode = ?', [file.data.id, req.session.corper.statecode.toUpperCase()], function (error, results, fields) {
@@ -396,9 +396,9 @@ router.post('/profile', /* bodyParser.urlencoded({
           console.error(err);
         }
       ).catch(function (err) {
-        console.log('some other error ??', err)
+        console.error('some other error ??', err)
       }).finally(() => {
-        console.log('upload finally block')
+        // console.log('upload finally block')
       });
     }
 
@@ -409,7 +409,7 @@ router.post('/profile', /* bodyParser.urlencoded({
   });
 
   busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
-    console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+    // console.log('Field [' + fieldname + ']: value: ' + inspect(val));
     
     _profile_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
     
@@ -417,7 +417,7 @@ router.post('/profile', /* bodyParser.urlencoded({
   });
 
   busboy.on('finish', async function () {
-    console.log('we done?')
+    // console.log('we done?')
     query.UpdateProfile(_profile_data).then(result => {
       
       // update req.session
@@ -428,7 +428,7 @@ router.post('/profile', /* bodyParser.urlencoded({
       if (_profile_data.newstatecode) {
         req.session.corper.statecode = _profile_data.newstatecode.toUpperCase();
       }
-      console.log('new pic id?', req.session.corper.picture_id);
+      // console.log('new pic id?', req.session.corper.picture_id);
       res.status(200).redirect(result);
     }, reject => {
       console.error('what happened?', reject)
@@ -459,7 +459,7 @@ router.post('/addplace', upload.none(), function (req, res) {
   }
 });
 
-router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
+router.post('/posts', auth.verifyJWT, /* upload.array('see', 12), */ function (req, res, next) {
 
   const busboy = new Busboy({
     headers: req.headers,
@@ -476,7 +476,7 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
 
     // there's also 'limit' and 'error' events https://www.codota.com/code/javascript/functions/busboy/Busboy/on
     filestream.on('limit', function () {
-      console.log('the file was too large... nope');
+      console.error('the file was too large... nope');
       get = false;
       // don't listen to the data event anymore
       /* filestream.off('data', (data) => { // doesn't work
@@ -486,7 +486,7 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
       // how should we send a response if one of the files/file is invalid [too big or not an accepted file type]?
     });
 
-    if (filename !== '' && !helpers.acceptedfiles.includes(mimetype)) { // if mimetype it '' or undefined, it passes
+    if (filename !== '' && !helpers.acceptedfiles.includes(mimetype)) { // if mimetype is '' or undefined, it passes
       console.log('we don\'t accept non-image files... nope');
       get = false;
       // don't listen to the data event
@@ -546,25 +546,21 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
 
           // maybe send the upload progress to front end with sockets? https://github.com/googleapis/google-api-nodejs-client/blob/7ed5454834b534e2972746b28d0a1e4f332dce47/samples/drive/upload.js#L41
 
-          console.log('upload File Id: ', file.data.id); // save to db
+          // console.log('upload File Id: ', file.data.id); // save to db
           // console.log('File: ', file);
           _media.push(file.data.id)
 
         }, function (err) {
           // Handle error
           console.error(err);
-
         }
       ).catch(function (err) {
-        console.log('some other error ??', err)
+        console.error('some other error ??', err)
       }).finally(() => {
-        console.log('upload finally')
+        // console.log('upload finally')
       });
-
       uploadPromise.push(up)
-
     }
-
 
     // https://stackoverflow.com/questions/26859563/node-stream-data-from-busboy-to-google-drive
     // https://stackoverflow.com/a/26859673/9259701
@@ -573,7 +569,7 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
   });
 
   busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
-    console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+    // console.log('Field [' + fieldname + ']: value: ' + inspect(val));
     _text[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
     console.warn('fielddname Truncated:', fieldnameTruncated, valTruncated, transferEncoding, mimetype);
   });
@@ -581,7 +577,7 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
   // answer this question: https://stackoverflow.com/questions/26859563/node-stream-data-from-busboy-to-google-drive
 
   busboy.on('finish', async function () {
-    console.log('Done parsing form!', _text, _media);
+    // console.log('Done parsing form!', _text, _media);
     // res.writeHead(303, { Connection: 'close', Location: '/' });
     // res.end();
 
@@ -592,8 +588,7 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
      * if _media and _text are both not empty, then boardcast accordingly
      */
     if (!helpers.isEmpty(_text) && helpers.isEmpty(uploadPromise)) {
-      console.log('what\'s _text?', _text)
-      console.log('post_time', _text.post_time)
+      // console.log('what\'s _text?', _text)
       query.InsertRowInPostsTable({
         media: (_media.length > 0 ? _media : _text.mapimage ? _text.mapimage : ''),
         statecode: req.session.corper.statecode,
@@ -681,11 +676,10 @@ router.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
   // handle post request, add data to database... do more
 
   return req.pipe(busboy)
-
 });
 
 
-router.post('/accommodations', /* upload.array('roomsmedia', 12), */ function (req, res) {
+router.post('/accommodations', auth.verifyJWT, /* upload.array('roomsmedia', 12), */ function (req, res) {
 
   const busboy = new Busboy({
     headers: req.headers,

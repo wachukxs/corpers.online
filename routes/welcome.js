@@ -193,7 +193,7 @@ router.post('/signup', /* bodyParser.urlencoded({
       jwt.sign({statecode: req.body.statecode.toUpperCase()}, process.env.SESSION_SECRET, (err, token) => {
         if (err) throw err
         else {
-          console.log('token generated', token);
+          // console.log('token generated', token);
           // res.setHeader('Set-Cookie', 'name=value')
           res.cookie('_online', token, cookieOptions)
           res.status(200).redirect(req.body.statecode.toUpperCase());
@@ -201,7 +201,7 @@ router.post('/signup', /* bodyParser.urlencoded({
       })
 
     }, error => {
-      console.log('well some error happened', error);
+      console.log('CorpersSignUp() error happened', error);
       // res.send(error.message) // try this & not redirect
       switch (error.message) {
 
@@ -222,7 +222,7 @@ router.post('/signup', /* bodyParser.urlencoded({
           break;
       }
     }).catch(reason => {
-      console.log('catching this err because:', reason);
+      console.error('catching this err because:', reason);
       res.redirect('/signup?m=ue')
     });
 
@@ -246,7 +246,7 @@ router.post('/login', /* bodyParser.urlencoded({ // edited
       jwt.sign({statecode: req.body.statecode.toUpperCase()}, process.env.SESSION_SECRET, (err, token) => {
         if (err) throw err
         else {
-          console.log('token generated', token);
+          // console.log('token generated', token);
           // res.setHeader('Set-Cookie', 'name=value')
           res.cookie('_online', token, cookieOptions)
           res.status(200).redirect(req.body.statecode.toUpperCase());
@@ -254,11 +254,11 @@ router.post('/login', /* bodyParser.urlencoded({ // edited
       })
 
       query.LoginSession([req.body.statecode.toUpperCase(), req.session.id, req.headers["user-agent"]]).then(resolve => {
-        console.log('saved login session info', resolve);
+        // console.log('saved login session info', resolve);
       }, reject => {
-        console.log('reject save login session', reject);
+        // console.log('reject save login session', reject);
       }).catch(reason => {
-        console.log('fail save login session', reason);
+        // console.log('fail save login session', reason);
       })
       
     }, reject => {
@@ -281,7 +281,7 @@ router.post('/login', /* bodyParser.urlencoded({ // edited
       }
 
     }).catch(reason => {
-      console.log('catching this err because:', reason);
+      console.error('catching CorpersLogin() err because:', reason);
       res.status(502).redirect('/login?t=a')
     })
 });
