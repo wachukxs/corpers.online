@@ -93,7 +93,8 @@ router.get('/search', auth.checkJWT, function (req, res) {
   // "/search?type=" + item.group + "&it=" + item.input_time + "&sn=" + item.address + "&sc=" + item.statecode; // sn sc it
   res.set('Content-Type', 'text/html');
   // res.sendFile(__dirname + '/search and places/index.html');
-  if (req.query.search) {
+  
+  if (req.query.search) { // use this logic in DistinctNotNullDataFromPPAs()
     console.log('keyword searched:', req.query.search.query); // find every thing that is req.query.search.query
   }
   

@@ -19,7 +19,8 @@ if (process.env.NODE_ENV === 'production') {
 
 router.get(['/', '/home', '/index'], function (req, res) {
   res.type('.html');
-  res.render('pages/coming-soon', { current_year: new Date().getFullYear() });
+  res.render('pages/index', { current_year: new Date().getFullYear() });
+  // res.render('pages/coming-soon', { current_year: new Date().getFullYear() });
 });
 
 router.get(['/homepage'], function (req, res) {
@@ -138,10 +139,6 @@ router.get(['/map', '/maps'], function (req, res) { // try to infer their locati
     console.log('do we have a problem?', reason);
     res.render('pages/map')
   })
-
-
-
-
 
 });
 
