@@ -152,10 +152,6 @@
                 event.target.setCustomValidity("");
             }
         });
-        /* document.getElementById('scinput')
-            .oninvalid = function( event ) {
-                event.target.setCustomValidity("State code should start with a valid state abbrevation, have forward slashes, appropriate batch, and four trailing digits. Right? And are you currently serving?");
-            } */
 
         if ( 'URLSearchParams' in window ) {
             let urlParams = new URLSearchParams( window.location.search );
