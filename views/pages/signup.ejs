@@ -137,23 +137,28 @@
     </footer>
 
     <script>
-
-        // (AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/\d\d[abcACB]\/\d\d\d\d
-		// [^~!@#$%&*()_+=\-?/\\:;{}[\]\[]
-		// ([A-Za-z]+[\'\-]?[A-Za-z]\w+)
-		var years = parseInt( new Date( Date.now() ).getFullYear().toFixed().slice( 2, 4 ) );
-		var yearrange = '(' + ( years - 1 ).toString() + '|' + years.toString() + ')';
-		// document.forms[ 0 ].elements[ 5 ].pattern.replace( '\\d\\d', yearrange );
-		
-		document.forms[ 0 ].elements[ 5 ].pattern = `(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\\/${yearrange}[abcACB]\\/[0-9]{4}`; // extra escaping probably because we're setting with string from here and not directly from the pattern attribute
-
-        document.getElementById( 'scinput' )
+        const statecodeInput = document.getElementById('scinput');
+		let years = parseInt( new Date( Date.now() ).getFullYear().toFixed().slice( 2, 4 ) );
+        let yearrange = '(' + ( years - 1 ).toString() + '|' + years.toString() + ')';
+        
+		statecodeInput.pattern = `(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\\/${yearrange}[abcACB]\\/[0-9]{4}`; // extra escaping probably because we're setting with string from here and not directly from the pattern attribute
+        statecodeInput.addEventListener('change', function(event){
+            // event.preventDefault();
+            if (statecodeInput.validity.patternMismatch) {
+                console.log('wrong statecode format');
+                event.target.setCustomValidity("State code should start with a valid state abbrevation, have forward slashes, appropriate batch, and four trailing digits. Right? And are you currently serving?");
+            } else {
+                console.log('good statecode format');
+                event.target.setCustomValidity("");
+            }
+        });
+        /* document.getElementById('scinput')
             .oninvalid = function( event ) {
                 event.target.setCustomValidity("State code should start with a valid state abbrevation, have forward slashes, appropriate batch, and four trailing digits. Right? And are you currently serving?");
-            }
+            } */
 
         if ( 'URLSearchParams' in window ) {
-            var urlParams = new URLSearchParams( window.location.search );
+            let urlParams = new URLSearchParams( window.location.search );
             // URLSearchParams also provides familiar Object methods like keys(), values(), and entries():
             // group repepitive commands together like ...removeAttribute( 'hidden' ) etc., so we call them once
             if ( urlParams.get("m") === "de" ) {
@@ -177,8 +182,8 @@
             function getUrlParameter( name ) {
                 name = name.replace( /[\[]/, '\\[' )
                     .replace( /[\]]/, '\\]' );
-                var regex = new RegExp( '[\\?&]' + name + '=([^&#]*)' );
-                var results = regex.exec( location.search );
+                let regex = new RegExp( '[\\?&]' + name + '=([^&#]*)' );
+                let results = regex.exec( location.search );
                 return results === null ? '' : decodeURIComponent( results[ 1 ].replace( /\+/g, ' ' ) );
             };
             if ( getUrlParameter( 'm' ) && ( getUrlParameter( 'm' ) == 'de' ) ) {
