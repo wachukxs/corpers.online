@@ -151,6 +151,10 @@
             }
         });
 
+        statecodeInput.addEventListener("input", function (event) {
+            event.target.setCustomValidity("");
+        });
+
         if ( 'URLSearchParams' in window ) {
             let urlParams = new URLSearchParams( window.location.search );
             // URLSearchParams also provides familiar Object methods like keys(), values(), and entries():
