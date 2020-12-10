@@ -165,7 +165,7 @@ router.post('/subscribe', /* upload.none(), */ function (req, res) {
 
 router.get('/signup', function (req, res) {
   res.set('Content-Type', 'text/html');
-  res.render('pages/signup');
+  res.render('pages/signup', { current_year: new Date().getFullYear() });
 });
 
 // edited
@@ -177,7 +177,6 @@ router.post('/signup', /* bodyParser.urlencoded({
     // also when some one signs up, it counts as login time too, so we should include it in usage details table
 
     // we can find the service state with req.body.statecode.slice(0, 2) which gives the first two letters
-
     query.CorpersSignUp(req.body).then(result => {
       console.log('re:', result);
       req.session.corper = {}

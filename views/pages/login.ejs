@@ -6,22 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Log In - Corpers Online</title>
 
-    <link rel="icon" href="assets/images/2/favicon.ico" type="image/x-icon">
-    <!-- for-mobile-apps -->
+    <link rel="icon" href="assets/images/1/favicon.ico" type="image/x-icon">
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="keywords" content="Register on Corper Online and get to safely Buy, Sell, get accomodation and location/route info from Corpers" />
-    <script type="application/x-javascript">
-        addEventListener("load", function() {
-            setTimeout(hideURLbar, 0);
-        }, false);
-
-        function hideURLbar() {
-            window.scrollTo(0, 1);
-        }
-    </script>
-    <!-- //for-mobile-apps -->
-
+    
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -35,9 +25,7 @@
 		    crossorigin="anonymous"></script> -->
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 
-    <!-- <script src="/font-awesome.min.css"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.4/holder.js" integrity="sha256-crfkMD0BL2TtiwpbIlXF/SVmGSvOtgbMM8GBkibVKyc=" crossorigin="anonymous"></script>
-
 
     <script src="/socket.io/socket.io.js" crossorigin="anonymous"></script>
     <style>
@@ -228,80 +216,4 @@
         }
     </script>
 </body>
-
 </html>
-
-<!--
-	https://www.regextester.com
-	Top Regular Expressions
-	Cheat Sheet
-	Character classes
-
-
-	.							any character except newline
-	\w \d \s			word, digit, whitespace
-	\W \D \S			not word, digit, whitespace
-	[abc]					any of a, b, or c
-	[^abc]				not a, b, or c
-	[a-g]					character between a & g
-
-	Anchors
-
-
-	^abc$					start / end of the string
-	\b						word boundary
-
-	Escaped characters
-
-
-	\. \* \\			escaped special characters
-	\t \n \r			tab, linefeed, carriage return
-	\u00A9				unicode escaped ©
-
-	Groups & Lookaround
-
-
-	(abc)					capture group
-	\1						backreference to group #1
-	(?:abc)				non-capturing group
-	(?=abc)				positive lookahead
-	(?!abc)				negative lookahead
-
-	Quantifiers & Alternation
-
-	a* a+ a?			0 or more, 1 or more, 0 or 1
-	a{5} a{2,}		exactly five, two or more
-	a{1,3}				between one & three
-	a+? a{2,}?		match as few as possible
-	ab|cd	match 	ab or cd
-
--->
-<!--
-
-
-												<script>
-					var form1 = document.forms.namedItem("login-form");
-					form1.addEventListener('submit', function(ev) {
-
-						//var oOutput = document.querySelector("div")
-						oData1 = new FormData(form1);
-
-						//oData.append("CustomField", "This is some extra data");
-
-						var oReq1 = new XMLHttpRequest();
-						oReq1.open("POST", "phps/login.php", true);
-						oReq1.onload = function(oEvent) {
-						if (oReq1.status == 200) {
-							//oOutput.innerHTML = "Uploaded!";
-							alert("Done!");
-						} else {
-							//oOutput.innerHTML = "Error " + oReq.status + " occurred when trying to upload your file.<br \/>";
-							alert("Error " + oReq1.status + " occurred. \n\nPlease Try It Again");
-						}
-						};
-
-						oReq1.send(oData1);
-						ev.preventDefault();
-					}, false);
-	</script>
--->
