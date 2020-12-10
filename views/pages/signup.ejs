@@ -145,10 +145,8 @@
         statecodeInput.addEventListener('change', function(event){
             // event.preventDefault();
             if (statecodeInput.validity.patternMismatch) {
-                console.log('wrong statecode format');
                 event.target.setCustomValidity("State code should start with a valid state abbrevation, have forward slashes, appropriate batch, and four trailing digits. Right? And are you currently serving?");
             } else {
-                console.log('good statecode format');
                 event.target.setCustomValidity("");
             }
         });
