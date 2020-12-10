@@ -165,9 +165,10 @@ router.post('/subscribe', /* upload.none(), */ function (req, res) {
 
 router.get('/signup', function (req, res) {
   res.set('Content-Type', 'text/html');
-  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  res.setHeader("Pragma", "no-cache");
-  res.setHeader("Expires", 0);
+  res.set("Cache-Control", "no-cache");
+  res.set("Pragma", "no-cache");
+  // res.setHeader("Expires", 0);
+  // res.set('Cache-Control', 'public, max-age=0')
   res.render('pages/signup', { current_year: new Date().getFullYear() });
 });
 
@@ -287,9 +288,10 @@ router.post('/login', /* bodyParser.urlencoded({ // edited
 
 router.get('/login', function (req, res) {
   res.set('Content-Type', 'text/html');
-  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  res.setHeader("Pragma", "no-cache");
-  res.setHeader("Expires", 0);
+  res.set("Cache-Control", "no-cache");
+  res.set("Pragma", "no-cache");
+  // res.setHeader("Expires", 0);
+  // res.set('Cache-Control', 'public, max-age=0')
   res.render('pages/login', { current_year: new Date().getFullYear() });
 });
 
