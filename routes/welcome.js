@@ -45,7 +45,6 @@ router.get(ngstates.states_short_paths_regex, function (req, res) {
 });
 
 router.get(ngstates.states_short_paths_batch_regex_stringed, function (req, res) { // work with the batch
-    console.log(req.path, '23');
     res.set('Content-Type', 'text/html');
     res.render('pages/state', {
       // houses: results1,
