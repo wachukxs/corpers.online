@@ -24,32 +24,25 @@ router.get(['/', '/home', '/index'], function (req, res) {
 });
 
 router.get(['/homepage'], function (req, res) {
-  // res.type('.html');
-  res.set('Content-Type', 'text/html');
+  res.set('Content-Type', 'text/html'); // res.type('.html');
   res.render('pages/index', { current_year: new Date().getFullYear() });
 });
 
 // about.eje became index.ejs
 router.get(['/about', '/about-us'], function (req, res) {
-  // res.type('html');
   res.set('Content-Type', 'text/html');
   res.render('pages/about', { current_year: new Date().getFullYear() });
 });
 
 router.get(ngstates.states_short_paths_regex, function (req, res) {
+    console.log('llllll', req.path);
     res.set('Content-Type', 'text/html');
-    res.render('pages/state', {
-      // houses: results1,
-      // pictures: results2
-    });
+    res.render('pages/state');
 });
 
 router.get(ngstates.states_short_paths_batch_regex_stringed, function (req, res) { // work with the batch
     res.set('Content-Type', 'text/html');
-    res.render('pages/state', {
-      // houses: results1,
-      // pictures: results2
-    });
+    res.render('pages/state');
 });
 
 
@@ -96,7 +89,7 @@ router.get('/chat', auth.verifyJWT, function (req, res) {
   // to get old chats
 
   /**
-   * WARNING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+   * WARNING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    * TIME IS AN IMPORTANT ISSUE HERE. AND TIME CONVERSION TOO...
    * utc + 1 is our time zone [when converting], or use moment .js
    */
