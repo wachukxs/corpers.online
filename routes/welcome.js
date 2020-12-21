@@ -35,7 +35,6 @@ router.get(['/about', '/about-us'], function (req, res) {
 });
 
 router.get(ngstates.states_short_paths_regex, function (req, res) {
-    console.log('llllll', req.path);
     res.set('Content-Type', 'text/html');
     res.render('pages/state');
 });
@@ -185,7 +184,6 @@ router.post('/signup', /* bodyParser.urlencoded({
       jwt.sign({statecode: req.body.statecode.toUpperCase()}, process.env.SESSION_SECRET, (err, token) => {
         if (err) throw err
         else {
-          // console.log('token generated', token);
           // res.setHeader('Set-Cookie', 'name=value')
           res.cookie('_online', token, cookieOptions)
           res.status(200).redirect(req.body.statecode.toUpperCase());
