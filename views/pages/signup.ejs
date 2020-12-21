@@ -141,7 +141,7 @@
 		let years = parseInt( new Date( Date.now() ).getFullYear().toFixed().slice( 2, 4 ) );
         let yearrange = '(' + ( years - 1 ).toString() + '|' + years.toString() + ')';
         
-		statecodeInput.pattern = `(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\\/${yearrange}[abcACB]\\/[0-9]{4}`; // extra escaping probably because we're setting with string from here and not directly from the pattern attribute
+		/* statecodeInput.pattern = `(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\\/${yearrange}[abcACB]\\/[0-9]{4}`; // extra escaping probably because we're setting with string from here and not directly from the pattern attribute
         statecodeInput.addEventListener('change', function(event){
             // event.preventDefault();
             event.target.setCustomValidity("");
@@ -150,11 +150,11 @@
             } else {
                 event.target.setCustomValidity("");
             }
-        });
+        }); */
 
-        statecodeInput.addEventListener('input', function(event){
+        /* statecodeInput.addEventListener('input', function(event){
             event.target.setCustomValidity("");
-        });
+        }); */
 
         if ( 'URLSearchParams' in window ) {
             let urlParams = new URLSearchParams( window.location.search );
