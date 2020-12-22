@@ -141,7 +141,7 @@ exports.CorpersLogin = async (data) => {
         // .toUpperCase() is crucial
         let retries = 2;
         let loginQuery = connectionPool.query(sqlquery, [data.statecode.toUpperCase()], function (error, result, fields) {
-            console.log('Is login result be empty?', result.length);
+            console.log('Is login result be empty?', result);
             // console.log('selected data from db, logging In...', results1); // error sometimes, maybe when there's no db conn: ...
             if (error) {
                 console.log('the error code:', error.code)

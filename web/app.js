@@ -74,7 +74,6 @@ var helmet = require('helmet');
 app.use(helmet());
 
 const ngstates = require('../constants/ngstates');
-let r1 = ngstates.states_short_paths_regex.toString()
 const sitemap = require('express-sitemap')({ // comes last, after setting up express
     http: 'https',
     url: 'corpers.online',

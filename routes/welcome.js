@@ -34,7 +34,8 @@ router.get(['/about', '/about-us'], function (req, res) {
   res.render('pages/about', { current_year: new Date().getFullYear() });
 });
 
-router.get(ngstates.states_short_paths_regex, function (req, res) {
+router.get(ngstates.states_short_paths_uc.concat(ngstates.states_short_paths_lc), function (req, res) {
+    console.log('239\n\n', req.path, req.rawHeaders)
     res.set('Content-Type', 'text/html');
     res.render('pages/state');
 });

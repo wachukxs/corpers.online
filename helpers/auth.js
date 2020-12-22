@@ -37,7 +37,7 @@ module.exports.verifyJWT = (req, res, next) => {
     
     // Cookies that have been signed
     console.log('Signed Cookies: ', req.signedCookies)
-    if (req.cookies._online) {
+    if (req.cookies._online) { // trying to access dashboard directly
         // we could also use req.cookies, but req.signedCookies is just an extra layer of security
         jwt.verify(req.cookies._online, process.env.SESSION_SECRET, function(err, decodedToken) {
             if (err) {
@@ -68,6 +68,8 @@ module.exports.verifyJWT = (req, res, next) => {
                   })
             }
         })
+    } else if (req.headers.referer.includes('/login') && req.headers['sec-fetch-site'] === 'same-origin') {
+        next()
     } else {
         res.redirect('/login')
     }
