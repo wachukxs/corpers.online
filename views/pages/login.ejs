@@ -151,7 +151,7 @@
             event.target.setCustomValidity("");
         }); */
 
-        var _sc = new RegExp(`^(ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\\/[0-9]{2}[abc]\\/[0-9]{4}$`, 'gi');
+        /* var _sc = new RegExp(`^(ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\\/[0-9]{2}[abc]\\/[0-9]{4}$`, 'gi');
         document.forms[0].elements[0].oninvalid = function(event) { // fires after submit
             // console.log('evt', event);
 
@@ -166,12 +166,12 @@
             } else {
                 event.target.setCustomValidity("You must be currently serving");
             }
-        }
+        } */
 
-            document.forms[0].elements[1].addEventListener("input", function(event) {
+        /* document.forms[0].elements[1].addEventListener("input", function(event) {
             document.getElementById('password').classList.remove('is-invalid');
             document.getElementsByClassName('wrong')[1].textContent = "";
-        })
+        }) */
     </script>
     <script>
         if ('URLSearchParams' in window) {
