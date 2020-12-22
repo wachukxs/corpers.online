@@ -73,7 +73,7 @@
                         <div class="form-row">
                             <div class="col-md-4 mb-3">
                                 <label for="statecode">State code:</label>
-                                <input name="statecode" type="text" pattern="(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/[0-9]{2}[abcACB]\/[0-9]{4}"
+                                <input name="statecode" type="text"
                                 tabindex="0" class="form-control text-uppercase" autocomplete="statecode" autofocus id="statecode" placeholder="AB/16A/2639" required='true'>
                                 <div hidden class="wrong" style="color: red;">
 
@@ -117,7 +117,7 @@
         var years = parseInt(new Date(Date.now()).getFullYear().toFixed().slice(2, 4));
         var yearrange = '(' + (years - 1).toString() + '|' + years.toString() + ')';
 
-        document.forms[0].elements[0].pattern = `^(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\\/${yearrange}[abcACB]\\/\\d\\d\\d\\d$`;
+        // document.forms[0].elements[0].pattern = `^(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\\/${yearrange}[abcACB]\\/\\d\\d\\d\\d$`;
 
         var sc = new RegExp(`^(ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\\/${yearrange}[abcACB]\\/[0-9]{4}$`, 'i'); // no 'g'
         var sc001 = new RegExp(`^(ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\\/[0-9]{2}[abcACB]\\/[0-9]{4}$`, 'ig');
