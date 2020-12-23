@@ -34,7 +34,7 @@ router.get(['/about', '/about-us'], function (req, res) {
   res.render('pages/about', { current_year: new Date().getFullYear() });
 });
 
-router.get(ngstates.states_short_paths_uc.concat(ngstates.states_short_paths_lc), function (req, res) {
+/* router.get(ngstates.states_short_paths_uc.concat(ngstates.states_short_paths_lc), function (req, res) {
     console.log('239\n\n', req.path, req.rawHeaders)
     res.set('Content-Type', 'text/html');
     res.render('pages/state');
@@ -43,7 +43,7 @@ router.get(ngstates.states_short_paths_uc.concat(ngstates.states_short_paths_lc)
 router.get(ngstates.states_short_paths_batch_regex_stringed, function (req, res) { // work with the batch
     res.set('Content-Type', 'text/html');
     res.render('pages/state');
-});
+}); */
 
 
 /**great resource for express route regex https://www.kevinleary.net/regex-route-express/ & https://forbeslindesay.github.io/express-route-tester/ */
