@@ -688,7 +688,7 @@ router.post('/accommodations', auth.verifyJWT, /* upload.array('roomsmedia', 12)
     headers: req.headers,
     limits: { // set fields, fieldSize, and fieldNameSize later (security)
       files: 12, // don't upload more than 12 media files
-      fileSize: 24 * 1024 * 1024 // 24MB
+      fileSize: 50 * 1024 * 1024 // 50 MB
     }
   });
   let _media = []; // good, because we re-initialize on new post
