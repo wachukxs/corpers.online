@@ -141,7 +141,7 @@ exports.CorpersLogin = async (data) => {
         // .toUpperCase() is crucial
         let retries = 2;
         let loginQuery = connectionPool.query(sqlquery, [data.statecode.toUpperCase()], function (error, result, fields) {
-            console.log('Is login result be empty?', result);
+            console.log('Is login result be empty?', result.length);
             // console.log('selected data from db, logging In...', results1); // error sometimes, maybe when there's no db conn: ...
             if (error) {
                 console.log('the error code:', error.code)
@@ -216,7 +216,7 @@ exports.CorpersLogin = async (data) => {
 exports.LoginSession = async (loginData) => {
     let re = await new Promise((resolve, reject) => {
         // insert login time and session id into db for usage details
-        connectionPool.query("INSERT INTO session_usage_details( statecode, session_id, user_agent) VALUES (?, ?, ?)", loginData, function (error2, results2, fields2) {
+        connectionPool.query("INSERT INTO traces (statecode, session_id, user_agent) VALUES (?, ?, ?)", loginData, function (error2, results2, fields2) {
             if (error2) reject({ message: false })
             else if (results2.affectedRows === 1) {
                 resolve({ message: true })
@@ -1378,6 +1378,22 @@ exports.GetAllSalesAndOneSale = async (req_query) => {
                 });
             }
           })
+    })
+
+    return re;
+}
+
+exports.GiveFeedback = async (reqbody) => {
+    let re = await new Promise((resolve, reject) => {
+        connectionPool.query("INSERT INTO feedback SET ?", reqbody, function (error, result, fields) {
+            console.log('inserted data from feedback: ', result);
+            if (error) reject(error);
+            else if (result.affectedRows === 1) {
+                resolve()
+            } else {
+                reject('no edit occured')
+            }
+        })
     })
 
     return re;

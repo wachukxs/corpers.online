@@ -21,7 +21,8 @@ const connectionPool = mysql.createPool({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   acquireTimeout: 1800000, // 10000 is 10 secs
-  multipleStatements: true // it allows for SQL injection attacks if values are not properly escaped
+  multipleStatements: true, // it allows for SQL injection attacks if values are not properly escaped
+  // debug: true,
 });
 
 connectionPool.on('acquire', function (connection) {

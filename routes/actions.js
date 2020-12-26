@@ -3,6 +3,7 @@ const Busboy = require('busboy');
 const multer = require('multer');
 inspect = require('util').inspect;
 const jwt = require('jsonwebtoken')
+const bodyParser = require('body-parser'); // redundant ?
 const auth = require('../helpers/auth')
 const helpers = require('../constants/helpers')
 const socket = require('../sockets/routes')
@@ -218,21 +219,43 @@ router.post('/sayhi', /* bodyParser.urlencoded({
     }
 });
 
-// upload.none()
-router.post('/contact', /* bodyParser.urlencoded({ // edited
-  extended: true,
-  type: 'application/x-www-form-urlencoded'
-}), */ function (req, res) {
-    console.log('the message', req.body);
 
-    pool.query("INSERT INTO feedbacks ( name, subject, email, message ) VALUES (" + pool.escape(req.body.name) + ',' + pool.escape(req.body.subject) + ',' + pool.escape(req.body.email) + ',' + pool.escape(req.body.message) + ")", function (error, results, fields) {
+router.post('/contact', function (req, res) {
+    const busboy = new Busboy({
+      headers: req.headers,
+    });
+    let _feedback_data = {}
+
+    busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+      console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+      
+      _feedback_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
+      
+    });
+
+
+    busboy.on('finish', async function () {
+      query.GiveFeedback(_feedback_data).then(result => {
+        res.status(200).send('OK');
+      }, reject => {
+        res.sendStatus(500);
+      }).catch(error => {
+        res.sendStatus(500);
+      })
+
+     })
+  
+    return req.pipe(busboy)
+
+    
+    /* pool.query("INSERT INTO feedback ( name, subject, email, message ) VALUES (" + pool.escape(req.body.name) + ',' + pool.escape(req.body.subject) + ',' + pool.escape(req.body.email) + ',' + pool.escape(req.body.message) + ")", function (error, results, fields) {
 
       if (error) throw error;
 
       if (results.affectedRows === 1) {
         res.status(200).send('OK');
       }
-    });
+    }); */
 });
 
 router.get('/posts', auth.verifyJWT, function (req, res) {

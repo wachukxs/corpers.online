@@ -9,7 +9,7 @@ const ngstates = require('../constants/ngstates')
 let cookieOptions = {
   httpOnly: true, // frontend js can't access
   maxAge: auth.maxAge,
-  sameSite: 'strict',
+  // sameSite: 'strict', // https://github.com/expressjs/session/issues/660#issuecomment-514384297
   // path: '' // until we figure out how to add multiple path
 }
 
@@ -237,9 +237,12 @@ router.post('/login', /* bodyParser.urlencoded({ // edited
       jwt.sign({statecode: req.body.statecode.toUpperCase()}, process.env.SESSION_SECRET, (err, token) => {
         if (err) throw err
         else {
-          // console.log('token generated', token);
           // res.setHeader('Set-Cookie', 'name=value')
           res.cookie('_online', token, cookieOptions)
+          console.log('we\'re moving', req.session);
+          /* req.session.save(function(err) { // hate this
+            // session saved
+          }) */
           res.status(200).redirect(req.body.statecode.toUpperCase());
         }
       })
@@ -287,6 +290,7 @@ router.get('/login', function (req, res) {
 });
 
 router.get('/contact', function (req, res) {
+  console.log('chal\n\t');
   res.set('Content-Type', 'text/html');
   res.render('pages/contact', { current_year: new Date().getFullYear() });
 });

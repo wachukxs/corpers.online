@@ -106,8 +106,8 @@
         <div id="map" style="height: 480px;"></div>
         <script>
           function initMap() {
-            var uluru = {lat: -25.363, lng: 131.044};
-            var grayStyles = [
+            let uluru = {lat: -25.363, lng: 131.044};
+            let grayStyles = [
               {
                 featureType: "all",
                 stylers: [
@@ -117,7 +117,7 @@
               },
               {elementType: 'labels.text.fill', stylers: [{color: '#A3A3A3'}]}
             ];
-            var map = new google.maps.Map(document.getElementById('map'), {
+            let map = new google.maps.Map(document.getElementById('map'), {
               center: {lat: -31.197, lng: 150.744},
               zoom: 9,
               styles: grayStyles,
@@ -136,7 +136,7 @@
                     <h2 class="contact-title">Get in Touch</h2>
                 </div>
                 <div class="col-lg-8">
-                    <form class="form-contact contact_form" id="contactform" enctype="application/x-www-form-urlencoded" method="POST" action="/contact">
+                    <form class="form-contact contact_form" name="contact-us" id="contactform" enctype="application/x-www-form-urlencoded" method="POST" action="/contact">
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-group">
@@ -201,13 +201,12 @@
         function sayHi() {
 
             // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
-            var XHR = new XMLHttpRequest();
+            let XHR = new XMLHttpRequest();
 
             // Bind the FormData object and the form element
-            var FD = new FormData(form);
+            let FD = new FormData(contactform);
 
-            // console.log('the form', FD)
-
+            console.log('the form', FD)
 
             // Define what happens on successful data submission
             XHR.addEventListener("load", function(event) {
@@ -222,7 +221,11 @@
                         document.getElementById('sub').innerHTML = "Send Another Message";
                     }, 4000);
                 } else {
-
+                    document.getElementById('sub').innerHTML = 'Didn\'t get that. Our fault :(';
+                    // tell them to send another message again
+                    setTimeout(function() {
+                        document.getElementById('sub').innerHTML = "Send Another Message";
+                    }, 4000);
                 }
                 // say thank you
 
@@ -230,29 +233,65 @@
 
             // Define what happens in case of error
             XHR.addEventListener("error", function(event) {
-                alert('Oops! Something went wrong.');
+                // alert('Oops! Something went wrong.');
+                document.getElementById('sub').innerHTML = 'Oops! Something went wrong.';
+                // tell them to send another message again
+                setTimeout(function() {
+                    document.getElementById('sub').innerHTML = "Try again.";
+                }, 4000);
             });
 
             // Set up our request
             XHR.open('POST', '/contact', true); // true makes it async request
 
-
             // Add the required HTTP header for form data POST requests
-            // XHR.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
+            XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
             // The data sent is what the user provided in the form
+            console.log(FD)
             XHR.send(FD);
         }
 
         // Access the form element...
-        var form = document.getElementById("contactform");
+        let contactform = document.getElementById("contactform");
 
         // ...and take over its submit event.
-        form.addEventListener("submit", function(event) {
+        contactform.addEventListener("submit", function(event) {
             event.preventDefault(); // the default behaviour is refreshing the page and adding search params to the url
 
-            sayHi();
-        }, false, true); // https://developer.mozilla.org/en-US/docs/Web/Events/submit
+            // sayHi();
+
+            fetch('/contact', {
+                method: 'POST',
+                body: new FormData(contactform)
+            })
+            .then(response => {
+                // The API call was successful!
+                if (response.ok) {
+                    console.log(response);
+                    return true // response.json();
+                } else {
+                    return Promise.reject(response);
+                }
+            })
+            .then(result => {
+                document.getElementById('sub').innerHTML = 'Thanks, We got your message';
+                document.getElementById("contactform").reset();
+                // tell them to send another message again
+                setTimeout(function() {
+                    document.getElementById('sub').innerHTML = "Send Another Message";
+                }, 4000);
+                // console.log('Success:', result);
+            })
+            .catch(error => {
+                document.getElementById('sub').innerHTML = 'Didn\'t get that. Our fault :(';
+                // tell them to send another message again
+                setTimeout(function() {
+                    document.getElementById('sub').innerHTML = "Send Another Message";
+                }, 4000);
+                // console.error('Error:', error);
+            });
+        }); // https://developer.mozilla.org/en-US/docs/Web/Events/submit
     </script>
 
 
@@ -354,11 +393,10 @@
         function sublist() {
 
             // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
-            var XHR = new XMLHttpRequest();
+            let XHR = new XMLHttpRequest();
 
             // Bind the FormData object and the form element
-            var FD = new FormData(form);
-
+            let FD = new FormData(form);
 
             // Define what happens on successful data submission
             XHR.addEventListener("load", function(event) {
@@ -396,7 +434,7 @@
         }
 
         // Access the form element...
-        var form = document.getElementById("sublist");
+        let form = document.getElementById("sublist");
 
         // ...and take over its submit event.
         form.addEventListener("submit", function(event) {
@@ -409,17 +447,6 @@
 
     <script src="assets/js/jquery-3.3.1.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <!-- <script src="vendors/owl-carousel/owl.carousel.min.js"></script>
-  <script src="vendors/Magnific-Popup/jquery.magnific-popup.min.js"></script>
-  <script src="vendors/nice-select/jquery.nice-select.min.js"></script> -->
-    <!-- <script src="js/jquery.form.js"></script>
-  <script src="js/jquery.validate.min.js"></script>
-  <script src="js/contact.js"></script>
-  <script src="js/jquery.ajaxchimp.min.js"></script> -->
-    <!-- <script src="js/mail-script.js"></script>
-  <script src="js/skrollr.min.js"></script>
-  <script src="js/jquery.magnific-popup.min.js"></script>	
-  <script src="js/main.js"></script> -->
 </body>
 
 </html>
