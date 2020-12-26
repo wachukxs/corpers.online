@@ -16,5 +16,5 @@ const io = require('./sockets/routes');
 io.listen(server);
 
 server.listen(port, () => { // auto change port if port is already in use, handle error gracefully
-    console.log('node server listening on port :%s', port);
+    console.log('node server running on %s mode, listening on port :%s', app.get('env'), port);
 });
