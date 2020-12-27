@@ -87,7 +87,7 @@
     <!--================Header Menu Area =================-->
 
     <!--================Hero Banner SM Area Start =================-->
-    <section class="hero-banner magic-ball magic-ball-banner" id="parallax-1" data-anchor-target="#parallax-1" data-300-top="background-position: 0px -80px" data-top-bottom="background-position: 0 100px">
+    <section class="hero-banner">
         <div class="container">
             <div class="hero-banner-sm-content">
                 <h1>Contact Us</h1>
@@ -197,70 +197,13 @@
 
 
     <script>
-        // script for saying hi
-        function sayHi() {
-
-            // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
-            let XHR = new XMLHttpRequest();
-
-            // Bind the FormData object and the form element
-            let FD = new FormData(contactform);
-
-            console.log('the form', FD)
-
-            // Define what happens on successful data submission
-            XHR.addEventListener("load", function(event) {
-                // alert(event.target.responseText);
-                // console.log(event.target.responseText);
-
-                if (event.target.responseText == 'OK') {
-                    document.getElementById('sub').innerHTML = 'Thanks, We got your message';
-                    document.getElementById("contactform").reset();
-                    // tell them to send another message again
-                    setTimeout(function() {
-                        document.getElementById('sub').innerHTML = "Send Another Message";
-                    }, 4000);
-                } else {
-                    document.getElementById('sub').innerHTML = 'Didn\'t get that. Our fault :(';
-                    // tell them to send another message again
-                    setTimeout(function() {
-                        document.getElementById('sub').innerHTML = "Send Another Message";
-                    }, 4000);
-                }
-                // say thank you
-
-            });
-
-            // Define what happens in case of error
-            XHR.addEventListener("error", function(event) {
-                // alert('Oops! Something went wrong.');
-                document.getElementById('sub').innerHTML = 'Oops! Something went wrong.';
-                // tell them to send another message again
-                setTimeout(function() {
-                    document.getElementById('sub').innerHTML = "Try again.";
-                }, 4000);
-            });
-
-            // Set up our request
-            XHR.open('POST', '/contact', true); // true makes it async request
-
-            // Add the required HTTP header for form data POST requests
-            XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-            // The data sent is what the user provided in the form
-            console.log(FD)
-            XHR.send(FD);
-        }
-
         // Access the form element...
         let contactform = document.getElementById("contactform");
 
         // ...and take over its submit event.
         contactform.addEventListener("submit", function(event) {
             event.preventDefault(); // the default behaviour is refreshing the page and adding search params to the url
-
-            // sayHi();
-
+            // send the message
             fetch('/contact', {
                 method: 'POST',
                 body: new FormData(contactform)
@@ -281,13 +224,12 @@
                 setTimeout(function() {
                     document.getElementById('sub').innerHTML = "Send Another Message";
                 }, 4000);
-                // console.log('Success:', result);
             })
             .catch(error => {
                 document.getElementById('sub').innerHTML = 'Didn\'t get that. Our fault :(';
                 // tell them to send another message again
                 setTimeout(function() {
-                    document.getElementById('sub').innerHTML = "Send Another Message";
+                    document.getElementById('sub').innerHTML = "Send Message";
                 }, 4000);
                 // console.error('Error:', error);
             });
@@ -400,25 +342,27 @@
 
             // Define what happens on successful data submission
             XHR.addEventListener("load", function(event) {
-                // alert(event.target.responseText);
-                // console.log(event.target.responseText);
-
                 if (event.target.responseText == 'OK') {
-                    document.getElementById('submsg').innerHTML = 'You\'ve subscribed and rock too.';
+                    // say thank you
+                    document.getElementById('submsg').innerHTML = 'Great! You subscribed.';
                     document.getElementById("sublist").reset();
                     // clear the message
                     setTimeout(function() {
                         document.getElementById('submsg').innerHTML = "";
                     }, 4000);
+                } else if (event.target.status == 406) { // 'Not Acceptable'
+                    document.getElementById('submsg').innerHTML = 'We have you in our list already. :(';
+                    // clear the message
+                    setTimeout(function() {
+                        document.getElementById('submsg').innerHTML = "";
+                    }, 4000);
                 } else { // 'Not Acceptable'
-                    document.getElementById('submsg').innerHTML = 'We have you in our list already. Boss.';
+                    document.getElementById('submsg').innerHTML = 'We had an error. Please try again.';
                     // clear the message
                     setTimeout(function() {
                         document.getElementById('submsg').innerHTML = "";
                     }, 4000);
                 }
-                // say thank you
-
             });
 
             // Define what happens in case of error

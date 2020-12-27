@@ -6,7 +6,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified... yet\" && exit 1",
-    "start": "nodemon --trace-sync-io --trace-warnings --unhandled-rejections=warn ./index.js"
+    "custom-start": "nodemon --trace-sync-io --trace-warnings --unhandled-rejections=warn ./index.js",
+    "start": "nodemon --trace-warnings --unhandled-rejections=warn ./index.js"
   },
   "keywords": [
     "corpers",

@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken')
 const query = require('../models/queries');
 const auth = require('../helpers/auth')
 const ngstates = require('../constants/ngstates')
+const Busboy = require('busboy');
 
 /**options for setting JWT cookies */
 let cookieOptions = {
@@ -135,24 +136,45 @@ router.get(['/map', '/maps'], function (req, res) { // try to infer their locati
 });
 
 // edited
-router.post('/subscribe', /* upload.none(), */ function (req, res) {
-  console.log('the sublist', req.body);
-  query.SubscribeToEmailUpdates(req.body).then(result => {
-    res.status(200).send('OK');
-  }, reject_error => {
-    console.log('the reject error code:', reject_error.code)
-    switch (reject_error.code) { // do more here, but ... this is the only error we're expecting
-      case 'ER_DUP_ENTRY': // ER_DUP_ENTRY if an email exists already
-        res.status(406).send('Not Acceptable');
-        break;
-      default:
-        res.status(500).send('Internal Server Error');
-        break;
-    }
-  }).catch((err) => { // we should have this .catch on every query
-    console.error('our system should\'ve crashed:', err)
-    res.redirect('/?e') // go back home, we should tell you an error occured
-  })
+// make a custom middleware where we just use busboy to get the form inputs
+router.post('/subscribe', function (req, res) {
+  const busboy = new Busboy({
+    headers: req.headers,
+  });
+  let _sub_data = {}
+
+  busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+    console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+    
+    _sub_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
+    
+  });
+
+  busboy.on('finish', async function () {
+    // console.log('the sublist', _sub_data);
+
+    query.SubscribeToEmailUpdates(_sub_data).then(result => {
+      res.status(200).send('OK');
+    }, reject => {
+      console.log('the reject error code:', reject.code)
+      switch (reject.code) { // do more here, but ... this is the only error we're expecting
+        case 'ER_DUP_ENTRY': // ER_DUP_ENTRY if an email exists already
+          res.status(406).send('Not Acceptable');
+          break;
+        default:
+          res.status(500).send('Internal Server Error');
+          break;
+      }
+    }).catch((err) => { // we should have this .catch on every query
+      console.error('our system should\'ve crashed:', err)
+      res.status(500).send('Internal Server Error'); // we should tell you an error occured
+    })
+
+   })
+
+  
+
+  return req.pipe(busboy)
 });
 
 router.get('/signup', function (req, res) {

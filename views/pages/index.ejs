@@ -322,27 +322,29 @@
             
 
             // Define what happens on successful data submission
-            XHR.addEventListener( "load", function( event ) {
-                // alert(event.target.responseText);
-                // console.log( event.target.responseText );
-
-                if (event.target.responseText == 'OK') {
-                    document.getElementById('submsg').innerHTML = 'You\'ve subscribed and rock too.';
-                    document.getElementById( "sublist" ).reset();
-                    // tell them to send another message again
-                    setTimeout( function() {
+            XHR.addEventListener("load", function( event ) {
+              if (event.target.responseText == 'OK') {
+                    // say thank you
+                    document.getElementById('submsg').innerHTML = 'Great! You subscribed.';
+                    document.getElementById("sublist").reset();
+                    // clear the message
+                    setTimeout(function() {
                         document.getElementById('submsg').innerHTML = "";
-                    }, 4000 );
+                    }, 4000);
+                } else if (event.target.status == 406) { // 'Not Acceptable'
+                    document.getElementById('submsg').innerHTML = 'We have you in our list already. :(';
+                    // clear the message
+                    setTimeout(function() {
+                        document.getElementById('submsg').innerHTML = "";
+                    }, 4000);
                 } else { // 'Not Acceptable'
-                    document.getElementById('submsg').innerHTML = 'We have you in our list already. Boss.';
-                     // clear the message
-                    setTimeout( function() {
+                    document.getElementById('submsg').innerHTML = 'We had an error. Please try again.';
+                    // clear the message
+                    setTimeout(function() {
                         document.getElementById('submsg').innerHTML = "";
-                    }, 4000 );
+                    }, 4000);
                 }
-                // say thank you
-
-            } );
+            });
 
             // Define what happens in case of error
             XHR.addEventListener( "error", function( event ) {

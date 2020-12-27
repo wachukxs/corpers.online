@@ -672,13 +672,14 @@ exports.GetChatData = async (req) => {
  * 
  * @param {*} data 
  * subscribing to email updates
+ * 
+ * we should send an email, right after!
  */
 exports.SubscribeToEmailUpdates = async (data) => {
     let re = await new Promise((resolve, reject) => {
         if (helpers.isEmpty(data.email)) {
             res.status(406).send('Not Acceptable');
         } else {
-            // console.log('NOT empthy');
             connectionPool.query("INSERT INTO subscribers SET ?", { email: data.email }, function (error, results, fields) {
                 if (error) reject(error)
                 else if (results.affectedRows === 1) {
