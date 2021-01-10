@@ -7,6 +7,16 @@ const ngstates = require('../constants/ngstates')
 const Busboy = require('busboy');
 const bodyParser = require('body-parser');
 
+String.prototype.sentenceCase = function() {
+  // return this.charAt(0).toUpperCase() + this.slice(1);
+
+  return this.split(' ')
+  .map(function(word) { // Then use array.map to create a new array containing the capitalized words.
+      return word.charAt(0).toUpperCase() + word.slice(1);
+  })
+  .join(" "); // Then join the new array with spaces:
+}
+
 /**options for setting JWT cookies */
 let cookieOptions = {
   httpOnly: true, // frontend js can't access
@@ -36,31 +46,49 @@ router.get(['/about', '/about-us'], function (req, res) {
   res.render('pages/about', { current_year: new Date().getFullYear() });
 });
 
-router.get(ngstates.states_short_paths_uc.concat(ngstates.states_short_paths_lc), function (req, res) {
-    console.log('239\n\n', req.path)
+router.get(ngstates.states_short_paths, function (req, res) {
+  // has req.params.state
+  let state = ngstates.states_long[ngstates.states_short.indexOf(req.params.state.toUpperCase())]
+  
+  console.log(state.sentenceCase(), 'HJKK'.sentenceCase(), '239\n\n', req.path, 'state', req.path.substring(1), req.params)
+
+  query.CorpersInState(state).then(result => {
+    console.log(result);
+    
     res.set('Content-Type', 'text/html');
-    res.render('pages/state');
+    res.render('pages/state', {
+      corpers: result,
+      state: state
+    });
+  }, reject => {
+    console.error(reject);
+  })
+
+  // jkl.states[ngplaces.states_short.indexOf(jn.slice(0, 2))][ngplaces.states_long[ngplaces.states_short.indexOf(jn.slice(0, 2))]];
+
 });
 
-router.get(ngstates.states_short_paths_batch_uc.concat(ngstates.states_short_paths_batch_lc), function (req, res) {
+router.get(ngstates.states_short_paths_batch, function (req, res) {
   console.log('29039\n\n', req.path, req.params)
+  // has req.params.state & req.params.year
   res.set('Content-Type', 'text/html');
   res.render('pages/state');
 });
 
 router.get(ngstates.states_short_paths_batch_regex_stringed, function (req, res) { // work with the batch
-  console.log('775654\n\n', req.path, req.params)  
+  console.log('775654\n\n', req.path, req.params)
+  // has req.params.state & req.params.year_batch
+  // req.params['3'] is the batch
   res.set('Content-Type', 'text/html');
     res.render('pages/state');
 });
 
-
 /**great resource for express route regex https://www.kevinleary.net/regex-route-express/ & https://forbeslindesay.github.io/express-route-tester/ */
 let years = parseInt(new Date(Date.now()).getFullYear().toFixed().slice(2, 4));
 let yearrange = '(' + (years - 1).toString() + '|' + years.toString() + ')';
-router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm))/:batch_stream((' + yearrange /*(18|19)*/ + '([abcACB])))/:lastfour(([0-9]{4}))', 
+router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm))/:year_batch((' + yearrange /*(18|19)*/ + '([abcACB])))/:lastfour(([0-9]{4}))', 
 auth.verifyJWT, function (req, res) {
-  // console.log('req.params/session', req.session, req.params) // req.path is shorthand for url.parse(req.url).pathname
+  console.log('req.params/session', req.session, req.params) // req.path is shorthand for url.parse(req.url).pathname
 
     res.set('Content-Type', 'text/html');
 

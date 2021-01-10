@@ -6,9 +6,32 @@ const ggle = require('../helpers/uploadgdrive');
 const ngstates = require('../constants/ngstates');
 const bcrypt = require('bcrypt');
 const saltRounds = 5;
+
+
+
+
+
+
+exports.CorpersInState = async (state) => {
+    let re = await new Promise((resolve, reject) => {
+        let sqlquery = "SELECT bio, firstname, lastname, statecode, dateofreg, picture_id FROM info WHERE servicestate = ? AND public_profile = 1 AND bio != ''"; // make sure to select corpers with thier bio filled out, and want a public_profile [=1]
+        connectionPool.query(sqlquery, [state], function (error, result, fields) {
+            if (error) {
+                reject(error)
+            } else if (result.length > 0) {
+                resolve(result)
+            } else {
+                resolve(null)
+            }
+        })
+    })
+
+    return re;
+}
+
 /**
  *
- * func to handle signup of corpers
+ * function to handle signup of corpers
  * @param signupData object CONTAINS email, firstname, middlename, password, lastname, statecode, batch, servicestate, stream.
  * servicestate and statecode are derived
  * @type function
