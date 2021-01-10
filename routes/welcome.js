@@ -42,8 +42,14 @@ router.get(ngstates.states_short_paths_uc.concat(ngstates.states_short_paths_lc)
     res.render('pages/state');
 });
 
+router.get(ngstates.states_short_paths_batch_uc.concat(ngstates.states_short_paths_batch_lc), function (req, res) {
+  console.log('29039\n\n', req.path, req.params)
+  res.set('Content-Type', 'text/html');
+  res.render('pages/state');
+});
+
 router.get(ngstates.states_short_paths_batch_regex_stringed, function (req, res) { // work with the batch
-  console.log('775654\n\n', req.path)  
+  console.log('775654\n\n', req.path, req.params)  
   res.set('Content-Type', 'text/html');
     res.render('pages/state');
 });
