@@ -141,10 +141,10 @@ exports.CorpersLogin = async (data) => {
         // .toUpperCase() is crucial
         let retries = 2;
         let loginQuery = connectionPool.query(sqlquery, [data.statecode.toUpperCase()], function (error, result, fields) {
-            console.log('Is login result be empty?', result.length);
+            console.log('Is login result be empty?', result.length > 0 ? "No." : "Yes!");
             // console.log('selected data from db, logging In...', results1); // error sometimes, maybe when there's no db conn: ...
             if (error) {
-                console.log('the error code:', error.code)
+                console.error('the error code:', error.code)
                 switch (error.code) { // do more here
                     case 'ER_ACCESS_DENIED_ERROR':
                         break;
@@ -169,7 +169,7 @@ exports.CorpersLogin = async (data) => {
                         break;
                 }
                 // throw error;
-                console.log('backend error', `${error.code} ${error.sqlMessage}`);
+                console.error('backend error', `${error.code} ${error.sqlMessage}`);
 
                 reject({ message: 'backend error' })
             } else if (helpers.isEmpty(result)) {

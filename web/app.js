@@ -97,7 +97,7 @@ const sitemap = require('express-sitemap')({ // comes last, after setting up exp
 sitemap.generate4(welcomeRoutes)
 sitemap.generate4(actionsRoutes)
 sitemap.generate4(blogRoutes)
-// sitemap.toFile() // uncomment when we figure out sitemap or use a diffrent library
+// sitemap.toFile() // uncomment till we figure out sitemap or use a diffrent library
 
 module.exports = app; // app.get('env')
 

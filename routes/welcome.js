@@ -5,6 +5,7 @@ const query = require('../models/queries');
 const auth = require('../helpers/auth')
 const ngstates = require('../constants/ngstates')
 const Busboy = require('busboy');
+const bodyParser = require('body-parser');
 
 /**options for setting JWT cookies */
 let cookieOptions = {
@@ -35,16 +36,17 @@ router.get(['/about', '/about-us'], function (req, res) {
   res.render('pages/about', { current_year: new Date().getFullYear() });
 });
 
-/* router.get(ngstates.states_short_paths_uc.concat(ngstates.states_short_paths_lc), function (req, res) {
-    console.log('239\n\n', req.path, req.rawHeaders)
+router.get(ngstates.states_short_paths_uc.concat(ngstates.states_short_paths_lc), function (req, res) {
+    console.log('239\n\n', req.path)
     res.set('Content-Type', 'text/html');
     res.render('pages/state');
 });
 
 router.get(ngstates.states_short_paths_batch_regex_stringed, function (req, res) { // work with the batch
-    res.set('Content-Type', 'text/html');
+  console.log('775654\n\n', req.path)  
+  res.set('Content-Type', 'text/html');
     res.render('pages/state');
-}); */
+});
 
 
 /**great resource for express route regex https://www.kevinleary.net/regex-route-express/ & https://forbeslindesay.github.io/express-route-tester/ */
@@ -244,9 +246,9 @@ router.post('/signup', /* bodyParser.urlencoded({
 
 // if someone tries loggin in with a state code that is correct but isn't yet registerd (i.e. hasn't been signed up with in corpers.online), what do we do ?
 // block it? esp if they try more than once... ??
-router.post('/login', /* bodyParser.urlencoded({ // edited
+router.post('/login', bodyParser.urlencoded({ // edited
     extended: true
-  }), */ function (req, res /*, handleRedirect*/) {
+  }), function (req, res /*, handleRedirect*/) {
     // handle post request, validate data with database.
     // how to handle wrong password with right email or more rearly, right password and wrong password.
 
