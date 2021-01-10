@@ -46,26 +46,48 @@ router.get(['/about', '/about-us'], function (req, res) {
   res.render('pages/about', { current_year: new Date().getFullYear() });
 });
 
-router.get(ngstates.states_short_paths, function (req, res) {
+router.get('/corpers', auth.checkJWT, function (req, res) {
+  console.log('wave your hands to Jesus\n\n')
+
+  query.CorpersInNG().then(result => {
+    let response = {}
+    response.current_year = new Date().getFullYear()
+    response.corper = null
+    if (req.session.corper) {
+      response.corper = req.session.corper
+    }
+    response.corpers = result;
+    response.state = 'Nigeria';
+    res.set('Content-Type', 'text/html');
+    res.render('pages/state', response);
+  }, reject => {
+    console.error(reject);
+    res.render('pages/state', { corpers: null, state: 'Nigeria' })
+  }).catch(err => res.render('pages/state', { corpers: null, state: 'Nigeria' }))
+});
+
+router.get(ngstates.states_short_paths, auth.checkJWT, function (req, res) {
   // has req.params.state
   let state = ngstates.states_long[ngstates.states_short.indexOf(req.params.state.toUpperCase())]
   
   console.log(state.sentenceCase(), 'HJKK'.sentenceCase(), '239\n\n', req.path, 'state', req.path.substring(1), req.params)
 
   query.CorpersInState(state).then(result => {
-    console.log(result);
+    let response = {}
+    response.current_year = new Date().getFullYear()
+    response.corper = null
+    if (req.session.corper) {
+      response.corper = req.session.corper
+    }
+    response.corpers = result;
+    response.state = state;
     
     res.set('Content-Type', 'text/html');
-    res.render('pages/state', {
-      corpers: result,
-      state: state
-    });
+    res.render('pages/state', response);
   }, reject => {
     console.error(reject);
-  })
-
-  // jkl.states[ngplaces.states_short.indexOf(jn.slice(0, 2))][ngplaces.states_long[ngplaces.states_short.indexOf(jn.slice(0, 2))]];
-
+    res.render('pages/state', { corpers: null, state: state })
+  }).catch(err => res.render('pages/state', { corpers: null, state: state }))
 });
 
 router.get(ngstates.states_short_paths_batch, function (req, res) {

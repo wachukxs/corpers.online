@@ -58,7 +58,7 @@
     </div>
 
     <main class="mt-4">
-        <div class="container">
+        <div class="container"> <!--Shouldn't people be logged in before they can see corpers ?-->
 
             
                 <% if (corpers) { %>
@@ -79,7 +79,12 @@
                                         <%= corpers[index].bio %>
                                     </p>
                                     <p class="card-text">
-                                        <button type="button" class="btn btn-outline-primary">Connect</button>
+                                        <% if (corper) { %>
+                                            <a href="<%= `/chat?s=${corpers[index].statecode}` %>"><button type="button" class="btn btn-outline-primary">Connect</button></a>
+                                        <% } else { %>
+                                            <button type="button" class="btn btn-outline-primary">Login to connect</button>
+                                        <% }  %>
+                                        
                                     </p>
                                 </div>
                             </div>
