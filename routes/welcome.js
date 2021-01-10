@@ -189,9 +189,9 @@ router.get('/signup', function (req, res) {
 });
 
 // edited
-router.post('/signup', /* bodyParser.urlencoded({
+router.post('/signup', bodyParser.urlencoded({
   extended: true
-}), */ function (req, res) {
+}), function (req, res) {
     // handle post request, add data to database.
     // implement the hashing of password before saving to the db
     // also when some one signs up, it counts as login time too, so we should include it in usage details table
