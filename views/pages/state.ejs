@@ -82,7 +82,7 @@
                                         <% if (corper) { %>
                                             <a href="<%= `/chat?s=${corpers[index].statecode}` %>"><button type="button" class="btn btn-outline-primary">Connect</button></a>
                                         <% } else { %>
-                                            <button type="button" class="btn btn-outline-primary">Login to connect</button>
+                                            <a href="/login"><button type="button" class="btn btn-outline-primary">Login to connect</button></a>
                                         <% }  %>
                                         
                                     </p>
