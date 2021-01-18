@@ -83,15 +83,11 @@ router.get(ngstates.states_short_paths, auth.checkJWT, function (req, res) {
     response.state = state;
     
     res.set('Content-Type', 'text/html');
-<<<<<<< HEAD
-    res.render('pages/state');
-=======
     res.render('pages/state', response);
   }, reject => {
     console.error(reject);
     res.render('pages/state', { corpers: null, state: state })
   }).catch(err => res.render('pages/state', { corpers: null, state: state }))
->>>>>>> 495309e3d72a04f81dde7db890f615b725e5bdbd
 });
 
 router.get(ngstates.states_short_paths_batch, function (req, res) {
@@ -114,11 +110,7 @@ let years = parseInt(new Date(Date.now()).getFullYear().toFixed().slice(2, 4));
 let yearrange = '(' + (years - 1).toString() + '|' + years.toString() + ')';
 router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm))/:year_batch((' + yearrange /*(18|19)*/ + '([abcACB])))/:lastfour(([0-9]{4}))', 
 auth.verifyJWT, function (req, res) {
-<<<<<<< HEAD
-    console.log('req.session IS', req.session) // req.path is shorthand for url.parse(req.url).pathname
-=======
   console.log('req.params/session', req.session, req.params) // req.path is shorthand for url.parse(req.url).pathname
->>>>>>> 495309e3d72a04f81dde7db890f615b725e5bdbd
 
     res.set('Content-Type', 'text/html');
 
@@ -327,14 +319,10 @@ router.post('/login', bodyParser.urlencoded({ // edited
         else {
           // res.setHeader('Set-Cookie', 'name=value')
           res.cookie('_online', token, cookieOptions)
-<<<<<<< HEAD
-          console.log('really good');
-=======
           console.log('we\'re moving', req.session);
           /* req.session.save(function(err) { // hate this
             // session saved
           }) */
->>>>>>> 495309e3d72a04f81dde7db890f615b725e5bdbd
           res.status(200).redirect(req.body.statecode.toUpperCase());
         }
       })
