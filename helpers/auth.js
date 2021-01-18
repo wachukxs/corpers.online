@@ -37,12 +37,13 @@ module.exports.verifyJWT = (req, res, next) => {
     
     // Cookies that have been signed
     console.log('Signed Cookies: ', req.signedCookies)
+    console.log('we good in auth?', process.env.SESSION_SECRET);
     if (req.cookies._online) { // trying to access dashboard directly
         // we could also use req.cookies, but req.signedCookies is just an extra layer of security
         jwt.verify(req.cookies._online, process.env.SESSION_SECRET, function(err, decodedToken) {
             if (err) {
                 console.error(err);
-                res.redirect('/login')
+                res.redirect('/login?e')
             } else if (helpers.statecodeFormat.test(req.path.substring(1)) && req.path !== '/' + decodedToken.statecode ) { // should we display a message asking them if they meant decodedToken.statecode ? or security flaw if we do that ?
                 console.log('catching this err because:');
                 res.status(502).redirect('/login?n=y') // [n]ot = [y]ou
@@ -64,11 +65,12 @@ module.exports.verifyJWT = (req, res, next) => {
                     console.log('catching this err because:', reason);
                     res.status(502).redirect('/login?t=a')
                   }).finally(() => {
+                      console.log('\nfinlly next?');
                       next() // very crucial
                   })
             }
         })
-    } else if (req.headers.referer.includes('/login') && req.headers['sec-fetch-site'] === 'same-origin') {
+    } else if (req.headers.referer && req.headers.referer.includes('/login') && req.headers['sec-fetch-site'] === 'same-origin') {
         next()
     } else {
         res.redirect('/login')

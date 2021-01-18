@@ -34,7 +34,7 @@ router.get(['/about', '/about-us'], function (req, res) {
   res.render('pages/about', { current_year: new Date().getFullYear() });
 });
 
-/* router.get(ngstates.states_short_paths_uc.concat(ngstates.states_short_paths_lc), function (req, res) {
+router.get(ngstates.states_short_paths_uc.concat(ngstates.states_short_paths_lc), function (req, res) {
     console.log('239\n\n', req.path, req.rawHeaders)
     res.set('Content-Type', 'text/html');
     res.render('pages/state');
@@ -43,7 +43,7 @@ router.get(['/about', '/about-us'], function (req, res) {
 router.get(ngstates.states_short_paths_batch_regex_stringed, function (req, res) { // work with the batch
     res.set('Content-Type', 'text/html');
     res.render('pages/state');
-}); */
+});
 
 
 /**great resource for express route regex https://www.kevinleary.net/regex-route-express/ & https://forbeslindesay.github.io/express-route-tester/ */
@@ -51,7 +51,7 @@ let years = parseInt(new Date(Date.now()).getFullYear().toFixed().slice(2, 4));
 let yearrange = '(' + (years - 1).toString() + '|' + years.toString() + ')';
 router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm))/:batch_stream((' + yearrange /*(18|19)*/ + '([abcACB])))/:lastfour(([0-9]{4}))', 
 auth.verifyJWT, function (req, res) {
-  // console.log('req.params/session', req.session, req.params) // req.path is shorthand for url.parse(req.url).pathname
+    console.log('req.session IS', req.session) // req.path is shorthand for url.parse(req.url).pathname
 
     res.set('Content-Type', 'text/html');
 
@@ -229,7 +229,7 @@ router.post('/login', /* bodyParser.urlencoded({ // edited
     // how to handle wrong password with right email or more rearly, right password and wrong password.
 
     query.CorpersLogin(req.body).then(result => {
-
+      console.log('we good', process.env.SESSION_SECRET);
       req.session.corper = result.response[0];
       req.session.corper.location = result.response[0].servicestate + (result.response[0].city_town ? ', ' + result.response[0].city_town : ''); // + (results1[0].region_street ? ', ' + results1[0].region_street : '' )
       // req.session.loggedin = true;
@@ -240,6 +240,7 @@ router.post('/login', /* bodyParser.urlencoded({ // edited
           // console.log('token generated', token);
           // res.setHeader('Set-Cookie', 'name=value')
           res.cookie('_online', token, cookieOptions)
+          console.log('really good');
           res.status(200).redirect(req.body.statecode.toUpperCase());
         }
       })

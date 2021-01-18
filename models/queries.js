@@ -141,7 +141,7 @@ exports.CorpersLogin = async (data) => {
         // .toUpperCase() is crucial
         let retries = 2;
         let loginQuery = connectionPool.query(sqlquery, [data.statecode.toUpperCase()], function (error, result, fields) {
-            console.log('Is login result be empty?', result);
+            console.log('Is login result be empty?', result.length);
             // console.log('selected data from db, logging In...', results1); // error sometimes, maybe when there's no db conn: ...
             if (error) {
                 console.log('the error code:', error.code)
@@ -173,8 +173,10 @@ exports.CorpersLogin = async (data) => {
 
                 reject({ message: 'backend error' })
             } else if (helpers.isEmpty(result)) {
+                console.log('signing up, empty. user/statecode does not exist');
                 reject({ message: 'sign up' }) // tell them they need to sign up or statecode is wrong cause it doesn't exist
             } else if (result.length === 1) {
+                console.log('NOT signing up, NOT empty. user/statecode DOES exist');
                 // for passwords that haven't been hashed...
                 if (result[0].salt === '' && result[0].password === data.password) {
                     bcrypt.genSalt(saltRounds, function(err, salt) {
