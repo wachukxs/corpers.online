@@ -95,7 +95,7 @@
                             <!-- <li class="nav-item active"><a class="nav-link" href="/">Home</a></li> -->
                             <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
                             <li class="nav-item"><a class="nav-link" href="/signup">Sign Up</a></li>
-                            <!-- <li class="nav-item"><a class="nav-link" href="/map">Maps</a> -->
+                            <li class="nav-item"><a class="nav-link" href="/blog">Blog</a>
                             <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
                             <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
                         </ul>
@@ -213,13 +213,13 @@
           <div class="row">
             <div class="col-lg-10 offset-lg-1">
               <div class="tour-content">
-                <h3 style="font-size: 30px;">Explore our Maps</h3>
-                <p>You can’t get lost when you use our navigation system. Know and locate important places with ease.</p>
+                <h3 style="font-size: 30px;">Network with corpers</h3>
+                <p>Say 'Hi' and network with other corpers. You can quickly start a chat with any corper.</p>
               </div>
             </div>
           </div>
           <div class="tour-card">
-            <img class="card-img rounded-0" src="assets/images/home/explore_maps.png" alt="">
+            <img class="card-img rounded-0" src="assets/images/home/social_networking.png" alt="Social network on corpers.online">
             
           </div>
         </div>
@@ -256,7 +256,8 @@
                                     <li><a href="/">Home</a></li>
                                     <li><a href="/signup">Sign Up</a></li>
                                     <li><a href="/login">Login</a></li>
-                                    <li><a href="/contact">Contact us</a></li>
+                                    <li><a href="/blog">Blog</a></li>
+                                    <li><a href="/contact">Contact Us</a></li>
                                     <!-- <li><a href="/map">Maps</a></li> -->
                                 </ul>
                             </div>
@@ -322,27 +323,29 @@
             
 
             // Define what happens on successful data submission
-            XHR.addEventListener( "load", function( event ) {
-                // alert(event.target.responseText);
-                // console.log( event.target.responseText );
-
-                if (event.target.responseText == 'OK') {
-                    document.getElementById('submsg').innerHTML = 'You\'ve subscribed and rock too.';
-                    document.getElementById( "sublist" ).reset();
-                    // tell them to send another message again
-                    setTimeout( function() {
+            XHR.addEventListener("load", function( event ) {
+              if (event.target.responseText == 'OK') {
+                    // say thank you
+                    document.getElementById('submsg').innerHTML = 'Great! You subscribed.';
+                    document.getElementById("sublist").reset();
+                    // clear the message
+                    setTimeout(function() {
                         document.getElementById('submsg').innerHTML = "";
-                    }, 4000 );
+                    }, 4000);
+                } else if (event.target.status == 406) { // 'Not Acceptable'
+                    document.getElementById('submsg').innerHTML = 'We have you in our list already. :(';
+                    // clear the message
+                    setTimeout(function() {
+                        document.getElementById('submsg').innerHTML = "";
+                    }, 4000);
                 } else { // 'Not Acceptable'
-                    document.getElementById('submsg').innerHTML = 'We have you in our list already. Boss.';
-                     // clear the message
-                    setTimeout( function() {
+                    document.getElementById('submsg').innerHTML = 'We had an error. Please try again.';
+                    // clear the message
+                    setTimeout(function() {
                         document.getElementById('submsg').innerHTML = "";
-                    }, 4000 );
+                    }, 4000);
                 }
-                // say thank you
-
-            } );
+            });
 
             // Define what happens in case of error
             XHR.addEventListener( "error", function( event ) {

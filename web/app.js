@@ -25,13 +25,13 @@ let sessionOptions = {
     cookie: {
         httpOnly: true,
         key: 'you_online',
-        sameSite: 'strict'
+        // sameSite: 'strict', // https://github.com/expressjs/session/issues/660#issuecomment-514384297
         // domain: 'corpers.online',
         // path: '',
     }
 }
 let morganFormat = 'tiny'
-if (process.env.NODE_ENV === 'production') {
+if (app.get('env') === 'production') { // process.env.NODE_ENV
     sessionOptions.cookie.secure = true; // hmmm
     morganFormat = ':remote-addr - :remote-user [:date[web]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"'
 }
@@ -47,8 +47,8 @@ app.locals.title = 'Corpers Online';
 
 app.locals.email = process.env.THE_EMAIL;
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json());
 app.use(cookieParser(process.env.SESSION_SECRET))
 
 // https://stackoverflow.com/a/55787532/9259701
@@ -97,7 +97,7 @@ const sitemap = require('express-sitemap')({ // comes last, after setting up exp
 sitemap.generate4(welcomeRoutes)
 sitemap.generate4(actionsRoutes)
 sitemap.generate4(blogRoutes)
-// sitemap.toFile() // uncomment when we figure out sitemap or use a diffrent library
+// sitemap.toFile() // uncomment till we figure out sitemap or use a diffrent library
 
 module.exports = app; // app.get('env')
 

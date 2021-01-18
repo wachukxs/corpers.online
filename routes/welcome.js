@@ -4,12 +4,24 @@ const jwt = require('jsonwebtoken')
 const query = require('../models/queries');
 const auth = require('../helpers/auth')
 const ngstates = require('../constants/ngstates')
+const Busboy = require('busboy');
+const bodyParser = require('body-parser');
+
+String.prototype.sentenceCase = function() {
+  // return this.charAt(0).toUpperCase() + this.slice(1);
+
+  return this.split(' ')
+  .map(function(word) { // Then use array.map to create a new array containing the capitalized words.
+      return word.charAt(0).toUpperCase() + word.slice(1);
+  })
+  .join(" "); // Then join the new array with spaces:
+}
 
 /**options for setting JWT cookies */
 let cookieOptions = {
   httpOnly: true, // frontend js can't access
   maxAge: auth.maxAge,
-  sameSite: 'strict',
+  // sameSite: 'strict', // https://github.com/expressjs/session/issues/660#issuecomment-514384297
   // path: '' // until we figure out how to add multiple path
 }
 
@@ -34,24 +46,79 @@ router.get(['/about', '/about-us'], function (req, res) {
   res.render('pages/about', { current_year: new Date().getFullYear() });
 });
 
-router.get(ngstates.states_short_paths_uc.concat(ngstates.states_short_paths_lc), function (req, res) {
-    console.log('239\n\n', req.path, req.rawHeaders)
+router.get('/corpers', auth.checkJWT, function (req, res) {
+  console.log('wave your hands to Jesus\n\n')
+
+  query.CorpersInNG().then(result => {
+    let response = {}
+    response.current_year = new Date().getFullYear()
+    response.corper = null
+    if (req.session.corper) {
+      response.corper = req.session.corper
+    }
+    response.corpers = result;
+    response.state = 'Nigeria';
     res.set('Content-Type', 'text/html');
+    res.render('pages/state', response);
+  }, reject => {
+    console.error(reject);
+    res.render('pages/state', { corpers: null, state: 'Nigeria' })
+  }).catch(err => res.render('pages/state', { corpers: null, state: 'Nigeria' }))
+});
+
+router.get(ngstates.states_short_paths, auth.checkJWT, function (req, res) {
+  // has req.params.state
+  let state = ngstates.states_long[ngstates.states_short.indexOf(req.params.state.toUpperCase())]
+  
+  console.log(state.sentenceCase(), 'HJKK'.sentenceCase(), '239\n\n', req.path, 'state', req.path.substring(1), req.params)
+
+  query.CorpersInState(state).then(result => {
+    let response = {}
+    response.current_year = new Date().getFullYear()
+    response.corper = null
+    if (req.session.corper) {
+      response.corper = req.session.corper
+    }
+    response.corpers = result;
+    response.state = state;
+    
+    res.set('Content-Type', 'text/html');
+<<<<<<< HEAD
     res.render('pages/state');
+=======
+    res.render('pages/state', response);
+  }, reject => {
+    console.error(reject);
+    res.render('pages/state', { corpers: null, state: state })
+  }).catch(err => res.render('pages/state', { corpers: null, state: state }))
+>>>>>>> 495309e3d72a04f81dde7db890f615b725e5bdbd
+});
+
+router.get(ngstates.states_short_paths_batch, function (req, res) {
+  console.log('29039\n\n', req.path, req.params)
+  // has req.params.state & req.params.year
+  res.set('Content-Type', 'text/html');
+  res.render('pages/state');
 });
 
 router.get(ngstates.states_short_paths_batch_regex_stringed, function (req, res) { // work with the batch
-    res.set('Content-Type', 'text/html');
+  console.log('775654\n\n', req.path, req.params)
+  // has req.params.state & req.params.year_batch
+  // req.params['3'] is the batch
+  res.set('Content-Type', 'text/html');
     res.render('pages/state');
 });
-
 
 /**great resource for express route regex https://www.kevinleary.net/regex-route-express/ & https://forbeslindesay.github.io/express-route-tester/ */
 let years = parseInt(new Date(Date.now()).getFullYear().toFixed().slice(2, 4));
 let yearrange = '(' + (years - 1).toString() + '|' + years.toString() + ')';
-router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm))/:batch_stream((' + yearrange /*(18|19)*/ + '([abcACB])))/:lastfour(([0-9]{4}))', 
+router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm))/:year_batch((' + yearrange /*(18|19)*/ + '([abcACB])))/:lastfour(([0-9]{4}))', 
 auth.verifyJWT, function (req, res) {
+<<<<<<< HEAD
     console.log('req.session IS', req.session) // req.path is shorthand for url.parse(req.url).pathname
+=======
+  console.log('req.params/session', req.session, req.params) // req.path is shorthand for url.parse(req.url).pathname
+>>>>>>> 495309e3d72a04f81dde7db890f615b725e5bdbd
 
     res.set('Content-Type', 'text/html');
 
@@ -135,24 +202,45 @@ router.get(['/map', '/maps'], function (req, res) { // try to infer their locati
 });
 
 // edited
-router.post('/subscribe', /* upload.none(), */ function (req, res) {
-  console.log('the sublist', req.body);
-  query.SubscribeToEmailUpdates(req.body).then(result => {
-    res.status(200).send('OK');
-  }, reject_error => {
-    console.log('the reject error code:', reject_error.code)
-    switch (reject_error.code) { // do more here, but ... this is the only error we're expecting
-      case 'ER_DUP_ENTRY': // ER_DUP_ENTRY if an email exists already
-        res.status(406).send('Not Acceptable');
-        break;
-      default:
-        res.status(500).send('Internal Server Error');
-        break;
-    }
-  }).catch((err) => { // we should have this .catch on every query
-    console.error('our system should\'ve crashed:', err)
-    res.redirect('/?e') // go back home, we should tell you an error occured
-  })
+// make a custom middleware where we just use busboy to get the form inputs
+router.post('/subscribe', function (req, res) {
+  const busboy = new Busboy({
+    headers: req.headers,
+  });
+  let _sub_data = {}
+
+  busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+    console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+    
+    _sub_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
+    
+  });
+
+  busboy.on('finish', async function () {
+    // console.log('the sublist', _sub_data);
+
+    query.SubscribeToEmailUpdates(_sub_data).then(result => {
+      res.status(200).send('OK');
+    }, reject => {
+      console.log('the reject error code:', reject.code)
+      switch (reject.code) { // do more here, but ... this is the only error we're expecting
+        case 'ER_DUP_ENTRY': // ER_DUP_ENTRY if an email exists already
+          res.status(406).send('Not Acceptable');
+          break;
+        default:
+          res.status(500).send('Internal Server Error');
+          break;
+      }
+    }).catch((err) => { // we should have this .catch on every query
+      console.error('our system should\'ve crashed:', err)
+      res.status(500).send('Internal Server Error'); // we should tell you an error occured
+    })
+
+   })
+
+  
+
+  return req.pipe(busboy)
 });
 
 router.get('/signup', function (req, res) {
@@ -165,9 +253,9 @@ router.get('/signup', function (req, res) {
 });
 
 // edited
-router.post('/signup', /* bodyParser.urlencoded({
+router.post('/signup', bodyParser.urlencoded({
   extended: true
-}), */ function (req, res) {
+}), function (req, res) {
     // handle post request, add data to database.
     // implement the hashing of password before saving to the db
     // also when some one signs up, it counts as login time too, so we should include it in usage details table
@@ -222,9 +310,9 @@ router.post('/signup', /* bodyParser.urlencoded({
 
 // if someone tries loggin in with a state code that is correct but isn't yet registerd (i.e. hasn't been signed up with in corpers.online), what do we do ?
 // block it? esp if they try more than once... ??
-router.post('/login', /* bodyParser.urlencoded({ // edited
+router.post('/login', bodyParser.urlencoded({ // edited
     extended: true
-  }), */ function (req, res /*, handleRedirect*/) {
+  }), function (req, res /*, handleRedirect*/) {
     // handle post request, validate data with database.
     // how to handle wrong password with right email or more rearly, right password and wrong password.
 
@@ -237,10 +325,16 @@ router.post('/login', /* bodyParser.urlencoded({ // edited
       jwt.sign({statecode: req.body.statecode.toUpperCase()}, process.env.SESSION_SECRET, (err, token) => {
         if (err) throw err
         else {
-          // console.log('token generated', token);
           // res.setHeader('Set-Cookie', 'name=value')
           res.cookie('_online', token, cookieOptions)
+<<<<<<< HEAD
           console.log('really good');
+=======
+          console.log('we\'re moving', req.session);
+          /* req.session.save(function(err) { // hate this
+            // session saved
+          }) */
+>>>>>>> 495309e3d72a04f81dde7db890f615b725e5bdbd
           res.status(200).redirect(req.body.statecode.toUpperCase());
         }
       })
@@ -288,6 +382,7 @@ router.get('/login', function (req, res) {
 });
 
 router.get('/contact', function (req, res) {
+  console.log('chal\n\t');
   res.set('Content-Type', 'text/html');
   res.render('pages/contact', { current_year: new Date().getFullYear() });
 });

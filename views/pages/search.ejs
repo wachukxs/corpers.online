@@ -214,9 +214,9 @@
 
     <nav class="mt-2">
         <div class="nav nav-tabs nav-justified container" id="nav-tab" role="tablist">
-          <a class="nav-item nav-link <%= sale.length > 0 ? ' active ' : theacc.length == theppa.length == sale.length == 0 ? ' active' : '' %>" id="nav-sales-tab" data-toggle="tab" href="#nav-sales" role="tab" aria-controls="nav-sales" aria-selected="true">Sales <%- sales.length > 0 ? '&middot; ' + sales.length : '' %></a>
-          <a class="nav-item nav-link <%= theppa.length > 0 ? ' active ' : '' %>" id="nav-ppas-tab" data-toggle="tab" href="#nav-ppas" role="tab" aria-controls="nav-ppas" aria-selected="false">PPAs <%- ppas.length > 0 ? '&middot; ' + ppas.length : '' %></a>
-          <a class="nav-item nav-link <%= theacc.length > 0 ? ' active ' : '' %> " id="nav-acc-tab" data-toggle="tab" href="#nav-acc" role="tab" aria-controls="nav-accommodations" aria-selected="false">Accommodations <%- accommodations.length > 0 ? '&middot; ' + accommodations.length : '' %></a>
+          <a class="nav-item nav-link <%= sale.length > 0 ? ' active ' : theacc.length == theppa.length == sale.length == 0 ? ' active' : '' %>" id="nav-sales-tab" data-toggle="tab" href="#nav-sales" role="tab" aria-controls="nav-sales" aria-selected="true">Sales &middot; <%= sales.length %></a>
+          <a class="nav-item nav-link <%= theppa.length > 0 ? ' active ' : '' %>" id="nav-ppas-tab" data-toggle="tab" href="#nav-ppas" role="tab" aria-controls="nav-ppas" aria-selected="false">PPAs &middot; <%= ppas.length %></a>
+          <a class="nav-item nav-link <%= theacc.length > 0 ? ' active ' : '' %> " id="nav-acc-tab" data-toggle="tab" href="#nav-acc" role="tab" aria-controls="nav-accommodations" aria-selected="false">Accommodations &middot; <%= accommodations.length %></a>
         </div>
       </nav>
 

@@ -6,9 +6,49 @@ const ggle = require('../helpers/uploadgdrive');
 const ngstates = require('../constants/ngstates');
 const bcrypt = require('bcrypt');
 const saltRounds = 5;
+
+
+
+
+
+exports.CorpersInNG = async () => {
+    let re = await new Promise((resolve, reject) => {
+        let sqlquery = "SELECT bio, firstname, lastname, statecode, dateofreg, picture_id FROM info WHERE public_profile = 1"; //  AND bio != '' // make sure to select corpers with thier bio filled out, and want a public_profile [=1]
+        connectionPool.query(sqlquery, function (error, result, fields) {
+            if (error) {
+                reject(error)
+            } else if (result.length > 0) {
+                resolve(result)
+            } else {
+                resolve(null)
+            }
+        })
+    })
+
+    return re;
+}
+
+
+exports.CorpersInState = async (state) => {
+    let re = await new Promise((resolve, reject) => {
+        let sqlquery = "SELECT bio, firstname, lastname, statecode, dateofreg, picture_id FROM info WHERE servicestate = ? AND public_profile = 1"; //  AND bio != '' // make sure to select corpers with thier bio filled out, and want a public_profile [=1]
+        connectionPool.query(sqlquery, [state], function (error, result, fields) {
+            if (error) {
+                reject(error)
+            } else if (result.length > 0) {
+                resolve(result)
+            } else {
+                resolve(null)
+            }
+        })
+    })
+
+    return re;
+}
+
 /**
  *
- * func to handle signup of corpers
+ * function to handle signup of corpers
  * @param signupData object CONTAINS email, firstname, middlename, password, lastname, statecode, batch, servicestate, stream.
  * servicestate and statecode are derived
  * @type function
@@ -141,10 +181,10 @@ exports.CorpersLogin = async (data) => {
         // .toUpperCase() is crucial
         let retries = 2;
         let loginQuery = connectionPool.query(sqlquery, [data.statecode.toUpperCase()], function (error, result, fields) {
-            console.log('Is login result be empty?', result.length);
+            console.log('Is login result be empty?', result.length > 0 ? "No." : "Yes!");
             // console.log('selected data from db, logging In...', results1); // error sometimes, maybe when there's no db conn: ...
             if (error) {
-                console.log('the error code:', error.code)
+                console.error('the error code:', error.code)
                 switch (error.code) { // do more here
                     case 'ER_ACCESS_DENIED_ERROR':
                         break;
@@ -169,7 +209,7 @@ exports.CorpersLogin = async (data) => {
                         break;
                 }
                 // throw error;
-                console.log('backend error', `${error.code} ${error.sqlMessage}`);
+                console.error('backend error', `${error.code} ${error.sqlMessage}`);
 
                 reject({ message: 'backend error' })
             } else if (helpers.isEmpty(result)) {
@@ -218,7 +258,7 @@ exports.CorpersLogin = async (data) => {
 exports.LoginSession = async (loginData) => {
     let re = await new Promise((resolve, reject) => {
         // insert login time and session id into db for usage details
-        connectionPool.query("INSERT INTO session_usage_details( statecode, session_id, user_agent) VALUES (?, ?, ?)", loginData, function (error2, results2, fields2) {
+        connectionPool.query("INSERT INTO traces (statecode, session_id, user_agent) VALUES (?, ?, ?)", loginData, function (error2, results2, fields2) {
             if (error2) reject({ message: false })
             else if (results2.affectedRows === 1) {
                 resolve({ message: true })
@@ -674,13 +714,14 @@ exports.GetChatData = async (req) => {
  * 
  * @param {*} data 
  * subscribing to email updates
+ * 
+ * we should send an email, right after!
  */
 exports.SubscribeToEmailUpdates = async (data) => {
     let re = await new Promise((resolve, reject) => {
         if (helpers.isEmpty(data.email)) {
             res.status(406).send('Not Acceptable');
         } else {
-            // console.log('NOT empthy');
             connectionPool.query("INSERT INTO subscribers SET ?", { email: data.email }, function (error, results, fields) {
                 if (error) reject(error)
                 else if (results.affectedRows === 1) {
@@ -1380,6 +1421,22 @@ exports.GetAllSalesAndOneSale = async (req_query) => {
                 });
             }
           })
+    })
+
+    return re;
+}
+
+exports.GiveFeedback = async (reqbody) => {
+    let re = await new Promise((resolve, reject) => {
+        connectionPool.query("INSERT INTO feedback SET ?", reqbody, function (error, result, fields) {
+            console.log('inserted data from feedback: ', result);
+            if (error) reject(error);
+            else if (result.affectedRows === 1) {
+                resolve()
+            } else {
+                reject('no edit occured')
+            }
+        })
     })
 
     return re;

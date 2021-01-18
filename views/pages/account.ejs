@@ -492,20 +492,19 @@
             </div>
         </nav>
 
-
-        <!-- accommodation modal -->
+        <!-- accommodation modal : ask about room mate ... collect a fixed payments from corpers so we pay other corpers that are putting up extra houses from the pool of payments-->
         <div id="accommodationModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="accommodationModal"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" >Put up an accommodation</h5>
+                        <h5 class="modal-title">Put up an accommodation</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
 
-                    <div >
+                    <div>
                         <form id="accommodationform" enctype="multipart/form-data">
                             <div class="progress" style="height: 2px;">
                                 <div class="progress-bar" id="accommodation-progress-bar" role="progressbar"
@@ -644,8 +643,6 @@
 
                                                     </div>
                                                 </fieldset>
-
-
                                                 <!-- // -->
                                             </div>
 
@@ -656,23 +653,23 @@
                                                 <fieldset>
                                                     <h2>Precise location</h2>
                                                     <div class="form-group">
-                                                        <!-- <label for="streetname">Apartment number</label>
-                                                    <input type="text" name="streetname" autocomplete="address-level4" class="form-control" id="streetname" placeholder="No. 17B, Room 5.">
- -->
+                                                        <!--
+                                                            <label for="streetname">Apartment number</label>
+                                                            <input type="text" name="streetname" autocomplete="address-level4" class="form-control" id="streetname" placeholder="No. 17B, Room 5.">
+                                                        -->
                                                         <div class=" d-none" style="display: none">
-                                                            <label for="ppa_geodata">Geo data <span
-                                                                    class="text-muted">(Optional, but kinda
-                                                                    important)</span></label>
+                                                            <label for="ppa_geodata">Geo data <span class="text-muted">(Optional, but kinda important)</span></label>
                                                             <input type="text" name="acc_geodata" class="form-control"
                                                                 id="acc_geodata" placeholder="What part of town is it?">
-                                                            <small class="text-muted">We are trying to get an accurate
+                                                            <small class="text-muted">
+                                                                We are trying to get an accurate
                                                                 as possible data, so we might ask you to try again if
-                                                                what we got won't be of help to other corpers.</small>
+                                                                what we got won't be of help to other corpers.
+                                                            </small>
                                                         </div>
 
                                                         <div >
-                                                            <label for="address">Address <small
-                                                                    class="form-text text-muted">If you're there right
+                                                            <label for="address">Address <small class="form-text text-muted">If you're there right
                                                                     now click 'Geo' to locate in maps</small> </label>
                                                             <div class="input-group">
                                                                 <input type="text" name="address"
@@ -696,10 +693,10 @@
                                                     </div>
                                                 </fieldset>
                                                 <!-- 
-                                                maybe a little map area to pin the location of the place if they're currently there
+                                                    maybe a little map area to pin the location of the place if they're currently there
 
-                                                we can even try to show a route in the map based on what address is and information in the directions textarea, we can even auto route.
-                                            -->
+                                                    we can even try to show a route in the map based on what address is and information in the directions textarea, we can even auto route.
+                                                -->
 
                                                 <!-- //end form for accommodation -->
                                             </div>
@@ -708,14 +705,14 @@
                                             <div class="mx-1">
                                                 <fieldset>
                                                     <h2>Let's see it</h2>
-                                                    <!-- //form for accommodation -->
+                                                    <!-- // form for accommodation -->
 
                                                     <!-- 
-    <div class="form-group custom-file">
-      <input type="file" class="custom-file-input" id="customFileLang" lang="es">
-      <label class="custom-file-label" for="customFileLang">Images and/or Videos</label>
-    </div> 
-  -->
+                                                        <div class="form-group custom-file">
+                                                        <input type="file" class="custom-file-input" id="customFileLang" lang="es">
+                                                        <label class="custom-file-label" for="customFileLang">Images and/or Videos</label>
+                                                        </div> 
+                                                    -->
 
                                                     <div class="form-group">
                                                         <!-- thatInput -->
@@ -735,11 +732,11 @@
                                                 </fieldset>
 
                                                 <!-- 
-    the images and/or videos they'll put up will be based on the checked box under accommodation type
-    so there would be as many input tag for the places in the accommodation
-    ( doing this might be stressful, we show a bit of their gallary as a nudge when we do our app)
-    or they can just do a short 15 seconds video of everywhere
-  -->
+                                                    the images and/or videos they'll put up will be based on the checked box under accommodation type
+                                                    so there would be as many input tag for the places in the accommodation
+                                                    ( doing this might be stressful, we show a bit of their gallary as a nudge when we do our app)
+                                                    or they can just do a short 15 seconds video of everywhere
+                                                -->
                                                 <div class="card-columns" id="hereNow">
                                                 </div>
                                             </div>
@@ -755,10 +752,10 @@
                                                         <!-- //form for accommodation -->
 
                                                         <!-- 
-          we already have price per month or quater or year, we just need to know when it'll expire
-          &
-          we'd compute how much the corper is expecting from whoever will take over from the rent.
-      -->
+                                                            we already have price per month or quater or year, we just need to know when it'll expire
+                                                            &
+                                                            we'd compute how much the corper is expecting from whoever will take over from the rent.
+                                                        -->
                                                         <div class="d-block my-3">
                                                             <div class="custom-control custom-radio">
                                                                 <input id="newrent" name="tenure" type="radio"
@@ -1372,7 +1369,7 @@ we can even try to show a route in the map based on what address is and informat
 
                             <ul class="list-group" id="tl">
 
-                                <!--
+                        <!--
                               <li class="list-group-item">
                                 <div class="media mb-4">
                                   <img class="align-self-start mr-2 rounded-circle" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E45x45%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="user image">
@@ -1399,7 +1396,7 @@ we can even try to show a route in the map based on what address is and informat
                                             <h6 class="mb-1">List group item heading <br> <small>Umuahia, Abia State</small></h6>
                                             <small>3 days ago</small>
                                         </div>
-                                        <p >Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
+                                        <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
                                         <p>Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
                                         <div >
                                             <div class="media-content">
@@ -1434,8 +1431,7 @@ we can even try to show a route in the map based on what address is and informat
                                       </div>
                                     </div>
                               </li>
-    
-                          -->
+                        -->
 
                             </ul>
                         </div>
@@ -1845,20 +1841,19 @@ we can even try to show a route in the map based on what address is and informat
                     let k = document.createElement("p");
                     // k.classList(["maintext"]);
                     k.setAttribute('class', 'maintext');
-                    k.innerHTML =
-                        `<p><span class='font-italic text-muted'>Item</span>: ${data.post.itemname} selling for &#8358;${data.post.price}.</p> ${data.post.text ? "<p><span class='font-italic text-muted'>More info</span>: " + data.post.text + "</p>" : ''}`;
+                    k.innerHTML = `<p><span class='font-italic text-muted'>Item</span>: ${data.post.itemname} selling for &#8358;${data.post.price}.</p> ${data.post.text ? "<p><span class='font-italic text-muted'>More info</span>: " + data.post.text + "</p>" : ''}`;
                     // k.innerText = data.post.text;
                     let d = document.createElement('div');
                     d.setAttribute('class', 'media-body');
                     d.appendChild(e);
-                    d.appendChild(k); //the text from sender
+                    d.appendChild(k); // the text from sender
                     d.appendChild(h);
 
                     let _c = document.createElement('div');
                     _c.setAttribute('class', 'small-alt-text');
                     let c = document.createElement('img');
                     c.setAttribute('class', 'align-self-start mr-2 rounded-circle profile-pic');
-                    // c.setAttribute('data-src','holder.js/64x64');
+                    // c.setAttribute('data-src', 'holder.js/64x64');
 
                     c.setAttribute('src',
                         (data.post.picture_id ? "https://drive.google.com/uc?id=" + data.post.picture_id :
