@@ -13,7 +13,7 @@
         <title>
             <%= statecode %> Online
         </title>
-        <link rel="icon" href="assets/images/1/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="../../assets/images/1/favicon.ico" type="image/x-icon">
 
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
@@ -535,8 +535,7 @@
                                                             <option value="2 bedroom flat">2 bedroom flat</option>
                                                             <option value="3 bedroom flat">3 bedroom flat</option>
                                                         </select>
-                                                        <small class="form-text text-muted">Choose the category that
-                                                            best describes it.</small>
+                                                        <small class="form-text text-muted mb-3">Choose the category tha best describes it.</small>
 
                                                         <!-- //test -->
                                                         <div class="custom-control custom-checkbox">
@@ -592,61 +591,6 @@
                                                 </fieldset>
                                                 <!-- // -->
                                             </div>
-                                        </div>
-                                        <div class="carousel-item">
-                                            <div class="mx-1">
-                                                <fieldset>
-                                                    <h2>Metrics about the rent</h2>
-                                                    <!-- //form for accommodation -->
-                                                    <div class="form-group">
-
-                                                        <!--//testing-->
-                                                        <div class="d-block my-3">
-                                                            <div class="custom-control custom-radio">
-                                                                <input id="monthly" name="rentrange" type="radio"
-                                                                    class="custom-control-input" value="monthly" checked
-                                                                    required>
-                                                                <label class="custom-control-label"
-                                                                    for="monthly">Monthly</label>
-                                                            </div>
-                                                            <div class="custom-control custom-radio">
-                                                                <input id="quarterly" name="rentrange" type="radio"
-                                                                    class="custom-control-input" value="quarterly"
-                                                                    required>
-                                                                <label class="custom-control-label"
-                                                                    for="quarterly">Quarterly</label>
-                                                            </div>
-                                                            <div class="custom-control custom-radio">
-                                                                <input id="yearly" name="rentrange" type="radio"
-                                                                    class="custom-control-input" value="yearly"
-                                                                    required>
-                                                                <label class="custom-control-label"
-                                                                    for="yearly">Yearly</label>
-                                                            </div>
-                                                        </div>
-                                                        <!-- / // / testing -->
-
-                                                        <!-- this should be disabled until the corper chooses either per month or quarter or year then we say price per whatever the person chose -->
-
-                                                        <label for="price">Price per month/quater/year</label>
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text">&#8358;</span>
-                                                            </div>
-                                                            <input name="price" type="number" inputmode="numeric"
-                                                                class="form-control" id="price"
-                                                                placeholder="Recurring price" required>
-                                                            <div class="invalid-feedback" style="width: 100%;">
-                                                                The recurring price for the rent is required.
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-                                                </fieldset>
-                                                <!-- // -->
-                                            </div>
-
-
                                         </div>
                                         <div class="carousel-item">
                                             <div class="mx-1">
@@ -747,8 +691,7 @@
                                                     <h2>Current Status</h2>
                                                     <div class="form-group">
                                                         <small  class="form-text text-muted">Are you leasing out
-                                                            your active rent tenure or is this a
-                                                            new rent?</small>
+                                                            your active rent tenure, or a new rent, or seeking a roomate?</small>
                                                         <!-- //form for accommodation -->
 
                                                         <!-- 
@@ -759,24 +702,37 @@
                                                         <div class="d-block my-3">
                                                             <div class="custom-control custom-radio">
                                                                 <input id="newrent" name="tenure" type="radio"
-                                                                    class="custom-control-input" value="Lease" required>
+                                                                    class="custom-control-input" value="Lease" checked required>
                                                                 <label class="custom-control-label" for="newrent">New
                                                                     rent (No present occupant)</label>
                                                             </div>
                                                             <div class="custom-control custom-radio">
                                                                 <input id="oldrent" name="tenure" type="radio"
                                                                     class="custom-control-input" value="Sublease"
-                                                                    checked required>
+                                                                    required>
                                                                 <label class="custom-control-label"
                                                                     for="oldrent">Leasing out an active rent</label>
                                                             </div>
+                                                            <div class="custom-control custom-radio">
+                                                                <input id="roommate" name="tenure" type="radio"
+                                                                    class="custom-control-input" value="Roommate"
+                                                                    required>
+                                                                <label class="custom-control-label"
+                                                                    for="roommate">Seeking a roommate</label>
+                                                            </div>
                                                         </div>
 
-                                                        <div id="expirediv" class="mb-4">
+                                                        <div id="expirediv" class="mb-4" style="display: none;">
                                                             <label for="bday">When does your rent expires:</label>
                                                             <input type="date" id="expire" min="" max=""
-                                                                name="expiredate" required>
+                                                                name="expiredate">
                                                         </div>
+                                                        <div id="roommatediv" class="mb-3" style="display: none;">
+                                                            <label for="roommate_type" class="form-label">Describe your ideal roommate:</label>
+                                                            <input type="text" class="form-control mb-4" id="roommate_type" name="roommate_type" placeholder="name@example.com">
+                                                            <label for="roommate_you" class="form-label">Describe yourself to your ideal roommate:</label>
+                                                            <input type="text" class="form-control" id="roommate_you" name="roommate_you" placeholder="name@example.com">
+                                                        </div><!-- how much do you want to pay, how would you describe yourself to your roommate? -->
                                                     </div>
                                                 </fieldset>
 
@@ -798,15 +754,30 @@
                                                             // using if-else because we have just two options, so if it isn't one, it's the other
                                                             // if expire date is showing, it means the rent isn't new, then it is required.
                                                             if (this.id == 'oldrent') {
-                                                                // console.log('an old rent [sublease]');
-                                                                document.getElementById('expirediv')
-                                                                    .style.display = 'block';
+                                                                document.getElementById('expirediv').style.display = 'block';
                                                                 document.forms["accommodationform"].elements["expiredate"].required = true;
-                                                            } else {
+
+                                                                document.getElementById('roommatediv').style.display = 'none';
+                                                                document.getElementById('roommate-price').style.display = 'none';
+                                                                document.forms["accommodationform"].elements["roommate_type"].required = false;
+                                                                document.forms["accommodationform"].elements["roommate_you"].required = false;
+                                                            } else if (this.id == 'roommate') {
+                                                                document.getElementById('roommatediv').style.display = 'block';
+                                                                document.getElementById('roommate-price').style.display = 'block';
+                                                                document.forms["accommodationform"].elements["roommate_type"].required = true;
+                                                                document.forms["accommodationform"].elements["roommate_you"].required = true;
+
                                                                 // console.log('new rent [lease]');
-                                                                document.getElementById('expirediv')
-                                                                    .style.display = 'none';
+                                                                document.getElementById('expirediv').style.display = 'none';
                                                                 document.forms["accommodationform"].elements["expiredate"].required = false;
+                                                            } else {
+                                                                document.getElementById('expirediv').style.display = 'none';
+                                                                document.forms["accommodationform"].elements["expiredate"].required = false;
+
+                                                                document.getElementById('roommatediv').style.display = 'none';
+                                                                document.getElementById('roommate-price').style.display = 'none';
+                                                                document.forms["accommodationform"].elements["roommate_type"].required = false;
+                                                                document.forms["accommodationform"].elements["roommate_you"].required = false;
                                                             }
                                                         }
                                                     }
@@ -815,6 +786,62 @@
                                                 <!-- //end form for accommodation -->
                                             </div>
                                         </div>
+                                        <div class="carousel-item">
+                                            <div class="mx-1">
+                                                <fieldset>
+                                                    <h2>Metrics about the rent</h2>
+                                                    <!-- //form for accommodation -->
+                                                    <div class="form-group">
+
+                                                        <!--//testing-->
+                                                        <div class="d-block my-3">
+                                                            <div class="custom-control custom-radio">
+                                                                <input id="monthly" name="rentrange" type="radio"
+                                                                    class="custom-control-input" value="monthly" checked
+                                                                    required>
+                                                                <label class="custom-control-label"
+                                                                    for="monthly">Monthly</label>
+                                                            </div>
+                                                            <div class="custom-control custom-radio">
+                                                                <input id="quarterly" name="rentrange" type="radio"
+                                                                    class="custom-control-input" value="quarterly"
+                                                                    required>
+                                                                <label class="custom-control-label"
+                                                                    for="quarterly">Quarterly</label>
+                                                            </div>
+                                                            <div class="custom-control custom-radio">
+                                                                <input id="yearly" name="rentrange" type="radio"
+                                                                    class="custom-control-input" value="yearly"
+                                                                    required>
+                                                                <label class="custom-control-label"
+                                                                    for="yearly">Yearly</label>
+                                                            </div>
+                                                        </div>
+                                                        <!-- / // / testing -->
+
+                                                        <!-- this should be disabled until the corper chooses either per month or quarter or year then we say price per whatever the person chose -->
+
+                                                        <label for="price" class="d-flex">Price per month/quater/year<span id="roommate-price" style="display: none;">&nbsp;for your roommate</span></label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text">&#8358;</span>
+                                                            </div>
+                                                            <input name="price" type="number" inputmode="numeric"
+                                                                class="form-control" id="price"
+                                                                placeholder="Recurring price" required>
+                                                            <div class="invalid-feedback" style="width: 100%;">
+                                                                The recurring price for the rent is required.
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </fieldset>
+                                                <!-- // -->
+                                            </div>
+
+
+                                        </div>
+
                                     </div>
 
                                 </div>
@@ -1895,7 +1922,7 @@ we can even try to show a route in the map based on what address is and informat
                     //right now, we'll append every post together
                     feeds.insertBefore(newFeed, feeds.children[0]);
 
-                } else if (data.post.rentrange && data.post.rooms) {
+                } else if (data.post.rentrange && data.post.rooms) { // if accommodation
                     // console.log('accommodation', data);
 
                     // rooms is an array already!! how and when ?
@@ -2017,9 +2044,18 @@ we can even try to show a route in the map based on what address is and informat
                     let k = document.createElement("p");
                     // k.classList(["maintext"]);
                     k.setAttribute('class', 'maintext');
+                    console.log(data.post);
                     // to make the sentence thingy ['ggff','gfff'].toString().replace(',', ', ').replace(['ggff','gfff'][['ggff','gfff'].length - 1], 'and ' + ['ggff','gfff'][['ggff','gfff'].length - 1]) gives "ggff, and gfff" // there is a little edit with the ,
                     k.innerHTML =
-                        `<address><span class='font-italic text-muted'>Address</span>: <a href="#!">${data.post.address} </a> </address> <p><span class='font-italic text-muted'>Details</span>: ${data.post.type} ${(rms.length > 1 ? 'with ' + rms.toString().replace('', 'and ').split(',').reverse().toString().replace(/,/g, ', ') : 'with a ' + rms[0])} at &#8358;${data.post.price} ${data.post.rentrange}. ${(data.post.tenure == 'Sublease.' ? 'Sublease (expires ' + new Date(Date.parse(data.post.expire)).toDateString().italics().bold() + ').' : 'New lease.')}</p> <p><span class='font-italic text-muted'>Directions</span>: ${data.post.directions}</p>`;
+                        `<address>
+                            <span class='font-italic text-muted'>Address</span>: <a href="#!">${data.post.address} </a> 
+                        </address>
+                        <p>
+                            <span class='font-italic text-muted'>Details</span>: ${data.post.type} ${(rms.length > 1 ? 'with ' + rms.toString().replace('', 'and ').split(',').reverse().toString().replace(/,/g, ', ') : 'with a ' + rms[0])} at &#8358;${data.post.price} ${data.post.rentrange}. ${(data.post.tenure == 'Sublease' ? 'Sublease (expires ' + new Date(Date.parse(data.post.expire)).toDateString().italics().bold() + ').' : data.post.tenure == 'Roommate' ? '<b>Seeking a roommate:</b> ' + data.post.roommate_type + '. <b>They are:</b> ' + data.post.roommate_you : 'New lease.')}
+                        </p>
+                        <p>
+                            <span class='font-italic text-muted'>Directions</span>: ${data.post.directions}
+                        </p>`;
                     let d = document.createElement('div');
                     d.setAttribute('class', 'media-body');
                     d.appendChild(e);
@@ -2060,7 +2096,6 @@ we can even try to show a route in the map based on what address is and informat
                             b.appendChild(zx);
                         }
                     }
-
 
                     let a = document.createElement('div');
                     a.setAttribute('class', 'media mb-4');

@@ -850,12 +850,12 @@ router.post('/accommodations', auth.verifyJWT, /* upload.array('roomsmedia', 12)
      */
     if (!helpers.isEmpty(_text) && helpers.isEmpty(uploadPromise)) {
       console.log('what\'s _text?', _text)
-      query.InsertRowInAccommodationsTable({ // why are we boardcasting req ?
+      let acc_data = { // why are we boardcasting req ?
         statecode: req.session.corper.statecode,
         // streetname: _text.streetname,
         type: _text.accommodationtype,
         price: _text.price,
-        media: [].toString(), // same as '' but for consitenc sake
+        media: [].toString(), // same as '' but for consistency sake
         rentrange: _text.rentrange,
         rooms: _text.rooms.toString(), // hot fix
         address: _text.address,
@@ -864,8 +864,11 @@ router.post('/accommodations', auth.verifyJWT, /* upload.array('roomsmedia', 12)
         expire: (_text.expiredate ? _text.expiredate : ''),
         post_location: req.session.corper.location,
         post_time: _text.post_time,
-        acc_geodata: (_text.acc_geodata ? _text.acc_geodata : '')
-      }).then(resolve => {
+        acc_geodata: (_text.acc_geodata ? _text.acc_geodata : ''),
+        roommate_you: (_text.roommate_you ? _text.roommate_you : ''),
+        roommate_type: (_text.roommate_type ? _text.roommate_type : '')
+      }
+      query.InsertRowInAccommodationsTable(acc_data).then(resolve => {
         // then status code is good
         res.sendStatus(200);
   
@@ -883,14 +886,16 @@ router.post('/accommodations', auth.verifyJWT, /* upload.array('roomsmedia', 12)
             tenure: _text.tenure,
             expiredate: (_text.expiredate ? _text.expiredate : ''),
             post_location: req.session.corper.location,
-            media: [], // make an empty array 
+            media: [], // make an empty array because there were no media posted
             post_time: _text.post_time,
             type: _text.accommodationtype,
             address: _text.address,
             directions: _text.directions,
             age: moment(Date.now()).fromNow(), // is this correct?
             price: _text.price,
-            picture_id: req.session.corper.picture_id
+            picture_id: req.session.corper.picture_id,
+            roommate_you: (_text.roommate_you ? _text.roommate_you : ''),
+            roommate_type: (_text.roommate_type ? _text.roommate_type : '')
           }
         });
       }, reject => {
@@ -917,7 +922,9 @@ router.post('/accommodations', auth.verifyJWT, /* upload.array('roomsmedia', 12)
         expire: (_text.expiredate ? _text.expiredate : ''),
         post_location: req.session.corper.location,
         post_time: _text.post_time,
-        acc_geodata: (_text.acc_geodata ? _text.acc_geodata : '')
+        acc_geodata: (_text.acc_geodata ? _text.acc_geodata : ''),
+        roommate_you: (_text.roommate_you ? _text.roommate_you : ''),
+        roommate_type: (_text.roommate_type ? _text.roommate_type : '')
       }).then(result => {
         res.sendStatus(200);
 
@@ -941,9 +948,11 @@ router.post('/accommodations', auth.verifyJWT, /* upload.array('roomsmedia', 12)
             type: _text.accommodationtype,
             address: _text.address,
             directions: _text.directions,
-            age: moment(_text.post_time).fromNow(),
+            age: moment(Number(_text.post_time)).fromNow(),
             price: _text.price,
-            picture_id: req.session.corper.picture_id
+            picture_id: req.session.corper.picture_id,
+            roommate_you: (_text.roommate_you ? _text.roommate_you : ''),
+            roommate_type: (_text.roommate_type ? _text.roommate_type : '')
           }
         });
       }, reject => { // give proper feedback based on error
