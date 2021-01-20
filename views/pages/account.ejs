@@ -411,7 +411,7 @@
             }
 
             textarea#directions {
-                height: 100px;
+                height: 110px;
             }
 
             #accommodationFormCarousel .carousel-item {
@@ -421,6 +421,10 @@
             .small-alt-text {
                 display: inherit;
                 font-size: 7px;
+            }
+
+            #accommodationFormCarousel > .carousel-inner {
+                overflow-y: scroll;
             }
         </style>
         <script async defer data-website-id="58dce5f5-c238-4e98-b2c6-e701c258f01d"
@@ -729,9 +733,9 @@
                                                         </div>
                                                         <div id="roommatediv" class="mb-3" style="display: none;">
                                                             <label for="roommate_type" class="form-label">Describe your ideal roommate:</label>
-                                                            <input type="text" class="form-control mb-4" id="roommate_type" name="roommate_type" placeholder="name@example.com">
+                                                            <input type="text" class="form-control mb-4" id="roommate_type" name="roommate_type" placeholder="Someone nice...">
                                                             <label for="roommate_you" class="form-label">Describe yourself to your ideal roommate:</label>
-                                                            <input type="text" class="form-control" id="roommate_you" name="roommate_you" placeholder="name@example.com">
+                                                            <input type="text" class="form-control" id="roommate_you" name="roommate_you" placeholder="I'm tolerant, clean...">
                                                         </div><!-- how much do you want to pay, how would you describe yourself to your roommate? -->
                                                     </div>
                                                 </fieldset>
