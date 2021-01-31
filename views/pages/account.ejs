@@ -663,19 +663,10 @@
                                                     -->
 
                                                     <div class="form-group">
-                                                        <!-- thatInput -->
-                                                        <div class="box">
-                                                            <input type="file" name="roomsmedia" id="roomsmedia"
-                                                                accept="image/*,video/*" class="inputfile inputfile-2"
-                                                                data-multiple-caption="{count} files selected"
-                                                                multiple="multiple" />
-                                                            <label for="roomsmedia"><span>Upload
-                                                                    media&hellip;</span></label>
+                                                        <div class="custom-file">
+                                                            <input type="file" accept="image/*,video/*" multiple="multiple" class="custom-file-input" name="roomsmedia" id="roomsmedia">
+                                                            <label class="custom-file-label" for="roomsmedia">Upload media</label>
                                                         </div>
-
-                                                        <!-- this script must come after the input -->
-                                                        <script src="/assets/js/custom-file-input.js"></script>
-                                                        <!-- //thatInput -->
                                                     </div>
                                                 </fieldset>
 
@@ -1974,6 +1965,7 @@ we can even try to show a route in the map based on what address is and informat
 
                             cimg = document.createElement('img');
                             cimg.setAttribute('class', 'd-block img-fluid mx-auto');
+                            cimg.setAttribute('loading', 'lazy');
                             // cimg.setAttribute('src', (window.location.hostname == "localhost" ? new URL(`/uc?id=${jk[i]}`, "https://drive.google.com").toString() : 'https://corpers.online/') + jk[i]);
                             cimg.setAttribute('src', new URL(`/uc?id=${jk[i]}`, "https://drive.google.com").toString());
                             cimg.setAttribute('alt', `Might be a picture of a ${(rms[i] == undefined ? rms[0] : rms[i])}`); // this is not exactly correct, needs more work
@@ -2399,7 +2391,6 @@ we can even try to show a route in the map based on what address is and informat
                             } )( img );
                         reader.readAsDataURL( file ); */
 
-
                         // -----
 
                         // const file = files[i];
@@ -2448,6 +2439,7 @@ we can even try to show a route in the map based on what address is and informat
                                                         <select class="accviews custom-select" id="${file.lastModified}" name="${file.size}" style="border-radius: 0rem;">
                                                             <option selected>Choose...</option>
                                                             <option value="Bathroom">Bathroom</option>
+                                                            <option value="Sitting Room">Sitting Room</option>
                                                             <option value="Toilet">Toilet</option>
                                                             <option value="Kitchen">Kitchen</option>
                                                             <option value="Bathroom & Toilet">Bathroom & Toilet</option>
@@ -2697,8 +2689,6 @@ we can even try to show a route in the map based on what address is and informat
                             // just append
                             previewParent.appendChild(preview);
                         }
-
-
                         msg.images.push(img.src);
                         // document.forms[2].elements[2].value = img; // works ?
                         msg.type = 'location'; // add this to the forms

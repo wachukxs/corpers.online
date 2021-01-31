@@ -990,7 +990,7 @@
                        } )
                        .addTo( mymap );
        */
-      L.geoJSON( <% - mapdata %> , {
+      L.geoJSON( <%- mapdata %> , {
         pointToLayer: function (feature, latlng) {
           // console.log( 'from server', feature, latlng );
           switch (feature.properties.type) {
