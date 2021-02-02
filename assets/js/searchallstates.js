@@ -92,7 +92,7 @@ $.typeahead({
 
                 data: { // set url query parameter if we want to do backend/query search [must be thesame across all groups]
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data.ABIA'
             }
@@ -130,7 +130,7 @@ $.typeahead({
                 url: "/posts",
                 data: { // set url query parameter if we want to do backend/query search
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data.ADAMAWA'
             }
@@ -169,7 +169,7 @@ $.typeahead({
 
                 data: { // set url query parameter if we want to do backend/query search [must be thesame across all groups]
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data."AKWA IBOM"'
             }
@@ -207,7 +207,7 @@ $.typeahead({
                 url: "/posts",
                 data: { // set url query parameter if we want to do backend/query search
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data.ANAMBRA'
             }
@@ -246,7 +246,7 @@ $.typeahead({
 
                 data: { // set url query parameter if we want to do backend/query search [must be thesame across all groups]
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data.BAUCHI'
             }
@@ -284,7 +284,7 @@ $.typeahead({
                 url: "/posts",
                 data: { // set url query parameter if we want to do backend/query search
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data.BAYELSA'
             }
@@ -323,7 +323,7 @@ $.typeahead({
 
                 data: { // set url query parameter if we want to do backend/query search [must be thesame across all groups]
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data.BENUE'
             }
@@ -361,7 +361,7 @@ $.typeahead({
                 url: "/posts",
                 data: { // set url query parameter if we want to do backend/query search
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data.BORNO'
             }
@@ -400,7 +400,7 @@ $.typeahead({
 
                 data: { // set url query parameter if we want to do backend/query search [must be thesame across all groups]
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data."CROSS RIVER"'
             }
@@ -438,7 +438,7 @@ $.typeahead({
                 url: "/posts",
                 data: { // set url query parameter if we want to do backend/query search
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data.DELTA'
             }
@@ -477,7 +477,7 @@ $.typeahead({
 
                 data: { // set url query parameter if we want to do backend/query search [must be thesame across all groups]
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data.EBONYI'
             }
@@ -515,7 +515,7 @@ $.typeahead({
                 url: "/posts",
                 data: { // set url query parameter if we want to do backend/query search
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data.EDO'
             }
@@ -554,7 +554,7 @@ $.typeahead({
 
                 data: { // set url query parameter if we want to do backend/query search [must be thesame across all groups]
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data.EKITI'
             }
@@ -592,7 +592,7 @@ $.typeahead({
                 url: "/posts",
                 data: { // set url query parameter if we want to do backend/query search
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data.ENUGU'
             }
@@ -631,7 +631,7 @@ $.typeahead({
 
                 data: { // set url query parameter if we want to do backend/query search [must be thesame across all groups]
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data."FCT - ABUJA"'
             }
@@ -670,7 +670,7 @@ $.typeahead({
                 url: "/posts",
                 data: { // set url query parameter if we want to do backend/query search
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data.IMO'
             }
@@ -709,7 +709,7 @@ $.typeahead({
 
                 data: { // set url query parameter if we want to do backend/query search [must be thesame across all groups]
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data.JIGAWA'
             }
@@ -748,7 +748,7 @@ $.typeahead({
                 url: "/posts",
                 data: { // set url query parameter if we want to do backend/query search
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data.KADUNA'
             }
@@ -787,7 +787,7 @@ $.typeahead({
 
                 data: { // set url query parameter if we want to do backend/query search [must be thesame across all groups]
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
 
                 path: 'data.KANO'
@@ -827,7 +827,7 @@ $.typeahead({
                 url: "/posts",
                 data: { // set url query parameter if we want to do backend/query search
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data.KASTINA'
             }
@@ -866,7 +866,7 @@ $.typeahead({
 
                 data: { // set url query parameter if we want to do backend/query search [must be thesame across all groups]
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
 
                 path: 'data.KEBBI'
@@ -906,7 +906,7 @@ $.typeahead({
                 url: "/posts",
                 data: { // set url query parameter if we want to do backend/query search
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data.KOGI'
             }
@@ -945,7 +945,7 @@ $.typeahead({
 
                 data: { // set url query parameter if we want to do backend/query search [must be thesame across all groups]
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
 
                 path: 'data.KWARA'
@@ -985,7 +985,7 @@ $.typeahead({
                 url: "/posts",
                 data: { // set url query parameter if we want to do backend/query search
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data.LAGOS'
             }
@@ -1024,7 +1024,7 @@ $.typeahead({
 
                 data: { // set url query parameter if we want to do backend/query search [must be thesame across all groups]
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
 
                 path: 'data.NASSARAWA'
@@ -1064,7 +1064,7 @@ $.typeahead({
                 url: "/posts",
                 data: { // set url query parameter if we want to do backend/query search
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data.NIGER'
             }
@@ -1103,7 +1103,7 @@ $.typeahead({
 
                 data: { // set url query parameter if we want to do backend/query search [must be thesame across all groups]
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
 
                 path: 'data.OGUN'
@@ -1143,7 +1143,7 @@ $.typeahead({
                 url: "/posts",
                 data: { // set url query parameter if we want to do backend/query search
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data.ONDO'
             }
@@ -1182,7 +1182,7 @@ $.typeahead({
 
                 data: { // set url query parameter if we want to do backend/query search [must be thesame across all groups]
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
 
                 path: 'data.OSUN'
@@ -1222,7 +1222,7 @@ $.typeahead({
                 url: "/posts",
                 data: { // set url query parameter if we want to do backend/query search
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data.OYO'
             }
@@ -1261,7 +1261,7 @@ $.typeahead({
 
                 data: { // set url query parameter if we want to do backend/query search [must be thesame across all groups]
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
 
                 path: 'data.PLATEAU'
@@ -1301,7 +1301,7 @@ $.typeahead({
                 url: "/posts",
                 data: { // set url query parameter if we want to do backend/query search
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data.RIVERS'
             }
@@ -1340,7 +1340,7 @@ $.typeahead({
 
                 data: { // set url query parameter if we want to do backend/query search [must be thesame across all groups]
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
 
                 path: 'data.SOKOTO'
@@ -1380,7 +1380,7 @@ $.typeahead({
                 url: "/posts",
                 data: { // set url query parameter if we want to do backend/query search
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data.TARABA'
             }
@@ -1419,7 +1419,7 @@ $.typeahead({
 
                 data: { // set url query parameter if we want to do backend/query search [must be thesame across all groups]
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
 
                 path: 'data.YOBE'
@@ -1459,7 +1459,7 @@ $.typeahead({
                 url: "/posts",
                 data: { // set url query parameter if we want to do backend/query search
                     q: '{{query}}',
-                    u: 'te'
+                    u: 'test'
                 },
                 path: 'data.ZAMFARA'
             }

@@ -261,7 +261,6 @@ router.post('/contact', function (req, res) {
 router.get('/posts', auth.verifyJWT, function (req, res) {
   // set resposnse type to application/json
   res.setHeader('Content-Type', 'application/json');
-
   query.GetPosts(req).then(result => {
     res.status(200).send(result);
   }, reject => {

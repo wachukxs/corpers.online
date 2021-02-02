@@ -299,10 +299,19 @@ exports.UnreadMessages = async (corpersData) => {
 exports.FetchPostsForTimeLine = async (timeLineInfo) => {
     let re = new Promise((resolve, reject) => {
         /**there's much work on this section maybe, just to make sure sql sees and calculates the value as they should (or NOT ????) */
-        let getpostsquery = "SELECT info.firstname, info.picture_id, posts.itemname, posts.statecode, posts.type, posts.text, posts.media, posts.price, posts.location, posts.post_time FROM info RIGHT JOIN posts ON info.statecode = posts.statecode WHERE posts.statecode LIKE '%" + timeLineInfo.statecode_substr + "%'" + (timeLineInfo.last_post_time !== null ? ' AND post_time > "' + timeLineInfo.last_post_time + '" ORDER by posts.post_time ASC' : ' ORDER by posts.post_time ASC') +
-            "; SELECT info.firstname, info.picture_id, accommodations.statecode, accommodations.type, accommodations.price, accommodations.rooms, accommodations.rentrange, accommodations.streetname, accommodations.address, accommodations.media, accommodations.tenure, accommodations.expire, accommodations.roommate_type, accommodations.roommate_you, accommodations.directions, accommodations.post_location, accommodations.post_time, accommodations.acc_geodata FROM info RIGHT JOIN accommodations ON info.statecode = accommodations.statecode WHERE accommodations.statecode LIKE '%" + timeLineInfo.statecode_substr + "%'" + (timeLineInfo.last_input_time !== null ? ' AND input_time > "' + timeLineInfo.last_input_time + '" ORDER by accommodations.input_time ASC' : ' ORDER BY accommodations.input_time ASC');
+        let getpostsquery = "SELECT info.firstname, info.picture_id, posts.itemname, posts.statecode, posts.type, posts.text, posts.media, posts.price, posts.location, posts.input_time, posts.post_time\
+         FROM info RIGHT JOIN posts ON info.statecode = posts.statecode \
+         WHERE posts.statecode LIKE '%" + timeLineInfo.statecode_substr + "%'" + (timeLineInfo.last_post_time !== null ? ' \
+         AND UNIX_TIMESTAMP(posts.input_time) > UNIX_TIMESTAMP(' + timeLineInfo.last_post_time + ')" \
+         ' : '' ) + " ORDER by posts.input_time ASC" +
+            "; SELECT info.firstname, info.picture_id, accommodations.statecode, accommodations.type, accommodations.price, accommodations.rooms, accommodations.rentrange, accommodations.streetname, accommodations.address, accommodations.media, accommodations.tenure, accommodations.expire, accommodations.roommate_type, accommodations.roommate_you, accommodations.directions, accommodations.post_location, accommodations.input_time, accommodations.post_time, accommodations.acc_geodata \
+            FROM info RIGHT JOIN accommodations ON info.statecode = accommodations.statecode \
+            WHERE accommodations.statecode LIKE '%" + timeLineInfo.statecode_substr + "%'" + (timeLineInfo.last_accommodation_time !== null ? ' \
+            AND UNIX_TIMESTAMP(accommodations.input_time) > UNIX_TIMESTAMP(' + timeLineInfo.last_accommodation_time + ')" \
+            ' : ' ') + " ORDER BY accommodations.input_time ASC";
 
-        /* console.log(getpostsquery)
+        //  console.log(getpostsquery)
+        /*
         SELECT * FROM posts WHERE statecode LIKE '%DT%' AND post_time > "null" ORDER by posts.post_time ASC; SELECT * FROM accommodations WHERE expire > NOW() AND statecode LIKE '%DT%' AND input_time > "null" ORDER by accommodations.input_time ASC
          */
         connectionPool.query(getpostsquery, function (error, results, fields) {
@@ -1171,15 +1180,13 @@ exports.GetPosts = async (data) => { // we're meant to be saving every search! p
     // console.log('search query parameters', data.query)
     let q = '', thisisit = {};
     // maybe change the ORDER BYs since we're using post_time now =---
-    if (data.query.s) {
-        console.log('are we here?');
+    if (data.query.s) { // they're searching a state // isn't even working ...
         q = "SELECT * FROM accommodations \
         WHERE expire > NOW() AND statecode LIKE '" + data.query.s.substring(0, 2) + "%' \
         ORDER BY post_time DESC LIMIT 55; SELECT *, '' as password \
         FROM info WHERE ppa_address != '' AND statecode LIKE '" + data.query.s.substring(0, 2) + "%' ;\
         SELECT * FROM posts WHERE statecode LIKE '" + data.query.s.substring(0, 2) + "%';";
     } else {
-        
         for (let index = 0; index < 36/* ngstates.states_short.length */; index++) {
         const element = ngstates.states_short[index];
         q += "SELECT * FROM accommodations \

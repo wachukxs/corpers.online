@@ -908,7 +908,6 @@
             $('#accommodationFormCarousel')
                 .on('slid.bs.carousel', function (e) {
                     // do something…
-
                 });
 
             $('#accommodationModal')
@@ -925,7 +924,6 @@
                 .on('hidden.bs.modal', function (e) {
                     // console.info('acc modal hidden');
                     // document.getElementById('ap').disabled = true;
-
                 });
         </script>
 
@@ -1542,7 +1540,7 @@ we can even try to show a route in the map based on what address is and informat
 
             // to do ;; lazy load images
 
-            // if someone refreshes the page, a big maybe cache the present posts [keep the variable bm array intacted] and fetch newer posts from db and change the time on the older posts!!!
+            // if someone refreshes the page, a big maybe cache the present posts [keep the variable user_timeline_posts array intacted] and fetch newer posts from db and change the time on the older posts!!!
 
             // for loader
             window.onload = function () {
@@ -1602,18 +1600,17 @@ we can even try to show a route in the map based on what address is and informat
              * 
              * READ SOMETHING ABOUT SCOPE WHERE IF YOU CAN MAKE VARIABLES NOT ACCESSIBLE FROM window object
              * 
-             * Apply it to variable bm and bn and EVERY OTHER VARIABLE
+             * Apply it to variable user_timeline_posts and user_timeline_accommodations and EVERY OTHER VARIABLE
              */
 
 
             let pathArray = window.location.pathname.split('/');
             // console.log('user = ', pathArray[2]);
 
-            // start: bm[0], //oldest post in user's timeline
-            // end: bm[bm.length - 1] //newest post in user's timeline
-            // bm[] = boardcast messages currently in the user's time line
-            let bm = [],
-                bn = [];
+            // start: user_timeline_posts[0], //oldest post in user's timeline
+            // end: user_timeline_posts[user_timeline_posts.length - 1] //newest post in user's timeline
+            // user_timeline_posts[] = boardcast messages currently in the user's time line
+            let user_timeline_posts = [], user_timeline_accommodations = [];
 
             //connect to socket.io on /user but somehow it still connects with\to /
 
@@ -1626,12 +1623,12 @@ we can even try to show a route in the map based on what address is and informat
                 transports: ['websocket'],
                 query: {
                     user: pathArray[2],
-                    putl: bm,
-                    autl: bn,
-                    // first_post_pst: bm.length > 0 ? bm[0] : null,
-                    // last_post_pst: bm.length > 0 ? bm[bm.length - 1] : null,
-                    // first_post_acc: bn.length > 0 ? bn[0] : null,
-                    // last_post_acc: bn.length > 0 ? bn[bn.length - 1] : null,
+                    putl: user_timeline_posts,
+                    autl: user_timeline_accommodations,
+                    // first_post_pst: user_timeline_posts.length > 0 ? user_timeline_posts[0] : null,
+                    // last_post_pst: user_timeline_posts.length > 0 ? user_timeline_posts[user_timeline_posts.length - 1] : null,
+                    // first_post_acc: user_timeline_accommodations.length > 0 ? user_timeline_accommodations[0] : null,
+                    // last_post_acc: user_timeline_accommodations.length > 0 ? user_timeline_accommodations[user_timeline_accommodations.length - 1] : null,
                     test: 'ertrerer',
                     from: window.location.pathname.substring(1, 12),
                     statecode: '<%= statecode %>' // window.location.pathname.substring( 1, 12 ) // '<%= statecode %>'
@@ -1656,7 +1653,7 @@ we can even try to show a route in the map based on what address is and informat
                 // console.log('connected', new Date(Date.now()).toLocaleString(), Date.now());
 
                 // console.log('the socket object:', socket);
-                // trying sth --{first_post: bm[0], last_post: bm[bm.length - 1]}
+                // trying sth --{first_post: user_timeline_posts[0], last_post: user_timeline_posts[user_timeline_posts.length - 1]}
 
             });
             socket.on('reconnect', (attemptNumber) => {
@@ -1725,7 +1722,7 @@ we can even try to show a route in the map based on what address is and informat
             };
             socket.on('callback', cb);
 
-            /*  when we receive a boardcast message --save them (in var bm --an array somewhere up).
+            /*  when we receive a boardcast message --save them (in var user_timeline_posts --an array somewhere up).
                 so that thing where we can confirm a message has gotten to the server. */
             let bc = function (data) {
                 // remove the loader --this is not a very awesom logic, but it works well
@@ -1757,12 +1754,11 @@ we can even try to show a route in the map based on what address is and informat
                     }
                 }
 
-                // sales have post_time while accommodations have input_time [time stamp format]
-
-                if (data.post.post_time) {
-                    bm.push(data.post.post_time);
-                } else if (data.post.input_time) {
-                    bn.push(data.post.input_time);
+                console.log(data);
+                if (data.post.itemname) {
+                    user_timeline_posts.push(data.post.input_time);
+                } else if (data.post.rentrange) {
+                    user_timeline_accommodations.push(data.post.input_time);
                 }
                 // console.log(data.post.type == "sale", data.post.type === "sale")
                 // console.log('received boardcast message', data); // uncomment if we wanna see what we got
@@ -2040,7 +2036,7 @@ we can even try to show a route in the map based on what address is and informat
                     let k = document.createElement("p");
                     // k.classList(["maintext"]);
                     k.setAttribute('class', 'maintext');
-                    console.log(data.post);
+                    // console.log(data.post);
                     // to make the sentence thingy ['ggff','gfff'].toString().replace(',', ', ').replace(['ggff','gfff'][['ggff','gfff'].length - 1], 'and ' + ['ggff','gfff'][['ggff','gfff'].length - 1]) gives "ggff, and gfff" // there is a little edit with the ,
                     k.innerHTML =
                         `<address>

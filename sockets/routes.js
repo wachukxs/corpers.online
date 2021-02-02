@@ -40,12 +40,12 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
     /** sender, statecode, type, text, price, location, post_time, input_time */
 
     // posts currently in user's time line is socket.handshake.query.[p|a]utl.split(',')
-    // console.log('socket.handshake.query.putl', typeof socket.handshake.query.putl, socket.handshake.query.putl)
+    // console.log('socket.handshake.query', typeof socket.handshake.query, socket.handshake.query.putl)
 
     let pUTL = socket.handshake.query.putl.split(',');
     let aUTL = socket.handshake.query.autl.split(',');
     
-    // console.log('\nwhat is last in TL ? ', aUTL, pUTL);
+    console.log('\nwhat is last in TL ? ', aUTL, pUTL);
     // console.log('socket.handshake.query.putl after', typeof pUTL, aUTL)
     
     // console.log('socket query parameter(s) [user timeline]\n', 'acc:' + aUTL.length, ' posts:' + pUTL.length); // if either equals 1, then user timeline is empty
@@ -71,7 +71,7 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
 
         // moment is better because it makes it exactly as it was, the other just uses string manipulation and it's always an hour behind original time
         e = moment(new Date(aUTLlast)).format('YYYY-MM-DD HH:mm:ss');
-        // console.log('the time', d, e);
+        console.log('the time', d, e);
     } catch (error) { // pUTLlast/aUTLlast must be null then
         console.log('err => ', error);
     }
@@ -79,11 +79,15 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
     // console.log(e, 'time causing the ish', aUTL[aUTL.length - 1], pUTL[pUTL.length - 1]); // when timeline is empty, e is "Invalid Date"
 
     // we stopped using sender column from posts table, so it's null !
-
+    console.log('time line info =>', {
+        statecode_substr: socket.handshake.query.statecode.substring(0, 2),
+        last_post_time: pUTLlast,
+        last_accommodation_time: aUTLlast
+    });
     query.FetchPostsForTimeLine({
         statecode_substr: socket.handshake.query.statecode.substring(0, 2),
         last_post_time: pUTLlast,
-        last_input_time: aUTLlast
+        last_accommodation_time: aUTLlast
     }).then((allposts_results) => {
         Object.entries(allposts_results).forEach(
             ([key, value]) => {
