@@ -88,15 +88,16 @@ module.exports.verifyJWT = (req, res, next) => {
  */
 module.exports.checkJWT = (req, res, next) => {
     // Cookies that have not been signed
-    console.log('Cookies: ', req.cookies)
+    // console.log('Cookies: ', req.cookies)
     
     // Cookies that have been signed
-    console.log('Signed Cookies: ', req.signedCookies)
+    // console.log('Signed Cookies: ', req.signedCookies)
     if (req.session.corper) {
         next()
     } else if (req.cookies._online) {
         // we could also use req.cookies, but req.signedCookies is just an extra layer of security
         jwt.verify(req.cookies._online, process.env.SESSION_SECRET, function(err, decodedToken) {
+            console.info('\n\nveriffyiinnng')
             if (err) {
                 next()
             } else {
@@ -104,12 +105,13 @@ module.exports.checkJWT = (req, res, next) => {
                  * TODO: res.locals or req.session ?
                  */
                 query.AutoLogin(decodedToken.statecode).then(result => {
+                    console.info('\n\n\n\ninnnnn')
                     req.session.corper = result.response[0];
                     req.session.corper.location = result.response[0].servicestate + (result.response[0].city_town ? ', ' + result.response[0].city_town : ''); // + (results1[0].region_street ? ', ' + results1[0].region_street : '' )
                   }, reject => {
-                    next()
+                    // next() // no need
                   }).catch(reason => {
-                    next()
+                    // next() // no need
                   }).finally(() => {
                       next()
                   })

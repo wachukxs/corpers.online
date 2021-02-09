@@ -44,16 +44,16 @@
     <div class="h d-flex flex-column flex-md-row align-items-center p-3 px-md-4 bg-white border-bottom box-shadow">
         <h5 class="my-0 mr-md-auto font-weight-normal"><a href="/">Corpers Online</a></h5>
         <nav class="my-2 my-md-0 mr-md-3">
+            <% console.log('uhmmm - there is new chat', corper) %>
+            <% if (corper) { %>
+                <a class="p-2 text-dark" href="/<%= corper.statecode %>">Your page</a>
+            <% } else { %>
+                <a class="p-2 text-dark" href="/login">Login</a>
+            <% } %>
             <a class="p-2 text-dark" href="/signup">Sign up</a>
             <a class="p-2 text-dark" href="/blog">Blog</a>
             <a class="p-2 text-dark" href="/contact">Contact</a>
             <a class="p-2 text-dark" href="/about">About</a>
-            <% if (corpers) { %>
-                <a class="p-2 text-dark" href="/#!">Yes</a>
-            <% } else { %>
-            <% // console.log('there is new chat') %>
-                <a class="p-2 text-dark" href="/#!">No</a>
-            <% } %>
         </nav>
     </div>
 

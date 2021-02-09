@@ -75,9 +75,10 @@ router.get(ngstates.states_short_paths, auth.checkJWT, function (req, res) {
   query.CorpersInState(state).then(result => {
     let response = {}
     response.current_year = new Date().getFullYear()
-    response.corper = null
     if (req.session.corper) {
       response.corper = req.session.corper
+    } else {
+      response.corper = null
     }
     response.corpers = result;
     response.state = state;
