@@ -5,3 +5,6 @@ now the corper the chat is opened with isn't aware someone else wants to chat wi
 once a socket comes online, check it's state code, and check created_rooms column in db, if a/your state code appears in any room, you're auto joining it.
 
 we should be able to tell when that socket recieves a message (with the above logic)
+
+
+use https://getbootstrap.com/docs/4.6/components/toasts/ to do notifications for messages, if corpers turn on notifications

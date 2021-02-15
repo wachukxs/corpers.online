@@ -65,11 +65,11 @@ router.get('/allstateslgas', function (req, res) {
   res.set('Content-Type', 'application/json');
   fs.readFile('places.json', (err, data) => {
     if (err) {
-      res.status(500)
+      res.sendStatus(500)
     } else {
       let jkl = JSON.parse(data);
       // let's hope there's no err
-      res.send(jkl);
+      res.status(200).send(jkl);
     }
   })
 });
@@ -205,14 +205,14 @@ router.post('/sayhi', /* bodyParser.urlencoded({
     console.log('the message', req.body);
     if (helpers.isEmpty(req.body.message)) {
       // console.log('empty');
-      res.status(406).send('Not Acceptable'); // returns Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+      res.sendStatus(406); // returns Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
       // res.render('pages/404');
     } else {
       // console.log('NOT empthy');
       pool.query("INSERT INTO feedbacks ( message ) VALUES (" + pool.escape(req.body.message) + ")", function (error, results, fields) {
         if (error) throw error;
         else if (results.affectedRows === 1) {
-          res.status(200).send('OK');
+          res.sendStatus(200);
         }
       });
 
@@ -236,7 +236,7 @@ router.post('/contact', function (req, res) {
 
     busboy.on('finish', async function () {
       query.GiveFeedback(_feedback_data).then(result => {
-        res.status(200).send('OK');
+        res.sendStatus(200);
       }, reject => {
         res.sendStatus(500);
       }).catch(error => {
@@ -253,7 +253,7 @@ router.post('/contact', function (req, res) {
       if (error) throw error;
 
       if (results.affectedRows === 1) {
-        res.status(200).send('OK');
+        res.sendStatus(200);
       }
     }); */
 });
@@ -282,8 +282,9 @@ router.get('/profile', auth.verifyJWT, function (req, res) {
       /**an array of all the local government in the state */
       let lgas = jkl.states[ngplaces.states_short.indexOf(jn.slice(0, 2))][ngplaces.states_long[ngplaces.states_short.indexOf(jn.slice(0, 2))]];
       res.set('Content-Type', 'text/html');
+      let info = {}
       query.GetPlacesByTypeInOurDB(req).then(data => {
-        let info = {
+        info = {
           // statecode: req.session.corper.statecode.toUpperCase(),
           // servicestate: req.session.corper.servicestate.toUpperCase(),
           // batch: req.session.corper.batch,
@@ -299,33 +300,55 @@ router.get('/profile', auth.verifyJWT, function (req, res) {
           // select all distinct ppa type / address / name and send it to the front end as suggestions for the input when the corpers type
         }
         // console.log('data going to /profile page', info);
-        res.render('pages/profile', info);
+        return info
       }, reject => {
-        res.render('pages/profile', {
-          statecode: req.session.corper.statecode.toUpperCase(),
-          servicestate: req.session.corper.servicestate.toUpperCase(),
-          batch: req.session.corper.batch,
+        
+        throw reject
+      }).then(_info => {
+        query.GetCorperPosts(req.session.corper.statecode.toUpperCase())
+          .then(val => { // val is an array of two arrays. each of these array contain objects of posts and accomodations
+            console.log(' testing', val);
+            _info.sales_posts = val[0] // array of objects
+            _info.accommodation_posts = val[1] // array of objects
+            res.render('pages/profile', _info);
+          }, err => {
+            console.error('testing ===', err)
+          })
+      }, err => {
+        throw err
+      }).catch((err) => { // we should have this .catch on every query
+        console.error('our system should\'ve crashed:', err)
+        info = {
+          // statecode: req.session.corper.statecode.toUpperCase(),
+          // servicestate: req.session.corper.servicestate.toUpperCase(),
+          // batch: req.session.corper.batch,
           states: ngplaces.states_long,
           lgas: lgas,
           current_year: new Date().getFullYear(),
-          ...(req.session.corper.picture_id) && {picture_id: req.session.corper.picture_id},
-        });
-      }).catch((err) => { // we should have this .catch on every query
-        console.error('our system should\'ve crashed:', err)
-        res.status(502).render('pages/profile') // we should tell you an error occured
+          // ...(req.session.corper.picture_id) && {picture_id: req.session.corper.picture_id},
+          ...req.session.corper
+        }
+        info.sales_posts = [] // array of objects
+        info.accommodation_posts = [] // array of objects
+        res.status(502).render('pages/profile', info) // we should tell you an error occured
       })
 
   })
 });
 
-/**handles updating the corper's profile */
+/**
+ * handles updating the corper's profile 
+ * 
+ * when they change their statecode, it should redirect to their new statecode
+ * 
+ * */
 router.post('/profile', auth.verifyJWT, /* bodyParser.urlencoded({
   extended: true
 }), */ function (req, res) {
   const busboy = new Busboy({
     headers: req.headers,
     limits: { // set fields, fieldSize, and fieldNameSize later (security)
-      files: 1, // don't upload more than 12 media files
+      files: 12, // don't upload more than 12 media files
       fileSize: 24 * 1024 * 1024 // 24MB
     }
   });
@@ -438,12 +461,12 @@ router.post('/profile', auth.verifyJWT, /* bodyParser.urlencoded({
     
     _profile_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
     
-    console.warn('fielddname Truncated:', fieldnameTruncated, valTruncated, transferEncoding, mimetype);
+    console.warn(fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype);
   });
 
   busboy.on('finish', async function () {
     // console.log('we done?')
-    query.UpdateProfile(_profile_data).then(result => {
+    query.UpdateProfile(_profile_data).then(result => { // result is the statecode
       
       // update req.session
       for (var key in _profile_data) {
@@ -454,7 +477,7 @@ router.post('/profile', auth.verifyJWT, /* bodyParser.urlencoded({
         req.session.corper.statecode = _profile_data.newstatecode.toUpperCase();
       }
       // console.log('new pic id?', req.session.corper.picture_id);
-      res.status(200).redirect(result);
+      res.status(200).redirect(result); // redirect to their [new?]statecode
     }, reject => {
       console.error('what happened?', reject)
       res.status(500).redirect('/profile?e=n'); // [e]dit=[y]es|[n]o
@@ -467,6 +490,80 @@ router.post('/profile', auth.verifyJWT, /* bodyParser.urlencoded({
   return req.pipe(busboy)
 });
 
+router.post('/updateaccommodation', auth.verifyJWT, function (req, res) {
+  const busboy = new Busboy({
+    headers: req.headers,
+    limits: { // set fields, fieldSize, and fieldNameSize later (security)
+      files: 12, // don't upload more than 12 media files
+      fileSize: 24 * 1024 * 1024 // 24MB
+    }
+  });
+
+  _accommodation_data = {}
+  _accommodation_data.rooms = []; // hot fix
+  busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+    // console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+    
+    if (fieldname === 'rooms') {
+      _accommodation_data[fieldname].push(val)
+    } else {
+      _accommodation_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
+    }
+    console.warn(fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype);
+  });
+
+  busboy.on('finish', async function () {
+    // console.log('we done?')
+    query.UpdateAccommodation(_accommodation_data).then(result => {
+      
+      // console.log('new pic id?', req.session.corper.picture_id);
+      res.sendStatus(200);
+    }, reject => {
+      console.error('update acc what happened?', reject)
+      res.sendStatus(500);
+    }).catch((err) => { // we should have this .catch on every query
+      console.error('our system should\'ve crashed:', err)
+      res.sendStatus(502) // we should tell you an error occured
+    })
+   })
+
+  return req.pipe(busboy)
+})
+
+router.post('/updatesale', auth.verifyJWT, function (req, res) {
+  const busboy = new Busboy({
+    headers: req.headers,
+    limits: { // set fields, fieldSize, and fieldNameSize later (security)
+      files: 12, // don't upload more than 12 media files
+      fileSize: 24 * 1024 * 1024 // 24MB
+    }
+  });
+
+  _sale_data = {}
+  busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+    // console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+    
+    _sale_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
+    
+    console.warn(fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype);
+  });
+
+  busboy.on('finish', async function () {
+    // console.log('we done?')
+    query.UpdateSale(_sale_data).then(result => {
+      res.sendStatus(200);
+    }, reject => {
+      console.error('update sale what happened?', reject)
+      res.sendStatus(500); // [e]dit=[y]es|[n]o
+    }).catch((err) => { // we should have this .catch on every query
+      console.error('our system should\'ve crashed:', err)
+      res.sendStatus(502) // we should tell you an error occured
+    })
+   })
+
+  return req.pipe(busboy)
+})
+
 router.post('/addplace', upload.none(), function (req, res) {
   // handle post request, add data to database.
   console.log('came here /addplace', req.body);
@@ -477,7 +574,7 @@ router.post('/addplace', upload.none(), function (req, res) {
       res.sendStatus(500);
     }).catch(reason => {
       // we hope we never get here
-      res.status(500).send('Internal Server Error')
+      res.sendStatus(500)
     })
   } else {
     // send empty response feedback

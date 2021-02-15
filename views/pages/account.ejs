@@ -541,7 +541,7 @@
                                                         </select>
                                                         <small class="form-text text-muted mb-3">Choose the category tha best describes it.</small>
 
-                                                        <!-- //test -->
+                                                        <!-- checkboxes for available rooms -->
                                                         <div class="custom-control custom-checkbox">
                                                             <input name="rooms" type="checkbox"
                                                                 class="custom-control-input" id="rooms1"
@@ -588,7 +588,7 @@
                                                         </div>
                                                         <small class="form-text text-muted mb-4">What rooms does the
                                                             accommodation contain?</small>
-                                                        <!-- // // test -->
+                                                        <!-- // checkboxes for available room -->
                                                         <!-- the check box should change based on the accommodation type choosen -->
 
                                                     </div>
@@ -815,7 +815,7 @@
                                                         <!-- / // / testing -->
 
                                                         <!-- this should be disabled until the corper chooses either per month or quarter or year then we say price per whatever the person chose -->
-
+                                                        <!--per month/quater/year should be based on what they choose ... more js :((-->
                                                         <label for="price" class="d-flex">Price per month/quater/year<span id="roommate-price" style="display: none;">&nbsp;for your roommate</span></label>
                                                         <div class="input-group">
                                                             <div class="input-group-prepend">
@@ -1174,13 +1174,22 @@ we can even try to show a route in the map based on what address is and informat
                     if (event.target.status == 200) {
                         $("#1or0") // #tl
                             .before(
-                                '<div class="alert alert-success mt-3 fade show" id="postposted" role="alert">Post created successfully.</div>'
+                                `<div class="alert alert-success mt-3 fade show" id="postposted" role="alert">Post created successfully.
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                `
                             );
 
                     } else {
                         $("#1or0") // formerly #tl
                             .before(
-                                '<div class="alert alert-success mt-3 fade show" id="postposted" role="alert">We didn\'t get that. Please post again.</div>'
+                                `<div class="alert alert-success mt-3 fade show" id="postposted" role="alert">We didn\'t get that. Please post again.
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    </div>`
                             );
                     }
                     setTimeout(function () {
@@ -1264,13 +1273,21 @@ we can even try to show a route in the map based on what address is and informat
                         // add UNsuccessful alert 
                         $("#tl")
                             .before(
-                                '<div class="alert alert-danger mt-3 fade show" id="accommodationposted" role="alert">We couldn\'t post that. Please try again. Fill all details.</div>'
+                                `<div class="alert alert-danger mt-3 fade show" id="accommodationposted" role="alert">We couldn\'t post that. Please try again.
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    </div>`
                             );
                     } else {
                         // add successful alert 
                         $("#tl")
                             .before(
-                                '<div class="alert alert-success mt-3 fade show" id="accommodationposted" role="alert">Accommodation space was posted successfully.</div>'
+                                `<div class="alert alert-success mt-3 fade show" id="accommodationposted" role="alert">Accommodation space was posted successfully.
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    </div>`
                             );
                     }
 
@@ -1681,7 +1698,11 @@ we can even try to show a route in the map based on what address is and informat
                 // check if the alert is there already before adding it so there is no redundancy (so it doens't appear twice)
                 if ($("#offlinealert").length) {
                     // to check if element exists from https://stackoverflow.com/a/41605814 (& jQuery doc.)
-                    $("#tl").before('<div class="alert alert-danger mt-3" id="offlinealert" role="alert">Seems you\'re offline!</div>')
+                    $("#tl").before(`<div class="alert alert-danger mt-3" id="offlinealert" role="alert">Seems you\'re offline!
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>`)
                 }
 
                 // incase their tl is empty and hasn't connected

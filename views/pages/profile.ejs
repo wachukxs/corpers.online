@@ -24,7 +24,8 @@
     <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
       integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
       crossorigin=""></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <style>
       .head-pic {
         margin-left: 20%;
@@ -51,6 +52,16 @@
       #profile-picture-preview {
         width: 90px;
         height: 90px;
+      }
+
+      .accommodation-posts-preview-image {
+        width: inherit;
+        height: 100%;
+      }
+
+      #alert-div {
+        left: auto;
+        right: auto;
       }
     </style>
     <script async defer data-website-id="58dce5f5-c238-4e98-b2c6-e701c258f01d" src="https://using-umami.herokuapp.com/umami.js"></script>
@@ -833,7 +844,574 @@
 
         </div>
         <div class="tab-pane fade" id="post-history" role="tabpanel" aria-labelledby="post-history-tab">
-          Coming Soon.
+
+          <div class="fixed-bottom" id="alert-div">
+          </div>
+
+          <div class="mt-4">
+            <div class="jumbotron">
+              <a class="" href="#!" data-toggle="collapse" data-target="#collapseAccommodations" aria-expanded="false" aria-controls="collapseAccommodations">
+                <div><span class="badge badge-pill badge-primary" id="accommodation-arrow">&#8594;</span> Accommodations</div>
+              </a>
+              <div class="collapse show" id="collapseAccommodations">
+                <hr class="my-4">
+                <div class="row row-cols-1 row-cols-md-2 accommodation-div">
+                  <% for (acc_index = 0; acc_index < accommodation_posts.length; acc_index++) { %>
+                    <div class="col">
+                      <div class="card mb-3" style="max-width: 540px;">
+                        <div class="row no-gutters">
+                          <div class="col-md-4">
+                            <img class="accommodation-posts-preview-image" src="<%= 'https://drive.google.com/uc?id=' + accommodation_posts[acc_index].media.split(',')[0] %>" alt="Image of the accommodation">
+                          </div>
+                          <div class="col-md-8">
+                            <div class="card-body">
+                              <h5 class="card-title" data-index="<%= acc_index %>"><%= accommodation_posts[acc_index].address %></h5>
+                              <p class="card-text" data-index="<%= acc_index %>"><%= accommodation_posts[acc_index].directions %></p>
+                              <p class="card-text"><small class="text-muted">Posted <%= new Intl.DateTimeFormat("en" , {dateStyle: "long"}).format(new Date(accommodation_posts[acc_index].input_time)) %></small></p>
+                              <a href="#" class="btn btn-primary">Delete</a>
+                              <a href="#" class="btn btn-outline-primary" data-toggle="modal" data-index="<%= acc_index %>" data-target="#editAccommodationModal">Edit</a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  <% } %>
+                </div>
+                
+              </div>
+            </div>
+  
+            
+            <!--
+                statecode: 'AB/20A/0001',
+                type: '1 bedroom flat',
+                price: 120000,
+                rooms: 'Bedroom,Toilet',
+                rentrange: 'yearly',
+                streetname: null,
+                address: '2B Abas, Off Ikot Ekpene Road, Umuahia',
+                media: '1-wA8Ui2cwveSLle_nC-ZJw2OyfWlwJwd',
+                tenure: 'Lease',
+                input_time: 2021-01-13T14:29:44.000Z,
+                expire: '0000-00-00',
+                roommate_type: null,
+                roommate_you: null,
+                directions: "Take the 2nd right turn on Ikot Ekpene Road, when you're coming from Ibeku High School.",
+                post_location: 'ABIA',
+                post_time: 1610555381804,
+                acc_geodata: ''
+              -->
+            <!--modal to edit accommodations-->
+            <div class="modal fade" id="editAccommodationModal" tabindex="-1" aria-labelledby="editAccommodationModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="editAccommodationModalLabel">Edit</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="editaccommodationform">
+                      <div class="form-group">
+                        <label for="type">Accommodation type</label>
+  
+                        <select class="custom-select pointer" name="type"
+                            id="type" required>
+                            <option value="Self contain">Self contain</option>
+                            <option value="Flat">Flat</option>
+                            <option value="1 bedroom flat">1 bedroom flat</option>
+                            <option value="2 bedroom flat">2 bedroom flat</option>
+                            <option value="3 bedroom flat">3 bedroom flat</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <div class="custom-control custom-checkbox">
+                            <input name="rooms" type="checkbox" class="custom-control-input" id="rooms1" value="Sitting room">
+                            <label class="custom-control-label" for="rooms1">Sitting room ?</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input name="rooms" type="checkbox"
+                                class="custom-control-input" id="rooms2"
+                                value="Kitchen">
+                            <label class="custom-control-label" for="rooms2">Kitchen ?</label>
+                            <!-- Maybe later seperate the two, with radio buttons, kitchen in the apartment or a general one tenant shares -->
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input name="rooms" type="checkbox"
+                                class="custom-control-input" id="rooms3"
+                                value="Bedroom">
+                            <label class="custom-control-label" for="rooms3">Bedroom ?</label>
+                            <!-- if it comes with a bedroom, then how many [do later] -->
+                        </div>
+                        <!-- input tag check box id attribute connects with the for attribute of label tag -->
+                        <div class="custom-control custom-checkbox">
+                            <input name="rooms" type="checkbox"
+                                class="custom-control-input" id="rooms4" value="Toilet">
+                            <label class="custom-control-label" for="rooms4">Toilet ?</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input name="rooms" type="checkbox" class="custom-control-input" id="rooms5" value="Bathroom">
+                            <label class="custom-control-label" for="rooms5">Bathroom ?</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input name="rooms" type="checkbox"
+                                class="custom-control-input" id="rooms6"
+                                value="Dining room">
+                            <label class="custom-control-label" for="rooms6">Dining
+                                room?</label>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div>Rent frequency:</div>
+                        <div class="custom-control custom-radio">
+                            <input id="monthly" name="rentrange" type="radio"
+                                class="custom-control-input" value="monthly"
+                                required>
+                            <label class="custom-control-label"
+                                for="monthly">Monthly</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input id="quarterly" name="rentrange" type="radio"
+                                class="custom-control-input" value="quarterly"
+                                required>
+                            <label class="custom-control-label"
+                                for="quarterly">Quarterly</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input id="yearly" name="rentrange" type="radio"
+                                class="custom-control-input" value="yearly"
+                                required>
+                            <label class="custom-control-label"
+                                for="yearly">Yearly</label>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                          <div>Current status:</div>
+                          <div class="custom-control custom-radio">
+                            <input id="newrent" name="tenure" type="radio"
+                                class="custom-control-input" value="Lease" required>
+                            <label class="custom-control-label" for="newrent">New
+                                rent (No present occupant)</label>
+                          </div>
+                          <div class="custom-control custom-radio">
+                              <input id="oldrent" name="tenure" type="radio"
+                                  class="custom-control-input" value="Sublease" required>
+                              <label class="custom-control-label" for="oldrent">Leasing out an active rent</label>
+                          </div>
+                          <div class="custom-control custom-radio">
+                              <input id="roommate" name="tenure" type="radio" class="custom-control-input" value="Roommate" required>
+                              <label class="custom-control-label" for="roommate">Seeking a roommate</label>
+                          </div> 
+                      </div>
+                      <div class="form-group">
+                        <div id="expirediv" class="" style="display: none;">
+                          <label for="bday">When does your rent expires:</label>
+                          <input type="date" id="expire" min="" max=""
+                              name="expire">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="price" class="col-form-label">
+                          <div class="d-flex">Price <span id="roommate-price" style="display: none;">&nbsp;for your roommate</span>:</div>
+                        </label>
+                        <input type="number" name="price" class="form-control" id="price">
+                      </div>
+                      <div class="form-group">
+                        <div id="roommatediv" class="mb-3" style="display: none;">
+                            <label for="roommate_type" class="form-label">Describe your ideal roommate:</label>
+                            <input type="text" class="form-control mb-4" id="roommate_type" name="roommate_type" placeholder="Someone nice...">
+                            <label for="roommate_you" class="form-label">Describe yourself to your ideal roommate:</label>
+                            <input type="text" class="form-control" id="roommate_you" name="roommate_you" placeholder="I'm tolerant, clean...">
+                        </div>
+                      </div>
+                      <script>
+                        // to also set date: const date = new Date().toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' })
+                        let minmax = new Date();
+                        document.getElementById('expire')
+                            .min = minmax.toISOString()
+                                .substr(0, 10); // Minimum date is today!
+                        // Max date is two years from now.
+                        document.getElementById('expire')
+                            .max = new Date(minmax.getFullYear() + 2, minmax.getMonth())
+                                .toISOString()
+                                .substr(0, 10); // The argument monthIndex is 0-based. This means that January = 0 and December = 11.
+  
+                        let radios = document.forms["editaccommodationform"].elements['tenure'];
+                        for (let i = 0, max = radios.length; i < max; i++) {
+                            radios[i].onclick = function () {
+                                // using if-else because we have just two options, so if it isn't one, it's the other
+                                // if expire date is showing, it means the rent isn't new, then it is required.
+                                if (this.id == 'oldrent') {
+                                    document.getElementById('expirediv').style.display = 'block';
+                                    document.forms["editaccommodationform"].elements["expire"].required = true;
+  
+                                    document.getElementById('roommatediv').style.display = 'none';
+                                    document.getElementById('roommate-price').style.display = 'none';
+                                    document.forms["editaccommodationform"].elements["roommate_type"].required = false;
+                                    document.forms["editaccommodationform"].elements["roommate_you"].required = false;
+                                } else if (this.id == 'roommate') {
+                                    document.getElementById('roommatediv').style.display = 'block';
+                                    document.getElementById('roommate-price').style.display = 'block';
+                                    document.forms["editaccommodationform"].elements["roommate_type"].required = true;
+                                    document.forms["editaccommodationform"].elements["roommate_you"].required = true;
+  
+                                    // console.log('new rent [lease]');
+                                    document.getElementById('expirediv').style.display = 'none';
+                                    document.forms["editaccommodationform"].elements["expire"].required = false;
+                                } else {
+                                    document.getElementById('expirediv').style.display = 'none';
+                                    document.forms["editaccommodationform"].elements["expire"].required = false;
+  
+                                    document.getElementById('roommatediv').style.display = 'none';
+                                    document.getElementById('roommate-price').style.display = 'none';
+                                    document.forms["editaccommodationform"].elements["roommate_type"].required = false;
+                                    document.forms["editaccommodationform"].elements["roommate_you"].required = false;
+                                }
+                            }
+                        }
+                    </script>
+                      <div class="form-group">
+                        <label for="directions" class="col-form-label">Directions:</label>
+                        <textarea class="form-control" name="directions" id="directions"></textarea>
+                      </div>
+                      <div class="form-group">
+                        <label for="address" class="col-form-label">Address:</label>
+                        <input type="text" class="form-control" name="address" id="address">
+                      </div>
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="updateAccommodationButton" >Update</button><!--should be disabled until they make a change-->
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--// modal to edit accommodations-->
+  
+            <!--js for the accommodation modal-->
+            <script> // TODO : update the modal with the updated data after submitting.
+                $('#collapseAccommodations').on('shown.bs.collapse', function () {
+                  $('#accommodation-arrow').html('&#8594;')
+                })
+                $('#collapseAccommodations').on('hidden.bs.collapse', function () {
+                  $('#accommodation-arrow').html('&#8595;')
+                })
+
+                let accommodation_posts = <%- JSON.stringify(accommodation_posts) %>; // TODO : update this variable when they update a post ... for sales too
+                $('#editAccommodationModal').on('show.bs.modal', function (event) {
+                  let button = $(event.relatedTarget) // Button that triggered the modal
+                  let index = button.data('index') // Extract info from data-* attributes
+                  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+                  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+                  let modal = $(this)
+                  modal.find('.modal-title').text('Edit ' + accommodation_posts[index].address)
+                  modal.find('.modal-body #price').val(accommodation_posts[index].price)
+                  modal.find('.modal-body #directions').val(accommodation_posts[index].directions)
+                  modal.find('.modal-body #type').val(accommodation_posts[index].type)
+                  modal.find('.modal-body #address').val(accommodation_posts[index].address)
+  
+                  let _rooms = accommodation_posts[index].rooms.split(',')
+                  for (let index = 0; index < _rooms.length; index++) {
+                    modal.find(`:checkbox[value=${_rooms[index]}]`).prop("checked", true);
+                  }
+                  modal.find(`:radio[value=${accommodation_posts[index].tenure}]`).prop("checked", true)
+                  modal.find(`:radio[value=${accommodation_posts[index].rentrange}]`).prop("checked", true)
+  
+                  if (accommodation_posts[index].tenure == 'Roommate') { // means there's roommate_you and roommate_type ...or we could check for roommate_type | roommate_you
+                    modal.find('.modal-body #roommate_type').val(accommodation_posts[index].roommate_type)
+                    modal.find('.modal-body #roommate_you').val(accommodation_posts[index].roommate_you)
+                  }
+  
+                  if (accommodation_posts[index].tenure == 'Sublease') { // means there's expire date
+                    modal.find('.modal-body #expire').val(accommodation_posts[index].expire)
+                  }
+
+                  document.getElementById('updateAccommodationButton').addEventListener('click', function (event) {
+                    updateAccommodation(index)
+                  }, false);
+                })
+            </script>
+            <!--//js for the accommodation modal-->
+
+            <!--js to submit accommodation update-->
+            <script>
+
+              // script for submitting accommodation (not posts).
+              function updateAccommodation(index) {
+
+                    // close the accommodation modal form ...
+                    $('#editAccommodationModal').modal('hide');
+    
+                    // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
+                    const XHR1 = new XMLHttpRequest();
+    
+                    // Bind the FormData object and the form element
+                    let FD1 = new FormData(_edit_accommodation_form);
+    
+                    // Define what happens on successful data submission
+                    XHR1.addEventListener("load", function (event) {
+                        // alert(event.target.responseText);
+                        // console.log(event);
+    
+    
+                        if (event.target.status === 500) {
+                            // add UNsuccessful alert 
+                            $("#alert-div")
+                                .append(
+                                    `<div class="alert alert-danger mt-3 fade show" id="accommodationposted" role="alert">We couldn\'t update that. Please try again.
+                                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                      </button>
+                                      </div>`
+                                );
+                        } else {
+                            // add successful alert 
+                            $("#alert-div")
+                                .append(
+                                    `<div class="alert alert-success mt-3 fade show" id="accommodationposted" role="alert">Updated accommodation details successfully!
+                                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                      </button>
+                                      </div>`
+                                );
+                              $('.accommodation-div').find(`h5[data-index='${index}']`).text(_edit_accommodation_form.querySelector("input[name='address']").value)
+                              $('.accommodation-div').find(`p[data-index='${index}']`).text(_edit_accommodation_form.querySelector("textarea[name='directions']").value)
+                              console.log( );
+                        }
+
+
+                        // and reset the form
+                        document.forms["editaccommodationform"].reset();
+    
+                        setTimeout(function () {
+                            $('#accommodationposted')
+                                .alert('close'); // Closes an alert by removing it from the DOM
+                        }, 5000);
+                    });
+    
+                    // Define what happens in case of error
+                    XHR1.addEventListener("error", function (event) {
+                        $("#alert-div")
+                                .append(
+                                    `<div class="alert alert-success mt-3 fade show" id="accommodationposted" role="alert">Something went wrong. It\'s us, not you. Maybe try again.
+                                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                      </button>
+                                      </div>`
+                                );
+                    });
+    
+                    // Set up our request
+                    XHR1.open('POST', '/updateaccommodation', true); // true makes it async request
+    
+                    // XHR1.setRequestHeader('Content-Type', 'multipart/form-data'); // this causes error [Multipart, boundary not found], it should stay commented
+    
+                    // The data sent is what the user provided in the form
+                    XHR1.send(FD1);
+                }
+
+
+              // Access the accommodation edit form element...
+              let _edit_accommodation_form = document.getElementById("editaccommodationform");
+
+    
+            </script>
+            <!--//js to submit accommodation update-->
+          </div>
+
+
+          <div class="mt-4">
+            <div class="jumbotron">
+              <a class="" href="#!" data-toggle="collapse" data-target="#collapseSales" aria-expanded="false" aria-controls="collapseSales">
+                <div><span class="badge badge-pill badge-primary" id="sales-arrow">&#8595;</span> Sales</div>
+              </a>
+              <div class="collapse" id="collapseSales">
+                <hr class="my-4">
+                <div class="row row-cols-1 row-cols-md-2 sale-div">
+                  <% for (sales_index = 0; sales_index < sales_posts.length; sales_index++) { %>
+                    <div class="col">
+                      <div class="card mb-3" style="max-width: 540px;">
+                        <div class="row no-gutters">
+                          <div class="col-md-4">
+                            <img class="accommodation-posts-preview-image" src="<%= 'https://drive.google.com/uc?id=' + sales_posts[sales_index].media.split(',')[0] %>" alt="Image of the sale">
+                          </div>
+                          <div class="col-md-8">
+                            <div class="card-body">
+                              <h5 class="card-title" data-index="<%= sales_index %>"><%= sales_posts[sales_index].itemname %></h5>
+                              <p class="card-text">&#8358;<span data-index="<%= sales_index %>"><%= sales_posts[sales_index].price %></span></p>
+                              <p class="card-text"><small class="text-muted">Posted <%= new Intl.DateTimeFormat("en" , {dateStyle: "long"}).format(new Date(sales_posts[sales_index].input_time)) %></small></p>
+                              <a href="#" class="btn btn-primary">Delete</a>
+                              <a href="#" class="btn btn-outline-primary" data-toggle="modal" data-index="<%= sales_index %>" data-target="#editSaleModal">Edit</a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  <% } %>
+                </div>
+                
+              </div>
+
+              <div class="modal fade" id="editSaleModal" tabindex="-1" aria-labelledby="editSaleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="editSaleModalLabel">Edit</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form id="editsaleform">
+                        <div class="form-group">
+                          <label for="itemname" class="col-form-label">Item name:</label>
+                          <input type="text" class="form-control" name="itemname" id="itemname">
+                        </div>
+                        <div class="form-group">
+                          <label for="price" class="col-form-label">Price:</label>
+                          <input type="number" class="form-control" name="price" id="price">
+                        </div>
+                        <div class="form-group">
+                          <label for="text" class="col-form-label">Description:</label>
+                          <textarea class="form-control" name="text" id="text"></textarea>
+                        </div>
+                      </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary" id="updateSaleButton">Update</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!--
+                RowDataPacket {
+                  statecode: 'AB/20A/0001',
+                  itemname: 'Chair & Table',
+                  type: 'sale',
+                  text: "An orange chair and table set. It's very comfortable for reading and quite cool too, cause of the color!",
+                  media: '16xLBeY_YCdhKPtxgP7ASgp8-35X4AQkS,1EKqAKHqJD0zTFgdtea9mBbWDMUz29i1b',
+                  price: 4000,
+                  location: 'ABIA',
+                  post_time: 1613359539598,
+                  input_time: 2021-02-15T01:27:21.000Z
+                }
+              -->
+
+              <script>
+                $('#collapseSales').on('shown.bs.collapse', function () {
+                  $('#sales-arrow').html('&#8594;')
+                })
+                $('#collapseSales').on('hidden.bs.collapse', function () {
+                  $('#sales-arrow').html('&#8595;')
+                })
+
+                let sales_posts = <%- JSON.stringify(sales_posts) %>;
+                $('#editSaleModal').on('show.bs.modal', function (event) {
+                  let button = $(event.relatedTarget) // Button that triggered the modal
+                  let index = button.data('index') // Extract info from data-* attributes
+                  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+                  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+                  let modal = $(this)
+                  modal.find('.modal-title').text('Edit ' + sales_posts[index].itemname)
+                  modal.find('.modal-body #price').val(sales_posts[index].price)
+                  modal.find('.modal-body #itemname').val(sales_posts[index].itemname)
+                  modal.find('.modal-body #text').val(sales_posts[index].text)
+  
+                  document.getElementById('updateSaleButton').addEventListener('click', function (event) {
+                    updateSale(index)
+                  }, false)             
+                })
+              </script>
+              <!--js to submit sale update-->
+              <script>
+
+                // Access the sales edit form element...
+                let _edit_sale_form = document.getElementById("editsaleform");
+              
+                // script for updating sale.
+                function updateSale(index) {
+
+                      // close the sale modal form
+                      $('#editSaleModal').modal('hide');
+
+                      // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
+                      const XHR2 = new XMLHttpRequest();
+
+                      // Bind the FormData object and the form element
+                      let FD2 = new FormData(_edit_sale_form);
+
+                      // Define what happens on successful data submission
+                      XHR2.addEventListener("load", function (event) {
+                          // alert(event.target.responseText);
+                          // console.log(event);
+
+                          if (event.target.status === 500) {
+                              // add UNsuccessful alert 
+                              $("#alert-div")
+                                  .append(
+                                      `<div class="alert alert-danger mt-3 fade show" id="saleposted" role="alert">We couldn\'t update that. Please try again.
+                                          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>`
+                                  );
+                          } else {
+                              // add successful alert 
+                              $("#alert-div")
+                                  .append(
+                                      `<div class="alert alert-success mt-3 fade show" id="saleposted" role="alert">Updated sale details successfully!
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>`
+                                  );
+
+                                // update the html elements
+                                $('.sale-div').find(`h5[data-index='${index}']`).text(_edit_sale_form.querySelector("input[name='itemname']").value)
+                              $('.sale-div').find(`span[data-index='${index}']`).text(_edit_sale_form.querySelector("input[name='price']").value)
+                          }
+
+
+                          // and reset the form
+                          document.forms["editsaleform"].reset();
+
+                          setTimeout(function () {
+                              $('#saleposted')
+                                  .alert('close'); // Closes an alert by removing it from the DOM
+                          }, 5000);
+                      });
+
+                      // Define what happens in case of error
+                      XHR2.addEventListener("error", function (event) {
+                          $("#alert-div")
+                                  .append(
+                                      `<div class="alert alert-success mt-3 fade show" id="saleposted" role="alert">Something went wrong. It\'s us, not you. Maybe try again.
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>`
+                                  );
+                      });
+
+                      // Set up our request
+                      XHR2.open('POST', '/updatesale', true); // true makes it async request
+
+                      // XHR1.setRequestHeader('Content-Type', 'multipart/form-data'); // this causes error [Multipart, boundary not found], it should stay commented
+
+                      // The data sent is what the user provided in the form
+                      XHR2.send(FD2);
+                  }
+
+              </script>
+              <!--//js to submit sale update-->
+            </div>
+          </div>
         </div>
       </div>
       
@@ -850,12 +1428,9 @@
     </div>
 
     <!-- Bootstrap core JavaScript -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
-      </script>
-
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous"></script>
-
+    
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous"></script>
+    
     <script>
         // Example starter JavaScript for disabling form submissions if there are invalid fields
         /* (function () {

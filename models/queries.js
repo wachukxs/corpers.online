@@ -9,7 +9,58 @@ const saltRounds = 5;
 
 
 
+exports.UpdateSale = async (updateData) => {
+    let re = new Promise((resolve, reject) => {
+        let sqlquery = "UPDATE posts SET ?";
+        connectionPool.query(sqlquery, updateData, function (error, result, fields) {
+            if (error) {
+                reject(error)
+            } else {
+                resolve(result)
+            }
+        })
+    })
 
+    return re;
+}
+
+exports.UpdateAccommodation = async (updateData) => {
+    updateData.rooms = updateData.rooms.toString(); // important
+    let re = new Promise((resolve, reject) => {
+        // let sqlquery = "UPDATE accommodations SET address = :address, price = :price, directions = :directions, type = :type, rooms = :rooms, rentrange = :rentrange, tenure = :tenure, expire = :expire, roommate_type = :roommate_type, roommate_you = :roommate_you";
+        let sqlquery = "UPDATE accommodations SET ?";
+        connectionPool.query(sqlquery, updateData, function (error, result, fields) {
+            if (error) {
+                reject(error)
+            } else {
+                resolve(result)
+            }
+        })
+    })
+
+    return re;
+}
+
+/**
+ * Get the posts of the corper
+ * show they which has been sold, how many people have seen it... 
+ * how many of the post are they currently chatting about (to hopefully eventually sell them) - show option to resume the chat with who they're chatting with
+ * give them option to edit the posts they've made, or even delete them.
+ */
+exports.GetCorperPosts = async (statecode) => {
+    let re = await new Promise((resolve, reject) => {
+        let sqlquery = "SELECT * from posts WHERE statecode = ?; SELECT * FROM `accommodations` WHERE statecode = ?";
+        connectionPool.query(sqlquery, [statecode, statecode], function (error, result, fields) {
+            if (error) {
+                reject(error)
+            } else {
+                resolve(result)
+            }
+        })
+    })
+
+    return re;
+}
 
 exports.CorpersInNG = async () => {
     let re = await new Promise((resolve, reject) => {
