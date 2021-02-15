@@ -564,6 +564,73 @@ router.post('/updatesale', auth.verifyJWT, function (req, res) {
   return req.pipe(busboy)
 })
 
+router.post('/deleteaccommodation', auth.verifyJWT, function (req, res) {
+  const busboy = new Busboy({
+    headers: req.headers,
+    limits: { // set fields, fieldSize, and fieldNameSize later (security)
+      files: 12, // don't upload more than 12 media files
+      fileSize: 24 * 1024 * 1024 // 24MB
+    }
+  });
+
+  _accommodation_data = {}
+  busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+    // console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+    
+    _accommodation_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
+    
+    console.warn(fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype);
+  });
+
+  busboy.on('finish', async function () {
+    // console.log('we done?')
+    query.DeleteAccommodation([_accommodation_data.post_time, req.session.corper.statecode.toUpperCase()]).then(result => {
+      res.sendStatus(200);
+    }, reject => {
+      console.error('delete acc what happened?', reject)
+      res.sendStatus(500); // [e]dit=[y]es|[n]o
+    }).catch((err) => { // we should have this .catch on every query
+      console.error('our system should\'ve crashed:', err)
+      res.sendStatus(502) // we should tell you an error occured
+    })
+   })
+
+  return req.pipe(busboy)
+})
+
+router.post('/deletesale', auth.verifyJWT, function (req, res) {
+  const busboy = new Busboy({
+    headers: req.headers,
+    limits: { // set fields, fieldSize, and fieldNameSize later (security)
+      files: 12, // don't upload more than 12 media files
+      fileSize: 24 * 1024 * 1024 // 24MB
+    }
+  });
+
+  _sale_data = {}
+  busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+    // console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+    
+    _sale_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
+    
+    console.warn(fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype);
+  });
+
+  busboy.on('finish', async function () {
+    // console.log('we done?')
+    query.DeleteSale([_sale_data.post_time, req.session.corper.statecode.toUpperCase()]).then(result => {
+      res.sendStatus(200);
+    }, reject => {
+      console.error('delete sale what happened?', reject)
+      res.sendStatus(500); // [e]dit=[y]es|[n]o
+    }).catch((err) => { // we should have this .catch on every query
+      console.error('our system should\'ve crashed:', err)
+      res.sendStatus(502) // we should tell you an error occured
+    })
+   })
+
+  return req.pipe(busboy)
+})
 router.post('/addplace', upload.none(), function (req, res) {
   // handle post request, add data to database.
   console.log('came here /addplace', req.body);

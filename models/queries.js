@@ -8,6 +8,35 @@ const bcrypt = require('bcrypt');
 const saltRounds = 5;
 
 
+exports.DeleteSale = async (updateData) => {
+    let re = new Promise((resolve, reject) => {
+        let sqlquery = 'DELETE FROM posts WHERE post_time = ? AND statecode = ?';
+        connectionPool.query(sqlquery, updateData, function (error, result, fields) {
+            if (error) {
+                reject(error)
+            } else {
+                resolve(result)
+            }
+        })
+    })
+
+    return re;
+}
+
+exports.DeleteAccommodation = async (updateData) => {
+    let re = new Promise((resolve, reject) => {
+        let sqlquery = 'DELETE FROM accommodations WHERE post_time = ? AND statecode = ?';
+        connectionPool.query(sqlquery, updateData, function (error, result, fields) {
+            if (error) {
+                reject(error)
+            } else {
+                resolve(result)
+            }
+        })
+    })
+
+    return re;
+}
 
 exports.UpdateSale = async (updateData) => {
     let re = new Promise((resolve, reject) => {
