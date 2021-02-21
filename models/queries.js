@@ -584,6 +584,20 @@ exports.InsertRowInAccommodationsTable = async (postData) => {
     return re;
 }
 
+
+exports.InsertRowInCareersTable = async (postData) => {
+    let re = await new Promise((resolve, reject) => {
+        connectionPool.query("INSERT INTO careers SET ?", postData, function (error, result, fields) {
+            if (error) reject(error)
+            else if (result.affectedRows === 1) {
+                resolve()
+            }
+        });
+    })
+
+    return re;
+}
+
 /**
  * get data we use in map[s] page
  * we need to re-write the query we use to get data

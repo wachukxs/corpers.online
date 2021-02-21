@@ -3,9 +3,11 @@ let router = express.Router();
 const jwt = require('jsonwebtoken')
 const query = require('../models/queries');
 const auth = require('../helpers/auth')
+const helpers = require('../constants/helpers')
 const ngstates = require('../constants/ngstates')
 const Busboy = require('busboy');
 const bodyParser = require('body-parser');
+const ggle = require('../helpers/uploadgdrive');
 
 String.prototype.sentenceCase = function() {
   // return this.charAt(0).toUpperCase() + this.slice(1);
@@ -104,6 +106,135 @@ router.get(ngstates.states_short_paths_batch_regex_stringed, function (req, res)
   // req.params['3'] is the batch
   res.set('Content-Type', 'text/html');
     res.render('pages/state');
+});
+
+router.get('/careers', function (req, res) { // work with us
+  res.set('Content-Type', 'text/html');
+    res.render('pages/careers', { current_year: new Date().getFullYear() });
+});
+
+router.post('/careers', function (req, res) { // work with us
+  console.log('work with us');
+  const busboy = new Busboy({
+    headers: req.headers,
+    limits: { // set fields, fieldSize, and fieldNameSize later (security)
+      files: 12, // don't upload more than 12 media files
+      fileSize: 24 * 1024 * 1024 // 24MB
+    }
+  });
+
+  let _media = []; // good, because we re-initialize on new post
+  let _text = {};
+  let uploadPromise = [];
+
+
+  busboy.on('file', function (fieldname, filestream, filename, transferEncoding, mimetype) {
+
+    // there's also 'limit' and 'error' events https://www.codota.com/code/javascript/functions/busboy/Busboy/on
+    filestream.on('limit', function () {
+      console.log('the file was too large... nope'); // we should send message to frontend
+      
+
+      // how should we send a response if one of the files/file is invalid [too big or not an accepted file type]?
+    });
+
+
+    filestream.on('data', function (data) {
+      
+      console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
+    });
+
+    filestream.on('end', function (err) {
+      // if we listend for 'file', even if there's no file, we still come here
+     
+      console.log('File [' + fieldname + '] Finished. Got ' + 'bytes');
+      if (err) { console.log('err in busboy file end', err); }
+    });
+
+
+    // this is not a very very good method
+
+    /**One thing you might be able to try is to read 0 bytes from the stream first and see if you get the appropriate 'end' event or not (perhaps on the next tick) */
+
+    if (filename !== '') { // filename: 1848-1844-1-PB.pdf, encoding: 7bit, mimetype: application/pdf
+      
+      let fileMetadata = {
+        'name': filename,
+        parents: ['1-B7e0n2lGRRlsiyatJirIwQ6nB66-YP8'] // upload to folder "dorpers online CVs" 1-B7e0n2lGRRlsiyatJirIwQ6nB66-YP8
+      };
+      let media = {
+        mimeType: mimetype,
+        body: filestream // fs.createReadStream("C:\\Users\\NWACHUKWU\\Pictures\\ad\\IMG-20180511-WA0001.jpg")
+      };
+      // how about we add meta data to the file with ggle APIs, like it is a picture of a bathroom or fridge
+      const up = ggle.drive.files.create({ // up = [u]pload [p]romise
+        resource: fileMetadata,
+        media: media,
+        fields: 'id',
+      }).then(
+        function (file) {
+
+          console.log('upload File Id: ', file.data.id); // to save to db
+          
+          // _media.push(file.data.id)
+          _text.cv = file.data.id
+        }, function (err) {
+          // Handle error
+          console.error(err);
+        }
+      ).catch(function (err) {
+        console.error('some other error ??', err)
+      }).finally(() => {
+        console.log('upload finally')
+      });
+
+      uploadPromise.push(up)
+
+    }
+    
+    filestream.resume() // must always be last in this callback else server HANGS
+
+  });
+
+
+  busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+    console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+    // this if block is an hot fix
+   
+      _text[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
+    
+    console.warn('fielddname Truncated:', fieldnameTruncated, valTruncated, transferEncoding, mimetype);
+  });
+
+  busboy.on('finish', async function () {
+    console.log('Done parsing form!', _text, _media);
+    
+    if (!helpers.isEmpty(_text) && !helpers.isEmpty(uploadPromise)) {
+      console.log('chilling ...');
+      await Promise.all(uploadPromise);
+
+      query.InsertRowInCareersTable(_text).then(result => {
+        res.sendStatus(200);
+
+        console.log('got an application', _text);
+
+        // once it saves in db them emit to other users
+        
+      }, reject => { // give proper feedback based on error
+        console.log('insert row didn\'t work', reject);
+        res.sendStatus(500);
+      }).catch(reason => {
+        console.log('insert row failed', reason);
+        res.sendStatus(500)
+      })
+
+    }
+  });
+
+  // handle post request, add data to database... do more
+
+  return req.pipe(busboy)
+
 });
 
 /**great resource for express route regex https://www.kevinleary.net/regex-route-express/ & https://forbeslindesay.github.io/express-route-tester/ */
