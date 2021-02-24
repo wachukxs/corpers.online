@@ -7,8 +7,7 @@
     <title>About Us - Corpers Online</title>
     <link rel="icon" href="assets/images/1/favicon.ico" type="image/x-icon">
 
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" integrity="sha256-BtbhCIbtfeVWGsqxk1vOHEYXS6qcvQvLMZqjtpWUEx8=" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
     <link rel="stylesheet" href="assets/css/style.css">
     <!-- Google / Search Engine Tags -->
@@ -66,7 +65,7 @@
                             <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                             <li class="nav-item"><a class="nav-link" href="/login">Log in</a></li>
                             <li class="nav-item"><a class="nav-link" href="/signup">Sign up</a></li>
-                            <li class="nav-item"><a class="p-2 text-dark" href="/blog">Blog</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/blog">Blog</a></li>
                             <!-- <li class="nav-item"><a class="nav-link" href="/map">Maps</a> -->
                                 <!-- <li class="nav-item submenu dropdown">
                 <a href="#!" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
@@ -93,10 +92,8 @@
     </header>
     <!--================Header Menu Area =================-->
 
-
-
     <!--================Hero Banner SM Area Start =================-->
-    <section class="hero-banner magic-ball magic-ball-banner" id="parallax-1" data-anchor-target="#parallax-1" data-300-top="background-position: 0px -80px" data-top-bottom="background-position: 0 100px">
+    <section class="hero-banner" id="parallax-1" data-anchor-target="#parallax-1" data-300-top="background-position: 0px -80px" data-top-bottom="background-position: 0 100px">
         <div class="container">
             <div class="pb-4">
                 <h1>About Us</h1>
@@ -113,144 +110,12 @@
     </section>
     <!--================Hero Banner SM Area End =================-->
 
-    <!-- ================ start footer Area ================= -->
-    <footer class="footer-area">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4  col-md-6 col-sm-6">
-                    <div class="single-footer-widget">
-                        <h6>About Corpers Online</h6>
-                        <p>
-                            Service year is hard enough already for most. We realise this a lot and want to help. We provide you with
-                            relevant information and resources to help ease everything as much as we can. Join the network.
-                            <!-- The world has become so fast paced that people don't want to stand by reading a page of information to be informed, they would much rather look at a presentation and understand -->
-                        </p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="single-footer-widget">
-                        <h6>Navigation Links</h6>
-                        <div class="row">
-                            <div class="col">
-                                <ul>
-                                    <li><a href="/">Home</a></li>
-                                    <li><a href="/signup">Sign Up</a></li>
-                                    <li><a href="/login">Login</a></li>
-                                    <li><a href="/map">Maps</a></li>
-                                </ul>
-                            </div>
-                            <!-- <div class="col">
-                      <ul>
-                        <li><a href="#!">Team</a></li>
-                        <li><a href="#!">Pricing</a></li>
-                        <li><a href="#!">Blog</a></li>
-                        <li><a href="#!">Contact</a></li>
-                      </ul>
-                    </div>	 -->
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4  col-md-6 col-sm-6">
-                    <div class="single-footer-widget">
-                        <h6>Newsletter</h6>
-                        <p>
-                            <!-- give alot of metrics, prices of routes from different bus parks to the other. tell them about SPAs, get affiliated with companies willing to hire corpers. tell them about Government Laws, new, old and the ones under delibrations and how it affects them, tell them to give their input. what's happening to them, they can leave reviews about their lodges and the area they lived/ served in/at. park the newsletter with graphics. relevent graphics. just tell them alot. worthwhile stuffs. -->
-                            Be in the know of what we're up to, stuffs that definately benefit you during your service year, and also if
-                            you're intrested in mediocre print and graphic output, things you can understand.
-                        </p>
-                    </div>
-                </div>
-            </div>
+    <%- include('partials/footer'); %>
 
-            <div class="footer-bottom">
-                <div class="row align-items-center">
-                    <p class="col-lg-8 col-sm-12 footer-text m-0 text-center text-lg-left">
-                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                        &copy; <%= current_year %> For corpers by corpers with <i class="fa fa-heart" aria-hidden="true"></i>
-                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                    </p>
-                    <div class="col-lg-4 col-sm-12 footer-social text-center text-lg-right">
-                        <a href="https://www.facebook.com/CorpersOnline/" target="_blank"><i class="fab fa-facebook-f"></i></a><!-- or fa-facebook-f -->
-                        <a href="https://twitter.com/OnlineCorpers" target="_blank"><i class="fab fa-twitter"></i></a>
-                        <a href="https://www.instagram.com/corpersonline/" target="_blank"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-    <!-- ================ End footer Area ================= -->
-
-    <script>
-        // script for saying hi
-        function sublist() {
-
-            // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
-            var XHR = new XMLHttpRequest();
-
-            // Bind the FormData object and the form element
-            var FD = new FormData(form);
-
-
-            // Define what happens on successful data submission
-            XHR.addEventListener("load", function(event) {
-                // alert(event.target.responseText);
-                console.log(event.target.responseText);
-
-                if (event.target.responseText == 'OK') {
-                    document.getElementById('submsg').innerHTML = 'You\'ve subscribed and rock too.';
-                    document.getElementById("sublist").reset();
-                    // clear the message
-                    setTimeout(function() {
-                        document.getElementById('submsg').innerHTML = "";
-                    }, 4000);
-                } else { // 'Not Acceptable'
-                    document.getElementById('submsg').innerHTML = 'We have you in our list already. Boss.';
-                    // clear the message
-                    setTimeout(function() {
-                        document.getElementById('submsg').innerHTML = "";
-                    }, 4000);
-                }
-                // say thank you
-
-            });
-
-            // Define what happens in case of error
-            XHR.addEventListener("error", function(event) {
-                alert('Oops! Something went wrong.');
-            });
-
-            // Set up our request
-            XHR.open('POST', '/subscribe', true); // true makes it async request
-
-            // The data sent is what the user provided in the form
-            XHR.send(FD);
-        }
-
-        // Access the form element...
-        var form = document.getElementById("sublist");
-
-        // ...and take over its submit event.
-        form.addEventListener("submit", function(event) {
-            event.preventDefault(); // the default behaviour is refreshing the page and adding search params to the url
-
-            sublist();
-        }, false, true); // https://developer.mozilla.org/en-US/docs/Web/Events/submit
-    </script>
-
-
-    <script src="assets/js/jquery-3.3.1.min.js"></script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <!-- <script src="vendors/owl-carousel/owl.carousel.min.js"></script>
-  <script src="vendors/Magnific-Popup/jquery.magnific-popup.min.js"></script>
-  <script src="vendors/nice-select/jquery.nice-select.min.js"></script> -->
-    <!-- <script src="js/jquery.form.js"></script>
-  <script src="js/jquery.validate.min.js"></script>
-  <script src="js/contact.js"></script>
-  <script src="js/jquery.ajaxchimp.min.js"></script> -->
-    <!-- <script src="js/mail-script.js"></script>
-  <script src="js/skrollr.min.js"></script>
-  <script src="js/jquery.magnific-popup.min.js"></script>	
-  <script src="js/main.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous"></script>
+    
 </body>
 
 </html>
