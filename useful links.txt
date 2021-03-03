@@ -2,3 +2,5 @@ About Promises in JS, and how the can still continue execution after resolving/r
 https://stackoverflow.com/a/32536083/9259701
 
 https://codepen.io/denic/pen/pojEKGX - line-clamp
+
+seems only images in assets are shown/exposed externally

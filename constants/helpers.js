@@ -215,7 +215,7 @@ exports.email = async function (email, name, state) {
         cid: '001@corpers.online' //same cid value as in the html img src
       }, {
         filename: 'CORPERSONLINE.png',
-        path: 'https://corpers.online/assets/images/ads/corpers-online-new.png',
+        path: 'https://corpers.online/assets/images/corpers-online-new.png',
         cid: '002@corpers.online' //same cid value as in the html img src
       },
       {
