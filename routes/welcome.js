@@ -394,6 +394,8 @@ router.post('/signup', bodyParser.urlencoded({
       req.session.corper.batch = req.body.statecode.toUpperCase().slice(3, 6);
       req.session.corper.location = req.session.corper.servicestate; // really fix this, we should add some other data if we can
 
+      // send welcome email
+      helpers.email(req.body.email, req.body.firstname, result.theservicestate)
       jwt.sign({statecode: req.body.statecode.toUpperCase()}, process.env.SESSION_SECRET, (err, token) => {
         if (err) throw err
         else {

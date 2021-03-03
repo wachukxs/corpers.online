@@ -24,29 +24,31 @@ exports.isEmpty = function (data) {
 
 exports.statecodeFormat = /^(ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/\d\d[abcACB]\/\d\d\d\d$/gi; // still fix this
 
-/**function to send welcome email after successful user sign up */
-// async..await is not allowed in global scope, must use a wrapper
+/**
+ * function to send email after successful registration
+ * @param {string} email 
+ * @param {string} name preferably their first name
+ * @param {string} state state in full
+ */
 exports.email = async function (email, name, state) {
-    // Generate test SMTP service account from ethereal.email
-    // Only needed if you don't have a real mail account for testing
-    let testAccount = await nodemailer.createTestAccount();
-  
-    // create reusable transporter object using the default SMTP transport
-    let transporter = nodemailer.createTransport({
-      host: process.env.CO_EMAIL_SERVER,
-      port: 465,
-      secure: true, // true for 465, false for other ports
-      auth: {
-        user: 'hi@corpers.online', // testAccount.user, // generated ethereal user
-        pass: process.env.CO_EMAIL_PASSWORD // testAccount.pass // generated ethereal password
+    
+    const mailerOptions = {
+        host: process.env.CO_EMAIL_SERVER,
+        port: 465,
+        secure: true, // true for 465, false for other ports
+        auth: {
+          user: 'chuks@corpers.online',
+          pass: process.env.CO_EMAIL_PASSWORD
+        }
       }
-    });
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport(mailerOptions);
   
     // send mail with defined transport object
     let info = await transporter.sendMail({
-      from: '"Corpers Online 🇳🇬" <hi@corpers.online>', // sender address
+      from: '"Corpers Online 🇳🇬" <chuks@corpers.online>', // sender address
       to: email, // 'bar@example.com, baz@example.com', // list of receivers
-      subject: 'Welcome to the Network', // Subject line
+      subject: 'Welcome to the network', // Subject line
       text: `Here's a short introduction! ${name}, we're glad you're now online with us. We are psyched about it. 
         And we have some information for you. So you'd know what Corpers Online is really about. 
         Post images of house hold items or anything of value, with appropriate descriptions e.g. price, condition of the item etc., 
@@ -209,40 +211,40 @@ exports.email = async function (email, name, state) {
         </html>`, // html body
       attachments: [{
         filename: 'CORPERS ONLINE.png',
-        path: 'https://corpers.online/work on/CORPERS ONLINE.png',
+        path: 'https://corpers.online/assets/images/2/header.png',
         cid: '001@corpers.online' //same cid value as in the html img src
       }, {
         filename: 'CORPERSONLINE.png',
-        path: 'https://corpers.online/work on/CORPERSONLINE.png',
+        path: 'https://corpers.online/assets/images/ads/corpers-online-new.jpg',
         cid: '002@corpers.online' //same cid value as in the html img src
       },
       {
         filename: 'rule28.png',
-        path: 'https://corpers.online/work on/rule28.png',
+        path: 'https://corpers.online/assets/images/rule28.png',
         cid: '003@corpers.online' //same cid value as in the html img src
       },
       {
         filename: 'twitter.png',
-        path: 'https://corpers.online/work on/twitter.png',
+        path: 'https://abs.twimg.com/favicons/twitter.ico',
         cid: '004@corpers.online' //same cid value as in the html img src
       },
       {
         filename: 'facebook.png',
-        path: 'https://corpers.online/work on/facebook.png',
+        path: 'https://static.xx.fbcdn.net/rsrc.php/yz/r/KFyVIAWzntM.ico',
         cid: '005@corpers.online' //same cid value as in the html img src
       },
       {
         filename: 'instagram.png',
-        path: 'https://corpers.online/work on/instagram.png',
+        path: 'https://www.instagram.com/static/images/ico/apple-touch-icon-76x76-precomposed.png/666282be8229.png',
         cid: '006@corpers.online' //same cid value as in the html img src
       }
       ] // don't use .svg as attachment to embed in the email, it'll show in the email and still be an attachment (not what we want)
     }, (error, info) => {
       if (error) {
-        console.log(error);
+        console.error(error); // show a 'email doesn't exist notification'
         // res.status(400).send({success: false})
       } else {
-        console.log(info);
+        console.log(info); // ask the corper to validate the email
         // res.status(200).send({success: true});
   
         console.log('Message sent: %s', info.messageId);
