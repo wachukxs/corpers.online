@@ -183,9 +183,9 @@ const iochat = io.of('/chat').on('connection', function (socket) {
         }).then(result => {
             socket.names = result
         }, reject => {
-            console.log('failed to insert row in post table', reject);
+            console.log('failed to get f & l names', reject);
         }).catch(reason => {
-            console.log('error - insert row in post table');
+            console.log('error getting f & l name');
         })
 
 
@@ -207,7 +207,10 @@ const iochat = io.of('/chat').on('connection', function (socket) {
         // socket.handshake.query.to and socket.handshake.query.from
 
         // [so we save traffic, a bit maybe] also select old rooms, i.e. rooms not in everyOnlineRooms, also show that these rooms[the participants] are online[maybe with green in the front end][from chat.adapter.rooms object]
-
+        
+        /**
+         * this block of code gets offline rooms, that the corper was in, and join.
+         */
         query.GetStatecodeChatRooms(socket.handshake.query.from).then(results => {
             for (index = 0; index < results.length; index++) {
                 const offlineRoom = results[index].room;
@@ -383,7 +386,9 @@ const iochat = io.of('/chat').on('connection', function (socket) {
                     message_to: msg.to, 
                     time: msg.time, 
                     message: msg.message, 
-                    message_sent: m.sent
+                    message_sent: m.sent,
+                    post_time_by_to: msg.post_time_by_to,
+                    post_type_by_to: msg.post_type_by_to
                 }).then(result => {
                     // good
                 }, reject => {
