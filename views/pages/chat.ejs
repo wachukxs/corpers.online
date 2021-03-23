@@ -61,11 +61,10 @@
 
                     <% var _newwunread = [...new Set(oldunreadchats.map(x => x.message_to))].concat([...new Set(oldunreadchats.map(x => x.message_from))]) %>
                     <% var newwunread = [...new Set(_newwunread)]; %>
-
                     <% newwer.splice(newwer.indexOf(statecode2), 1) // if owner's statecode is in newwer, remove it, we don't need it, we really don't. in fact, we should not have it %>
 
                     <% newwunread.splice(newwunread.indexOf(statecode2), 1) // if owner's statecode is in newwer, remove it, we don't need it %>
-                    <% // console.log('>>>>>>>neww', neww, '\n\n\n\n newwer=', newwer, '\n\n\n\n newwunread=', newwunread)  %>
+                    <% console.log('>>>>>>>neww', neww, '\n\n\n\n newwer=', newwer, '\n\n\n\n newwunread=', newwunread)  %>
                     <% try { %>
                     <% // console.log(oldchats, '\n\n\n\n\n-',newchat,newwer,  ! newwer.includes(newchat.statecode))  %>
                     <% if (newchat) { %>
@@ -73,7 +72,7 @@
                     <a hidden class="nav-link" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="false">Home</a>
 
                     <a data-statecode="<%= newchat.statecode %>" class="nav-link active list-group-item list-group-item-action" id="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>-tab" data-toggle="pill" href="#v-pills-<%= newchat.statecode.replace(/\//g, '-') %>" role="tab" aria-controls="v-pills-<%= newchat.statecode.replace(/\//g, '-') %>" aria-selected="true">
-                        <div><%= `${newchat.name.lastname} ${newchat.name.firstname}` %></div>
+                        <div><%= `${newchat.names.lastname} ${newchat.names.firstname}` %></div>
                         <% // console.log('the newchat', newchat) %>
                         <div>
                             <small class="text-muted"><%= newchat.statecode %></small>
@@ -96,12 +95,11 @@
                     <% continue; // if newchat is in newwer, skip it, we already outputted it up %>
                     <% } %>
                     <%# if an unread message is part of the old message, color the tab orange  %>
-                    <a data-statecode="<%= newwer[newweri] %>" class="<%= ( newwunread.includes(newwer[newweri]) ? 'bg-warning' : '' ) %> nav-link list-group-item list-group-item-action old" id="v-pills-<%= newwer[newweri].replace(/\//g, '-') %>-tab" data-toggle="pill" href="#v-pills-<%= newwer[newweri].replace(/\//g, '-') %>" role="tab" aria-controls="v-pills-<%= newwer[newweri].replace(/\//g, '-') %>" aria-selected="false">
+                    <a data-statecode="<%= newwer[newweri] %>" class="<%= ( newwunread.includes(newwer[newweri]) ? 'bg-warning' : '' ) %> nav-link list-group-item list-group-item-action old t-" id="v-pills-<%= newwer[newweri].replace(/\//g, '-') %>-tab" data-toggle="pill" href="#v-pills-<%= newwer[newweri].replace(/\//g, '-') %>" role="tab" aria-controls="v-pills-<%= newwer[newweri].replace(/\//g, '-') %>" aria-selected="false">
                         <%# get fullname from oldchats, iterate through the objects' properties %>
-                        <% console.log('\noldchats===', oldchats); %>
-                        <% var f = oldchats.concat(oldunreadchats).find(x => x.message_from == newwer[newweri] );  %>
-                        <% console.log('\nf===', f); %>
-                        <div><%= ( f ? `${f.sender_lastname} ${f.sender_firstname}` : '' ) %></div>
+                        <%# var f = oldchats.concat(oldunreadchats).find(x => x.message_from == newwer[newweri] );  %>
+                        <% console.log('\noladchh===', oldchats); %>
+                        <div><%= `${oldchats[newweri].sender_lastname} ${oldchats[newweri].sender_firstname}` %></div>
                         <div>
                             <small class="text-muted"><%= newwer[newweri] %></small>
                             <% var num_unread_msg = oldunreadchats.filter((value, index, array) => { return value.message_from == newwer[newweri] && value.message_to == statecode2 && value.message_sent == 0 }).length ; %>

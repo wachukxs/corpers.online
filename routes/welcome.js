@@ -289,6 +289,7 @@ router.get('/chat', auth.verifyJWT, function (req, res) {
 
   query.GetChatData(req).then(result => {
     res.set('Content-Type', 'text/html');
+    console.log('all chat kini', result);
     res.render('pages/chat', result);
   }, reject => {
     res.set('Content-Type', 'text/html');

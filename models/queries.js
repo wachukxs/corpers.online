@@ -733,7 +733,7 @@ exports.GetChatData = async (req) => {
                     // + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL AND message_sent = false ;";
                     +
                     "SELECT * FROM chats WHERE message_to = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
-                    "SELECT * FROM chats WHERE message_from = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
+                    "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS recipient_firstname, info.lastname AS recipient_lastname FROM chats, info WHERE info.statecode = chats.message_to AND message_from = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
                     "SELECT firstname, lastname FROM info WHERE statecode = '" + req.query.posts.who.toUpperCase() + "' ;";
 
             }
@@ -748,6 +748,7 @@ exports.GetChatData = async (req) => {
                     // console.info('\nold chats', results[1], '\nfrom db successfully');
                     // so if the newchat has chatted before, i.e. is in oldchats, then just make it highlighted
                     // then send it to the chat page of the involved parties so they are remainded of what they want to buy
+                    console.log('nameeessssssss', results[4]);
                     resolve({
                         statecode: req.session.corper.statecode.toUpperCase(),
                         statecode2: req.query.s,
@@ -757,7 +758,7 @@ exports.GetChatData = async (req) => {
                         postdetails: (helpers.isEmpty(results[0]) ? null : results[0]), // tell user the post no longer exists, maybe it was bought or something, we should delete it if it was bought, we hope not to use this function
                         newchat: {
                             statecode: req.query.posts.who.toUpperCase(),
-                            name: results[4][0]
+                            names: results[4]
                         },
                         posttime: req.query.posts.when,
                         posttype: req.query.posts.type,
