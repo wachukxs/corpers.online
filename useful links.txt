@@ -4,3 +4,5 @@ https://stackoverflow.com/a/32536083/9259701
 https://codepen.io/denic/pen/pojEKGX - line-clamp
 
 seems only images in assets are shown/exposed externally
+
+<p>corpers.online helps corps members sell and buy items they need to quickly settle down, or leave a state. We do this because new corp members need to find accommodation without the stress of agents, and passing out corps members new to sell off some items to make extra bucks. We're passionate about making service year better and easier for corp members, and we intend to offer more capabilities on corper.online</p>
