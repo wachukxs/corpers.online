@@ -175,7 +175,7 @@
 
 
                     <!-- 2nd role -->
-                    <h6>- Social Media Manager/ Blogger</h6>
+                    <h6>- Social Media Manager/Blogger</h6>
 
                     <ul class="job">
                         <li class="role">Eligibility criteria
@@ -235,22 +235,31 @@
                                         placeholder="Why should we hire you?" required></textarea>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <div class="form-group">
                                     <input class="form-control" name="fullname" id="fullname" type="text"
-                                        placeholder="Enter your fullname">
+                                        placeholder="Fullname">
                                 </div>
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <select class="form-control" aria-label="Select position" name="position">
+                                        <option selected>*Select position</option>
+                                        <option value="Growth Strategist">Growth Strategist</option>
+                                        <option value="Social Media Manager/Blogger">SM Manager/Blogger</option>
+                                      </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
                                 <div class="form-group">
                                     <input class="form-control" name="phone" id="phone" type="tel"
-                                        placeholder="Enter phone number">
+                                        placeholder="Phone number">
                                 </div>
                             </div>
                             <div class="col-sm-7">
                                 <div class="form-group">
                                     <input class="form-control" name="email" id="email" type="email"
-                                        placeholder="Enter email address">
+                                        placeholder="Email address">
                                 </div>
                             </div>
                             <div class="col-sm-5 cv">
@@ -306,7 +315,7 @@
             event.preventDefault(); // the default behaviour is refreshing the page and adding search params to the url
 
             let _form = new FormData(careersform);
-            _form.append('position', 'Growth Strategist')
+            // _form.append('position', 'Growth Strategist')
             // send the message
             fetch('/careers', {
                 method: 'POST',

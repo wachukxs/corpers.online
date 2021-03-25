@@ -80,10 +80,10 @@
     function sublist() {
 
         // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
-        var XHR = new XMLHttpRequest();
+        let XHR = new XMLHttpRequest();
 
         // Bind the FormData object and the form element
-        var FD = new FormData( sublistform );
+        let FD = new FormData( sublistform );
         
 
         // Define what happens on successful data submission
@@ -124,7 +124,7 @@
     }
 
     // Access the form element...
-    var sublistform = document.getElementById( "sublist" );
+    let sublistform = document.getElementById( "sublist" );
     
     // ...and take over its submit event.
     sublistform.addEventListener("submit", function( event ) {
