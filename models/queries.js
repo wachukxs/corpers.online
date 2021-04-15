@@ -1,4 +1,6 @@
-const connectionPool = require('./db');
+const connectionPool = require('./db').connectionPool;
+const sequelize = require('./db').sequelize
+// import { connectionPool, sequelize } from "./db";
 const moment = require('moment');
 const Busboy = require('busboy');
 const helpers = require('../constants/helpers');
@@ -186,7 +188,7 @@ exports.CorpersSignUp = async (signupData) => {
                             signupData.password = hash
             
                             connectionPool.query('INSERT INTO info SET ?', signupData, function (error, results, fields) {
-                                console.log('inserted data result: ', results);
+                                
                                 if (error) {
                                     console.log('the error code:', error.code, error.sqlMessage)
                                     switch (error.code) { // do more here
@@ -215,7 +217,7 @@ exports.CorpersSignUp = async (signupData) => {
                     
                                     reject(r);
                                 } else if (results.affectedRows === 1) { // "else if" is very important
-                    
+                                    console.log('inserted data result: ', results);
                                     // helpers.email(signupData.email, signupData.firstname, theservicestate).catch(console.error);
                                     r = {
                                         message: true,
@@ -261,8 +263,6 @@ exports.CorpersLogin = async (data) => {
         // .toUpperCase() is crucial
         let retries = 2;
         let loginQuery = connectionPool.query(sqlquery, [data.statecode.toUpperCase()], function (error, result, fields) {
-            console.log('Is login result be empty?', result.length > 0 ? "No." : "Yes!");
-            // console.log('selected data from db, logging In...', results1); // error sometimes, maybe when there's no db conn: ...
             if (error) {
                 console.error('the error code:', error.code)
                 switch (error.code) { // do more here
@@ -293,10 +293,12 @@ exports.CorpersLogin = async (data) => {
 
                 reject({ message: 'backend error' })
             } else if (helpers.isEmpty(result)) {
-                console.log('signing up, empty. user/statecode does not exist');
+                console.log('logging in, empty. user/statecode does not exist');
                 reject({ message: 'sign up' }) // tell them they need to sign up or statecode is wrong cause it doesn't exist
             } else if (result.length === 1) {
-                console.log('NOT signing up, NOT empty. user/statecode DOES exist');
+                console.log('Is login result be empty?', result.length > 0 ? "No." : "Yes!");
+                // console.log('selected data from db, logging In...', results1); // error sometimes, maybe when there's no db conn: ...
+                console.log('logging in, NOT empty. user/statecode DOES exist');
                 // for passwords that haven't been hashed...
                 if (result[0].salt === '' && result[0].password === data.password) {
                     bcrypt.genSalt(saltRounds, function(err, salt) {
@@ -612,7 +614,9 @@ exports.GetMapData = async () => {
             // we shouldn't be rejecting with empty data
             // let's either put listoftypesofpas in front end
             // or reject with it, along with the error, and send to the front end
-            if (error) reject(error)
+            if (error) {
+                reject(error)
+            }
 
             // console.log(results.length, 'map result =>', results)
 
@@ -874,9 +878,9 @@ exports.AddPlace = async (data) => {
     let re = await new Promise((resolve, reject) => {
 
         connectionPool.query("INSERT INTO places SET ?", data, function (error, results, fields) {
-            console.log('inserted data from: ', results);
             if (error) reject(error);
             else if (results.affectedRows === 1) {
+                console.log('inserted data from: ', results);
                 resolve()
             } else {
                 reject('no edit occured')
@@ -942,7 +946,6 @@ exports.UpdateProfile = async (_profile_data) => {
 
 
     connectionPool.query(sqlquery, function (error, results, fields) {
-      console.log('updated user profile data: ', results);
         if (error) {
             console.error('update profile error', error);
             reject(error); // throw error;
@@ -950,6 +953,7 @@ exports.UpdateProfile = async (_profile_data) => {
         // go back to the user's timeline
         else if (results.changedRows === 1 && !helpers.isEmpty(_profile_data)) {
             
+            console.log('updated user profile data: ', results);
             /* 
             // todo later...
     
@@ -966,7 +970,6 @@ exports.UpdateProfile = async (_profile_data) => {
                 " UPDATE posts SET statecode = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE statecode = '" + _profile_data.statecode.toUpperCase() + "' ; " +
                 " UPDATE accommodations SET statecode = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE statecode = '" + _profile_data.statecode.toUpperCase() + "' ";
             connectionPool.query(updatequery, function (error, results, fields) {
-                console.log('updated statecode ', results);
                 if (error) reject(error)
                 // connected!
                 // at least ONE or ALL of these MUST update, not necessarily all that why we are using || and NOT && because it could be possible they've not chatted or posted anything at all, but they must have at least registered!
@@ -976,6 +979,7 @@ exports.UpdateProfile = async (_profile_data) => {
                     || results[3].affectedRows > 0 
                     || results[4].affectedRows > 0
                     ) {
+                console.log('updated statecode ', results);
                 // then status code is good
                 console.log('we\'re really good with the update\t', results)
 
@@ -1061,11 +1065,12 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
             // should we only be getting data from info ? how about [ppas in] places table ?????????????
             // we have req.query.nop=name_of_ppa + req.query.pa=ppa_address + req.query.top=type_of_ppa // also select ppa closer to it and other relevant info we'll find later
             connectionPool.query(mustRunQuery + "SELECT name_of_ppa, ppa_address, type_of_ppa, ppa_geodata, ppa_directions FROM info WHERE name_of_ppa = '" + req.query.nop + "'; SELECT * FROM posts WHERE type = 'sale';", function (error, results, fields) { // bring the results in ascending order
-                console.log('we do get here', results)
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
                 console.error(error);
                 reject(error) // throw error;
             } else if (!helpers.isEmpty(results) /* && results[3].ppa_geodata != '' */) {
+                
+                console.log('we do get here', results)
                 // we're not adding the GeoJSON results to an array because it's only one result
                 for (index = 0; index < results[3].length; index++) {
                 /**
@@ -1380,11 +1385,12 @@ exports.SearchNOPs = async (req) => {
     
         // use the ones from their service state // AND servicestate = '" + req.session.corper.servicestate + "'
         connectionPool.query("SELECT name_of_ppa, ppa_address, type_of_ppa, ppa_geodata FROM info WHERE name_of_ppa = '" + req.query.nop + "'", function (error, results, fields) {  // bring the results in ascending order
-            console.log(results[0].ppa_geodata != '', 'we want to check', results)
+
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
               reject(error);
             } else if (!helpers.isEmpty(results) && results[0].ppa_geodata != '') {
-              // we're not adding the GeoJSON results to an array because it's only one result
+                console.log(results[0].ppa_geodata != '', 'we want to check', results)
+                // we're not adding the GeoJSON results to an array because it's only one result
               for (index = 0; index < results.length; index++) {
                 /**
                  * {
@@ -1531,9 +1537,9 @@ exports.GetAllSalesAndOneSale = async (req_query) => {
 exports.GiveFeedback = async (reqbody) => {
     let re = await new Promise((resolve, reject) => {
         connectionPool.query("INSERT INTO feedback SET ?", reqbody, function (error, result, fields) {
-            console.log('inserted data from feedback: ', result);
             if (error) reject(error);
             else if (result.affectedRows === 1) {
+                console.log('inserted data from feedback: ', result);
                 resolve()
             } else {
                 reject('no edit occured')

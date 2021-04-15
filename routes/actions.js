@@ -12,7 +12,8 @@ const moment = require('moment');
 const query = require('../models/queries');
 const fs = require('fs');
 const ggle = require('../helpers/uploadgdrive');
-const connectionPool = require('../models/db');
+const connectionPool = require('../models/db').connectionPool;
+const sequelize = require('../models/db').sequelize
 // using path module removes the buffer object from the req.files array of uploaded files,... incase we ever need this... info!
 // const path = require('path');
 

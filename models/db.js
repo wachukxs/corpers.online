@@ -1,5 +1,35 @@
 const mysql = require('mysql');
 
+const { Sequelize } = require('sequelize');
+// const sequelize = new Sequelize('postgres://ycybyhpxgggjsi:bf8ea71d22303ee9d15c73a9316425f967f59cc2e3a9324d2ad9f8f28f7ac829@ec2-34-195-233-155.compute-1.amazonaws.com:5432/d1losi9983knq5') // Example for postgres
+const sequelize = new Sequelize('d1losi9983knq5', 'ycybyhpxgggjsi', 'bf8ea71d22303ee9d15c73a9316425f967f59cc2e3a9324d2ad9f8f28f7ac829', {
+    host: 'ec2-34-195-233-155.compute-1.amazonaws.com', // 'localhost',
+    dialect: 'postgres', // one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' 
+    port: 5432,
+    ssl: true,
+    logging: (...opts) => console.log(opts), // can really customize
+    // retry: ,
+    dialectOptions: { // https://stackoverflow.com/a/64960461/9259701
+        ssl: {
+          require: true, // This will help you. But you will see new error
+          rejectUnauthorized: false // This line will fix new error
+        }
+    },
+});
+
+/**
+ * we need to try to connect to one db first, if that doesn't work,
+ * connect to the back up
+ * we could also use them interchangably for back up db, and sync when one is up.
+ */
+sequelize.authenticate().then(() => {
+    console.log('made postgre connection from sequelize');
+    // sequelize.close() // after retrying ?
+}).catch((err) => {
+    console.error('oopsy error connecting to postgre db with Sequelize', err)
+})
+
+
 /*
 var mysqloptions = {
   host            : process.env.DB_HOST,
@@ -31,4 +61,6 @@ connectionPool.on('acquire', function (connection) {
 connectionPool.on('error', function(err) {
   console.error('DB CONN ERR', err.code); // 'ER_BAD_DB_ERROR'
 });
-module.exports = connectionPool;
+
+exports.connectionPool = connectionPool;
+exports.sequelize = sequelize;

@@ -15,7 +15,8 @@ const blogRoutes = require('../routes/blog');
 
 app.set('view engine', 'ejs');
 
-const connectionPool = require('../models/db');
+const connectionPool = require('../models/db').connectionPool;
+const sequelize = require('../models/db').sequelize
 let sessionStore = new MySQLStore({}, connectionPool);
 let sessionOptions = {
     secret: process.env.SESSION_SECRET,

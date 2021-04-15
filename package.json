@@ -19,7 +19,7 @@
     "places"
   ],
   "engines": {
-    "node": "12.14.x"
+    "node": "14.15.x"
   },
   "author": "@wachukxs, Mogaba Juliet, Chukwugbogum Blessing",
   "repository": {
@@ -49,6 +49,8 @@
     "mysql2": "^2.2.5",
     "nodemailer": "^6.4.2",
     "nodemon": "2.0.4",
+    "pg": "^8.6.0",
+    "pg-hstore": "^2.3.3",
     "pug": "^2.0.4",
     "sequelize": "^6.6.2",
     "socket.io": "^2.3.0"
