@@ -3,3 +3,5 @@ User-agent: *
 Allow: /
 
 Sitemap: https://corpers.online/sitemap.xml
+
+npx sequelize model:create --name Test --attributes title:string,day:integer

@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
-const query = require('../models/queries');
-const helpers = require('../constants/helpers')
+const query = require('../not_models/queries');
+const CorpMember = require('../models').CorpMember
+const helpers = require('../utilities/helpers')
 // FORMAT OF TOKEN
 // Authorization: Bearer <access_token>
 module.exports.verifyToken = (req, res, next) => {
@@ -49,17 +50,19 @@ module.exports.verifyJWT = (req, res, next) => {
                 /**
                  * TODO: res.locals or req.session ?
                  */
-                query.AutoLogin(decodedToken.statecode).then(result => {
-                    req.session.corper = result.response[0];
-                    req.session.corper.location = result.response[0].servicestate + (result.response[0].city_town ? ', ' + result.response[0].city_town : ''); // + (results1[0].region_street ? ', ' + results1[0].region_street : '' )
+                CorpMember.findOne({ where: { statecode: decodedToken.statecode } })
+                // query.AutoLogin(decodedToken.statecode)
+                .then(result => {
+                    req.session.corper = result.dataValues;
+                    // req.session.corper.location = result.response[0].servicestate + (result.response[0].city_town ? ', ' + result.response[0].city_town : ''); // + (results1[0].region_street ? ', ' + results1[0].region_street : '' )
                   
                   }, reject => {
               
-                    console.log('catching this err because:', reject);
+                    console.log('auth autologin catching this err because:', reject);
                     res.status(502).redirect('/login?t=a')
               
                   }).catch(reason => {
-                    console.log('catching this err because:', reason);
+                    console.log('auth auto login catching this err because:', reason);
                     res.status(502).redirect('/login?t=a')
                   }).finally(() => {
                       console.log('\nfinlly next?');

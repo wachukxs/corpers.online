@@ -1,9 +1,9 @@
 const dotenv = require('dotenv'); // safe to call first, before using process.env.*
 dotenv.config();
 
-const helpers = require('../constants/helpers')
+const helpers = require('../utilities/helpers')
 
-helpers.email('nwachukwuossai@gmail.com', 'Ykeshia', 'Abia').then(
+helpers.sendSignupWelcomeEmail('nwachukwuossai@gmail.com', 'Ykeshia', 'Abia').then(
     (good) => {
         console.log('yes');
     },

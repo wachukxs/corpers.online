@@ -1,4 +1,4 @@
-const query = require('../models/queries');
+const query = require('../not_models/queries');
 const moment = require('moment');
 // https://www.npmjs.com/package/socket.io#standalone
 const io = require('socket.io')();
