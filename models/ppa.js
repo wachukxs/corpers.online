@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      PPA.belongsToMany(models.CorpMember)
     }
   };
   PPA.init({
@@ -20,7 +21,13 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true
     },
-    name: DataTypes.STRING
+    name: {
+      type: DataTypes.STRING
+    },
+    type_of_ppa: {
+      type: DataTypes.STRING
+      // allowNull defaults to true
+    },
   }, {
     sequelize,
     modelName: 'PPA',

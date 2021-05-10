@@ -1,5 +1,10 @@
 const query = require('../not_models/queries');
 const moment = require('moment');
+
+const CorpMember = require('../models').CorpMember
+const Chat = require('../models').Chat
+const { Op } = require("sequelize");
+
 // https://www.npmjs.com/package/socket.io#standalone
 const io = require('socket.io')();
 // find a more authentic way to calculate the numbers of corpers online using io(/user) --so even if they duplicate pages, it won't double count

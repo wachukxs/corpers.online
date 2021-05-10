@@ -1,4 +1,6 @@
 const CorpMember = require('../models').CorpMember
+const Chat = require('../models').Chat
+const { Op } = require("sequelize");
 const helpers = require('../utilities/helpers')
 const jwt = require('jsonwebtoken')
 
@@ -78,4 +80,45 @@ module.exports = {
 
   
     },
+    unreadMessges(req, res) {
+      console.log('req.params/session', req.session, req.params) // req.path is shorthand for url.parse(req.url).pathname
+
+      return Chat
+        .count({
+          where: {
+            message_to: req.session.corper.statecode.toUpperCase(), // do we need .toUpperCase() ?
+            message_sent: false,
+            message: {
+              [Op.not]: null
+            }
+          }
+        })
+        .then(result => {
+          console.log('what is this', req.session);
+          res.set('Content-Type', 'text/html');
+          res.render('pages/account', {
+            statecode: req.session.corper.statecode.toUpperCase(),
+            batch: req.params['3'],
+            total_num_unread_msg: result.dataValues,
+            ...req.session.corper
+          });
+        }, reject => {
+          console.log('why TF?!', reject);
+
+          res.set('Content-Type', 'text/html');
+          res.render('pages/account', {
+            statecode: req.session.corper.statecode.toUpperCase(),
+            servicestate: req.session.corper.servicestate, // isn't this Duplicated
+            batch: req.params['3'],
+            name_of_ppa: req.session.corper.name_of_ppa,
+            total_num_unread_msg: 0, // really ??? Zero?
+            picture_id: req.session.corper.picture_id, // if there's picture_id // hmmm
+            firstname: req.session.corper.firstname
+          });
+        })
+        .catch((err) => { // we should have this .catch on every query
+          console.error('our system should\'ve crashed:', err)
+          res.redirect('/?e') // go back home, we should tell you an error occured
+        })
+    }
 }

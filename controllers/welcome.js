@@ -236,16 +236,17 @@ router.post('/careers', function (req, res) { // work with us
 
 });
 
-/**great resource for express route regex https://www.kevinleary.net/regex-route-express/ & https://forbeslindesay.github.io/express-route-tester/ */
+/* 
+// great resource for express route regex https://www.kevinleary.net/regex-route-express/ & https://forbeslindesay.github.io/express-route-tester/
 let years = parseInt(new Date(Date.now()).getFullYear().toFixed().slice(2, 4));
-let yearrange = '(' + (years - 1).toString() + '|' + years.toString() + ')';
-router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm))/:year_batch((' + yearrange /*(18|19)*/ + '([abcACB])))/:lastfour(([0-9]{4}))', 
+let yearrange = '(' + (years - 1).toString() + '|' + years.toString() + ')'; // (18|19)
+router.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm))/:year_batch((' + yearrange + '([abcACB])))/:lastfour(([0-9]{4}))', 
 auth.verifyJWT, function (req, res) {
   console.log('req.params/session', req.session, req.params) // req.path is shorthand for url.parse(req.url).pathname
 
     res.set('Content-Type', 'text/html');
 
-    /** this query runs so we can get the number of unread messages the user has */
+    // this query runs so we can get the number of unread messages the user has 
     query.UnreadMessages([req.session.corper.statecode.toUpperCase(), false]).then(result => {
       res.render('pages/account', {
         statecode: req.session.corper.statecode.toUpperCase(),
@@ -271,6 +272,7 @@ auth.verifyJWT, function (req, res) {
     })
 
 });
+ */
 
 router.get('/chat', auth.verifyJWT, function (req, res) {
   res.set('Content-Type', 'text/html');
