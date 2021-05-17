@@ -16,12 +16,12 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       CorpMember.hasMany(models.Sale, {
-        foreignKey: 'statecode', // should we use statecode or id ? what if they update their statecode ? we'd mass update it
+        // foreignKey: 'statecode', // should we use statecode or id ? what if they update their statecode ? we'd mass update it
       });
       CorpMember.hasMany(models.Accommodation, {
         foreignKey: 'statecode',
       })
-      CorpMember.hasOne(models.PPA)
+      CorpMember.belongsTo(models.PPA)
       CorpMember.hasOne(models.Media)
       CorpMember.hasMany(models.Location) // Location should have an array of all the corp member who have edited or confirmed it's location
     }
@@ -76,7 +76,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     statecode: {
       type: DataTypes.STRING,
-      unique: true
+      unique: true,
+      set() { // not needed
+        return this.getDataValue(statecode).toUpperCase()
+      }
       // allowNull defaults to true
     },
     batch: { // not necessary
@@ -87,7 +90,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       // allowNull defaults to true
       get() {
-        return ngstates.states_long[ngstates.states_short.indexOf(this.getDataValue(servicestate).trim().slice(0, 2).toUpperCase())];
+        return ngstates.states_long[ngstates.states_short.indexOf(this.getDataValue(statecode).trim().slice(0, 2).toUpperCase())];
       }
     },
     stream: {
@@ -117,6 +120,9 @@ module.exports = (sequelize, DataTypes) => {
     travel_from_city: {
       type: DataTypes.STRING
       // allowNull defaults to true
+    },
+    PPAId: { // I should not be doing this ...will resolve later
+      type: DataTypes.INTEGER
     }
   }, {
     sequelize,
@@ -125,29 +131,26 @@ module.exports = (sequelize, DataTypes) => {
       beforeCreate: (corpMember, options) => {
         if (corpMember.statecode) {
           corpMember.statecode = corpMember.statecode.toUpperCase();
-          corpMember.servicestate = corpMember.getServiceState()
           corpMember.batch = corpMember.getBatch()
         }
       },
       beforeUpdate: (corpMember, options) => {
         if (corpMember.statecode) {
           corpMember.statecode = corpMember.statecode.toUpperCase();
-          corpMember.servicestate = corpMember.getServiceState()
           corpMember.batch = corpMember.getBatch()
         }
       },
       beforeSave: (corpMember, options) => {
         if (corpMember.statecode) {
           corpMember.statecode = corpMember.statecode.toUpperCase();
-          corpMember.servicestate = corpMember.getServiceState()
           corpMember.batch = corpMember.getBatch()
         }
       },
     }
   });
   CorpMember.sync({
-    // alter: true,
-    force: true
+    alter: true,
+    // force: true
   })
   return CorpMember;
 };

@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const query = require('../not_models/queries');
 const CorpMember = require('../models').CorpMember
+const PPA = require('../models').PPA
 const helpers = require('../utilities/helpers')
 // FORMAT OF TOKEN
 // Authorization: Bearer <access_token>
@@ -50,9 +51,13 @@ module.exports.verifyJWT = (req, res, next) => {
                 /**
                  * TODO: res.locals or req.session ?
                  */
-                CorpMember.findOne({ where: { statecode: decodedToken.statecode } })
+                CorpMember.findOne({ 
+                    where: { statecode: decodedToken.statecode },
+                    include: PPA
+                })
                 // query.AutoLogin(decodedToken.statecode)
                 .then(result => {
+                    console.log('corper result object', result);
                     req.session.corper = result.dataValues;
                     // req.session.corper.location = result.response[0].servicestate + (result.response[0].city_town ? ', ' + result.response[0].city_town : ''); // + (results1[0].region_street ? ', ' + results1[0].region_street : '' )
                   

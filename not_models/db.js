@@ -8,7 +8,7 @@ const sequelize = new Sequelize('d1losi9983knq5', 'ycybyhpxgggjsi', 'bf8ea71d223
     dialect: 'postgres', // one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' 
     port: 5432,
     ssl: true,
-    logging: (...opts) => console.log(opts), // can really customize
+    // logging: (...opts) => console.log(opts, '\n\n'), // can really customize
     // retry: ,
     dialectOptions: { // https://stackoverflow.com/a/64960461/9259701
         ssl: {
@@ -35,7 +35,10 @@ sequelize.authenticate().then(() => {
 }).catch((err) => {
     console.error('oopsy error connecting to postgre db with Sequelize', err)
 })
-
+sequelize.afterSync('sth sync', ()=>{
+  console.log('======(()@((@\n\n\n\n\n\nn\n',sequelize.models)
+})
+sequelize.sync({ force: true, alter: true })
 
 /*
 var mysqloptions = {

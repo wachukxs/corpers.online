@@ -196,8 +196,13 @@
                 document.getElementsByClassName( 'wrong' )[ 1 ].removeAttribute( 'hidden' );
                 document.getElementById( 'scinput' )
                     .classList.add( 'is-invalid' );
+            } else if ( urlParams.get("m") === "ue" ) {
+                document.getElementsByClassName( 'wrong' )[ 1 ].textContent = 'Something went wrong. Please try again.';
+                document.getElementsByClassName( 'wrong' )[ 1 ].removeAttribute( 'hidden' );
+                document.getElementById( 'scinput' )
+                    .classList.add( 'is-invalid' );
             }
-        } else { // While URLSearchParams is ideal, not all browsers support that API.
+        } else { // While URLSearchParams is ideal, not all browsers support that API... here needs work
             function getUrlParameter( name ) {
                 name = name.replace( /[\[]/, '\\[' )
                     .replace( /[\]]/, '\\]' );

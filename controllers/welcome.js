@@ -440,13 +440,15 @@ router.post('/signup', express.urlencoded({
 
 // if someone tries loggin in with a state code that is correct but isn't yet registerd (i.e. hasn't been signed up with in corpers.online), what do we do ?
 // block it? esp if they try more than once... ??
+/* 
 router.post('/login', express.urlencoded({ // edited
     extended: true
-  }), function (req, res /*, handleRedirect*/) {
+  }), function (req, res) {
     // handle post request, validate data with database.
     // how to handle wrong password with right email or more rearly, right password and wrong password.
 
-    query.CorpersLogin(req.body).then(result => {
+    query.CorpersLogin(req.body).then(
+      result => {
       console.log('we good', process.env.SESSION_SECRET);
       req.session.corper = result.response[0];
       req.session.corper.location = result.response[0].servicestate + (result.response[0].city_town ? ', ' + result.response[0].city_town : ''); // + (results1[0].region_street ? ', ' + results1[0].region_street : '' )
@@ -458,9 +460,7 @@ router.post('/login', express.urlencoded({ // edited
           // res.setHeader('Set-Cookie', 'name=value')
           res.cookie('_online', token, cookieOptions)
           console.log('we\'re moving', req.session);
-          /* req.session.save(function(err) { // hate this
-            // session saved
-          }) */
+          
           res.status(200).redirect(req.body.statecode.toUpperCase());
         }
       })
@@ -497,15 +497,8 @@ router.post('/login', express.urlencoded({ // edited
       res.status(502).redirect('/login?t=a')
     })
 });
+ */
 
-router.get('/login', function (req, res) {
-  res.set('Content-Type', 'text/html');
-  res.set("Cache-Control", "no-cache");
-  res.set("Pragma", "no-cache");
-  // res.setHeader("Expires", 0);
-  // res.set('Cache-Control', 'public, max-age=0')
-  res.render('pages/login', { current_year: new Date().getFullYear() });
-});
 
 router.get('/contact', function (req, res) {
   console.log('chal\n\t');

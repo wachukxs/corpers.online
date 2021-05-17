@@ -3,6 +3,7 @@ const moment = require('moment');
 
 const CorpMember = require('../models').CorpMember
 const Chat = require('../models').Chat
+const Sale = require('../models').Sale
 const { Op } = require("sequelize");
 
 // https://www.npmjs.com/package/socket.io#standalone
@@ -70,13 +71,15 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
     let aUTLlast = aUTL.slice(-1)[0] !== '' ? aUTL.slice(-1)[0] : null;
     let pUTLlast = pUTL.slice(-1)[0] !== '' ? pUTL.slice(-1)[0] : null;
     try { // this try-catch block isn't necessary, just for testing I guess // ...
-        let d, e;
-        console.log('the time', aUTL, new Date(aUTLlast));
-        d = new Date(aUTLlast).toISOString().slice(0, 19).replace('T', ' '); // or use moment.js library
+        if (aUTLlast) {
+            let d, e;
+            console.log('the time', aUTL, new Date(aUTLlast));
+            d = new Date(aUTLlast).toISOString().slice(0, 19).replace('T', ' '); // or use moment.js library
 
-        // moment is better because it makes it exactly as it was, the other just uses string manipulation and it's always an hour behind original time
-        e = moment(new Date(aUTLlast)).format('YYYY-MM-DD HH:mm:ss');
-        console.log('the time', d, e);
+            // moment is better because it makes it exactly as it was, the other just uses string manipulation and it's always an hour behind original time
+            e = moment(new Date(aUTLlast)).format('YYYY-MM-DD HH:mm:ss');
+            console.log('the time', d, e);
+        }
     } catch (error) { // pUTLlast/aUTLlast must be null then
         console.log('err => ', error);
     }
@@ -89,7 +92,77 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
         last_post_time: pUTLlast,
         last_accommodation_time: aUTLlast
     });
-    query.FetchPostsForTimeLine({
+
+    CorpMember.findAll({
+        where: {
+            statecode: {
+                [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`,
+            }
+        },
+        include: {
+            model: Sale,
+            where: {
+                statecode: {
+                    [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`, // somewhat redundant
+                },
+                // [Op.gte]: 6,
+                ... (pUTLlast && {
+                    createdAt: {
+                        [Op.gte]: pUTLlast,
+                }})
+            },
+            order: ['createAt', 'ASC']
+        }
+    })
+    // .toJSON()
+    .then(_sales => {
+        console.log('\n\n\n\n\n\ndid we get Sales?', _sales);
+        let _accommodations = CorpMember.findAll({
+            where: {
+                statecode: {
+                    [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`,
+                }
+            },
+            include: {
+                model: Accommodation,
+                where: {
+                    statecode: {
+                        [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`, // somewhat redundant
+                    },
+                    ... (pUTLlast && {
+                        createdAt: {
+                            [Op.gte]: pUTLlast,
+                    }})
+                },
+                order: ['createAt', 'ASC']
+            }
+        })
+        // .toJSON()
+
+        let value = {
+            sales: _sales,
+            accommodations: _accommodations
+        }
+
+        console.log('\n\nwhat we getting', value);
+
+        socket.emit('boardcast message', {
+            to: 'be received by everyoneELSE',
+            post: value
+        });
+
+    }, (reject) => {
+        socket.emit('boardcast message', {
+            to: 'be received by everyoneELSE',
+            post: {}
+        });
+        console.error('uhmmmm not good', reject);
+        console.log('emitting empty posts, first user or the tl is empty')
+    }).catch(reject => {
+        console.error('is this the error ?', reject);
+    })
+
+    /* query.FetchPostsForTimeLine({
         statecode_substr: socket.handshake.query.statecode.substring(0, 2),
         last_post_time: pUTLlast,
         last_accommodation_time: aUTLlast
@@ -114,7 +187,9 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
     }).catch((reason) => {
         console.log('FetchPostForTimeLine failed');
         
-    })
+    }) */
+
+
 
 
     socket.on('boardcast message', (data, fn) => {

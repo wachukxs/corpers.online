@@ -51,24 +51,32 @@ module.exports = {
             })
           }, error => {
             console.log('CorpersSignUp() error happened', error);
+            console.log('----> error happened', error.errors[0], error.fields);
+
+            
+            
             // res.send(error.message) // try this & not redirect
-            switch (error.message) {
+            if (error.errors[0].validatorKey == 'not_unique') {
+              switch (error.errors[0].path) { // value: 'nwachukwuossai@gmail.com',
       
-              case 'duplicate statecode':
-                res.redirect('/signup?m=ds'); // [m]essage = [d]uplicate [s]tatecode
-                break;
-      
-              case 'duplicate email':
-                res.redirect('/signup?m=de'); // [m]essage = [d]uplicate [e]mail
-                break;
-      
-              case 'invalid statecode':
-                res.redirect('/signup?m=is') // [m]essage = [i]nvalid [s]tatecode
-                break;
-      
-              default:
-                res.redirect('/signup?m=ue'); // [m]essage = [u]naccounted [e]rror
-                break;
+                case 'statecode':
+                  res.redirect('/signup?m=ds'); // [m]essage = [d]uplicate [s]tatecode
+                  break;
+        
+                case 'email':
+                  res.redirect('/signup?m=de'); // [m]essage = [d]uplicate [e]mail
+                  break;
+        
+                case 'invalid statecode':
+                  res.redirect('/signup?m=is') // [m]essage = [i]nvalid [s]tatecode
+                  break;
+        
+                default:
+                  res.redirect('/signup?m=ue'); // [m]essage = [u]naccounted [e]rror
+                  break;
+              }
+            } else { // should also switch for maybe invalid values
+              res.redirect('/signup?m=ue'); // [m]essage = [u]naccounted [e]rror
             }
           }).catch(reason => {
             console.error('catching this err because:', reason);
@@ -120,5 +128,67 @@ module.exports = {
           console.error('our system should\'ve crashed:', err)
           res.redirect('/?e') // go back home, we should tell you an error occured
         })
+    },
+
+    login(req, res) {
+      console.log('\n\n\nwhat are we getting', req.body);
+      return CorpMember.findOne({
+        where: { // we're gonna use email or state code soon.
+          [Op.or]: [
+            { email: req.body.statecode },
+            { statecode: req.body.statecode.toUpperCase() }, 
+          ]
+        }
+      }).then(
+        result => { // result is null if not statecode or email exists ... also tell when it's statecode or email that doesn't exist
+        console.log('\n\n\n\tlogin we good', result);
+        if (result && result.dataValues.password === req.body.password) { // password match
+          req.session.corper = result.dataValues;
+        // req.session.corper.location = result.response[0].servicestate + (result.response[0].city_town ? ', ' + result.response[0].city_town : ''); // + (results1[0].region_street ? ', ' + results1[0].region_street : '' )
+        // req.session.loggedin = true;
+  
+        jwt.sign({statecode: req.body.statecode.toUpperCase()}, process.env.SESSION_SECRET, (err, token) => {
+          if (err) throw err // no throw of errors
+          else {
+            // res.setHeader('Set-Cookie', 'name=value')
+            res.cookie('_online', token, cookieOptions)
+            console.log('we\'re moving', req.session);
+            /* req.session.save(function(err) { // hate this
+              // session saved
+            }) */
+            res.status(200).redirect(req.body.statecode.toUpperCase());
+          }
+        })
+        } else if(result && result.dataValues.password !== req.body.password){
+          res.status(502).redirect('/login?p=w'); // [p]assword = [w]rong
+        } else if (!result) {
+          res.status(502).redirect('/login?m=s'); // [m]essage = [s]ignup // tell corper at the front end
+        }
+        
+  
+        
+      }, reject => {
+        console.error('login err', reject)
+        switch (reject.message) {
+          case 'backend error':
+            res.status(502).redirect('/login?l=n'); // [b]ackend = [e]rror
+            break;
+  
+          case 'sign up':
+            res.status(502).redirect('/login?m=s'); // [m]essage = [s]ignup // tell corper at the front end
+            break;
+          
+          case 'wrong password':
+            res.status(502).redirect('/login?p=w'); // [p]assword = [w]rong
+            break;
+          default:
+            res.status(502).redirect('/login?t=a'); // just [t]ry = [a]gain
+            break;
+        }
+  
+      }).catch(reason => {
+        console.error('catching CorpersLogin() err because:', reason);
+        res.status(502).redirect('/login?t=a')
+      })
     }
 }

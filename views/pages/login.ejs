@@ -183,7 +183,7 @@
                 // document.getElementById('statecode').classList.add('is-invalid');
             } else if ( urlParams.get("m") === "s" ) {
                 document.getElementById('statecode').classList.add('is-invalid');
-                document.getElementsByClassName('wrong')[0].innerHTML = "State code don't exist. Check again or <a href='/signup'>sign up?</a>";
+                document.getElementsByClassName('wrong')[0].innerHTML = "State code don't exist. Check again or <a href='/signup'>sign up</a>";
                 document.getElementsByClassName('wrong')[0].removeAttribute('hidden');
             } else if ( urlParams.get("p") === "w" ) {
                 document.getElementById('password').classList.add('is-invalid');
@@ -199,12 +199,12 @@
                 return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
             };
             if (getUrlParameter('l') && getUrlParameter('l') == 'n') {
-                document.getElementsByClassName('wrong')[0].textContent = "Somthing went wrong. Please try agian.";
+                document.getElementsByClassName('wrong')[0].textContent = "Something went wrong. Please try agian.";
                 document.getElementsByClassName('wrong')[0].removeAttribute('hidden');
                 // document.getElementById('statecode').classList.add('is-invalid');
             } else if (getUrlParameter('m') && getUrlParameter('m') === "s") {
                 document.getElementById('statecode').classList.add('is-invalid');
-                document.getElementsByClassName('wrong')[0].innerHTML = "State code don't exist. Check again or <a href='/signup'>sign up?</a>";
+                document.getElementsByClassName('wrong')[0].innerHTML = "State code don't exist. Check again or <a href='/signup'>sign up</a>"; // State code or email don't exist ...
                 document.getElementsByClassName('wrong')[0].removeAttribute('hidden');
             } else if (getUrlParameter('p') && getUrlParameter('p') === "w" ) {
                 document.getElementById('password').classList.add('is-invalid');

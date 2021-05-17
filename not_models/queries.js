@@ -379,27 +379,6 @@ exports.UnreadMessages = async (corpersData) => {
  */
 exports.FetchPostsForTimeLine = async (timeLineInfo) => {
 
-    return CorpMember.findAll({
-        where: {
-
-        },
-        include: {
-            model: Sale,
-            where: {
-                statecode: {
-                  [Op.ne]: 'small'
-                },
-                [Op.like]: `%${timeLineInfo.statecode_substr}%`,
-                [Op.gte]: 6,
-                ... (timeLineInfo.last_post_time && {
-                    [Op.gte]: timeLineInfo.last_post_time,
-                })
-            },
-            order: ['createAt', 'ASC']
-        }
-    })
-    .toJSON()
-
     let re = new Promise((resolve, reject) => {
         /**there's much work on this section maybe, just to make sure sql sees and calculates the value as they should (or NOT ????) */
         let getpostsquery = "SELECT info.firstname, info.picture_id, posts.itemname, posts.statecode, posts.type, posts.text, posts.media, posts.price, posts.location, posts.input_time, posts.post_time\
