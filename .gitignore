@@ -149,7 +149,6 @@ eslintrc.json
 Output.txt
 test*.html
 throwback.txt
-test*.js
 
 # someone tryna steal? wow
 todo.txt
