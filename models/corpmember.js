@@ -16,10 +16,10 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       CorpMember.hasMany(models.Sale, {
-        // foreignKey: 'statecode', // should we use statecode or id ? what if they update their statecode ? we'd mass update it
+        foreignKey: 'statecode', // should we use statecode or id ? what if they update their statecode ? we'd mass update it
       });
       CorpMember.hasMany(models.Accommodation, {
-        foreignKey: 'statecode',
+        // foreignKey: 'statecode',
       })
       CorpMember.belongsTo(models.PPA)
       CorpMember.hasOne(models.Media)
@@ -152,5 +152,6 @@ module.exports = (sequelize, DataTypes) => {
     alter: true,
     // force: true
   })
+  console.log('\n\n\n\nwhat is corp membersss === ', sequelize.models.CorpMember);
   return CorpMember;
 };

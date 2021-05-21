@@ -38,7 +38,10 @@ sequelize.authenticate().then(() => {
 sequelize.afterSync('sth sync', ()=>{
   console.log('======(()@((@\n\n\n\n\n\nn\n',sequelize.models)
 })
-sequelize.sync({ force: true, alter: true })
+sequelize.sync({ // call this after all those queries have runned
+  // force: true, 
+  alter: true 
+})
 
 /*
 var mysqloptions = {
