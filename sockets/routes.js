@@ -99,7 +99,7 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
                 [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`,
             }
         },
-        include: {
+        include: [{ // how can we specify this can be empty if possible
             model: Sale,
             where: {
                 statecode: {
@@ -112,7 +112,7 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
                 }})
             },
             order: ['createAt', 'ASC']
-        }
+        }]
     })
     // .toJSON()
     .then(_sales => {
@@ -123,7 +123,7 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
                     [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`,
                 }
             },
-            include: {
+            include: [{
                 model: Accommodation,
                 where: {
                     statecode: {
@@ -135,7 +135,7 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
                     }})
                 },
                 order: ['createAt', 'ASC']
-            }
+            }]
         })
         // .toJSON()
 

@@ -13,7 +13,10 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Sale.belongsTo(models.CorpMember)
-      Sale.hasMany(models.Media)
+      Sale.hasMany(models.Media, {
+        // foreignKey: 'saleId',
+        // onDelete: 'CASCADE', // do we want to delete though ?
+      })
     }
   };
   Sale.init({
@@ -22,6 +25,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
+    },
+    statecode: {
+      type: DataTypes.STRING
     },
     itemname: DataTypes.STRING,
     price: DataTypes.FLOAT,
@@ -44,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
   });
   Sale.sync({
     alter: true,
-    // force: true
+    force: true
   })
   return Sale;
 };

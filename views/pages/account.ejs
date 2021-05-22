@@ -1153,7 +1153,7 @@ we can even try to show a route in the map based on what address is and informat
                 // Define what happens on successful data submission
                 XHR.addEventListener("load", function (event) {
                     // alert(event.target.responseText);
-                    // console.log(event.target.responseText, event.target, event.timeStamp); // calculate the time a post was clicked, when it was submitted and when the response was given to the user
+                    console.log(event.target.responseText, event.target, event.timeStamp); // calculate the time a post was clicked, when it was submitted and when the response was given to the user
 
                     // and reset the form
                     document.forms['postform'].reset();
@@ -1173,7 +1173,7 @@ we can even try to show a route in the map based on what address is and informat
                     // and there would then be more than one notifications on the user tl...
                     // how do we ensure they are closed as they come ? A dedicated functions to handle notifications ????/
 
-                    if (event.target.status == 200) {
+                    if (event.target.status === 200) {
                         $("#1or0") // #tl
                             .before(
                                 `<div class="alert alert-success mt-3 fade show" id="postposted" role="alert">Post created successfully.
@@ -1248,7 +1248,7 @@ we can even try to show a route in the map based on what address is and informat
                 // Define what happens on successful data submission
                 XHR1.addEventListener("load", function (event) {
                     // alert(event.target.responseText);
-                    // console.log(event);
+                    console.log(event);
 
                     // and reset the form
                     document.forms["accommodationform"].reset();
@@ -1271,21 +1271,22 @@ we can even try to show a route in the map based on what address is and informat
                     $("#ap")
                         .replaceWith('<button class="btn btn-outline-primary" id="ap" href="#accommodationFormCarousel" disabled="true" data-slide="prev">Previous</button>');
 
-                    if (event.target.status === 500) {
-                        // add UNsuccessful alert 
+                    if (event.target.status === 200) {
+                        // add successful alert 
                         $("#tl")
                             .before(
-                                `<div class="alert alert-danger mt-3 fade show" id="accommodationposted" role="alert">We couldn\'t post that. Please try again.
+                                `<div class="alert alert-success mt-3 fade show" id="accommodationposted" role="alert">Accommodation space was posted successfully.
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                     </div>`
                             );
+                        
                     } else {
-                        // add successful alert 
+                        // add UNsuccessful alert 
                         $("#tl")
                             .before(
-                                `<div class="alert alert-success mt-3 fade show" id="accommodationposted" role="alert">Accommodation space was posted successfully.
+                                `<div class="alert alert-danger mt-3 fade show" id="accommodationposted" role="alert">We couldn\'t post that. Please try again.
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>

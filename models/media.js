@@ -11,6 +11,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Media.belongsTo(models.Accommodation, {
+        foreignKey: 'id',
+        onDelete: 'CASCADE'
+      })
+      Media.belongsTo(models.Sale, {
+        foreignKey: 'id',
+        onDelete: 'CASCADE'
+      })
     }
   };
   Media.init({
@@ -46,7 +54,7 @@ module.exports = (sequelize, DataTypes) => {
   });
   Media.sync({
     alter: true,
-    // force: true
+    force: true
   })
   return Media;
 };

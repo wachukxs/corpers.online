@@ -79,7 +79,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
   Chat.sync({
-    // alter: true,
+    alter: true,
     force: true
   })
   return Chat;

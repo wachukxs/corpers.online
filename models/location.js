@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
   });
   Location.sync({
     alter: true,
-    // force: true
+    force: true
   })
   return Location;
 };

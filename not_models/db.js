@@ -21,8 +21,13 @@ const sequelize = new Sequelize('d1losi9983knq5', 'ycybyhpxgggjsi', 'bf8ea71d223
       min: 0,
       acquire: 30000,
       idle: 10000
+    },
+    hooks: {
+      afterCreate: ("sth-i-guess", (model, opts) => {
+        console.log('892398\n\n\n2233', model, opts);
+      })
     }
-});
+}); // how do we catch global db errors
 
 /**
  * we need to try to connect to one db first, if that doesn't work,
@@ -39,7 +44,7 @@ sequelize.afterSync('sth sync', ()=>{
   console.log('======(()@((@\n\n\n\n\n\nn\n',sequelize.models)
 })
 sequelize.sync({ // call this after all those queries have runned
-  // force: true, 
+  force: true, 
   alter: true 
 })
 

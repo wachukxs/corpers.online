@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Accommodation.hasMany(models.Media)
+      Accommodation.belongsTo(models.CorpMember, {
+        foreignKey: 'statecode',
+        onDelete: 'CASCADE'
+      })
     }
   };
   Accommodation.init({
@@ -21,15 +25,22 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true
     },
-    directions: DataTypes.STRING,
-    rent: DataTypes.FLOAT
+    directions: {
+      type: DataTypes.STRING
+    },
+    // statecode: {
+    //   type: DataTypes.STRING
+    // },
+    rent: {
+      type: DataTypes.FLOAT
+    }
   }, {
     sequelize,
     modelName: 'Accommodation',
   });
   Accommodation.sync({
     alter: true,
-    // force: true
+    force: true
   })
   return Accommodation;
 };

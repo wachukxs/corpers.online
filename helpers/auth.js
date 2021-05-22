@@ -53,7 +53,9 @@ module.exports.verifyJWT = (req, res, next) => {
                  */
                 CorpMember.findOne({ 
                     where: { statecode: decodedToken.statecode },
-                    include: PPA
+                    include: [{
+                        model: PPA
+                    }]
                 })
                 // query.AutoLogin(decodedToken.statecode)
                 .then(result => {

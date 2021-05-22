@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'statecode', // should we use statecode or id ? what if they update their statecode ? we'd mass update it
       });
       CorpMember.hasMany(models.Accommodation, {
-        // foreignKey: 'statecode',
+        foreignKey: 'statecode',
       })
       CorpMember.belongsTo(models.PPA)
       CorpMember.hasOne(models.Media)
@@ -77,8 +77,8 @@ module.exports = (sequelize, DataTypes) => {
     statecode: {
       type: DataTypes.STRING,
       unique: true,
-      set() { // not needed
-        return this.getDataValue(statecode).toUpperCase()
+      set(value) { // not needed here??
+        this.setDataValue('statecode', value.toUpperCase());
       }
       // allowNull defaults to true
     },
@@ -121,7 +121,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING
       // allowNull defaults to true
     },
-    PPAId: { // I should not be doing this ...will resolve later
+    PPAId: { // shouldn't be doing this ...will resolve later
       type: DataTypes.INTEGER
     }
   }, {
@@ -150,8 +150,7 @@ module.exports = (sequelize, DataTypes) => {
   });
   CorpMember.sync({
     alter: true,
-    // force: true
+    force: true
   })
-  console.log('\n\n\n\nwhat is corp membersss === ', sequelize.models.CorpMember);
   return CorpMember;
 };

@@ -11,10 +11,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      PPA.hasMany(models.CorpMember/* , {
+      PPA.hasMany(models.CorpMember, {
         foreignKey: 'PPAId',
         // targetKey: 'id'
-      } */)
+      })
     }
   };
   PPA.init({
@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
   });
   PPA.sync({
     alter: true,
-    // force: true
+    force: true
   })
   return PPA;
 };
