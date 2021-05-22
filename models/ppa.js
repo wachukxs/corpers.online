@@ -39,7 +39,6 @@ module.exports = (sequelize, DataTypes) => {
   PPA.sync({
     alter: true,
     // force: true
-
   })
   return PPA;
 };

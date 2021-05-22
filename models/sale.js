@@ -42,5 +42,9 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Sale',
   });
+  Sale.sync({
+    alter: true,
+    // force: true
+  })
   return Sale;
 };

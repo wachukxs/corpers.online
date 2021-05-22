@@ -27,5 +27,9 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Accommodation',
   });
+  Accommodation.sync({
+    alter: true,
+    // force: true
+  })
   return Accommodation;
 };
