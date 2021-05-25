@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const moment = require('moment');
 module.exports = (sequelize, DataTypes) => {
   class Sale extends Model {
     /**
@@ -11,10 +12,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Sale.belongsTo(models.CorpMember, {
-        targetKey: 'statecode',
-        foreignKey: 'statecode'
-      })
+      Sale.belongsTo(models.CorpMember)
       Sale.hasMany(models.Media, {
         // foreignKey: 'saleId',
         // onDelete: 'CASCADE', // do we want to delete though ?
@@ -24,19 +22,35 @@ module.exports = (sequelize, DataTypes) => {
   Sale.init({
     id: {
       allowNull: false,
-      autoIncrement: true,
+      type: DataTypes.INTEGER,
       primaryKey: true,
-      type: DataTypes.INTEGER
+      autoIncrement: true
     },
-    statecode: DataTypes.STRING, // need it ?
+    statecode: {
+      type: DataTypes.STRING
+    },
     itemname: DataTypes.STRING,
     price: DataTypes.FLOAT,
     text: DataTypes.TEXT,
-    age: DataTypes.VIRTUAL,
-    last_updated_age: DataTypes.VIRTUAL
+    age: {
+      type: DataTypes.VIRTUAL,
+      get() { // createdAt: 2021-05-10T23:20:35.182Z // should we return updatedAt too ?
+        return moment(`${this.createdAt}`).fromNow();
+      },
+    },
+    last_updated_age: {
+      type: DataTypes.VIRTUAL,
+      get() { // updatedAt: 2021-05-10T23:20:35.182Z // oh well!
+        return moment(`${this.updatedAt}`).fromNow();
+      },
+    }
   }, {
     sequelize,
     modelName: 'Sale',
   });
+  Sale.sync({
+    alter: true,
+    force: true
+  })
   return Sale;
 };

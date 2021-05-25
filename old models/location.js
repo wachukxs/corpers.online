@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class PPA extends Model {
+  class Location extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,25 +11,23 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      PPA.hasMany(models.CorpMember, {
-        foreignKey: 'PPAId',
-        // targetKey: 'id'
-      })
     }
   };
-  PPA.init({
+  Location.init({
     id: {
       allowNull: false,
-      autoIncrement: true,
+      type: DataTypes.INTEGER,
       primaryKey: true,
-      type: DataTypes.INTEGER
+      autoIncrement: true
     },
-    name: DataTypes.STRING,
-    type_of_ppa: DataTypes.STRING
+    directions: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'PPAs', // leave as is
-    freezeTableName: true
+    modelName: 'Location',
   });
-  return PPA;
+  Location.sync({
+    alter: true,
+    force: true
+  })
+  return Location;
 };

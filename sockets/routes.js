@@ -2,6 +2,7 @@ const query = require('../not_models/queries');
 const moment = require('moment');
 
 const CorpMember = require('../models').CorpMember
+const Accommodation = require('../models').Accommodation
 const Chat = require('../models').Chat
 const Sale = require('../models').Sale
 const { Op } = require("sequelize");
@@ -116,8 +117,8 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
     })
     // .toJSON()
     .then(_sales => {
-        console.log('\n\n\n\n\n\ndid we get Sales?', _sales);
-        let _accommodations = CorpMember.findAll({
+        console.log('\n\n\n\n\n\ndid we get corp member\'s Sales?', _sales);
+        CorpMember.findAll({
             where: {
                 statecode: {
                     [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`,
@@ -138,18 +139,27 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
             }]
         })
         // .toJSON()
-
-        let value = {
-            sales: _sales,
-            accommodations: _accommodations
-        }
-
-        console.log('\n\nwhat we getting', value);
-
-        socket.emit('boardcast message', {
-            to: 'be received by everyoneELSE',
-            post: value
-        });
+        .then(_accommodations => {
+            let value = {
+                sales: _sales,
+                accommodations: _accommodations
+            }
+    
+            console.log('\n\nwhat we getting', value);
+    
+            socket.emit('boardcast message', {
+                to: 'be received by everyoneELSE',
+                post: value
+            });
+        }, (reject) => {
+            socket.emit('boardcast message', {
+                to: 'be received by everyoneELSE',
+                post: {}
+            });
+            console.error('inner uhmmmm not good', reject);
+            console.log('inner emitting empty posts, first user or the tl is empty')
+        })
+        
 
     }, (reject) => {
         socket.emit('boardcast message', {
@@ -160,6 +170,12 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
         console.log('emitting empty posts, first user or the tl is empty')
     }).catch(reject => {
         console.error('is this the error ?', reject);
+
+        // right ?? ?? we can't just not send anything ...
+        socket.emit('boardcast message', {
+            to: 'be received by everyoneELSE',
+            post: {}
+        });
     })
 
     /* query.FetchPostsForTimeLine({

@@ -11,21 +11,36 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Accommodation.hasMany(models.Media)
+      Accommodation.belongsTo(models.CorpMember, {
+        foreignKey: 'statecode',
+        onDelete: 'CASCADE'
+      })
     }
   };
   Accommodation.init({
     id: {
       allowNull: false,
-      autoIncrement: true,
+      type: DataTypes.INTEGER,
       primaryKey: true,
-      type: DataTypes.INTEGER
+      autoIncrement: true
     },
-    directions: DataTypes.STRING,
-    rent: DataTypes.FLOAT,
-    statecode: DataTypes.STRING
+    directions: {
+      type: DataTypes.STRING
+    },
+    // statecode: {
+    //   type: DataTypes.STRING
+    // },
+    rent: {
+      type: DataTypes.FLOAT
+    }
   }, {
     sequelize,
     modelName: 'Accommodation',
   });
+  Accommodation.sync({
+    alter: true,
+    force: true
+  })
   return Accommodation;
 };

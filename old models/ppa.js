@@ -20,16 +20,25 @@ module.exports = (sequelize, DataTypes) => {
   PPA.init({
     id: {
       allowNull: false,
-      autoIncrement: true,
+      type: DataTypes.INTEGER,
       primaryKey: true,
-      type: DataTypes.INTEGER
+      autoIncrement: true
     },
-    name: DataTypes.STRING,
-    type_of_ppa: DataTypes.STRING
+    name: {
+      type: DataTypes.STRING
+    },
+    type_of_ppa: {
+      type: DataTypes.STRING
+      // allowNull defaults to true
+    },
   }, {
     sequelize,
-    modelName: 'PPAs', // leave as is
+    modelName: 'PPA',
     freezeTableName: true
   });
+  PPA.sync({
+    alter: true,
+    force: true
+  })
   return PPA;
 };

@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
   class Location extends Model {
     /**
      * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
+     * This method is not a part of sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
@@ -16,18 +16,14 @@ module.exports = (sequelize, DataTypes) => {
   Location.init({
     id: {
       allowNull: false,
-      type: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true,
-      autoIncrement: true
+      type: DataTypes.INTEGER
     },
     directions: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Location',
   });
-  Location.sync({
-    alter: true,
-    force: true
-  })
   return Location;
 };

@@ -44,10 +44,11 @@ let mySQLSessionOptions = {
 
 let sequelizeSessionOptions = {
     secret: process.env.SESSION_SECRET,
-    saveUninitialized: false,
+    saveUninitialized: false, // true ?
     store: new SequelizeStore({
         db: sequelize,
-
+        checkExpirationInterval: 7 * 24 * 60 * 60 * 1000, // The interval at which to cleanup expired sessions in milliseconds.
+        expiration: 7 * 24 * 60 * 60 * 1000  // The maximum age (in milliseconds) of a valid session.
     }),
     resave: false, // we support the touch method so per the express-session docs this should be set to false
     proxy: true, // if you do SSL outside of node.

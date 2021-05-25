@@ -3,7 +3,7 @@ const Chat = require('../models').Chat
 const { Op } = require("sequelize");
 const helpers = require('../utilities/helpers')
 const jwt = require('jsonwebtoken')
-
+const sequelize = require('../not_models/db').sequelize
 const auth = require('../helpers/auth')
 /**
  * options for setting JWT cookies
@@ -43,7 +43,7 @@ module.exports = {
                 console.error('sign up err', err)
                 throw err // ? can we throw
               } else {
-                console.log('======------------>');
+                console.log('======------------>signed up ...done jwt and', req.session.corper);
                 // res.setHeader('Set-Cookie', 'name=value')
                 res.cookie('_online', token, cookieOptions)
                 res.status(200).redirect(req.body.statecode.toUpperCase());
@@ -102,7 +102,16 @@ module.exports = {
           }
         })
         .then(result => {
-          console.log('what is this', req.session);
+          console.log('\n\n\nwhat is this', req.session);
+
+          sequelize.getQueryInterface().showAllTables().then((tableObj) => {
+            console.log('\n\n\n\t\t// again Tables in database','==========================');
+            console.log(tableObj);
+          })
+          .catch((err) => {
+            console.log('showAlltable ERROR',err);
+          })
+
           res.set('Content-Type', 'text/html');
           res.render('pages/account', {
             statecode: req.session.corper.statecode.toUpperCase(),

@@ -35,7 +35,3 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 module.exports = db;
-
-// https://levelup.gitconnected.com/creating-sequelize-associations-with-the-sequelize-cli-tool-d83caa902233
-
-// https://gist.github.com/igorvolnyi/f7989fc64006941a7d7a1a9d5e61be47

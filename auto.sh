@@ -1,4 +1,4 @@
-# Now we’ll execute our migration to create the Users table in our database:
+# will run /migrations to create the tables in our database:
 npx sequelize-cli db:migrate
 
 npx sequelize-cli db:migrate:undo
@@ -11,4 +11,3 @@ heroku logs -n 1500 --app corpers-online
 
 npx sequelize-cli migration:generate --name starting-again   
 
-npx sequelize-cli db:migrate

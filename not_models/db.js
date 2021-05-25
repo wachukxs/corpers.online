@@ -23,9 +23,7 @@ const sequelize = new Sequelize('d1losi9983knq5', 'ycybyhpxgggjsi', 'bf8ea71d223
       idle: 10000
     },
     hooks: {
-      afterCreate: ("sth-i-guess", (model, opts) => {
-        console.log('892398\n\n\n2233', model, opts);
-      })
+      
     }
 }); // how do we catch global db errors
 
@@ -48,6 +46,17 @@ sequelize.sync({ // call this after all those queries have runned
   alter: true 
 })
 
+sequelize.getQueryInterface().showAllSchemas().then((tableObj) => {
+  console.log('\n\n\n\t\t// Tables in database','==========================');
+  console.log(tableObj);
+})
+.catch((err) => {
+  console.log('showAllSchemas ERROR',err);
+})
+
+sequelize.getQueryInterface().showAllTables().then((_tables) => {
+  console.log('\n\n\n\n all the tables', _tables);
+})
 /*
 var mysqloptions = {
   host            : process.env.DB_HOST,
