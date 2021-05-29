@@ -21,7 +21,8 @@ router.get('/login', function (req, res) {
     // res.setHeader("Expires", 0);
     // res.set('Cache-Control', 'public, max-age=0')
     res.render('pages/login', { current_year: new Date().getFullYear() });
-  });
+});
+
 
 
 module.exports = router;

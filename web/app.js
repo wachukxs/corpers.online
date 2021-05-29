@@ -6,10 +6,14 @@ const cookieParser = require('cookie-parser')
 const session = require('express-session');
 const morgan = require('morgan');
 // const crypto = require('crypto')
-const MySQLStore = require('express-mysql-session')(session);
+// const MySQLStore = require('express-mysql-session')(session);
 
 // initalize sequelize with session store
-var SequelizeStore = require("connect-session-sequelize")(session.Store);
+// let SequelizeStore = require("connect-session-sequelize")(session.Store);
+
+const KnexSessionStore = require('connect-session-knex')(session);
+
+const Knex = require('knex');
 
 // refactor import of routes!!!!
 const welcomeRoutes = require('../controllers/welcome');
@@ -22,50 +26,64 @@ const testRoutes = require('../controllers/test');
 
 app.set('view engine', 'ejs');
 
-const connectionPool = require('../not_models/db').connectionPool;
-let mySQLSessionStore = new MySQLStore({}, connectionPool);
+// const connectionPool = require('../not_models/db').connectionPool;
+// let mySQLSessionStore = new MySQLStore({}, connectionPool);
 
 const sequelize = require('../not_models/db').sequelize
 
-let mySQLSessionOptions = {
+/* let sequelizeStore = new SequelizeStore({ not using because https://stackoverflow.com/questions/49476080/express-session-not-persistent-after-redirect
+    db: sequelize,
+    checkExpirationInterval: 7 * 24 * 60 * 60 * 1000, // The interval at which to cleanup expired sessions in milliseconds.
+    expiration: 7 * 24 * 60 * 60 * 1000  // The maximum age (in milliseconds) of a valid session.
+}).sync(); */
+
+
+const knex = Knex({
+    client: 'pg',
+    connection: {
+        host: sequelize.config.host,
+        user: sequelize.config.username,
+        password: sequelize.config.password,
+        database: sequelize.config.database,
+        ssl: {
+            require: true, // This will help you. But you will see new error
+            rejectUnauthorized: false // This line will fix new error
+        }
+    },
+});
+
+const knexSessionStore = new KnexSessionStore({
+    knex,
+    createtable: true,
+    tablename: '_Session', // wanna make it _Sessions || Sessions// optional. Defaults to 'sessions' // tip: don't use 'Session' ...it's for connect-sequelize-store
+});
+
+let expressSessionOptions = {
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    store: mySQLSessionStore,
+    store: knexSessionStore, // mySQLSessionStore, // sequelizeStore,
     cookie: {
         httpOnly: true,
         key: 'you_online',
         // sameSite: 'strict', // https://github.com/expressjs/session/issues/660#issuecomment-514384297
         // domain: 'corpers.online',
         // path: '',
-    }
-}
-
-
-let sequelizeSessionOptions = {
-    secret: process.env.SESSION_SECRET,
-    saveUninitialized: false, // true ?
-    store: new SequelizeStore({
-        db: sequelize,
-        checkExpirationInterval: 7 * 24 * 60 * 60 * 1000, // The interval at which to cleanup expired sessions in milliseconds.
-        expiration: 7 * 24 * 60 * 60 * 1000  // The maximum age (in milliseconds) of a valid session.
-    }),
-    resave: false, // we support the touch method so per the express-session docs this should be set to false
+    },
     proxy: true, // if you do SSL outside of node.
 }
 
-sequelizeSessionOptions.store.sync();
-
 let morganFormat = 'tiny'
 if (app.get('env') === 'production') { // process.env.NODE_ENV
-    // mySQLSessionOptions.cookie.secure = true; // hmmm
+    expressSessionOptions.cookie.secure = true; // hmmm
     morganFormat = ':remote-addr - :remote-user [:date[web]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"'
 }
 // set morgan to log info about our requests for development use.
 app.use(morgan(morganFormat))
 
 // app.use(session(mySQLSessionOptions));
-app.use(session(sequelizeSessionOptions));
+// app.use(session(sequelizeSessionOptions));
+app.use(session(expressSessionOptions));
 
 // The app.locals object has properties that are local variables within the application.
 app.locals.title = 'Corpers Online';

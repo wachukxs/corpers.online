@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const moment = require('moment');
 module.exports = (sequelize, DataTypes) => {
   class Accommodation extends Model {
     /**
@@ -11,6 +12,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Accommodation.belongsTo(models.CorpMember, {
+        targetKey: 'statecode',
+        foreignKey: 'statecode'
+      })
+      Accommodation.hasMany(models.Media, {
+        // foreignKey: 'saleId',
+        // onDelete: 'CASCADE', // do we want to delete though ?
+      })
     }
   };
   Accommodation.init({
@@ -22,10 +31,20 @@ module.exports = (sequelize, DataTypes) => {
     },
     directions: DataTypes.STRING,
     rent: DataTypes.FLOAT,
-    statecode: DataTypes.STRING
+    statecode: DataTypes.STRING,
+    age: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return moment(this.createdAt).fromNow();
+      },
+      set(value) {
+        throw new Error('Do not try to set the Accommodation.`age` value!');
+      }
+    },
   }, {
     sequelize,
     modelName: 'Accommodation',
   });
+  Accommodation.sync({ alter: true })
   return Accommodation;
 };

@@ -45,16 +45,16 @@ module.exports = {
         },
       },
       time: {
-        type: Sequelize.STRING
+        type: Sequelize.DATE
       },
       read_by_to: {
         type: Sequelize.BOOLEAN
       },
       time_read: {
-        type: Sequelize.STRING
+        type: Sequelize.DATE
       },
       _time: {
-        type: Sequelize.STRING
+        type: Sequelize.DATE
       },
       message_sent: {
         type: Sequelize.BOOLEAN

@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const query = require('../not_models/queries');
 const CorpMember = require('../models').CorpMember
-const PPAs = require('../models').PPAs
+const PPA = require('../models').PPA
 const helpers = require('../utilities/helpers')
 // FORMAT OF TOKEN
 // Authorization: Bearer <access_token>
@@ -56,7 +56,7 @@ module.exports.verifyJWT = (req, res, next) => {
                 CorpMember.findOne({
                     where: { statecode: decodedToken.statecode.toUpperCase() },
                     include: [{
-                        model: PPAs
+                        model: PPA
                     }]
                 })
                 // query.AutoLogin(decodedToken.statecode)

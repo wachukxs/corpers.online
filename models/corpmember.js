@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'statecode',
         sourceKey: 'statecode'
       })
-      CorpMember.belongsTo(models.PPAs)
+      CorpMember.belongsTo(models.PPA)
       CorpMember.hasOne(models.Media)
       CorpMember.hasMany(models.Location) // Location should have an array of all the corp member who have edited or confirmed it's location
     }
@@ -68,5 +68,6 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'CorpMember',
   });
+  CorpMember.sync({ alter: true })
   return CorpMember;
 };

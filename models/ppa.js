@@ -28,8 +28,10 @@ module.exports = (sequelize, DataTypes) => {
     type_of_ppa: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'PPAs', // leave as is
-    freezeTableName: true
+    modelName: 'PPA',
+    tableName: 'PPA',
+    freezeTableName: true,
   });
+  PPA.sync({ alter: true })
   return PPA;
 };

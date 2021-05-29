@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const moment = require('moment');
 module.exports = (sequelize, DataTypes) => {
   class Sale extends Model {
     /**
@@ -32,11 +33,28 @@ module.exports = (sequelize, DataTypes) => {
     itemname: DataTypes.STRING,
     price: DataTypes.FLOAT,
     text: DataTypes.TEXT,
-    age: DataTypes.VIRTUAL,
-    last_updated_age: DataTypes.VIRTUAL
+    age: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return moment(this.createdAt).fromNow();
+      },
+      set(value) {
+        throw new Error('Do not try to set the Sale.`age` value!');
+      }
+    },
+    last_updated_age: { // do we need this ?
+      type: DataTypes.VIRTUAL,
+      get() {
+        return moment(this.updatedAt).fromNow();
+      },
+      set(value) {
+        throw new Error('Do not try to set the `last_updated_age` value!');
+      }
+    }
   }, {
     sequelize,
     modelName: 'Sale',
   });
+  Sale.sync({ alter: true })
   return Sale;
 };

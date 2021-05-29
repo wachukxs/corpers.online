@@ -45,8 +45,11 @@ module.exports = {
               } else {
                 console.log('======------------>signed up ...done jwt and', req.session.corper);
                 // res.setHeader('Set-Cookie', 'name=value')
+                
+                // problem here https://stackoverflow.com/questions/49476080/express-session-not-persistent-after-redirect
+                
                 res.cookie('_online', token, cookieOptions)
-                res.status(200).redirect(req.body.statecode.toUpperCase());
+                  .redirect(req.body.statecode.toUpperCase());
               }
             })
           }, error => {
@@ -105,14 +108,14 @@ module.exports = {
           console.log('\n\n\nwhat is this', req.session);
 
           sequelize.getQueryInterface().showAllTables().then((tableObj) => {
-            console.log('\n\n\n\t\t// again Tables in database','==========================');
+            console.log('\n\n\n// again Tables in database','==========================');
             console.log(tableObj);
           })
           .catch((err) => {
             console.log('showAlltable ERROR',err);
           })
 
-          res.set('Content-Type', 'text/html');
+          // res.set('Content-Type', 'text/html'); // causes ERR_HTTP_HEADERS_SENT
           res.render('pages/account', {
             statecode: req.session.corper.statecode.toUpperCase(),
             batch: req.params['3'],

@@ -5,6 +5,7 @@ const CorpMember = require('../models').CorpMember
 const Accommodation = require('../models').Accommodation
 const Chat = require('../models').Chat
 const Sale = require('../models').Sale
+const PPA = require('../models').PPA
 const { Op } = require("sequelize");
 
 // https://www.npmjs.com/package/socket.io#standalone
@@ -94,7 +95,7 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
         last_accommodation_time: aUTLlast
     });
 
-    CorpMember.findAll({
+    CorpMember.findAll({ // also add PPA
         where: {
             statecode: {
                 [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`,
@@ -113,58 +114,34 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
                 }})
             },
             order: ['createAt', 'ASC']
+        },
+        {
+            model: Accommodation,
+            where: {
+                statecode: {
+                    [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`, // somewhat redundant
+                },
+                ... (pUTLlast && {
+                    createdAt: {
+                        [Op.gte]: pUTLlast,
+                }})
+            },
+            order: ['createAt', 'ASC']
         }]
     })
     // .toJSON()
-    .then(_sales => {
-        console.log('\n\n\n\n\n\ndid we get corp member\'s Sales?', _sales);
-        CorpMember.findAll({
-            where: {
-                statecode: {
-                    [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`,
-                }
-            },
-            include: [{
-                model: Accommodation,
-                where: {
-                    statecode: {
-                        [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`, // somewhat redundant
-                    },
-                    ... (pUTLlast && {
-                        createdAt: {
-                            [Op.gte]: pUTLlast,
-                    }})
-                },
-                order: ['createAt', 'ASC']
-            }]
-        })
-        // .toJSON()
-        .then(_accommodations => {
-            let value = {
-                sales: _sales,
-                accommodations: _accommodations
-            }
-    
-            console.log('\n\nwhat we getting', value);
-    
-            socket.emit('boardcast message', {
-                to: 'be received by everyoneELSE',
-                post: value
-            });
-        }, (reject) => {
-            socket.emit('boardcast message', {
-                to: 'be received by everyoneELSE',
-                post: {}
-            });
-            console.error('inner uhmmmm not good', reject);
-            console.log('inner emitting empty posts, first user or the tl is empty')
-        })
+    .then(_sales_accommodations => {
+        console.log("\n\n\n\n\n\ndid we get corp member's Sales n Accommodation?", _sales_accommodations);
         
+        socket.emit('boardcast message', {
+            to: 'be received by everyoneELSE',
+            post: _sales_accommodations
+        });
 
     }, (reject) => {
         socket.emit('boardcast message', {
             to: 'be received by everyoneELSE',
-            post: {}
+            post: {} // object ?? _sales_accommodations is an array
         });
         console.error('uhmmmm not good', reject);
         console.log('emitting empty posts, first user or the tl is empty')
@@ -174,7 +151,7 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
         // right ?? ?? we can't just not send anything ...
         socket.emit('boardcast message', {
             to: 'be received by everyoneELSE',
-            post: {}
+            post: {} // object ?? _sales_accommodations is an array
         });
     })
 
@@ -204,8 +181,6 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
         console.log('FetchPostForTimeLine failed');
         
     }) */
-
-
 
 
     socket.on('boardcast message', (data, fn) => {

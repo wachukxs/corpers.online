@@ -26,5 +26,6 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Media',
   });
+  Media.sync({ alter: true })
   return Media;
 };

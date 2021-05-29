@@ -25,14 +25,17 @@ module.exports = (sequelize, DataTypes) => {
     message_from: DataTypes.STRING,
     message_to: DataTypes.STRING,
     mediaId: DataTypes.STRING,
-    time: DataTypes.STRING,
+    time: {
+      type: DataTypes.DATE
+    },
     read_by_to: DataTypes.BOOLEAN,
-    time_read: DataTypes.STRING,
-    _time: DataTypes.STRING,
+    time_read: DataTypes.DATE,
+    _time: DataTypes.DATE,
     message_sent: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Chat',
   });
+  Chat.sync({ alter: true })
   return Chat;
 };

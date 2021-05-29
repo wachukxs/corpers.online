@@ -41,10 +41,7 @@ sequelize.authenticate().then(() => {
 sequelize.afterSync('sth sync', ()=>{
   console.log('======(()@((@\n\n\n\n\n\nn\n',sequelize.models)
 })
-sequelize.sync({ // call this after all those queries have runned
-  force: true, 
-  alter: true 
-})
+sequelize.sync({ alter: true })
 
 sequelize.getQueryInterface().showAllSchemas().then((tableObj) => {
   console.log('\n\n\n\t\t// Tables in database','==========================');
@@ -55,7 +52,17 @@ sequelize.getQueryInterface().showAllSchemas().then((tableObj) => {
 })
 
 sequelize.getQueryInterface().showAllTables().then((_tables) => {
-  console.log('\n\n\n\n all the tables', _tables);
+  console.log('\n\n\n\n all the tables', _tables, _tables.length, `total`);
+}).catch(err => {
+  console.error('err getting all tables', err);
+})
+
+sequelize.getQueryInterface().describeTable({
+  tableName: '_Session'
+}).then((_data) => {
+  console.log('\n\n\n\n _Session table', _data);
+}).catch(err => {
+  console.error('err describing _Session table', err);
 })
 /*
 var mysqloptions = {
