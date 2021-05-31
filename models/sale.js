@@ -16,9 +16,8 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: 'statecode',
         foreignKey: 'statecode'
       })
-      Sale.hasMany(models.Media, {
-        // foreignKey: 'saleId',
-        // onDelete: 'CASCADE', // do we want to delete though ?
+      Sale.belongsTo(models.Media, { // means Sale have a mediaId
+        foreignKey: 'mediaId'
       })
     }
   };
@@ -33,6 +32,9 @@ module.exports = (sequelize, DataTypes) => {
     itemname: DataTypes.STRING,
     price: DataTypes.FLOAT,
     text: DataTypes.TEXT,
+    mediaId: {
+      type:DataTypes.INTEGER
+    },
     age: {
       type: DataTypes.VIRTUAL,
       get() {

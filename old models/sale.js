@@ -13,9 +13,9 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Sale.belongsTo(models.CorpMember)
-      Sale.hasMany(models.Media, {
-        // foreignKey: 'saleId',
-        // onDelete: 'CASCADE', // do we want to delete though ?
+      Sale.hasOne(models.Media, {
+        foreignKey: 'saleId',
+        onDelete: 'CASCADE', // do we want to delete though ?
       })
     }
   };

@@ -42,11 +42,10 @@ module.exports = (sequelize, DataTypes) => {
             return rawValue ? rawValue.split(',').map(x => {
                 return new URL(`/uc?id=${x}`, "https://drive.google.com").toString()
             }) : null;
-          }
+        }
     },
     alt_text: {
         type: DataTypes.STRING,
-        defaultValue: ''
     },
   }, {
     sequelize,

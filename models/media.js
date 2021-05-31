@@ -11,6 +11,18 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Media.hasOne(models.Sale, { // means Sale has mediaId
+        foreignKey: 'mediaId'
+      });
+      Media.hasOne(models.Accommodation, {
+        foreignKey: 'mediaId'
+      });
+      Media.hasOne(models.CorpMember, {
+        foreignKey: 'mediaId'
+      });
+      Media.hasOne(models.PPA, {
+        foreignKey: 'mediaId'
+      });
     }
   };
   Media.init({
@@ -20,7 +32,22 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.INTEGER
     },
-    urls: DataTypes.STRING,
+    urls: {
+      type:DataTypes.STRING,
+    /**
+     * takes in 'dslfjakdla29_ljadskfjask,dajsfalsjfalsflas_9289js'
+     * @returns [
+            'https://drive.google.com/uc?id=dslfjakdla29_ljadskfjask',
+            'https://drive.google.com/uc?id=dajsfalsjfalsflas_9289js'
+        ]
+      */
+      get() {
+        const rawValue = this.getDataValue(urls);
+        return rawValue ? rawValue.split(',').map(x => {
+            return new URL(`/uc?id=${x}`, "https://drive.google.com").toString()
+        }) : null;
+      }
+    },
     alt_text: DataTypes.STRING
   }, {
     sequelize,

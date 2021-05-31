@@ -17,6 +17,9 @@ module.exports = {
       statecode: {
         type: Sequelize.STRING,
       },
+      mediaId: {
+        type: Sequelize.INTEGER,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

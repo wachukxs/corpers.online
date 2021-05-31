@@ -35,7 +35,7 @@ module.exports = {
         },
       },
       mediaId: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         references: {
           model: {
             tableName: 'Media',

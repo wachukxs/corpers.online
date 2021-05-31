@@ -73,6 +73,16 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       },
+      mediaId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: 'Media',
+            
+          },
+          key: 'id'
+        },
+      },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE

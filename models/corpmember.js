@@ -20,7 +20,10 @@ module.exports = (sequelize, DataTypes) => {
         sourceKey: 'statecode'
       })
       CorpMember.belongsTo(models.PPA)
-      CorpMember.hasOne(models.Media)
+      CorpMember.belongsTo(models.Media, { // This creates the `mediaId` foreign key in CorpMember.
+        foreignKey: 'mediaId',
+        
+      })
       CorpMember.hasMany(models.Location) // Location should have an array of all the corp member who have edited or confirmed it's location
     }
   };
@@ -57,6 +60,9 @@ module.exports = (sequelize, DataTypes) => {
       get() {
         return this.getDataValue(statecode).toUpperCase();
       }
+    },
+    mediaId: {
+      type: DataTypes.INTEGER
     },
     password: DataTypes.STRING,
     middlename: DataTypes.STRING,

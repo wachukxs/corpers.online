@@ -58,5 +58,8 @@
     "sequelize-cli": "^6.2.0",
     "socket.io": "^2.3.0"
   },
-  "eslintConfig": {}
+  "eslintConfig": {},
+  "nodemonConfig": {
+    "ignore": ["models/*", "migrations/*", "old models/*", "test/*"]
+  }
 }

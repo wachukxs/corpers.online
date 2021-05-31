@@ -14,6 +14,16 @@ module.exports = {
       rent: {
         type: Sequelize.FLOAT
       },
+      mediaId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: 'Media',
+            
+          },
+          key: 'id'
+        },
+      },
       statecode: {
         type: Sequelize.STRING,
         references: {

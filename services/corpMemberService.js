@@ -109,7 +109,7 @@ module.exports = {
 
           sequelize.getQueryInterface().showAllTables().then((tableObj) => {
             console.log('\n\n\n// again Tables in database','==========================');
-            console.log(tableObj);
+            console.log(tableObj, tableObj.length);
           })
           .catch((err) => {
             console.log('showAlltable ERROR',err);

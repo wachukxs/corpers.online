@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Accommodation.hasMany(models.Media)
+      Accommodation.hasOne(models.Media)
       Accommodation.belongsTo(models.CorpMember, {
         foreignKey: 'statecode',
         onDelete: 'CASCADE'

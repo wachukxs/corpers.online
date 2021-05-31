@@ -21,7 +21,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       mediaId: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
       },
       time: {
         type: Sequelize.DATE

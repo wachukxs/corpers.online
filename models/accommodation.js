@@ -16,9 +16,8 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: 'statecode',
         foreignKey: 'statecode'
       })
-      Accommodation.hasMany(models.Media, {
-        // foreignKey: 'saleId',
-        // onDelete: 'CASCADE', // do we want to delete though ?
+      Accommodation.belongsTo(models.Media, { // means Accommodation have a mediaId
+        foreignKey: 'mediaId'
       })
     }
   };
@@ -27,6 +26,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
+      type: DataTypes.INTEGER
+    },
+    mediaId: { // do not add foreign keys yourself, sequelize will add them for you
       type: DataTypes.INTEGER
     },
     directions: DataTypes.STRING,

@@ -15,6 +15,9 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'PPAId',
         // targetKey: 'id'
       })
+      PPA.belongsTo(models.Media, { // means PPA have a mediaId
+        foreignKey: 'mediaId'
+      })
     }
   };
   PPA.init({
@@ -25,6 +28,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     },
     name: DataTypes.STRING,
+    mediaId: {
+      type:DataTypes.INTEGER
+    },
     type_of_ppa: DataTypes.STRING
   }, {
     sequelize,

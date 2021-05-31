@@ -20,7 +20,9 @@ const welcomeRoutes = require('../controllers/welcome');
 const actionsRoutes = require('../controllers/actions');
 const byeRoutes = require('../controllers/bye');
 const blogRoutes = require('../controllers/blog');
+
 const corpMemberRoutes = require('../controllers/corpMembers')
+const saleRoutes = require('../controllers/sale')
 
 const testRoutes = require('../controllers/test');
 
@@ -98,7 +100,7 @@ app.use(cookieParser(process.env.SESSION_SECRET))
 app.use('/assets', express.static('assets'))
 app.use('/graphic', express.static('img'));
 
-app.use([actionsRoutes, byeRoutes, welcomeRoutes, blogRoutes, corpMemberRoutes]);
+app.use([actionsRoutes, byeRoutes, welcomeRoutes, blogRoutes, corpMemberRoutes, saleRoutes]);
 
 app.use(testRoutes)
 // must always be last route, must be last route because of 404 pages/error

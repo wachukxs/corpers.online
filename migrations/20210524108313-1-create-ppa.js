@@ -14,6 +14,15 @@ module.exports = {
       type_of_ppa: {
         type: Sequelize.STRING
       },
+      mediaId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: 'Media',
+          },
+          key: 'id'
+        },
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

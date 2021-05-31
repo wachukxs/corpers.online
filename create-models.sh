@@ -10,7 +10,7 @@ npx sequelize-cli model:generate --name PPA --attributes name:string,type_of_ppa
 
 npx sequelize-cli model:generate --name Accommodation --attributes directions:string,rent:float,statecode:string
 
-npx sequelize-cli model:generate --name Chat --attributes room:string,message:text,message_from:string,message_to:string,mediaId:string,time:string,read_by_to:boolean,time_read:string,_time:string,message_sent:boolean
+npx sequelize-cli model:generate --name Chat --attributes room:string,message:text,message_from:string,message_to:string,mediaId:integer,time:string,read_by_to:boolean,time_read:string,_time:string,message_sent:boolean
 
 npx sequelize-cli model:generate --name Sale --attributes statecode:string,itemname:string,price:float,text:text
 

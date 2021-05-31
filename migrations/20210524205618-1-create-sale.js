@@ -18,6 +18,16 @@ module.exports = {
           key: 'statecode'
         },
       },
+      mediaId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: 'Media',
+            
+          },
+          key: 'id'
+        },
+      },
       itemname: {
         type: Sequelize.STRING
       },

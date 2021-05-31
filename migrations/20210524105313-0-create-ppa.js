@@ -1,31 +1,25 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Sales', {
+    await queryInterface.createTable('PPA', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      statecode: {
-        type: Sequelize.STRING,
-      },
-      itemname: {
+      name: {
         type: Sequelize.STRING
       },
-      mediaId: {
-        type: Sequelize.INTEGER,
-      },
-      price: {
-        type: Sequelize.FLOAT
-      },
-      text: {
-        type: Sequelize.TEXT
+      type_of_ppa: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
+      },
+      mediaId: {
+        type: Sequelize.INTEGER,
       },
       updatedAt: {
         allowNull: false,
@@ -34,6 +28,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Sales');
+    await queryInterface.dropTable('PPA');
   }
 };

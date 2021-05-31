@@ -20,6 +20,9 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.INTEGER
     },
+    mediaId: {
+      type:DataTypes.INTEGER
+    },
     directions: DataTypes.STRING
   }, {
     sequelize,

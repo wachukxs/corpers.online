@@ -8,7 +8,7 @@ const sequelize = new Sequelize('d1losi9983knq5', 'ycybyhpxgggjsi', 'bf8ea71d223
     dialect: 'postgres', // one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' 
     port: 5432,
     ssl: true,
-    // logging: (...opts) => console.log(opts, '\n\n'), // can really customize
+    logging: (...opts) => console.log(opts, '\n\n'), // can really customize
     // retry: ,
     dialectOptions: { // https://stackoverflow.com/a/64960461/9259701
         ssl: {
@@ -58,11 +58,11 @@ sequelize.getQueryInterface().showAllTables().then((_tables) => {
 })
 
 sequelize.getQueryInterface().describeTable({
-  tableName: '_Session'
+  tableName: 'Accommodation'
 }).then((_data) => {
-  console.log('\n\n\n\n _Session table', _data);
+  console.log('\n\n\n\n Accommodation table', _data);
 }).catch(err => {
-  console.error('err describing _Session table', err);
+  console.error('err describing Accommodation table', err);
 })
 /*
 var mysqloptions = {
