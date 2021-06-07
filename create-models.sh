@@ -16,6 +16,6 @@ npx sequelize-cli model:generate --name Sale --attributes statecode:string,itemn
 
 npx sequelize-cli model:generate --name Location --attributes directions:string
 
-npx sequelize-cli model:generate --name Media --attributes urls:string,alt_text:string
+npx sequelize-cli model:generate --name Media --attributes urls:string,altText:string
 
 npx sequelize-cli model:generate --name Test --attributes title:string,day:integer

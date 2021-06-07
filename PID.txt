@@ -1,3 +1,83 @@
-AB/20C/1209
-ng/20a/0094
-pass
+One-To-Many associations 
+
+
+… is to have a fooId column in the Bar table. 
+
+Acc, PPA, Sale, will be Bar
+
+CorpMember is Foo Table
+
+
+—————
+
+Team.hasMany(Player);
+Player.belongsTo(Team);
+
+… one Team has many Players, while each Player belongs to a single Team.
+
+Team == CorpMember
+Players == PPA, Acc, Sale
+
+Team.hasMany(Player, { // foreign key in Player is clubId
+  foreignKey: 'clubId'
+});
+Player.belongsTo(Team);
+
+
+===
+
+await Promise.all(uploadPromise);
+          // console.log('what\'s _text?', _text)
+          Media.create({
+            urls: (_media.length > 0 ? _media.toString() : _text.mapimage ? _text.mapimage : ''), // deal with mapimage later
+            // altText: '', // add later
+          }).then((_media_data) => {
+            console.log("saved media kini", _media_data);
+            console.log("\n associated media is", _media_data.dataValues.id);
+            Sale.create({
+              mediaId: _media_data.dataValues.id,
+              statecode: req.session.corper.statecode,
+              type: (_text.type ? _text.type : "sale"),
+              text: _text.text,
+              itemname: _text.itemname,
+              price: (_text.price ? _text.price : ""),
+              location: req.session.corper.location,
+              post_time: _text.post_time
+            })
+            .getMedium()
+            .then(result => {
+              // then status code is good
+              res.sendStatus(200);
+              console.log("\n\n\n\nafter saving post\n\n:", result);
+              // once it saves in db them emit to other users
+              socket.of('/user').to(req.session.corper.statecode.substring(0, 2)).emit('boardcast message', {
+                to: 'be received by everyone else',
+                post: result.dataValues/* {
+                  statecode: req.session.corper.statecode,
+                  location: req.session.corper.location,
+                  media: false,
+                  post_time: _text.post_time,
+                  type: _text.type,
+                  mapdata: (_text.mapimage ? _text.mapimage : ''),
+                  text: _text.text,
+                  itemname: _text.itemname,
+                  price: (_text.price ? _text.price : ''),
+                  firstname: _text.firstname,
+                  picture_id: req.session.corper.picture_id
+                } */
+              });
+            }, reject => {
+              console.log('rejected saving sale', reject)
+              res.sendStatus(500);
+            }).catch(reason => {
+              console.log('insert row failed for sale', reason);
+              // res.sendStatus(500); // Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client // what's setting it first?
+            })
+          }, (err) => {
+            console.error("err saving media for post", err);
+            res.sendStatus(500);
+          }).catch(reason => {
+            console.log('insert row failed for media', reason);
+            // res.sendStatus(500); // Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client // what's setting it first?
+          })
+          

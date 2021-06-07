@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Chat.belongsTo(models.Media, { // means Chat have a mediaId
+        foreignKey: 'mediaId'
+      })
     }
   };
   Chat.init({
@@ -33,7 +36,25 @@ module.exports = (sequelize, DataTypes) => {
     read_by_to: DataTypes.BOOLEAN,
     time_read: DataTypes.DATE,
     _time: DataTypes.DATE,
-    message_sent: DataTypes.BOOLEAN
+    message_sent: DataTypes.BOOLEAN,
+    createdAt: {
+      type: DataTypes.DATE
+    },
+    updatedAt: {
+      type: DataTypes.DATE
+    },
+    age: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return moment(this.getDataValue('createdAt')).fromNow();
+      },
+      set(value) {
+        throw new Error('Do not try to set the Sale.`age` value!');
+      }
+    },
+    updatedAt: {
+      type: DataTypes.DATE
+    }
   }, {
     sequelize,
     modelName: 'Chat',

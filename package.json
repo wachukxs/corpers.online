@@ -60,6 +60,6 @@
   },
   "eslintConfig": {},
   "nodemonConfig": {
-    "ignore": ["models/*", "migrations/*", "old models/*", "test/*"]
+    "ignore": ["models/*", "migrations/*", "old models/*", "test/*", "js/*", "index2.js"]
   }
 }

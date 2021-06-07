@@ -7,7 +7,7 @@ const bodyParser = require('body-parser'); // redundant ?
 const auth = require('../helpers/auth')
 const helpers = require('../utilities/helpers')
 const socket = require('../sockets/routes')
-const ngplaces = require('../utilities/ngstates')
+const ngstates = require('../utilities/ngstates')
 const moment = require('moment');
 const query = require('../not_models/queries');
 const fs = require('fs');
@@ -259,6 +259,8 @@ router.post('/contact', function (req, res) {
     }); */
 });
 
+// TODO: restore previous router.post('/posts, ...)
+
 router.get('/posts', auth.verifyJWT, function (req, res) {
   // set resposnse type to application/json
   res.setHeader('Content-Type', 'application/json');
@@ -281,7 +283,7 @@ router.get('/profile', auth.verifyJWT, function (req, res) {
       let jn = req.session.corper.statecode.toUpperCase()
 
       /**an array of all the local government in the state */
-      let lgas = jkl.states[ngplaces.states_short.indexOf(jn.slice(0, 2))][ngplaces.states_long[ngplaces.states_short.indexOf(jn.slice(0, 2))]];
+      let lgas = jkl.states[ngstates.states_short.indexOf(jn.slice(0, 2))][ngstates.states_long[ngstates.states_short.indexOf(jn.slice(0, 2))]];
       res.set('Content-Type', 'text/html');
       let info = {}
       query.GetPlacesByTypeInOurDB(req).then(data => {
@@ -293,7 +295,7 @@ router.get('/profile', auth.verifyJWT, function (req, res) {
           ppa_addresses: data.ppa_addresses,
           cities_towns: data.cities_towns,
           regions_streets: data.regions_streets,
-          states: ngplaces.states_long,
+          states: ngstates.states_long,
           lgas: lgas,
           current_year: new Date().getFullYear(),
           // picture_id: req.session.corper.picture_id,
@@ -323,7 +325,7 @@ router.get('/profile', auth.verifyJWT, function (req, res) {
           // statecode: req.session.corper.statecode.toUpperCase(),
           // servicestate: req.session.corper.servicestate.toUpperCase(),
           // batch: req.session.corper.batch,
-          states: ngplaces.states_long,
+          states: ngstates.states_long,
           lgas: lgas,
           current_year: new Date().getFullYear(),
           // ...(req.session.corper.picture_id) && {picture_id: req.session.corper.picture_id},
@@ -565,7 +567,7 @@ router.post('/updatesale', auth.verifyJWT, function (req, res) {
   return req.pipe(busboy)
 })
 
-router.post('/deleteaccommodation', auth.verifyJWT, function (req, res) {
+router.post('/olddeleteaccommodation', auth.verifyJWT, function (req, res) {
   const busboy = new Busboy({
     headers: req.headers,
     limits: { // set fields, fieldSize, and fieldNameSize later (security)
@@ -653,7 +655,7 @@ router.post('/addplace', upload.none(), function (req, res) {
 });
 
 
-router.post('/accommodations', auth.verifyJWT, /* upload.array('roomsmedia', 12), */ function (req, res) {
+router.post('/oldaccommodations', auth.verifyJWT, /* upload.array('roomsmedia', 12), */ function (req, res) {
 
   const busboy = new Busboy({
     headers: req.headers,

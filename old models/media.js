@@ -44,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
             }) : null;
         }
     },
-    alt_text: {
+    altText: {
         type: DataTypes.STRING,
     },
   }, {

@@ -11,7 +11,7 @@ module.exports = {
       urls: {
         type: Sequelize.STRING
       },
-      alt_text: {
+      altText: {
         type: Sequelize.STRING
       },
       createdAt: {

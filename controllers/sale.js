@@ -6,8 +6,6 @@ const saleService = require('../services').saleService
 
 router.post('/deletesale', auth.verifyJWT, express.json(), saleService.deleteSale);
 
-router.post('/posts', auth.verifyJWT, /* upload.array('see', 12), */ 
-    saleService.create
-);
+router.post('/posts', auth.verifyJWT, /* upload.array('see', 12), */ saleService.create);
 
 module.exports = router;

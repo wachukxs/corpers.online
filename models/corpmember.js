@@ -2,8 +2,31 @@
 const {
   Model
 } = require('sequelize');
+const moment = require('moment');
+const ngstates = require('../utilities/ngstates');
+
+/**
+ * use sparQL to show relationship between data ... show friend of a friend relationship ...esp between people selling and buyiing ... got introduced by Simeon
+ * @param {*} sequelize 
+ * @param {*} DataTypes 
+ * @returns 
+ */
 module.exports = (sequelize, DataTypes) => {
   class CorpMember extends Model {
+    getServiceState() {
+      return ngstates.states_long[ngstates.states_short.indexOf(this.statecode.slice(0, 2))];
+    }
+    /**
+     * CorpMember attributes without password
+     * impl idea from https://stackoverflow.com/a/66956107/9259701
+     * @returns array of attributes without password
+     */
+    static getSafeAttributes() {
+      let safeCorpMemberAttributes = Object.keys(CorpMember.rawAttributes)
+      safeCorpMemberAttributes.splice(safeCorpMemberAttributes.indexOf('password'), 1);
+      
+      return safeCorpMemberAttributes
+    }
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -47,7 +70,28 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       // allowNull defaults to true
       get() {
-        return ngstates.states_long[ngstates.states_short.indexOf(this.getDataValue(statecode).trim().slice(0, 2).toUpperCase())];
+        return this.getServiceState(); // return ngstates.states_long[ngstates.states_short.indexOf(this.getDataValue('statecode').trim().slice(0, 2).toUpperCase())];
+      }
+    },
+    createdAt: {
+      type: DataTypes.DATE
+    },
+    timeWithUs: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return moment(this.getDataValue('createdAt')).fromNow();
+      },
+      set(value) {
+        throw new Error('Do not try to set the CorpMember.`timeWithUs` value!');
+      }
+    },
+    _location: { // this will be depreciated soon
+      type: DataTypes.VIRTUAL,
+      get() {
+        return this.getServiceState() + (this.getDataValue('city_town') ? ', ' + this.getDataValue('city_town') : ''); // + (this.getDataValue('region_street') ? ', ' + this.getDataValue('region_street') : '' )
+      },
+      set(value) {
+        throw new Error('Do not try to set the CorpMember.`location` value!');
       }
     },
     batch: DataTypes.STRING,
@@ -56,10 +100,10 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
       set(value) { // not needed here??
         this.setDataValue('statecode', value.toUpperCase());
-      },
-      get() {
-        return this.getDataValue(statecode).toUpperCase();
       }
+    },
+    updatedAt: {
+      type: DataTypes.DATE
     },
     mediaId: {
       type: DataTypes.INTEGER

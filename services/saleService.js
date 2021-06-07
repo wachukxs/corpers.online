@@ -1,5 +1,6 @@
 const Sale = require('../models').Sale
 const Media = require('../models').Media
+const CorpMember = require('../models').CorpMember
 const helpers = require('../utilities/helpers')
 const Busboy = require('busboy');
 const ggle = require('../helpers/uploadgdrive');
@@ -12,7 +13,7 @@ module.exports = {
         
       return Sale.destory({
         where: {
-          post_time: req.body.post_time,
+          id: req.body.id, // saleId ?
           statecode: req.session.corper.statecode.toUpperCase() 
         }
       })
@@ -137,6 +138,9 @@ module.exports = {
     
       busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
         // console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+        
+        // should we do like we did for accommodation ?? ...yess , we'll check too
+        
         _text[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
         console.warn('fielddname Truncated:', fieldnameTruncated, valTruncated, transferEncoding, mimetype);
       });
@@ -155,34 +159,91 @@ module.exports = {
          * if _media is empty & _text is not, just boardcast text,
          * of course _text is NOT EMPTY, it must never be empty
          * 
+         * 
+         * Sale.getCorpMember()
+            Sale.setCorpMember()
+            Sale.createCorpMember()
+            Sale.getMedium()
+            Sale.setMedium()
+            Sale.createMedium()
          */
         if (!helpers.isEmpty(_text) && !helpers.isEmpty(uploadPromise)) {
           await Promise.all(uploadPromise);
           // console.log('what\'s _text?', _text)
-          Media.create({
+
+
+          // ===> https://github.com/sequelize/sequelize/issues/3807
+          
+          /* const _media_to_save = await Media.create({
             urls: (_media.length > 0 ? _media.toString() : _text.mapimage ? _text.mapimage : ''), // deal with mapimage later
-            // alt_text: '', // add later
-          }).then((_media_data) => {
-            console.log("saved media kini", _media_data);
-            console.log("\n media id", _media_data.dataValues.id);
-            Sale.create({
-              mediaId: _media_data.dataValues.id,
-              statecode: req.session.corper.statecode,
-              type: (_text.type ? _text.type : "sale"),
-              text: _text.text,
-              itemname: _text.itemname,
-              price: (_text.price ? _text.price : ""),
-              location: req.session.corper.location,
-              post_time: _text.post_time
-            })
-            .then(result => {
-              // then status code is good
+            // altText: '', // add later
+          });
+          const _sale_to_save = await Sale.create({
+            // mediaId: _media_to_save.id,
+            statecode: req.session.corper.statecode,
+            type: (_text.type ? _text.type : "sale"),
+            text: _text.text,
+            itemname: _text.itemname,
+            price: (_text.price ? _text.price : ""),
+            location: req.session.corper.location,
+            post_time: _text.post_time
+          }, {
+            include: [{ all: true }], // [{ all: true, nested: true }]
+          });
+          await _sale_to_save.setMedium(_media_to_save)
+          let _media_to_send = await _sale_to_save.getMedium() // can't call .toJSON()
+          let f = _sale_to_save.reload();
+          let jkl = _sale_to_save.get({
+            plain: true
+          })
+          console.log(f, "\n\n\n\n ===??++++ ///", jkl); */
+
+          const _sale_to_save = await Sale.create({
+            statecode: req.session.corper.statecode,
+            text: _text.text,
+            itemname: _text.itemname,
+            price: _text.price,
+            location: req.session.corper.location,
+            saleMedia: {
+              urls: (_media.length > 0 ? _media.toString() : _text.mapimage ? _text.mapimage : ''), // deal with mapimage later
+              // altText: '', // add later
+            }
+          }, {
+            include: [
+              {
+                model: Media,
+                as: 'saleMedia',
+              },
+              {
+                model: CorpMember,
+                as: 'saleByCorper',
+                attributes: CorpMember.getSafeAttributes()
+              }
+            ]
+          });
+
+          // https://stackoverflow.com/a/55113682/9259701 & https://github.com/sequelize/sequelize/issues/4970#issuecomment-161712562
+          const __model = Sale
+          for (let assoc of Object.keys(__model.associations)) {
+            for (let accessor of Object.keys(__model.associations[assoc].accessors)) {
+              console.log(__model.name + '.' + __model.associations[assoc].accessors[accessor]+'()');
+            }
+          }
+
+          let _media_to_send = await _sale_to_save.getSaleMedia()
+
+          // well, no need for media here
+          _sale_to_save.saleByCorper = await _sale_to_save.getSaleByCorper(); // role eyes ...fix this for sequelize ... it should auto do it ...
+          _sale_to_save.dataValues.saleByCorper = await _sale_to_save.getSaleByCorper();
+          
+          // console.log("\n associated media is", _media_to_send);
               res.sendStatus(200);
-              console.log("\n\n\n\nafter saving post\n\n:", result);
+              console.log("\n\n\n\nafter saving post\n\n:", _sale_to_save, "\n\n then the media", _media_to_send);
               // once it saves in db them emit to other users
               socket.of('/user').to(req.session.corper.statecode.substring(0, 2)).emit('boardcast message', {
                 to: 'be received by everyone else',
-                post: result.dataValues/* {
+                post: [_sale_to_save.toJSON()]
+                  /* {
                   statecode: req.session.corper.statecode,
                   location: req.session.corper.location,
                   media: false,
@@ -196,22 +257,12 @@ module.exports = {
                   picture_id: req.session.corper.picture_id
                 } */
               });
-            }, reject => {
-              console.log('rejected saving sale', reject)
-              res.sendStatus(500);
-            }).catch(reason => {
-              console.log('insert row failed', reason);
-              // res.sendStatus(500); // Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client // what's setting it first?
-            })
-          }, (err) => {
-            console.error("err saving media for post", err);
-            res.sendStatus(500);
-          })
+
           
         } else if (!helpers.isEmpty(_text) && helpers.isEmpty(uploadPromise)) {
           
     
-          Sale.create({
+          const _sale_to_save = await Sale.create({
             statecode: req.session.corper.statecode,
             type: (_text.type ? _text.type : "sale"),
             text: _text.text,
@@ -220,15 +271,21 @@ module.exports = {
             location: req.session.corper.location,
             post_time: _text.post_time
           })
-          .then(resolve => {
+         
             console.log('\n\nthe\nsale\nwe\nare\nsending', resolve);
             // then status code is good
             res.sendStatus(200);
+
+            // and no need for media here, since it's not included in the create method ... cause it's just gonna be null if we include it
+            _sale_to_save.saleByCorper = await _sale_to_save.getSaleByCorper();
+            _sale_to_save.dataValues.saleByCorper = await _sale_to_save.getSaleByCorper();
+
     
             // once it saves in db them emit to other users
             socket.of('/user').to(req.session.corper.statecode.substring(0, 2)).emit('boardcast message', {
               to: 'be received by everyoneELSE',
-              post: resolve/* {
+              post: [resolve]
+              /* {
                 statecode: req.session.corper.statecode,
                 location: req.session.corper.location,
                 media: (_media.length > 0 ? _media : false), // need to change this, just post _media, if it's empty, we'll check in frontend
@@ -243,14 +300,7 @@ module.exports = {
                 picture_id: req.session.corper.picture_id
               } */
             });
-          }, reject => {
-            // this is really important for the form to get response
-            console.log('why?', reject)
-            res.sendStatus(500); // === res.status(500).send('Internal Server Error')
-          }).catch(reason => {
-            res.sendStatus(500); //  Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
-            console.error('what happened?', reason)
-          })
+          
         }
       });
     

@@ -11,3 +11,9 @@ heroku logs -n 1500 --app corpers-online
 
 npx sequelize-cli migration:generate --name starting-again   
 
+
+# Create database specified by configuration
+sequelize db:create                         
+
+# Drop database specified by configuration
+sequelize db:drop 

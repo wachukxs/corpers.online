@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const query = require('../not_models/queries');
 const CorpMember = require('../models').CorpMember
 const PPA = require('../models').PPA
+const Media = require('../models').Media
 const helpers = require('../utilities/helpers')
 // FORMAT OF TOKEN
 // Authorization: Bearer <access_token>
@@ -50,14 +51,20 @@ module.exports.verifyJWT = (req, res, next) => {
                 console.log('catching this err because:');
                 res.status(502).redirect('/login?n=y') // [n]ot = [y]ou
             } else /* if (!req.session.corper) */ {
+
                 /**
                  * TODO: res.locals or req.session ?
+                 * 
+                 * HOW COME PASSWORDS AREN"T hashed
                  */
                 CorpMember.findOne({
                     where: { statecode: decodedToken.statecode.toUpperCase() },
                     include: [{
                         model: PPA
-                    }]
+                    },{
+                        model: Media
+                    }],
+                    attributes: CorpMember.getSafeAttributes()
                 })
                 // query.AutoLogin(decodedToken.statecode)
                 .then(result => {
@@ -67,7 +74,6 @@ module.exports.verifyJWT = (req, res, next) => {
                     } else { // else what ?
 
                     }
-                    // req.session.corper.location = result.response[0].servicestate + (result.response[0].city_town ? ', ' + result.response[0].city_town : ''); // + (results1[0].region_street ? ', ' + results1[0].region_street : '' )
                   
                   }, reject => {
               
@@ -123,7 +129,6 @@ module.exports.checkJWT = (req, res, next) => {
                 query.AutoLogin(decodedToken.statecode).then(result => {
                     console.info('\n\n\n\ninnnnn')
                     req.session.corper = result.response[0];
-                    req.session.corper.location = result.response[0].servicestate + (result.response[0].city_town ? ', ' + result.response[0].city_town : ''); // + (results1[0].region_street ? ', ' + results1[0].region_street : '' )
                   }, reject => {
                     // next() // no need
                   }).catch(reason => {

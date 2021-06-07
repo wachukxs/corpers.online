@@ -23,8 +23,17 @@ module.exports = (sequelize, DataTypes) => {
       Media.hasOne(models.PPA, {
         foreignKey: 'mediaId'
       });
+      Media.hasOne(models.Chat, {
+        foreignKey: 'mediaId'
+      });
+      Media.hasOne(models.Location, {
+        foreignKey: 'mediaId'
+      });
     }
   };
+  /**
+   * We should be saving media width and height ...so we can send to front end and do some image load optimizations
+   */
   Media.init({
     id: {
       allowNull: false,
@@ -42,13 +51,13 @@ module.exports = (sequelize, DataTypes) => {
         ]
       */
       get() {
-        const rawValue = this.getDataValue(urls);
+        const rawValue = this.getDataValue('urls');
         return rawValue ? rawValue.split(',').map(x => {
             return new URL(`/uc?id=${x}`, "https://drive.google.com").toString()
         }) : null;
       }
     },
-    alt_text: DataTypes.STRING
+    altText: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Media',

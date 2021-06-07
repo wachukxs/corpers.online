@@ -27,6 +27,12 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.INTEGER
     },
+    createdAt: {
+      type: DataTypes.DATE
+    },
+    updatedAt: {
+      type: DataTypes.DATE
+    },
     name: DataTypes.STRING,
     mediaId: {
       type:DataTypes.INTEGER

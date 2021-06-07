@@ -14,10 +14,12 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Sale.belongsTo(models.CorpMember, {
         targetKey: 'statecode',
-        foreignKey: 'statecode'
+        foreignKey: 'statecode',
+        as: 'saleByCorper'
       })
       Sale.belongsTo(models.Media, { // means Sale have a mediaId
-        foreignKey: 'mediaId'
+        foreignKey: 'mediaId',
+        as: 'saleMedia'
       })
     }
   };
@@ -38,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
     age: {
       type: DataTypes.VIRTUAL,
       get() {
-        return moment(this.createdAt).fromNow();
+        return moment(this.getDataValue('createdAt')).fromNow();
       },
       set(value) {
         throw new Error('Do not try to set the Sale.`age` value!');
@@ -47,11 +49,26 @@ module.exports = (sequelize, DataTypes) => {
     last_updated_age: { // do we need this ?
       type: DataTypes.VIRTUAL,
       get() {
-        return moment(this.updatedAt).fromNow();
+        return moment(this.getDataValue('updatedAt')).fromNow();
       },
       set(value) {
         throw new Error('Do not try to set the `last_updated_age` value!');
       }
+    },
+    type: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return 'sale';
+      },
+      set(value) {
+        throw new Error('Do not try to set the Sale.`type` value!');
+      }
+    },
+    createdAt: {
+      type: DataTypes.DATE
+    },
+    updatedAt: {
+      type: DataTypes.DATE
     }
   }, {
     sequelize,

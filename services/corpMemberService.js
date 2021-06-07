@@ -5,6 +5,7 @@ const helpers = require('../utilities/helpers')
 const jwt = require('jsonwebtoken')
 const sequelize = require('../not_models/db').sequelize
 const auth = require('../helpers/auth')
+
 /**
  * options for setting JWT cookies
  * 
@@ -97,7 +98,7 @@ module.exports = {
       return Chat
         .count({
           where: {
-            message_to: req.session.corper.statecode.toUpperCase(), // do we need .toUpperCase() ?
+            message_to: req.session.corper.statecode,
             message_sent: false,
             message: {
               [Op.not]: null

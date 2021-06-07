@@ -5,6 +5,7 @@ const CorpMember = require('../models').CorpMember
 const Accommodation = require('../models').Accommodation
 const Chat = require('../models').Chat
 const Sale = require('../models').Sale
+const Media = require('../models').Media
 const PPA = require('../models').PPA
 const { Op } = require("sequelize");
 
@@ -48,15 +49,15 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
     /** sender, statecode, type, text, price, location, post_time, input_time */
 
     // posts currently in user's time line is socket.handshake.query.[p|a]utl.split(',')
-    // console.log('socket.handshake.query', typeof socket.handshake.query, socket.handshake.query.putl)
+    // console.log('socket.handshake.query', typeof socket.handshake.query, socket.handshake.query.sutl)
 
-    let pUTL = socket.handshake.query.putl.split(',');
+    let sUTL = socket.handshake.query.sutl.split(',');
     let aUTL = socket.handshake.query.autl.split(',');
     
-    console.log('\nwhat is last in TL ? ', aUTL, pUTL);
-    // console.log('socket.handshake.query.putl after', typeof pUTL, aUTL)
+    console.log('\nwhat is last in TL ? ', aUTL, sUTL);
+    // console.log('socket.handshake.query.sutl after', typeof sUTL, aUTL)
     
-    // console.log('socket query parameter(s) [user timeline]\n', 'acc:' + aUTL.length, ' posts:' + pUTL.length); // if either equals 1, then user timeline is empty
+    // console.log('socket query parameter(s) [user timeline]\n', 'acc:' + aUTL.length, ' posts:' + sUTL.length); // if either equals 1, then user timeline is empty
 
     // SELECT * FROM posts WHERE post_time > 1545439085610 ORDER BY posts.post_time ASC (selects posts newer than 1545439085610 | or posts after 1545439085610)
 
@@ -71,7 +72,7 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
     
     // https://stackoverflow.com/a/22573495
     let aUTLlast = aUTL.slice(-1)[0] !== '' ? aUTL.slice(-1)[0] : null;
-    let pUTLlast = pUTL.slice(-1)[0] !== '' ? pUTL.slice(-1)[0] : null;
+    let sUTLlast = sUTL.slice(-1)[0] !== '' ? sUTL.slice(-1)[0] : null;
     try { // this try-catch block isn't necessary, just for testing I guess // ...
         if (aUTLlast) {
             let d, e;
@@ -82,20 +83,20 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
             e = moment(new Date(aUTLlast)).format('YYYY-MM-DD HH:mm:ss');
             console.log('the time', d, e);
         }
-    } catch (error) { // pUTLlast/aUTLlast must be null then
+    } catch (error) { // sUTLlast/aUTLlast must be null then
         console.log('err => ', error);
     }
     // remember to check if the query to know if the time is actually greater than or less
-    // console.log(e, 'time causing the ish', aUTL[aUTL.length - 1], pUTL[pUTL.length - 1]); // when timeline is empty, e is "Invalid Date"
+    // console.log(e, 'time causing the ish', aUTL[aUTL.length - 1], sUTL[sUTL.length - 1]); // when timeline is empty, e is "Invalid Date"
 
     // we stopped using sender column from posts table, so it's null !
     console.log('time line info =>', {
         statecode_substr: socket.handshake.query.statecode.substring(0, 2),
-        last_post_time: pUTLlast,
+        last_sale_time: sUTLlast,
         last_accommodation_time: aUTLlast
     });
 
-    CorpMember.findAll({ // also add PPA
+    /* CorpMember.findAll({ // also add PPA
         where: {
             statecode: {
                 [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`,
@@ -107,13 +108,14 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
                 statecode: {
                     [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`, // somewhat redundant
                 },
-                // [Op.gte]: 6,
-                ... (pUTLlast && {
+                ... (sUTLlast && {
                     createdAt: {
-                        [Op.gte]: pUTLlast,
+                        [Op.gt]: sUTLlast,
                 }})
             },
-            order: ['createAt', 'ASC']
+            order: [
+                ['createdAt', 'ASC']
+            ]
         },
         {
             model: Accommodation,
@@ -121,17 +123,19 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
                 statecode: {
                     [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`, // somewhat redundant
                 },
-                ... (pUTLlast && {
+                ... (sUTLlast && {
                     createdAt: {
-                        [Op.gte]: pUTLlast,
+                        [Op.gt]: sUTLlast,
                 }})
             },
-            order: ['createAt', 'ASC']
+            order: [
+                ['createdAt', 'ASC']
+            ]
         }]
     })
     // .toJSON()
     .then(_sales_accommodations => {
-        console.log("\n\n\n\n\n\ndid we get corp member's Sales n Accommodation?", _sales_accommodations);
+        // console.log("\n\n\n\n\n\ndid we get corp member's Sales n Accommodation?", _sales_accommodations);
         
         socket.emit('boardcast message', {
             to: 'be received by everyoneELSE',
@@ -141,7 +145,7 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
     }, (reject) => {
         socket.emit('boardcast message', {
             to: 'be received by everyoneELSE',
-            post: {} // object ?? _sales_accommodations is an array
+            post: []
         });
         console.error('uhmmmm not good', reject);
         console.log('emitting empty posts, first user or the tl is empty')
@@ -151,13 +155,115 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
         // right ?? ?? we can't just not send anything ...
         socket.emit('boardcast message', {
             to: 'be received by everyoneELSE',
-            post: {} // object ?? _sales_accommodations is an array
+            post: []
+        });
+    }) */
+
+    Sale.findAll({ // also add PPA
+        where: {
+            statecode: {
+                [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`,
+            },
+            ... (sUTLlast && {
+                createdAt: {
+                    [Op.gt]: sUTLlast,
+                }
+            })
+        },
+        order: [
+            ['createdAt', 'ASC']
+        ],
+        include: [
+            {
+                model: Media,
+                as: 'saleMedia',
+                
+            },
+            {
+                model: CorpMember,
+                as: 'saleByCorper',
+                attributes: CorpMember.getSafeAttributes()
+            }
+        ]
+    })
+    .then(_sales => {
+        // console.log("\n\n\n\n\n\ndid we get corp member's Sales?", _sales);
+        Accommodation.findAll({ // also add PPA
+            where: {
+                statecode: {
+                    [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`,
+                },
+                ... (aUTLlast && {
+                    createdAt: {
+                        [Op.gt]: aUTLlast,
+                    }
+                })
+            },
+            order: [
+                ['createdAt', 'ASC']
+            ],
+            include: [
+                {
+                    model: Media,
+                    as: 'accommodationMedia', // ideally we shouldn't do this ...but sequlize says we must ...will create an OS PR for it
+                },
+                {
+                    model: CorpMember,
+                    as: 'accommodationByCorper',
+                    attributes: CorpMember.getSafeAttributes()
+                }
+            ]
+        }).then(_accommodations => {
+            // console.log("\n\n\n\n\n\ndid we get corp member's Accommodation?", _accommodations);
+            // combine both ?? sort by
+            let _sales_accommodations = _sales.concat(_accommodations);
+            _sales_accommodations.sort((firstEl, secondEl) => { firstEl.creeatedAt - secondEl.creeatedAt });
+            
+            console.log("\n\n\n\n\n\ndid we all +?", _sales_accommodations);
+            socket.emit('boardcast message', {
+                to: 'be received by everyoneELSE',
+                post: _sales_accommodations
+            });
+    
+        }, (reject) => {
+            socket.emit('boardcast message', {
+                to: 'be received by everyoneELSE',
+                post: []
+            });
+            console.error('uhmmmm not good', reject);
+            console.log('emitting empty posts, first user or the tl is empty')
+        }).catch(reject => {
+            console.error('is this the error ?', reject);
+    
+            // right ?? ?? we can't just not send anything ...
+            socket.emit('boardcast message', {
+                to: 'be received by everyoneELSE',
+                post: []
+            });
+        })
+
+        
+
+    }, (reject) => {
+        socket.emit('boardcast message', {
+            to: 'be received by everyoneELSE',
+            post: []
+        });
+        console.error('uhmmmm not good', reject);
+        console.log('emitting empty posts, first user or the tl is empty')
+    }).catch(reject => {
+        console.error('is this the error ?', reject);
+
+        // right ?? ?? we can't just not send anything ...
+        socket.emit('boardcast message', {
+            to: 'be received by everyoneELSE',
+            post: []
         });
     })
 
     /* query.FetchPostsForTimeLine({
         statecode_substr: socket.handshake.query.statecode.substring(0, 2),
-        last_post_time: pUTLlast,
+        last_sale_time: sUTLlast,
         last_accommodation_time: aUTLlast
     }).then((allposts_results) => {
         Object.entries(allposts_results).forEach(
@@ -166,7 +272,7 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
                 // console.log('acc v:', value);
                 socket.emit('boardcast message', {
                     to: 'be received by everyoneELSE',
-                    post: value
+                    post: value // should be an array
                 });
 
             }
@@ -174,7 +280,7 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
     }, (reject) => {
         socket.emit('boardcast message', {
             to: 'be received by everyoneELSE',
-            post: {}
+            post: []
         });
         console.log('emitting empty posts, first user or the tl is empty');
     }).catch((reason) => {
@@ -221,7 +327,7 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
         }).then(result => {
             socket.in(socket.handshake.query.statecode.substring(0, 2)).emit('boardcast message', {
                 to: 'be received by everyoneELSE',
-                post: data
+                post: [data] // should be an array
             });
         }, reject => {
             console.log('failed to insert row in post table', reject);

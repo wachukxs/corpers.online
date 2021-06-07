@@ -2,12 +2,12 @@
 const mysql = require('mysql');
 
 const { Sequelize } = require('sequelize');
-// const sequelize = new Sequelize('postgres://ycybyhpxgggjsi:bf8ea71d22303ee9d15c73a9316425f967f59cc2e3a9324d2ad9f8f28f7ac829@ec2-34-195-233-155.compute-1.amazonaws.com:5432/d1losi9983knq5') // Example for postgres
-const sequelize = new Sequelize('d1losi9983knq5', 'ycybyhpxgggjsi', 'bf8ea71d22303ee9d15c73a9316425f967f59cc2e3a9324d2ad9f8f28f7ac829', {
-    host: 'ec2-34-195-233-155.compute-1.amazonaws.com', // 'localhost',
+// const sequelize = new Sequelize('postgres://btlnnbzltngela:19ed81ac999fb00a7137bb59a314a4fb2e087b8ad26a46ccb0280572059a46cb@ec2-52-5-247-46.compute-1.amazonaws.com:5432/dc46f9g2hh8hud') // Example for postgres
+const sequelize = new Sequelize('dc46f9g2hh8hud', 'btlnnbzltngela', '19ed81ac999fb00a7137bb59a314a4fb2e087b8ad26a46ccb0280572059a46cb', {
+    host: 'ec2-52-5-247-46.compute-1.amazonaws.com', // 'localhost',
     dialect: 'postgres', // one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' 
     port: 5432,
-    ssl: true,
+    ssl: false,
     logging: (...opts) => console.log(opts, '\n\n'), // can really customize
     // retry: ,
     dialectOptions: { // https://stackoverflow.com/a/64960461/9259701
@@ -38,10 +38,8 @@ sequelize.authenticate().then(() => {
 }).catch((err) => {
     console.error('oopsy error connecting to postgre db with Sequelize', err)
 })
-sequelize.afterSync('sth sync', ()=>{
-  console.log('======(()@((@\n\n\n\n\n\nn\n',sequelize.models)
-})
-sequelize.sync({ alter: true })
+
+// sequelize.sync({ alter: true })
 
 sequelize.getQueryInterface().showAllSchemas().then((tableObj) => {
   console.log('\n\n\n\t\t// Tables in database','==========================');
@@ -58,11 +56,11 @@ sequelize.getQueryInterface().showAllTables().then((_tables) => {
 })
 
 sequelize.getQueryInterface().describeTable({
-  tableName: 'Accommodation'
+  tableName: 'CorpMembers'
 }).then((_data) => {
-  console.log('\n\n\n\n Accommodation table', _data);
+  // console.log('\n\n\n\n CorpMembers table', _data);
 }).catch(err => {
-  console.error('err describing Accommodation table', err);
+  console.error('err describing CorpMembers table', err);
 })
 /*
 var mysqloptions = {
