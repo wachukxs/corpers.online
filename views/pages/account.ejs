@@ -1901,104 +1901,102 @@
                                 
                                 let jk = data.post[post_index].accommodationMedia.urls.length;
 
-if (jk.length > 0) { // the carousel
-    let gg = document.createElement('div');
-    gg.setAttribute('id', 'carousel' + data.post[post_index].createdAt); // each carousel has unique id with input time maybe new Date(data.post[post_index].input_time)
-    gg.setAttribute('class', 'carousel slide carousel-fade');
-    gg.setAttribute('data-ride', 'carousel');
 
-    // the indicators for the corousel
-    let ind = document.createElement('ol');
-    ind.setAttribute('class', 'carousel-indicators bg-dark');
+                                // todo: if it's only one picture... don't show indicators
+                                if (jk > 0) { // the carousel
+                                    let gg = document.createElement('div');
+                                    gg.setAttribute('id', 'carousel' + new Date(data.post[post_index].createdAt).getTime()); // each carousel has unique id with input time maybe new Date(data.post[post_index].input_time)
+                                    gg.setAttribute('class', 'carousel slide carousel-fade');
+                                    gg.setAttribute('data-ride', 'carousel');
 
-    // the carousel inner
-    let cinn = document.createElement('div');
-    cinn.setAttribute('class', 'carousel-inner');
+                                    // the indicators for the corousel
+                                    let ind = document.createElement('ol');
+                                    ind.setAttribute('class', 'carousel-indicators bg-dark');
 
+                                    // the carousel inner
+                                    let cinn = document.createElement('div');
+                                    cinn.setAttribute('class', 'carousel-inner');
 
-    for (let i = 0; i < jk.length; i++) { // the actual indicators
-        let aind = document.createElement('li');
-        aind.setAttribute('data-target', '#carousel' + data.post[post_index].createdAt); // the # is important
-        aind.setAttribute('data-slide-to', i);
+                                    // the actual indicators
+                                    for (let i = 0; i < jk; i++) {
+                                        let aind = document.createElement('li');
+                                        aind.setAttribute('data-target', '#carousel' + new Date(data.post[post_index].createdAt).getTime()); // the # is important
+                                        aind.setAttribute('data-slide-to', i);
 
-        ind.appendChild(aind);
+                                        ind.appendChild(aind);
 
-        // the carousel items
-        let ci = document.createElement('div');
-        ci.setAttribute('class', 'carousel-item' + (
-            i == 0 ? ' active' : ''
-        )); // the first carousel item must be active
+                                        // the carousel items
+                                        let ci = document.createElement('div');
+                                        ci.setAttribute('class', 'carousel-item' + (
+                                            i == 0 ? ' active' : ''
+                                        )); // the first carousel item must be active
 
-        cinn.appendChild(ci);
+                                        cinn.appendChild(ci);
 
-        cimg = document.createElement('img');
-        cimg.setAttribute('class', 'd-block img-fluid mx-auto');
-        cimg.setAttribute('loading', 'lazy');
-        // cimg.setAttribute('src', (window.location.hostname == "localhost" ? new URL(`/uc?id=${jk[i]}`, "https://drive.google.com").toString() : 'https://corpers.online/') + jk[i]);
-        cimg.setAttribute('src', new URL(`/uc?id=${
-            jk[i]
-        }`, "https://drive.google.com").toString());
-        cimg.setAttribute('alt', `Might be a picture of a ${
-            (rms[i] == undefined ? rms[0] : rms[i])
-        }`);
-        // this is not exactly correct, needs more work
+                                        cimg = document.createElement('img');
+                                        cimg.setAttribute('class', 'd-block img-fluid mx-auto');
+                                        cimg.setAttribute('loading', 'lazy');
+                                        cimg.setAttribute('src', data.post[post_index].accommodationMedia.urls[i]);
+                                        console.log('[][]', data.post[post_index].accommodationMedia.urls[i]);
+                                        cimg.setAttribute('alt', `Might be a picture of a ${''}`); // will add this later
+                                        // this is not exactly correct, needs more work
 
 
-        // for each carousel item, append to it the image and explanatory/description div
-        ci.appendChild(cimg);
+                                        // for each carousel item, append to it the image and explanatory/description div
+                                        ci.appendChild(cimg);
 
 
-        // the descriptions [we aren't adding the right descriptions]
-        // let thed = document.createElement('div');
-        // thed.setAttribute('class', 'carousel-caption d-none d-md-block');
+                                        // the descriptions [we aren't adding the right descriptions]
+                                        // let thed = document.createElement('div');
+                                        // thed.setAttribute('class', 'carousel-caption d-none d-md-block');
 
-        let hh5 = document.createElement('h3');
-        // // jk[i].includes(rms[ i ]);
-        // // let tr = jk[i].slice(parseInt(jk[i]).toString().length, jk[i].lastIndexOf('.'));
-        // hh5.innerText = `${(rms[i] == undefined ? rms[0] : rms[i])}`;
-        // // hh5.innerText = ( rms[ i ] == undefined ? rms[ 0 ] : rms[ i ] ); // this is not exactly correct, needs more work
+                                        let hh5 = document.createElement('h3');
+                                        // // jk[i].includes(rms[ i ]);
+                                        // // let tr = jk[i].slice(parseInt(jk[i]).toString().length, jk[i].lastIndexOf('.'));
+                                        // hh5.innerText = `${(rms[i] == undefined ? rms[0] : rms[i])}`;
+                                        // // hh5.innerText = ( rms[ i ] == undefined ? rms[ 0 ] : rms[ i ] ); // this is not exactly correct, needs more work
 
-        // // let ppp = document.createElement( 'p' );
-        // // ppp.innerText = `Maybe some metric about ${(rms[i] == undefined ? rms[0] : rms[i])}`; // this is not exactly correct, needs more work
+                                        // // let ppp = document.createElement( 'p' );
+                                        // // ppp.innerText = `Maybe some metric about ${(rms[i] == undefined ? rms[0] : rms[i])}`; // this is not exactly correct, needs more work
 
-        // append h5 and p to description div
-        // thed.appendChild(hh5);
-        // // thed.appendChild( ppp );
+                                        // append h5 and p to description div
+                                        // thed.appendChild(hh5);
+                                        // // thed.appendChild( ppp );
 
-        // then ...
-        // ci.appendChild(thed);
-        // end of the descriptions
+                                        // then ...
+                                        // ci.appendChild(thed);
+                                        // end of the descriptions
 
-    };
-    gg.appendChild(ind);
-    gg.appendChild(cinn);
+                                    };
+                                    gg.appendChild(ind);
+                                    gg.appendChild(cinn);
 
-    
-    // append the other indicators here
+                                    
+                                    // append the other indicators here
 
-    for (let index = 0; index <= 1; index++) { // 2nd indicators
-        let aind2 = document.createElement('a');
-        aind2.setAttribute('class', 'carousel-control-' + (
-        index == 0 ? 'prev' : 'next'
-    ) + ' bg-secondary');
-        aind2.setAttribute('href', '#carousel' + data.post[post_index].createdAt);
-        aind2.setAttribute('data-slide', (index == 0 ? 'prev' : 'next'));
-        aind2.setAttribute('style', 'top: 43%; bottom: 43%;');
-        aind2.setAttribute('role', 'button');
-        aind2.setAttribute('title', (index == 0 ? 'Previous room' : 'Next room'));
+                                    for (let index = 0; index <= 1; index++) { // 2nd indicators
+                                        let aind2 = document.createElement('a');
+                                        aind2.setAttribute('class', 'carousel-control-' + (
+                                            index == 0 ? 'prev' : 'next'
+                                        ) + ' bg-secondary');
+                                        aind2.setAttribute('href', '#carousel' + new Date(data.post[post_index].createdAt).getTime());
+                                        aind2.setAttribute('data-slide', (index == 0 ? 'prev' : 'next'));
+                                        aind2.setAttribute('style', 'top: 43%; bottom: 43%;');
+                                        aind2.setAttribute('role', 'button');
+                                        aind2.setAttribute('title', (index == 0 ? 'Previous room' : 'Next room'));
 
-        let aind2icon = document.createElement('span');
-        aind2icon.setAttribute('class', 'carousel-control-' + (index == 0 ? 'prev' : 'next') + '-icon');
-        aind2icon.setAttribute('aria-hidden', 'true');
+                                        let aind2icon = document.createElement('span');
+                                        aind2icon.setAttribute('class', 'carousel-control-' + (index == 0 ? 'prev' : 'next') + '-icon');
+                                        aind2icon.setAttribute('aria-hidden', 'true');
 
-        aind2.appendChild(aind2icon);
-        // append the other indicators here
-        gg.appendChild(aind2);
-    }
+                                        aind2.appendChild(aind2icon);
+                                        // append the other indicators here
+                                        gg.appendChild(aind2);
+                                    }
 
-    g.appendChild(gg);
+                                    g.appendChild(gg);
 
-}
+                                }
 
                                 }
 
@@ -2455,15 +2453,18 @@ if (jk.length > 0) { // the carousel
                             }" name="${
                                 file.size
                             }" style="border-radius: 0rem;">
-                                        <option selected>Choose...</option>
+                                        <option selected value="">Choose...</option>
                                         <option value="Bathroom">Bathroom</option>
                                         <option value="Sitting Room">Sitting Room</option>
                                         <option value="Toilet">Toilet</option>
                                         <option value="Kitchen">Kitchen</option>
                                         <option value="Bathroom & Toilet">Bathroom & Toilet</option>
+                                        <option value="Hallway or Corridor">Hallway/Corridor</option>
+                                        <option value="Frontage">Frontage</option>
                                     </select>
                                 </div>
                             </div>`);
+                            // the options should be what they selected the house has, right ??
                             
                             
                             // will uncomment later
