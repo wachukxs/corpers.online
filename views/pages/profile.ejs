@@ -7,8 +7,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="assets/images/1/favicon.ico" type="image/x-icon">
-
-    <title>Edit profile &#183; <%= statecode %></title>
+    
+    <title>Edit profile &#183; <%= corper.statecode %></title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
@@ -74,17 +74,17 @@
 
       <div class="pt-5 text-center">
         <!-- their profile picture -->
-        <%#= console.log(picture_id) %>
+        
         <div style="display: flex;">
           <div>
-            <a href="/<%= statecode %>">&larr; Your page</a>
+            <a href="/<%= corper.statecode %>">&larr; Your page</a>
           </div>
           <img class="d-block mr-auto mb-4 rounded head-pic"
-          src="<%- ( picture_id ? 'https://drive.google.com/uc?id=' + picture_id : 'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E' + statecode.slice(0, 2) + ' ' + statecode.slice(3, 5) + '%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E' ) %>" alt="<%= statecode %> profile picture"
+          src="<%- ( corper.mediaId ? corper.Medium.urls[0] : 'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E' + corper.statecode.slice(0, 2) + ' ' + corper.statecode.slice(3, 5) + '%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E' ) %>" alt="<%= corper.statecode %> profile picture"
             width="72" height="72">
             
         </div>
-        <h2><%= statecode %></h2>
+        <h2><%= corper.statecode %></h2>
         <p class="lead">Profile update.</p>
       </div>
 
@@ -199,12 +199,12 @@
                     <select id="servicestate" name="servicestate" class="custom-select" disabled required>
                       <!-- use server side to render all this list and choose the one the user is from -->
                       <% for (i = 0; i < states.length; i++) { %>
-                      <option value="<%= states[i] %>" <%= (servicestate == states[i] ? 'selected="true"' : '') %>>
+                      <option value="<%= states[i] %>" <%= (corper.servicestate == states[i] ? 'selected="true"' : '') %>>
                         <%= states[i] %></option>
                       <% } %>
                     </select>
                     <div class="invalid-feedback">
-                      Uhmm, I think we've got this handled
+                      Uhmm, I think we've got this handled <!-- ??? why this ?? -->
                     </div>
                     <div class="custom-control custom-checkbox">
                       <input name="relocated" type="checkbox" class="custom-control-input" id="relocated" value="relocated">
@@ -215,7 +215,9 @@
                     <label for="lgas">LGA</label>
                     <select name="lga" id="lgas" class="custom-select">
                       <% for (i = 0; i < lgas.length; i++) { %>
-                      <option value="<%= lgas[i] %>" <%= (lga == lgas[i] ? 'selected="true"' : '') %>><%= lgas[i] %></option>
+                        <option value="<%= lgas[i] %>" <%- (corper.lga && corper.lga == lgas[i] ? 'selected="true"' : '') %>>
+                          <%= lgas[i] %>
+                        </option>
                       <% } %>
                     </select>
                     <div class="invalid-feedback">
@@ -227,7 +229,7 @@
                 <div class="row">
                   <div class="col-md-6 mb-3">
                     <label for="city_town">City or Town</label>
-                    <input type="text" value="<%= city_town %>" class="form-control" name="city_town" id="city_town" placeholder="">
+                    <input type="text" value="<%= corper.city_town %>" class="form-control" name="city_town" id="city_town" placeholder="">
                     <!--not really required-->
                     <div class="invalid-feedback">
                       Please select a valid city or town.
@@ -235,7 +237,7 @@
                   </div>
                   <div class="col-md-6 mb-3">
                     <label for="region_street">Street <!-- or Region --><span class="text-muted">(Optional)</span></label>
-                    <input type="text" class="form-control" value="<%= region_street %>" name="region_street" id="region_street" placeholder="">
+                    <input type="text" class="form-control" value="<%= corper.region_street %>" name="region_street" id="region_street" placeholder="">
                     <div class="invalid-feedback">
                       Please provide a valid region or street name.
                     </div>
@@ -252,7 +254,7 @@
                 <div class="row">
                   <div class="col-md-6 mb-3">
                     <label for="stream">Stream</label>
-                    <input type="number" <%= (stream ? 'value=' + stream : '') %> min="1" max="3" list="stream" class="form-control" name="stream" id=""
+                    <input type="number"  value="<%= (corper.stream ? corper.stream : '') %>" min="1" max="3" list="stream" class="form-control" name="stream" id=""
                       placeholder="Select 1, 2 or 3">
                     <datalist id="stream">
                       <option value="1">1</option>
@@ -307,7 +309,7 @@
                           .style.display = 'none';
                         // set the value back to the default
                         document.getElementById('servicestate')
-                          .value = "<%= servicestate %>";
+                          .value = "<%= corper.servicestate %>";
                       }
     
                       // make this call once! how ? by putting it outside the change event listener, and always using it's results once we notice a change
@@ -386,12 +388,14 @@
                   <div class="col-md-6 mb-3">
                     <label for="name_of_ppa">Name of PPA</label>
                     <input type="text" class="form-control" list="names" name="name_of_ppa" id="name_of_ppa" placeholder=""
-                    value="<%= name_of_ppa %>">
-                    <% if (names_of_ppas.length > 0) { %>
+                    value="<%= (corper.PPA ? corper.PPA.name : '') %>">
+                    <% if (ppas.length > 0) { %>
                     <datalist id="names">
-                      <% for (let q = 0; q < names_of_ppas.length; q++) { %>
+                      <% for (let q = 0; q < ppas.length; q++) { %>
     
-                      <option value="<%= names_of_ppas[q].name_of_ppa %>"><%= names_of_ppas[q].name_of_ppa %></option>
+                      <option value="<%= ppas[q].name %>">
+                        <%= ppas[q].name %>
+                      </option>
     
                       <% } %>
                     </datalist>
@@ -410,7 +414,7 @@
                   </div>
                   <div class="col-md-6 mb-3">
                     <label for="type_of_ppa">Type of Institution</label> <!--Should be like a dropdown or have suggestions list-->
-                    <input type="text" value="<%= type_of_ppa %>" class="form-control" name="type_of_ppa" id="type_of_ppa" <%= (type_of_ppa ? 'value=' + type_of_ppa : '') %> placeholder="" required>
+                    <input type="text" value="<%= (corper.PPA ? corper.PPA.type_of_ppa : '') %>" class="form-control" name="type_of_ppa" id="type_of_ppa" placeholder="" required>
                     <small class="text-muted">School, Bank, Hospital, Gov Institution, etc.</small>
                     <div class="invalid-feedback">
                       This helps us easily categorize.
@@ -429,22 +433,25 @@
                   <label for="ppa_address">PPA address</label>
                   <div class="input-group">
                     <input type="text" class="form-control" list="ppaaddr" name="ppa_address" id="ppa_address"
-                      placeholder="Rehoboth Model Academy, Umuahia" value="<%= ppa_address %>">
+                      placeholder="Rehoboth Model Academy, Umuahia" value="<%= (corper.PPA ? corper.PPA.Location.address : '') %>">
                     <div class="input-group-append">
                       <a id="geo" class="btn btn-secondary">Geo</a>
                     </div>
                   </div>
-                  <% if (ppa_addresses.length > 0) { %>
+                  
+                  <% if (ppas.length > 0) { %>
                   <datalist id="ppaaddr">
-                    <% for (let q = 0; q < ppa_addresses.length; q++) { %>
+                    <% for (let w = 0; w < ppas.length; w++) { %>
     
-                    <option value="<%= ppa_addresses[q].ppa_address %>"><%= ppa_addresses[q].name_of_ppa %></option>
+                    <option value="<%= ppas[w].Location.address %>"><%= ppas[w].name %></option>
     
                     <% } %>
                   </datalist>
                   <% } %>
-                  <small class="text-muted">If you're at your PPA right now, help other corpers find it! Click the 'Geo' button to
-                    save your PPA on the map.</small>
+
+                  <small class="text-muted">
+                    If you're at your PPA right now, help other corpers find it! Click the 'Geo' button to save your PPA on the map.
+                  </small>
                   <!-- if we already have a very accurate location of the ppa, we don't need geo, but if we don't have then we can show geo and ask the user to help us locate it -->
                   <!-- <div class="input-group">
                     <div class="input-group-prepend">
@@ -497,7 +504,9 @@
                 <div class=" mb-3">
                   <label for="lgas">Directions</label>
                   <textarea class="form-control" name="ppa_directions" id="pd" spellcheck="true"
-                    placeholder="Please give directions to the PPA from a popular nearby junction or hard-to-miss building"><%= ppa_directions %></textarea>
+                    placeholder="Please give directions to the PPA from a popular nearby junction or hard-to-miss building">
+                    <%= (corper.PPA ? corper.PPA.Location.directions : '') %>
+                  </textarea>
                 </div>
     
                 <script>
@@ -679,7 +688,7 @@
                 <div class="row">
                   <div class="col-md-6 mb-3">
                     <label for="travel_from_state">Origin state</label>
-                    <select id="travel_from_state" name="travel_from_state" class="custom-select d-block w-100" value="<%= travel_from_state %>">
+                    <select id="travel_from_state" name="travel_from_state" class="custom-select d-block w-100" value="<%= (corper.travel_from_state ? corper.travel_from_state : '') %>"><!--needs work, won't work ...different case-->
                       <option value="Abia">Abia</option>
                       <option value="Adamawa">Adamawa</option>
                       <option value="Akwa Ibom">Akwa Ibom</option>
@@ -724,7 +733,7 @@
                   </div>
                   <div class="col-md-6 mb-3">
                     <label for="travel_from_city">Origin city or town <span class="text-muted">(Optional)</span></label>
-                    <input type="text" class="form-control" id="travel_from_city" value="<%= travel_from_city %>" name="travel_from_city" placeholder="">
+                    <input type="text" class="form-control" id="travel_from_city" value="<%= (corper.travel_from_city ? corper.travel_from_city '') %>" name="travel_from_city" placeholder="">
                     <div class="invalid-feedback">
                       Please name a place
                     </div>
@@ -734,7 +743,7 @@
                   <label for="accommodation_location">Where did you find accomodation <span
                       class="text-muted">(Optional)</span></label>
                   <input type="text" name="accommodation_location" class="form-control" id="accomodation_location"
-                    placeholder="What part of town is it?" <%= (accommodation_location ? 'value=' + accommodation_location : '') %>>
+                    placeholder="What part of town is it?" value="<%= (corper.accommodation_location ? corper.accommodation_location : '') %>">
                   <small class="text-muted">Please enter a known area, or be at least specific.</small>
                   <div class="invalid-feedback">
                     Please enter the name of a place or an area.
@@ -746,11 +755,11 @@
                     <label for="name_of_ppa">Want an SPA ?</label>
                     <div class="d-block">
                       <div class="custom-control custom-radio">
-                        <input id="yes" value="1" name="wantspaornot" type="radio" class="custom-control-input" <%= (wantspaornot === 1 ? "checked=true" : wantspaornot === 0 ? "checked=false" : "" ) %>>
+                        <input id="yes" value="1" name="wantspaornot" type="radio" class="custom-control-input" checked="<%- (corper.wantspaornot && corper.wantspaornot === 1 ? 'true' : 'false' : '' ) %>">
                         <label class="custom-control-label" for="yes">Yes</label>
                       </div>
                       <div class="custom-control custom-radio">
-                        <input id="no" value="0" name="wantspaornot" type="radio" class="custom-control-input" <%= (wantspaornot === 1 ? "checked=true" : wantspaornot === 0 ? "checked=false" : "" ) %>>
+                        <input id="no" value="0" name="wantspaornot" type="radio" class="custom-control-input" checked="<%- (corper.wantspaornot || corper.wantspaornot === 0 ? 'true' : 'false' : '' ) %>">
                         <label class="custom-control-label" for="no">No</label>
                       </div>
                     </div>
@@ -763,11 +772,11 @@
                     <label for="name_of_ppa">In search for an accommodation ?</label>
                     <div class="d-block">
                       <div class="custom-control custom-radio">
-                        <input id="yes" value="1" name="accommodationornot" type="radio" class="custom-control-input" <%= (accommodationornot === 1 ? "checked=true" : accommodationornot === 0 ? "checked=false" : "" ) %>>
+                        <input id="yes" value="1" name="accommodationornot" type="radio" class="custom-control-input" checked="<%- (corper.accommodationornot && corper.accommodationornot === 1 ? 'true' : 'false' : '' ) %>">
                         <label class="custom-control-label" for="yes">Yes</label>
                       </div>
                       <div class="custom-control custom-radio">
-                        <input id="no" value="0" name="accommodationornot" type="radio" class="custom-control-input" <%= (accommodationornot === 1 ? "checked=true" : accommodationornot === 0 ? "checked=false" : "" ) %>>
+                        <input id="no" value="0" name="accommodationornot" type="radio" class="custom-control-input" checked="<%- (corper.accommodationornot || corper.accommodationornot === 0 ? 'true' : 'false' : '' ) %>">
                         <label class="custom-control-label" for="no">No</label>
                       </div>
                     </div>
@@ -782,11 +791,12 @@
     
                 <div class="d-block my-3">
                   <div class="custom-control custom-radio">
-                    <input id="credit" value="1" name="public_profile" type="radio" class="custom-control-input" <%= (public_profile === 1 ? "checked=true" : public_profile === 0 ? "checked=false" : "" ) %>>
+                    <input id="credit" value="1" name="public_profile" type="radio" class="custom-control-input" checked="<%- (corper.public_profile && corper.public_profile === 1 ? 'true' : 'false' : '' ) %>">
                     <label class="custom-control-label" for="credit">Publicly visible</label>
                   </div>
                   <div class="custom-control custom-radio">
-                    <input id="debit" value="0" name="public_profile" type="radio" class="custom-control-input" <%= (public_profile === 1 ? "checked=true" : public_profile === 0 ? "checked=false" : "" ) %>>
+                    <!-- we'll tell them to should make public so they can easily connect with others esp. during project work ... make Nigeria great (not sure it was before, so we can't say 'again') -->
+                    <input id="debit" value="0" name="public_profile" type="radio" class="custom-control-input" checked="<%- (corper.public_profile || corper.public_profile === 0 ? 'true' : 'false' : '' ) %>">
                     <label class="custom-control-label" for="debit">Publicly invisible</label>
                   </div>
                   <small class="text-muted">A publicly visible profile means you can <b>search for other corpers</b> and <b>be seen by them too</b>.
@@ -797,7 +807,9 @@
     
                     <label for="bio">Profile</label>
                     <textarea class="form-control" name="bio" id="bio"
-                      placeholder="I'm a graphic designer. Get in touch if you like to travel. I'm your plug for all things phones. I'd love to visit Idanre hills before the service year is over, who's in?"><%= bio %></textarea>
+                      placeholder="I'm a graphic designer. Get in touch if you like to travel. I'm your plug for all things phones. I'd love to visit Idanre hills before the service year is over, who's in?">
+                      <%= (corper.bio ? corper.bio : '') %>
+                    </textarea>
       
                     <small class="text-muted">What do you want other corpers to know about you? What you do, what you love doing?</small>
                     
@@ -815,8 +827,8 @@
                   </div>
                   <div class="col-md-3 mb-3">
                     <!--preview-->
-                    <img id="profile-picture-preview" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E<%= statecode.slice(0, 2) %> <%= statecode.slice(3, 5) %> %3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E"
-                    alt="<%= statecode %> profile picture preview" class="rounded-circle">
+                    <img id="profile-picture-preview" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E<%= corper.statecode.slice(0, 2) %> <%= corper.statecode.slice(3, 5) %> %3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E"
+                    alt="<%= corper.statecode %> profile picture preview" class="rounded-circle">
                     <br/>
                     <small class="text-muted">Picture preview</small>
                   </div>
@@ -853,22 +865,25 @@
               <a class="" href="#!" data-toggle="collapse" data-target="#collapseAccommodations" aria-expanded="false" aria-controls="collapseAccommodations">
                 <div><span class="badge badge-pill badge-primary" id="accommodation-arrow">&#8594;</span> Accommodations</div>
               </a>
+              <!--
+                use an if tag to only show if there are accommodations
+              -->
               <div class="collapse show" id="collapseAccommodations">
                 <hr class="my-4">
                 <div class="row row-cols-1 row-cols-md-2 accommodation-div">
-                  <% for (acc_index = 0; acc_index < accommodation_posts.length; acc_index++) { %>
+                  <% for (acc_index = 0; acc_index < corper.Accommodation.length; acc_index++) { %>
                     <div class="col" data-acc_div_index="<%= acc_index %>">
                       <div class="card mb-3" style="max-width: 540px;">
                         <div class="row no-gutters">
                           <div class="col-md-4">
-                            <img class="accommodation-posts-preview-image" src="<%= 'https://drive.google.com/uc?id=' + accommodation_posts[acc_index].media.split(',')[0] %>" alt="Image of the accommodation">
+                            <img class="accommodation-posts-preview-image" src="<%= (corper.Accommodation[acc_index].mediaId ? corper.Accommodation[acc_index].media.urls[0] : '') %>" alt="Image of the accommodation">
                           </div>
                           <div class="col-md-8">
                             <div class="card-body">
-                              <h5 class="card-title" data-index="<%= acc_index %>"><%= accommodation_posts[acc_index].address %></h5>
-                              <p class="card-text" data-index="<%= acc_index %>"><%= accommodation_posts[acc_index].directions %></p>
-                              <p class="card-text"><small class="text-muted">Posted <%= new Intl.DateTimeFormat("en" , {dateStyle: "long"}).format(new Date(accommodation_posts[acc_index].input_time)) %></small></p>
-                              <a href="#" class="btn btn-primary" data-index="<%= acc_index %>" data-post_time="<%= accommodation_posts[acc_index].post_time %>" data-toggle="modal" data-target="#deleteAccommodationModal">Delete</a>
+                              <h5 class="card-title" data-index="<%= acc_index %>"><%= corper.Accommodation[acc_index].address %></h5>
+                              <p class="card-text" data-index="<%= acc_index %>"><%= corper.Accommodation[acc_index].directions %></p>
+                              <p class="card-text"><small class="text-muted">Posted <%= new Intl.DateTimeFormat("en" , {dateStyle: "long"}).format(new Date(corper.Accommodation[acc_index].createdAt)) %></small></p>
+                              <a href="#" class="btn btn-primary" data-index="<%= acc_index %>" data-post_time="<%= corper.Accommodation[acc_index].post_time %>" data-toggle="modal" data-target="#deleteAccommodationModal">Delete</a>
                               <a href="#" class="btn btn-outline-primary" data-toggle="modal" data-index="<%= acc_index %>" data-target="#editAccommodationModal">Edit</a>
                             </div>
                           </div>
@@ -1100,7 +1115,7 @@
                   $('#accommodation-arrow').html('&#8595;')
                 })
 
-                let accommodation_posts = <%- JSON.stringify(accommodation_posts) %>; // TODO : update this variable when they update a post ... for sales too
+                let accommodation_posts = <%- JSON.stringify(corper.Accommodation) %>; // TODO : update this variable when they update a post ... for sales too
                 $('#editAccommodationModal').on('show.bs.modal', function (event) {
                   let button = $(event.relatedTarget) // Button that triggered the modal
                   let index = button.data('index') // Extract info from data-* attributes
@@ -1113,7 +1128,7 @@
                   modal.find('.modal-body #type').val(accommodation_posts[index].type)
                   modal.find('.modal-body #address').val(accommodation_posts[index].address)
   
-                  let _rooms = accommodation_posts[index].rooms.split(',')
+                  let _rooms = accommodation_posts[index].availableRooms
                   for (let index = 0; index < _rooms.length; index++) {
                     modal.find(`:checkbox[value=${_rooms[index]}]`).prop("checked", true);
                   }
@@ -1342,19 +1357,19 @@
               <div class="collapse" id="collapseSales">
                 <hr class="my-4">
                 <div class="row row-cols-1 row-cols-md-2 sale-div">
-                  <% for (sales_index = 0; sales_index < sales_posts.length; sales_index++) { %>
+                  <% for (sales_index = 0; sales_index < corper.Sales.length; sales_index++) { %>
                     <div class="col" data-sale_div_index="<%= sales_index %>">
                       <div class="card mb-3" style="max-width: 540px;">
                         <div class="row no-gutters">
                           <div class="col-md-4">
-                            <img class="accommodation-posts-preview-image" src="<%= 'https://drive.google.com/uc?id=' + sales_posts[sales_index].media.split(',')[0] %>" alt="Image of the sale">
+                            <img class="accommodation-posts-preview-image" src="<%= (corper.Sales[sales_index].mediaId ? corper.Sales[sales_index].media.urls[0] : '') %>" alt="Image of the sale">
                           </div>
                           <div class="col-md-8">
                             <div class="card-body">
-                              <h5 class="card-title" data-index="<%= sales_index %>"><%= sales_posts[sales_index].itemname %></h5>
-                              <p class="card-text">&#8358;<span data-index="<%= sales_index %>"><%= sales_posts[sales_index].price %></span></p>
-                              <p class="card-text"><small class="text-muted">Posted <%= new Intl.DateTimeFormat("en" , {dateStyle: "long"}).format(new Date(sales_posts[sales_index].input_time)) %></small></p>
-                              <a href="#" class="btn btn-primary" data-index="<%= sales_index %>" data-post_time="<%= sales_posts[sales_index].post_time %>" data-toggle="modal" data-target="#deleteSaleModal">Delete</a>
+                              <h5 class="card-title" data-index="<%= sales_index %>"><%= corper.Sales[sales_index].itemname %></h5>
+                              <p class="card-text">&#8358;<span data-index="<%= sales_index %>"><%= corper.Sales[sales_index].price %></span></p>
+                              <p class="card-text"><small class="text-muted">Posted <%= new Intl.DateTimeFormat("en" , {dateStyle: "long"}).format(new Date(corper.Sales[sales_index].createdAt)) %></small></p>
+                              <a href="#" class="btn btn-primary" data-index="<%= sales_index %>" data-post_time="<%= corper.Sales[sales_index].post_time %>" data-toggle="modal" data-target="#deleteSaleModal">Delete</a>
                               <a href="#" class="btn btn-outline-primary" data-toggle="modal" data-index="<%= sales_index %>" data-target="#editSaleModal">Edit</a>
                             </div>
                           </div>
@@ -1422,7 +1437,7 @@
                   $('#sales-arrow').html('&#8595;')
                 })
 
-                let sales_posts = <%- JSON.stringify(sales_posts) %>;
+                let sales_posts = <%- JSON.stringify(corper.Sales) %>;
                 $('#editSaleModal').on('show.bs.modal', function (event) {
                   let button = $(event.relatedTarget) // Button that triggered the modal
                   let index = button.data('index') // Extract info from data-* attributes
