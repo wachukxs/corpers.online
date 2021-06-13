@@ -1318,8 +1318,8 @@
                                         </li>
                                         <li>
                                             PPA at
-                                            <a href="<%= ( PPA ? '#!/places?nop=' + PPA.name_of_ppa : '/profile#PPA' ) %>">
-                                                <%= ( PPA ? PPA.name_of_ppa : '?' ) %>
+                                            <a href="<%= ( ppaId ? '#!/places?nop=' + PPA.name : '/profile#PPA' ) %>">
+                                                <%= ( ppaId ? PPA.name : '?' ) %>
                                             </a>
                                         </li>
                                     </ul>

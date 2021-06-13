@@ -23,6 +23,8 @@ router.get('/login', function (req, res) {
     res.render('pages/login', { current_year: new Date().getFullYear() });
 });
 
+router.get('/profile', auth.verifyJWT, corpMemberService.getProfile)
+
 
 
 module.exports = router;

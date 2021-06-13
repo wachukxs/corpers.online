@@ -24,9 +24,21 @@ module.exports = {
       },
       ppaId: {
         type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: 'PPA',
+          },
+          key: 'id'
+        },
       },
       CorpMemberId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: 'CorpMembers',
+          },
+          key: 'id'
+        },
       },
     });
   },

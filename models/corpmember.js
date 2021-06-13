@@ -34,7 +34,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      CorpMember.hasMany(models.Sale, {
+      // CorpMember is source, PPA is target (foreignKey is in CORPMEMBER)
+      CorpMember.belongsTo(models.PPA, {
+        foreignKey: 'ppaId',
+      })
+
+      CorpMember.hasMany(models.Sale, { // if you want a unique name for when you do CorpMember.findOne({}) etc, put an `as` attrribute here
         foreignKey: 'statecode', // should we use statecode or id ? what if they update their statecode ? we'd mass update it
         sourceKey: 'statecode'
       });
@@ -42,16 +47,14 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'statecode',
         sourceKey: 'statecode'
       })
-      CorpMember.belongsTo(models.PPA)
+      
       CorpMember.belongsTo(models.Media, { // This creates the `mediaId` foreign key in CorpMember.
         foreignKey: 'mediaId',
-        
       })
       CorpMember.hasMany(models.Location) // Location should have an array of all the corp member who have edited or confirmed it's location
     }
   };
   CorpMember.init({
-    PPAId: DataTypes.INTEGER,
     id: {
       allowNull: false,
       autoIncrement: true,
@@ -60,11 +63,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     travel_from_city: DataTypes.STRING,
     travel_from_state: DataTypes.STRING,
-    accommodation_location: DataTypes.STRING,
+    accommodation_location: DataTypes.STRING, // needs to change!! put in location model
     region_street: DataTypes.STRING,
     city_town: DataTypes.STRING,
     email: DataTypes.STRING,
-    lga: DataTypes.STRING,
+    lga: DataTypes.STRING, // shouldn't this be nested
     stream: DataTypes.STRING,
     servicestate: {
       type: DataTypes.STRING,
@@ -73,8 +76,11 @@ module.exports = (sequelize, DataTypes) => {
         return this.getServiceState(); // return ngstates.states_long[ngstates.states_short.indexOf(this.getDataValue('statecode').trim().slice(0, 2).toUpperCase())];
       }
     },
-    createdAt: {
-      type: DataTypes.DATE
+    createdAt: { // convert to string, it causes error for .ejs template ...plus it's just safer to have '2021-06-12T18:44:22.683Z' in stead of 2021-06-12T18:44:22.683Z
+      type: DataTypes.DATE,
+      // get() {
+      //   return new Date(this.getDataValue('createdAt')).getTime();
+      // },
     },
     timeWithUs: {
       type: DataTypes.VIRTUAL,
@@ -102,18 +108,27 @@ module.exports = (sequelize, DataTypes) => {
         this.setDataValue('statecode', value.toUpperCase());
       }
     },
-    updatedAt: {
-      type: DataTypes.DATE
+    updatedAt: { // convert to string, it causes error for .ejs template ...plus it's just safer to have '2021-06-12T18:44:22.683Z' in stead of 2021-06-12T18:44:22.683Z
+      type: DataTypes.DATE,
+      // get() {
+      //   return new Date(this.getDataValue('updatedAt')).getTime() ;
+      // },
     },
     mediaId: {
       type: DataTypes.INTEGER
     },
+
+    ppaId: DataTypes.INTEGER,
     password: DataTypes.STRING,
     middlename: DataTypes.STRING,
     firstname: DataTypes.STRING,
     lastname: DataTypes.STRING,
     email: DataTypes.STRING,
-    password: DataTypes.STRING
+    password: DataTypes.STRING,
+    wantspaornot: DataTypes.BOOLEAN,
+    accommodationornot: DataTypes.BOOLEAN,
+    public_profile: DataTypes.BOOLEAN,
+    bio: DataTypes.TEXT,
   }, {
     sequelize,
     modelName: 'CorpMember',

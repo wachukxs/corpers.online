@@ -275,7 +275,7 @@ router.get('/posts', auth.verifyJWT, function (req, res) {
 });
 
 /**the new profile page */
-router.get('/profile', auth.verifyJWT, function (req, res) {
+router.get('/oldprofile', auth.verifyJWT, function (req, res) {
   fs.readFile('./utilities/ngstateslga.json', (err, data) => {
     let jkl = JSON.parse(data);
     // let's hope there's no err

@@ -8,6 +8,9 @@ const http = require('http');
 const port = parseInt(process.env.PORT, 10) || parseInt(process.env.LOCAL_PORT, 10) || 3000;
 app.set('port', port); // necessary ?
 
+// https://stackoverflow.com/a/12875087/9259701
+app.locals.version = new Date().getFullYear();
+
 // Create HTTP server.
 const server = http.createServer(app);
 

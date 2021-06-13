@@ -21,6 +21,9 @@ module.exports = {
       mediaId: {
         type: Sequelize.INTEGER,
       },
+      locationId: {
+        type: Sequelize.INTEGER
+      },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE

@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      PPAId: {
+      ppaId: {
         type: Sequelize.INTEGER,
       },
       travel_from_city: {
@@ -73,7 +73,22 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
-      }
+      },
+      wantspaornot: {
+        type: Sequelize.BOOLEAN,
+        default: false
+      },
+      accommodationornot: {
+        type: Sequelize.BOOLEAN,
+        default: false
+      },
+      public_profile: {
+        type: Sequelize.BOOLEAN,
+        default: false
+      },
+      bio: {
+        type: Sequelize.TEXT
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {

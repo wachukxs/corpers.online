@@ -124,7 +124,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING
       // allowNull defaults to true
     },
-    PPAId: { // shouldn't be doing this ...will resolve later
+    ppaId: { // shouldn't be doing this ...will resolve later
       type: DataTypes.INTEGER
     }
   }, {

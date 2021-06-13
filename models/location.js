@@ -11,9 +11,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Location.belongsTo(models.Media, { // means Chat have a mediaId
+      Location.belongsTo(models.Media, { // means Location have a mediaId
         foreignKey: 'mediaId'
       })
+      Location.hasOne(models.PPA, { // means Location has ppaId
+        foreignKey: 'ppaId'
+      });
     }
   };
   Location.init({
@@ -26,13 +29,18 @@ module.exports = (sequelize, DataTypes) => {
     mediaId: {
       type:DataTypes.INTEGER
     },
+    ppaId: {
+      type:DataTypes.INTEGER
+    },
     createdAt: {
       type: DataTypes.DATE
     },
     updatedAt: {
       type: DataTypes.DATE
     },
-    directions: DataTypes.STRING
+    directions: DataTypes.STRING,
+    address: DataTypes.STRING,
+    CorpMemberId: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Location',

@@ -1,10 +1,17 @@
 const CorpMember = require('../models').CorpMember
 const Chat = require('../models').Chat
+const PPA = require('../models').PPA
+const Accommodation = require('../models').Accommodation
+const Sale = require('../models').Sale
+const Media = require('../models').Media
+const Location = require('../models').Location
 const { Op } = require("sequelize");
 const helpers = require('../utilities/helpers')
 const jwt = require('jsonwebtoken')
 const sequelize = require('../not_models/db').sequelize
 const auth = require('../helpers/auth')
+const fs = require('fs');
+const ngstates = require('../utilities/ngstates')
 
 /**
  * options for setting JWT cookies
@@ -116,7 +123,7 @@ module.exports = {
             console.log('showAlltable ERROR',err);
           })
 
-          // res.set('Content-Type', 'text/html'); // causes ERR_HTTP_HEADERS_SENT
+          // res.set('Content-Type', 'text/html') // causes ERR_HTTP_HEADERS_SENT
           res.render('pages/account', {
             statecode: req.session.corper.statecode.toUpperCase(),
             batch: req.params['3'],
@@ -126,7 +133,7 @@ module.exports = {
         }, reject => {
           console.log('why TF?!', reject);
 
-          res.set('Content-Type', 'text/html');
+          // res.set('Content-Type', 'text/html')
           res.render('pages/account', {
             statecode: req.session.corper.statecode.toUpperCase(),
             servicestate: req.session.corper.servicestate, // isn't this Duplicated
@@ -203,5 +210,165 @@ module.exports = {
         console.error('catching CorpersLogin() err because:', reason);
         res.status(502).redirect('/login?t=a')
       })
+    },
+
+    getProfile(req, res) {
+      fs.readFile('./utilities/ngstateslga.json', (err, data) => {
+        let jkl = JSON.parse(data);
+        // let's hope there's no err
+    
+          let jn = req.session.corper.statecode.toUpperCase()
+    
+          /**an array of all the local government in the state */
+          let lgas = jkl.states[ngstates.states_short.indexOf(jn.slice(0, 2))][ngstates.states_long[ngstates.states_short.indexOf(jn.slice(0, 2))]];
+          // res.set('Content-Type', 'text/html');
+          let _info = { // TODO: fill up info object with corp member data so incase of failure, profile page is loaded with corpers' information
+            corper: {},
+            ppas: [],
+            states: ngstates.states_long,
+            lgas,
+            current_year: new Date().getFullYear() // will have no need when we start using express locals
+          }
+
+          CorpMember.findOne({
+            where: {
+                statecode: {
+                    [Op.eq]: req.session.corper.statecode,
+                }
+            },
+            include: [
+              {
+                model: Media,
+              },
+              {
+                model: Sale,
+                order: [
+                    ['createdAt', 'ASC']
+                ],
+              },
+              {
+                model: Accommodation,
+                order: [
+                    ['createdAt', 'ASC']
+                ],
+              },
+              {
+                model: PPA,
+                include: [{
+                  model: Location
+                }],
+                // as: 'ppa',
+                attributes: PPA.getAllActualAttributes() // hot fix (problem highlighted in ./models/ppa.js) -- > should create a PR to fix it ... related to https://github.com/sequelize/sequelize/issues/13309
+              }
+            ],
+            attributes: CorpMember.getSafeAttributes()
+        })
+        // .toJSON()
+        .then(_corper_sales_accommodations_ppa => {
+
+          // _corper_sales_accommodations_ppa.dataValues.createdAt = _corper_sales_accommodations_ppa.dataValues.createdAt.toString()
+          // _corper_sales_accommodations_ppa.dataValues.updatedAt = _corper_sales_accommodations_ppa.dataValues.updatedAt.toString()
+
+            console.log("\n\n\n\n\n\ndid we get corp member's Sales n Accommodation n ppa?", _corper_sales_accommodations_ppa);
+
+            _info.corper = _corper_sales_accommodations_ppa.dataValues;
+            PPA.findAll({
+              // where: { // how do we get PPAs from only a certain state! and even narrow it down to region
+              //     statecode: { // doesn't exist on PPA model.
+              //         [Op.eq]: `${req.session.corper.statecode.substring(0, 2)}`, // somewhat redundant
+              //     },
+              // },
+              attributes: PPA.getAllActualAttributes() // hot fix (problem highlighted in ./models/ppa.js) -- > should create a PR to fix it ... related to https://github.com/sequelize/sequelize/issues/13309
+            }).then(_all_ppas => {
+                  console.log('all ppas', _all_ppas); // uncomment to check later
+                  _info.ppas = _all_ppas;
+                  console.log('we good good on profile', _info);
+                  res.render('pages/profile', _info);
+            }, _err_all_ppas => {
+
+                res.render('pages/profile', _info, (err, html) => {
+                  console.error('err rendering profile page', err, html);
+                });
+                console.error('uhmmmm agina not good', _err_all_ppas);
+            }).catch(reject => {
+
+              console.error('is this the error ???>>>', reject);
+              // right ?? ?? we can't just not send anything ...
+              res.render('pages/profile', _info);
+            })
+            
+            
+    
+        }, (reject) => {
+          res.render('pages/profile', _info);
+            console.error('uhmmmm not good', reject);
+            console.log('emitting empty posts, first user or the tl is empty')
+        }).catch(reject => {
+            console.error('is this the error ?', reject);
+    
+            // right ?? ?? we can't just not send anything ...
+            res.render('pages/profile', _info);
+        })
+
+
+
+
+        /*
+          query.GetPlacesByTypeInOurDB(req).then(data => {
+            info = {
+              // statecode: req.session.corper.statecode.toUpperCase(),
+              // servicestate: req.session.corper.servicestate.toUpperCase(),
+              // batch: req.session.corper.batch,
+              names_of_ppas: data.names_of_ppas, // array of objects ie names_of_ppas[i].name_of_ppa
+              ppa_addresses: data.ppa_addresses,
+              cities_towns: data.cities_towns,
+              regions_streets: data.regions_streets,
+              states: ngstates.states_long,
+              lgas: lgas,
+              current_year: new Date().getFullYear(),
+              // picture_id: req.session.corper.picture_id,
+              ...req.session.corper
+              // select all distinct ppa type / address / name and send it to the front end as suggestions for the input when the corpers type
+            }
+            // console.log('data going to /profile page', info);
+            return info
+          }, reject => {
+            
+            throw reject
+          }).then(_info => {
+            query.GetCorperPosts(req.session.corper.statecode.toUpperCase())
+              .then(val => { // val is an array of two arrays. each of these array contain objects of posts and accomodations
+                console.log(' testing', val);
+                _info.sales_posts = val[0] // array of objects
+                _info.accommodation_posts = val[1] // array of objects
+                res.render('pages/profile', _info);
+              }, err => {
+                console.error('testing ===', err)
+              })
+          }, err => {
+            throw err
+          }).catch((err) => { // we should have this .catch on every query
+            console.error('our system should\'ve crashed:', err)
+            info = {
+              // statecode: req.session.corper.statecode.toUpperCase(),
+              // servicestate: req.session.corper.servicestate.toUpperCase(),
+              // batch: req.session.corper.batch,
+              states: ngstates.states_long,
+              lgas: lgas,
+              current_year: new Date().getFullYear(),
+              // ...(req.session.corper.picture_id) && {picture_id: req.session.corper.picture_id},
+              ...req.session.corper
+            }
+            info.sales_posts = [] // array of objects
+            info.accommodation_posts = [] // array of objects
+            res.status(502).render('pages/profile', info) // we should tell you an error occured
+          })
+          */
+    
+      })
+    },
+
+    postProfile(req, res) {
+
     }
 }

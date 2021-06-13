@@ -214,6 +214,11 @@
                   <div class="col-md-6 mb-3">
                     <label for="lgas">LGA</label>
                     <select name="lga" id="lgas" class="custom-select">
+                      <% if (!corper.lga) { %>
+                        <option value="">
+                          Select LGA
+                        </option>
+                      <% } %>
                       <% for (i = 0; i < lgas.length; i++) { %>
                         <option value="<%= lgas[i] %>" <%- (corper.lga && corper.lga == lgas[i] ? 'selected="true"' : '') %>>
                           <%= lgas[i] %>

@@ -17,3 +17,14 @@ sequelize db:create
 
 # Drop database specified by configuration
 sequelize db:drop 
+
+
+# Add ejs linter to comman line
+PATH=$PATH:/Users/chuks/Documents/Work/corpers.online/node_modules/ejs-lint/node_modules/.bin
+
+# /Users/chuks/Documents/Work/corpers.online/node_modules/ejs-lint/node_modules/ejs/usage.txt
+
+# https://ionicabizau.github.io/ejs-playground/
+
+# sample ejslint command to lint a file
+ejs ./views/pages/profile.ejs

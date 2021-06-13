@@ -23,6 +23,15 @@ module.exports = {
           key: 'id'
         },
       },
+      locationId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: 'Location',
+          },
+          key: 'id'
+        },
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

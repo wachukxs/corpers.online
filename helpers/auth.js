@@ -57,13 +57,17 @@ module.exports.verifyJWT = (req, res, next) => {
                  * 
                  * HOW COME PASSWORDS AREN"T hashed
                  */
+                // console.log(Object.keys(PPA.rawAttributes)); // here lies a problem
                 CorpMember.findOne({
                     where: { statecode: decodedToken.statecode.toUpperCase() },
-                    include: [{
-                        model: PPA
-                    },{
-                        model: Media
-                    }],
+                    // include: [{ all: true }],
+                    include: [ // why is it looking for ppaId in PPA model ?? cause of bug in sequelize
+                        Media,
+                        {
+                            model:PPA,
+                            attributes: PPA.getAllActualAttributes() // hot fix (problem highlighted in ./models/ppa.js) -- > should create a PR to fix it ... related to https://github.com/sequelize/sequelize/issues/13309
+                        },
+                    ],
                     attributes: CorpMember.getSafeAttributes()
                 })
                 // query.AutoLogin(decodedToken.statecode)
@@ -71,10 +75,11 @@ module.exports.verifyJWT = (req, res, next) => {
                     console.log('corper result object', result);
                     if (result) { // sometimes, it's null ...but why though ? // on sign up it's null ...
                         req.session.corper = result.dataValues;
-                    } else { // else what ?
-
+                        next()
+                    } else { // else what ? //
+                        throw new Error('Could not find corper')
                     }
-                  
+
                   }, reject => {
               
                     console.log('auth autologin catching this err because:', reject);
@@ -85,7 +90,7 @@ module.exports.verifyJWT = (req, res, next) => {
                     res.status(502).redirect('/login?t=a')
                   }).finally(() => {
                       console.log('\nfinlly next?');
-                      next() // very crucial
+                      // next() // very crucial
                   })
             }
         })

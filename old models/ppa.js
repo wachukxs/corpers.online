@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       PPA.hasMany(models.CorpMember, {
-        foreignKey: 'PPAId',
+        foreignKey: 'ppaId',
         // targetKey: 'id'
       })
     }

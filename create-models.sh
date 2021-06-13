@@ -4,7 +4,7 @@
 
 # also "age:virtual," ",last_updated_age:virtual"
 
-npx sequelize-cli model:generate --name CorpMember --attributes PPAId:integer,travel_from_city:string,travel_from_state:string,accommodation_location:string,region_street:string,city_town:string,email:string,lga:string,stream:string,servicestate:string,batch:string,statecode:string,password:string,middlename:string,firstname:string,lastname:string,email:string,password:string
+npx sequelize-cli model:generate --name CorpMember --attributes ppaId:integer,travel_from_city:string,travel_from_state:string,accommodation_location:string,region_street:string,city_town:string,email:string,lga:string,stream:string,servicestate:string,batch:string,statecode:string,password:string,middlename:string,firstname:string,lastname:string,email:string,password:string
 
 npx sequelize-cli model:generate --name PPA --attributes name:string,type_of_ppa:string
 
