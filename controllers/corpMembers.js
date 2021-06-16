@@ -25,6 +25,6 @@ router.get('/login', function (req, res) {
 
 router.get('/profile', auth.verifyJWT, corpMemberService.getProfile)
 
-
+router.post('/profile', auth.verifyJWT, corpMemberService.postProfile)
 
 module.exports = router;

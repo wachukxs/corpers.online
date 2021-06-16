@@ -345,7 +345,7 @@ router.get('/oldprofile', auth.verifyJWT, function (req, res) {
  * when they change their statecode, it should redirect to their new statecode
  * 
  * */
-router.post('/profile', auth.verifyJWT, /* bodyParser.urlencoded({
+router.post('/oldprofile', auth.verifyJWT, /* bodyParser.urlencoded({
   extended: true
 }), */ function (req, res) {
   const busboy = new Busboy({

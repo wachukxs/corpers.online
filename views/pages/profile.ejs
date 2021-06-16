@@ -190,8 +190,7 @@
             <!-- main form -->
             <div class="col-md-8 order-md-1">
               <h4 class="mb-3">Service details</h4><!--fill the form values if the corper has filled them before-->
-              <form class="needs-validation" action="/profile" method="POST" enctype="multipart/form-data"
-                novalidate>
+              <form class="needs-validation" id="profile-form">
                 <div class="row">
                   <div class="col-md-6 mb-3">
                     <label for="servicestate">Service state</label>
@@ -392,7 +391,7 @@
                 <div class="row">
                   <div class="col-md-6 mb-3">
                     <label for="name_of_ppa">Name of PPA</label>
-                    <input type="text" class="form-control" list="names" name="name_of_ppa" id="name_of_ppa" placeholder=""
+                    <input type="text" class="form-control" list="names" name="name_of_ppa" id="name_of_ppa" placeholder="St. Marys Model Secondary School"
                     value="<%= (corper.PPA ? corper.PPA.name : '') %>">
                     <% if (ppas.length > 0) { %>
                     <datalist id="names">
@@ -438,7 +437,7 @@
                   <label for="ppa_address">PPA address</label>
                   <div class="input-group">
                     <input type="text" class="form-control" list="ppaaddr" name="ppa_address" id="ppa_address"
-                      placeholder="Rehoboth Model Academy, Umuahia" value="<%= (corper.PPA ? corper.PPA.Location.address : '') %>">
+                      placeholder="Opposite Ijukaya Estate, Favos, Umuahia" value="<%= (corper.PPA ? corper.PPA.Location.address : '') %>">
                     <div class="input-group-append">
                       <a id="geo" class="btn btn-secondary">Geo</a>
                     </div>
@@ -509,9 +508,7 @@
                 <div class=" mb-3">
                   <label for="lgas">Directions</label>
                   <textarea class="form-control" name="ppa_directions" id="pd" spellcheck="true"
-                    placeholder="Please give directions to the PPA from a popular nearby junction or hard-to-miss building">
-                    <%= (corper.PPA ? corper.PPA.Location.directions : '') %>
-                  </textarea>
+                    placeholder="Please give directions to the PPA from a popular nearby junction or hard-to-miss building"><%= (corper.PPA ? corper.PPA.Location.directions : '') %></textarea>
                 </div>
     
                 <script>
@@ -693,43 +690,13 @@
                 <div class="row">
                   <div class="col-md-6 mb-3">
                     <label for="travel_from_state">Origin state</label>
-                    <select id="travel_from_state" name="travel_from_state" class="custom-select d-block w-100" value="<%= (corper.travel_from_state ? corper.travel_from_state : '') %>"><!--needs work, won't work ...different case-->
-                      <option value="Abia">Abia</option>
-                      <option value="Adamawa">Adamawa</option>
-                      <option value="Akwa Ibom">Akwa Ibom</option>
-                      <option value="Anambra">Anambra</option>
-                      <option value="Bauchi">Bauchi</option>
-                      <option value="Bayelsa">Bayelsa</option>
-                      <option value="Benue">Benue</option>
-                      <option value="Borno">Borno</option>
-                      <option value="Cross River">Cross River</option>
-                      <option value="Delta">Delta</option>
-                      <option value="Ebonyi">Ebonyi</option>
-                      <option value="Enugu">Enugu</option>
-                      <option value="Edo">Edo</option>
-                      <option value="Ekiti">Ekiti</option>
-                      <option value="Gombe">Gombe</option>
-                      <option value="Imo">Imo</option>
-                      <option value="Jigawa">Jigawa</option>
-                      <option value="Kaduna">Kaduna</option>
-                      <option value="Kano">Kano</option>
-                      <option value="Kastina">Kastina</option>
-                      <option value="Kebbi">Kebbi</option>
-                      <option value="Kogi">Kogi</option>
-                      <option value="Kwara">Kwara</option>
-                      <option value="Lagos">Lagos</option>
-                      <option value="Nasarawa">Nasarawa</option>
-                      <option value="Niger">Niger</option>
-                      <option value="Ogun">Ogun</option>
-                      <option value="Ondo">Ondo</option>
-                      <option value="Osun">Osun</option>
-                      <option value="Oyo">Oyo</option>
-                      <option value="Plateau">Plateau</option>
-                      <option value="Rivers">Rivers</option>
-                      <option value="Sokoto">Sokoto</option>
-                      <option value="Taraba">Taraba</option>
-                      <option value="Yobe">Yobe</option>
-                      <option value="Zamfara">Zamfara</option>
+                    <select id="travel_from_state" name="travel_from_state" class="custom-select d-block w-100" ><!--needs work, won't work ...different case-->
+                      <% if (!corper.travel_from_state) { %>
+                        <option value="">Select</option>
+                      <% } %>
+                      <% for (states_index = 0; states_index < states.length; states_index++) { %>
+                        <option value="<%= states[states_index] %>" <%- (corper.travel_from_state && corper.travel_from_state == states[states_index] ? "selected='true'" : '') %> ><%= states[states_index] %></option>
+                      <% } %>
                     </select>
                     <small class="text-muted">Where did you travel from for NYSC?</small>
                     <div class="invalid-feedback">
@@ -760,12 +727,12 @@
                     <label for="name_of_ppa">Want an SPA ?</label>
                     <div class="d-block">
                       <div class="custom-control custom-radio">
-                        <input id="yes" value="1" name="wantspaornot" type="radio" class="custom-control-input" checked="<%- (corper.wantspaornot && corper.wantspaornot === 1 ? 'true' : 'false' ) %>">
-                        <label class="custom-control-label" for="yes">Yes</label>
+                        <input id="wantspaornot_yes" value="1" name="wantspaornot" type="radio" class="custom-control-input" checked="<%- (corper.wantspaornot && corper.wantspaornot === 1 ? 'true' : 'false' ) %>">
+                        <label class="custom-control-label" for="wantspaornot_yes">Yes</label>
                       </div>
                       <div class="custom-control custom-radio">
-                        <input id="no" value="0" name="wantspaornot" type="radio" class="custom-control-input" checked="<%- (corper.wantspaornot || corper.wantspaornot === 0 ? 'true' : 'false'  ) %>">
-                        <label class="custom-control-label" for="no">No</label>
+                        <input id="wantspaornot_no" value="0" name="wantspaornot" type="radio" class="custom-control-input" checked="<%- (corper.wantspaornot || corper.wantspaornot === 0 ? 'true' : 'false'  ) %>">
+                        <label class="custom-control-label" for="wantspaornot_no">No</label>
                       </div>
                     </div>
                     <small class="text-muted">An SPA is a side job you do during your Service Year for extra cash. A
@@ -777,12 +744,12 @@
                     <label for="name_of_ppa">In search for an accommodation ?</label>
                     <div class="d-block">
                       <div class="custom-control custom-radio">
-                        <input id="yes" value="1" name="accommodationornot" type="radio" class="custom-control-input" checked="<%- (corper.accommodationornot && corper.accommodationornot === 1 ? 'true' : 'false'  ) %>">
-                        <label class="custom-control-label" for="yes">Yes</label>
+                        <input id="accommodationornot_yes" value="1" name="accommodationornot" type="radio" class="custom-control-input" checked="<%- (corper.accommodationornot && corper.accommodationornot === 1 ? 'true' : 'false'  ) %>">
+                        <label class="custom-control-label" for="accommodationornot_yes">Yes</label>
                       </div>
                       <div class="custom-control custom-radio">
-                        <input id="no" value="0" name="accommodationornot" type="radio" class="custom-control-input" checked="<%- (corper.accommodationornot || corper.accommodationornot === 0 ? 'true' : 'false' ) %>">
-                        <label class="custom-control-label" for="no">No</label>
+                        <input id="accommodationornot_no" value="0" name="accommodationornot" type="radio" class="custom-control-input" checked="<%- (corper.accommodationornot || corper.accommodationornot === 0 ? 'true' : 'false' ) %>">
+                        <label class="custom-control-label" for="accommodationornot_no">No</label>
                       </div>
                     </div>
                     <small class="text-muted">Default is 'yes.' If you choose no, we'll stop showing you posts about accommodations up for rent.</small>
@@ -796,13 +763,13 @@
     
                 <div class="d-block my-3">
                   <div class="custom-control custom-radio">
-                    <input id="credit" value="1" name="public_profile" type="radio" class="custom-control-input" checked="<%- (corper.public_profile && corper.public_profile === 1 ? 'true' : 'false'  ) %>">
-                    <label class="custom-control-label" for="credit">Publicly visible</label>
+                    <input id="public_profile_yes" value="1" name="public_profile" type="radio" class="custom-control-input" checked="<%- (corper.public_profile && corper.public_profile === 1 ? 'true' : 'false'  ) %>">
+                    <label class="custom-control-label" for="public_profile_yes">Publicly visible</label>
                   </div>
                   <div class="custom-control custom-radio">
                     <!-- we'll tell them to should make public so they can easily connect with others esp. during project work ... make Nigeria great (not sure it was before, so we can't say 'again') -->
-                    <input id="debit" value="0" name="public_profile" type="radio" class="custom-control-input" checked="<%- (corper.public_profile || corper.public_profile === 0 ? 'true' : 'false' ) %>">
-                    <label class="custom-control-label" for="debit">Publicly invisible</label>
+                    <input id="public_profile_no" value="0" name="public_profile" type="radio" class="custom-control-input" checked="<%- (corper.public_profile || corper.public_profile === 0 ? 'true' : 'false' ) %>">
+                    <label class="custom-control-label" for="public_profile_no">Publicly invisible</label>
                   </div>
                   <small class="text-muted">A publicly visible profile means you can <b>search for other corpers</b> and <b>be seen by them too</b>.
                   </small>
@@ -812,9 +779,7 @@
     
                     <label for="bio">Profile</label>
                     <textarea class="form-control" name="bio" id="bio"
-                      placeholder="I'm a graphic designer. Get in touch if you like to travel. I'm your plug for all things phones. I'd love to visit Idanre hills before the service year is over, who's in?">
-                      <%= (corper.bio ? corper.bio : '') %>
-                    </textarea>
+                      placeholder="I'm a graphic designer. Get in touch if you like to travel. I'm your plug for all things phones. I'd love to visit Idanre hills before the service year is over, who's in?"><%= (corper.bio ? corper.bio : '') %></textarea>
       
                     <small class="text-muted">What do you want other corpers to know about you? What you do, what you love doing?</small>
                     
@@ -862,9 +827,6 @@
         </div>
         <div class="tab-pane fade" id="post-history" role="tabpanel" aria-labelledby="post-history-tab">
 
-          <div class="fixed-bottom" id="alert-div">
-          </div>
-
           <div class="mt-4">
             <div class="jumbotron">
               <a class="" href="#!" data-toggle="collapse" data-target="#collapseAccommodations" aria-expanded="false" aria-controls="collapseAccommodations">
@@ -902,26 +864,6 @@
               </div>
             </div>
   
-            
-            <!--
-                statecode: 'AB/20A/0001',
-                type: '1 bedroom flat',
-                price: 120000,
-                rooms: 'Bedroom,Toilet',
-                rentrange: 'yearly',
-                streetname: null,
-                address: '2B Abas, Off Ikot Ekpene Road, Umuahia',
-                media: '1-wA8Ui2cwveSLle_nC-ZJw2OyfWlwJwd',
-                tenure: 'Lease',
-                input_time: 2021-01-13T14:29:44.000Z,
-                expire: '0000-00-00',
-                roommate_type: null,
-                roommate_you: null,
-                directions: "Take the 2nd right turn on Ikot Ekpene Road, when you're coming from Ibeku High School.",
-                post_location: 'ABIA',
-                post_time: 1610555381804,
-                acc_geodata: ''
-              -->
             <!--modal to edit accommodations-->
             <div class="modal fade" id="editAccommodationModal" tabindex="-1" aria-labelledby="editAccommodationModalLabel" aria-hidden="true">
               <div class="modal-dialog">
@@ -1181,7 +1123,7 @@
                             // add UNsuccessful alert 
                             $("#alert-div")
                                 .append(
-                                    `<div class="alert alert-danger mt-3 fade show" id="accommodationposted" role="alert">We couldn\'t update that. Please try again.
+                                    `<div class="alert alert-danger mt-3 fade show" id="accommodationposted" role="alert">We couldn't update that. Please try again.
                                       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                       </button>
@@ -1287,7 +1229,7 @@
                         // add UNsuccessful alert 
                         $("#alert-div")
                             .append(
-                                `<div class="alert alert-danger mt-3 fade show" id="accommodationposted" role="alert">We couldn\'t delete that. Please try again.
+                                `<div class="alert alert-danger mt-3 fade show" id="accommodationposted" role="alert">We couldn't delete that. Please try again.
                                   <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                   </button>
@@ -1348,8 +1290,66 @@
                 })
             </script>
 
+
+            <!-- js to submit profile form -->
             <script>
-              
+              function sendProfile() {
+
+                // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
+                const profileFormXHR = new XMLHttpRequest();
+
+                // Bind the FormData object and the form element
+                let profileFormData = new FormData(profile_form);
+
+                // Define what happens on successful data submission
+                profileFormXHR.addEventListener("load", function (event) { // alert(event.target.responseText);
+                    console.log(event);
+
+                    if (event.target.status === 201) { // add successful alert
+                        $("#alert-div").append(`<div class="alert alert-success mt-3 fade show" id="profileposted" role="alert">Profile updated successfully.
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    </div>`);
+
+                    } else if (event.target.status === 502) { // add UNsuccessful alert
+                        $("#alert-div").append(`<div class="alert alert-danger mt-3 fade show" id="profileposted" role="alert">We couldn't update your profile. Please try again.
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    </div>`);
+                    }
+
+                    setTimeout(function () {
+                        $('#profileposted').alert('close'); // Closes an alert by removing it from the DOM
+                    }, 2000);
+
+
+                });
+
+                // Define what happens in case of error
+                profileFormXHR.addEventListener("error", function (event) {
+                    alert('Oops! Something went wrong.');
+                });
+
+                // Set up our request, true makes it async request
+                profileFormXHR.open('POST', '/profile', true);
+
+                // profileFormXHR.setRequestHeader('Content-Type', 'multipart/form-data'); // this causes error [Multipart, boundary not found], it should stay commented
+
+                // The data sent is what the user provided in the form
+                profileFormXHR.send(profileFormData);
+            }
+
+            // Access the form element...
+            let profile_form = document.getElementById("profile-form");
+
+            // ...and take over its submit event.
+            profile_form.addEventListener("submit", function (event) {
+                event.preventDefault(); // the default behaviour is refreshing the page and adding search params to the url
+
+                sendProfile();
+            }, false, true); // https://developer.mozilla.org/en-US/docs/Web/Events/submit
             </script>
           </div>
 
@@ -1486,7 +1486,7 @@
                               // add UNsuccessful alert 
                               $("#alert-div")
                                   .append(
-                                      `<div class="alert alert-danger mt-3 fade show" id="saleposted" role="alert">We couldn\'t update that. Please try again.
+                                      `<div class="alert alert-danger mt-3 fade show" id="saleposted" role="alert">We couldn't update that. Please try again.
                                           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                           <span aria-hidden="true">&times;</span>
                                         </button>
@@ -1504,8 +1504,6 @@
                                   );
 
                                 // update the html elements
-                                $('.sale-div').find(`h5[data-index='${index}']`).text(_edit_sale_form.querySelector("input[name='itemname']").value)
-                              $('.sale-div').find(`span[data-index='${index}']`).text(_edit_sale_form.querySelector("input[name='price']").value)
                           }
 
 
@@ -1588,7 +1586,7 @@
                         // add UNsuccessful alert 
                         $("#alert-div")
                             .append(
-                                `<div class="alert alert-danger mt-3 fade show" id="saleposted" role="alert">We couldn\'t delete that. Please try again.
+                                `<div class="alert alert-danger mt-3 fade show" id="saleposted" role="alert">We couldn't delete that. Please try again.
                                   <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                   </button>
@@ -1652,6 +1650,9 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="fixed-bottom" id="alert-div">
       </div>
       
       

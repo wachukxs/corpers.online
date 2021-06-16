@@ -12,3 +12,7 @@ Rendering a full app in Node.js is going to be more CPU-intensive than just serv
 <p>
 corpers.online helps corps members sell and buy items they need to quickly settle down, or leave a state. We do this because new corp members need to find accommodation without the stress of agents, and passing out corps members new to sell off some items to make extra bucks. We're passionate about making service year better and easier for corp members, and we intend to offer more capabilities on corper.online
 </p>
+
+how can we closely work with government ...like tracka does ...sample instance https://nysc-cds.com/in-the-news/edo-state-pledges-support-nysc-members-seeks-partnership-rural-development
+
+how can we effectively track corp members projects ...make sure they're actually doing something meaningful ...(by showing them sample projects in different countries, things they can try to do ...by seeking funds from contributors who want to see their communities better ...corp members can propose projects, and even do like a pitch to (we can't call them investors now) more like contributors, and people invested in those communities etc.) we'd need to hire a writer ...who would be scouting for articles... we should allow corp members document their woes in communities and the ills they've spotted and maybe even suggest how we can move forward as a nation ...they're like a monitor for the heart beat of the nation.

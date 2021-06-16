@@ -12,6 +12,7 @@ const sequelize = require('../not_models/db').sequelize
 const auth = require('../helpers/auth')
 const fs = require('fs');
 const ngstates = require('../utilities/ngstates')
+const Busboy = require('busboy');
 
 /**
  * options for setting JWT cookies
@@ -369,6 +370,160 @@ module.exports = {
     },
 
     postProfile(req, res) {
+      const busboy = new Busboy({
+        headers: req.headers,
+        limits: { // set fields, fieldSize, and fieldNameSize later (security)
+          files: 12, // don't upload more than 12 media files
+          fileSize: 24 * 1024 * 1024 // 24MB
+        }
+      });
+    
+      _profile_data = {
+        statecode: req.session.corper.statecode
+      };
 
+      busboy.on('file', function (fieldname, filestream, filename, transferEncoding, mimetype) {
+
+        // there's also 'limit' and 'error' events https://www.codota.com/code/javascript/functions/busboy/Busboy/on
+        filestream.on('limit', function () {
+          console.log('the file was too large... nope');
+          
+          // don't listen to the data event anymore
+          /* filestream.off('data', (data) => { // doesn't work
+            console.log('should do nothing. what\'s data?', data)
+          }) */
+    
+          // how should we send a response if one of the files/file is invalid [too big or not an accepted file type]?
+        });
+    
+        if (filename !== '' && !helpers.acceptedfiles.includes(mimetype)) { // if mimetype it '' or undefined, it passes
+          console.log('we don\'t accept non-image files... nope');
+          
+          // don't listen to the data event
+          /* filestream.off('data', (data) => { // DOESN'T WORK!!!
+            console.log('should do nothing. what\'s data?', data)
+          }) */
+        }
+    
+        /* filestream.on('readable', (what) => { // don't do this, unless, MABYE filestream.read() is called in the callback
+          console.log('\ncurious what happens here\n', what)
+        }) */
+    
+        filestream.on('data', function (data) {
+          // console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
+        });
+    
+        filestream.on('end', function (err) {
+          // if we listend for 'file', even if there's no file, we still come here
+          // so we're checking if it's empty before doing anything.
+          /* console.log('readabe?///// ?', filestream.read()) // filestram.read() is always null ... */
+    
+          console.log('File [' + fieldname + '] Finished. Got ' + 'bytes');
+          if (err) { console.error('err in busboy file end', err); }
+        });
+    
+    
+        // this is not a good method
+    
+        /**One thing you might be able to try is to read 0 bytes from the stream first and see if you get the appropriate 'end' event or not (perhaps on the next tick) */
+    
+        if (filename != '' && helpers.acceptedfiles.includes(mimetype)) { // filename: 1848-1844-1-PB.pdf, encoding: 7bit, mimetype: application/pdf
+          /* let obj = {
+              filestream: file_stream,
+              mimetype: mimetype,
+              filename: filename
+          }; */
+          // let _id = authorize(JSON.parse(cred_content), uploadFile, obj)
+    
+          let fileMetadata = {
+            'name': filename, // Date.now() + 'test.jpg',
+            parents: ['1mtYhohO0qpXIwt6NXZzo9vlU4IF0NX0D'] // upload to folder CorpersOnline Profile Pics
+          };
+          let media = {
+            mimeType: mimetype,
+            body: filestream // fs.createReadStream("C:\\Users\\NWACHUKWU\\Pictures\\ad\\IMG-20180511-WA0001.jpg")
+          };
+    
+          const up = ggle.drive.files.create({
+            resource: fileMetadata,
+            media: media,
+            fields: 'id, thumbnailLink',
+          }).then(
+            function (file) {
+    
+              // maybe send the upload progress to front end with sockets? https://github.com/googleapis/google-api-nodejs-client/blob/7ed5454834b534e2972746b28d0a1e4f332dce47/samples/drive/upload.js#L41
+    
+              // console.log('upload File Id: ', file.data.id); // save to db
+              // console.log('thumbnailLink: ', file.data.thumbnailLink);
+              req.session.corper.picture_id = file.data.id // or we could add picture_id to _profile_data
+    
+              connectionPool.query('UPDATE info SET picture_id = ? WHERE statecode = ?', [file.data.id, req.session.corper.statecode.toUpperCase()], function (error, results, fields) {
+                if (error) throw error;
+                else {
+                  console.log('updated pic')
+                }
+              });
+    
+            }, function (err) {
+              // Handle error
+              console.error(err);
+            }
+          ).catch(function (err) {
+            console.error('some other error ??', err)
+          }).finally(() => {
+            // console.log('upload finally block')
+          });
+        }
+    
+        // https://stackoverflow.com/questions/26859563/node-stream-data-from-busboy-to-google-drive
+        // https://stackoverflow.com/a/26859673/9259701
+        filestream.resume() // must always be last in this callback else server HANGS
+    
+      });
+    
+      busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+        // console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+        
+        _profile_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
+        
+        console.warn(fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype);
+      });
+    
+      busboy.on('finish', async function () {
+        console.log('we done parsing form, now updating', _profile_data)
+
+        CorpMember.update(
+          _profile_data
+        ,{
+          where: {
+            statecode: req.session.corper.statecode
+          }
+        },{
+          returning: true
+        }
+        ).then((_profile) => {
+            // update req.session
+            console.log('updated profile', _profile);
+            // for (var key in _profile_data) {
+            //   req.session.corper[key] = _profile_data[key]
+            // }
+
+            // if (_profile_data.newstatecode) {
+            //   req.session.corper.statecode = _profile_data.newstatecode.toUpperCase();
+            // }
+
+            res.sendStatus(201) // sending a 'Created' response ... not 200 OK response
+            // .redirect(result); // no need to redirect, just send status code
+        }, (_err) => {
+          res.sendStatus(502)
+        }).catch((err) => { // we should have this .catch on every query
+          console.error('our system should\'ve crashed:', err)
+          res.sendStatus(502)
+          // .render('pages/profile?e=n') // we should tell you an error occured
+        })
+
+       })
+    
+      return req.pipe(busboy)
     }
 }
