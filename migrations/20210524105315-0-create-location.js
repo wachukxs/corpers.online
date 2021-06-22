@@ -9,7 +9,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       directions: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       createdAt: {
         allowNull: false,
@@ -23,6 +23,9 @@ module.exports = {
         type: Sequelize.STRING
       },
       ppaId: {
+        type: Sequelize.INTEGER,
+      },
+      accommodationId: {
         type: Sequelize.INTEGER,
       },
       CorpMemberId: {

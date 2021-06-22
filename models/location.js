@@ -17,6 +17,9 @@ module.exports = (sequelize, DataTypes) => {
       Location.hasOne(models.PPA, { // means Location has ppaId
         foreignKey: 'ppaId'
       });
+      Location.hasOne(models.Accommodation, { // means Location has accommodationId
+        foreignKey: 'accommodationId'
+      });
     }
   };
   Location.init({
@@ -32,13 +35,16 @@ module.exports = (sequelize, DataTypes) => {
     ppaId: {
       type:DataTypes.INTEGER
     },
+    accommodationId: {
+      type:DataTypes.INTEGER
+    },
     createdAt: {
       type: DataTypes.DATE
     },
     updatedAt: {
       type: DataTypes.DATE
     },
-    directions: DataTypes.STRING,
+    directions: DataTypes.TEXT,
     address: DataTypes.STRING,
     CorpMemberId: DataTypes.INTEGER,
   }, {

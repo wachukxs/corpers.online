@@ -51,9 +51,6 @@ module.exports = {
       statecode: {
         type: Sequelize.STRING
       },
-      password: {
-        type: Sequelize.STRING
-      },
       middlename: {
         type: Sequelize.STRING
       },

@@ -3,8 +3,8 @@ const mysql = require('mysql');
 
 const { Sequelize } = require('sequelize');
 // const sequelize = new Sequelize('postgres://btlnnbzltngela:19ed81ac999fb00a7137bb59a314a4fb2e087b8ad26a46ccb0280572059a46cb@ec2-52-5-247-46.compute-1.amazonaws.com:5432/dc46f9g2hh8hud') // Example for postgres
-const sequelize = new Sequelize('dc46f9g2hh8hud', 'btlnnbzltngela', '19ed81ac999fb00a7137bb59a314a4fb2e087b8ad26a46ccb0280572059a46cb', {
-    host: 'ec2-52-5-247-46.compute-1.amazonaws.com', // 'localhost',
+const sequelize = new Sequelize('d5gpbjk5cr8ilu', 'vkkpmuqgatgtby', 'c8139ad7b4539dc2f1b58b26073af428d458d41ee8dda8bb9743f954ed46afd5', {
+    host: 'ec2-52-2-118-38.compute-1.amazonaws.com', // 'localhost',
     dialect: 'postgres', // one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' 
     port: 5432,
     ssl: false,

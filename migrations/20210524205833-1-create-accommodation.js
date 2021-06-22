@@ -8,12 +8,12 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      address: {
-        type: Sequelize.STRING
-      },
-      directions: {
-        type: Sequelize.TEXT
-      },
+      // address: {
+      //   type: Sequelize.STRING
+      // },
+      // directions: {
+      //   type: Sequelize.TEXT
+      // },
       rent: {
         type: Sequelize.FLOAT
       },
@@ -25,6 +25,15 @@ module.exports = {
         references: {
           model: {
             tableName: 'Media',
+          },
+          key: 'id'
+        },
+      },
+      locationId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: 'Locations',
           },
           key: 'id'
         },

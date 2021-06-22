@@ -13,10 +13,10 @@ npx sequelize-cli migration:generate --name starting-again
 
 
 # Create database specified by configuration
-sequelize db:create                         
+sequelize db:create
 
 # Drop database specified by configuration
-sequelize db:drop 
+sequelize db:drop
 
 
 # Add ejs linter to comman line

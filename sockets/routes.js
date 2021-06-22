@@ -205,14 +205,15 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
             include: [
                 {
                     model: Media,
-                    as: 'accommodationMedia', // ideally we shouldn't do this ...but sequlize says we must ...will create an OS PR for it
+                    as: 'accommodationMedia',
                 },
                 {
                     model: CorpMember,
                     as: 'accommodationByCorper',
                     attributes: CorpMember.getSafeAttributes()
                 }
-            ]
+            ],
+            attributes: Accommodation.getAllActualAttributes()
         }).then(_accommodations => {
             // console.log("\n\n\n\n\n\ndid we get corp member's Accommodation?", _accommodations);
             // combine both ?? sort by

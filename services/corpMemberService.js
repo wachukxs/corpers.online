@@ -224,7 +224,7 @@ module.exports = {
           let lgas = jkl.states[ngstates.states_short.indexOf(jn.slice(0, 2))][ngstates.states_long[ngstates.states_short.indexOf(jn.slice(0, 2))]];
           // res.set('Content-Type', 'text/html');
           let _info = { // TODO: fill up info object with corp member data so incase of failure, profile page is loaded with corpers' information
-            corper: {},
+            corper: req.session.corper, // {}, // as fall back, we could initialize to req.session.corper
             ppas: [],
             states: ngstates.states_long,
             lgas,
@@ -252,6 +252,10 @@ module.exports = {
                 order: [
                     ['createdAt', 'ASC']
                 ],
+                include: [{
+                  model: Location
+                }],
+                attributes: Accommodation.getAllActualAttributes()
               },
               {
                 model: PPA,
@@ -279,8 +283,16 @@ module.exports = {
               //         [Op.eq]: `${req.session.corper.statecode.substring(0, 2)}`, // somewhat redundant
               //     },
               // },
+              include: [{
+                model: Location
+              }],
               attributes: PPA.getAllActualAttributes() // hot fix (problem highlighted in ./models/ppa.js) -- > should create a PR to fix it ... related to https://github.com/sequelize/sequelize/issues/13309
             }).then(_all_ppas => {
+              _all_ppas.forEach(element => {
+                if (element.dataValues.Location) {
+                  console.log('\n\n\tchecking address\n\n\n', element.dataValues.Location);
+                }
+              });
                   console.log('all ppas', _all_ppas); // uncomment to check later
                   _info.ppas = _all_ppas;
                   console.log('we good good on profile', _info);
@@ -492,35 +504,87 @@ module.exports = {
       busboy.on('finish', async function () {
         console.log('we done parsing form, now updating', _profile_data)
 
-        CorpMember.update(
-          _profile_data
-        ,{
+        let corpMemberUpdate = await CorpMember.update(
+          {
+            ..._profile_data
+          }
+          ,{
+            where: {
+              statecode: req.session.corper.statecode
+            }
+          }
+          ,{
+            returning: true
+          }
+        )
+
+        let _corpMemberUpdate = await CorpMember.findOne(
+        {
           where: {
             statecode: req.session.corper.statecode
           }
-        },{
-          returning: true
-        }
-        ).then((_profile) => {
-            // update req.session
-            console.log('updated profile', _profile);
-            // for (var key in _profile_data) {
-            //   req.session.corper[key] = _profile_data[key]
-            // }
-
-            // if (_profile_data.newstatecode) {
-            //   req.session.corper.statecode = _profile_data.newstatecode.toUpperCase();
-            // }
-
-            res.sendStatus(201) // sending a 'Created' response ... not 200 OK response
-            // .redirect(result); // no need to redirect, just send status code
-        }, (_err) => {
-          res.sendStatus(502)
-        }).catch((err) => { // we should have this .catch on every query
-          console.error('our system should\'ve crashed:', err)
-          res.sendStatus(502)
-          // .render('pages/profile?e=n') // we should tell you an error occured
         })
+
+        // update req.session
+        console.log('updated profile', corpMemberUpdate);
+
+        let _ppaUpdate = await PPA.create({
+          name: _profile_data.name_of_ppa,
+          type_of_ppa: _profile_data.type_of_ppa
+        }, {
+          returning: PPA.getAllActualAttributes()
+        })
+
+        let _locationUpdate = await Location.create({
+          directions: _profile_data.ppa_directions,
+          address: _profile_data.ppa_address,
+        })
+
+        // update ppa if the corp has ppa
+        let ppaUpdate = await _corpMemberUpdate.setPPA(_ppaUpdate)
+
+        // update location if the corp member's ppa has location
+        let __ppaUpdate = await _ppaUpdate.setLocation(_locationUpdate)
+
+        console.log('updated ppa profile', ppaUpdate);
+
+        console.log('updated ppa profile', __ppaUpdate);
+
+        try {
+          const __model = CorpMember
+          for (let assoc of Object.keys(__model.associations)) {
+            for (let accessor of Object.keys(__model.associations[assoc].accessors)) {
+              console.log(__model.name + '.' + __model.associations[assoc].accessors[accessor]+'()');
+            }
+          }
+
+
+          const ___model = PPA
+          for (let assoc of Object.keys(___model.associations)) {
+            for (let accessor of Object.keys(___model.associations[assoc].accessors)) {
+              console.log(___model.name + '.' + ___model.associations[assoc].accessors[accessor]+'()');
+            }
+          }
+        } catch (error) {
+          console.error('trying to get assocs', error);
+        }
+
+        // checking if it updated:
+        
+        
+
+        // console.log('updated profile PPA', corpMemberPPAUpdate);
+        // for (var key in _profile_data) {
+        //   req.session.corper[key] = _profile_data[key]
+        // }
+
+        // if (_profile_data.newstatecode) {
+        //   req.session.corper.statecode = _profile_data.newstatecode.toUpperCase();
+        // }
+
+        res.sendStatus(201) // sending a 'Created' response ... not 200 OK response
+        // .redirect(result); // no need to redirect, just send status code
+        
 
        })
     

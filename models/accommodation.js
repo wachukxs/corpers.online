@@ -5,6 +5,12 @@ const {
 const moment = require('moment');
 module.exports = (sequelize, DataTypes) => {
   class Accommodation extends Model {
+    static getAllActualAttributes() {
+      let safeAccommodationAttributes = Object.keys(Accommodation.rawAttributes)
+      safeAccommodationAttributes.splice(safeAccommodationAttributes.indexOf('accommodationId'), 1);
+      
+      return safeAccommodationAttributes
+    }
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -21,6 +27,9 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'mediaId',
         as: 'accommodationMedia'
       })
+      Accommodation.belongsTo(models.Location, { // means Accommodation have a locationId
+        foreignKey: 'locationId'
+      })
     }
   };
   Accommodation.init({
@@ -33,8 +42,8 @@ module.exports = (sequelize, DataTypes) => {
     mediaId: { // do not add foreign keys yourself, sequelize will add them for you
       type: DataTypes.INTEGER
     },
-    address: DataTypes.STRING,
-    directions: DataTypes.TEXT,
+    // address: DataTypes.STRING,
+    // directions: DataTypes.TEXT,
     rent: DataTypes.FLOAT,
     roommateRent: { // should we be adding Naira sign to it ?? ...lol
       type: DataTypes.FLOAT
@@ -76,6 +85,9 @@ module.exports = (sequelize, DataTypes) => {
       set(value) {
         throw new Error('Do not try to set the Accommodation.`age` value!');
       }
+    },
+    locationId: {
+      type:DataTypes.INTEGER
     },
     type: {
       type: DataTypes.VIRTUAL,

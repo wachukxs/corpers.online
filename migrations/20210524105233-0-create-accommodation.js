@@ -8,14 +8,17 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      address: {
-        type: Sequelize.STRING
-      },
-      directions: {
-        type: Sequelize.TEXT
-      },
+      // address: {
+      //   type: Sequelize.STRING
+      // },
+      // directions: {
+      //   type: Sequelize.TEXT
+      // },
       rent: {
         type: Sequelize.FLOAT
+      },
+      locationId: {
+        type: Sequelize.INTEGER
       },
       roommateRent: {
         type: Sequelize.FLOAT

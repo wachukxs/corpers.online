@@ -419,7 +419,7 @@
                   <div class="col-md-6 mb-3">
                     <label for="type_of_ppa">Type of Institution</label> <!--Should be like a dropdown or have suggestions list-->
                     <input type="text" value="<%= (corper.PPA ? corper.PPA.type_of_ppa : '') %>" class="form-control" name="type_of_ppa" id="type_of_ppa" placeholder="" required>
-                    <small class="text-muted">School, Bank, Hospital, Gov Institution, etc.</small>
+                    <small class="text-muted">School, Bank, Hospital, Gov. Institution, etc.</small>
                     <div class="invalid-feedback">
                       This helps us easily categorize.
                     </div>
@@ -437,7 +437,7 @@
                   <label for="ppa_address">PPA address</label>
                   <div class="input-group">
                     <input type="text" class="form-control" list="ppaaddr" name="ppa_address" id="ppa_address"
-                      placeholder="Opposite Ijukaya Estate, Favos, Umuahia" value="<%= (corper.PPA ? corper.PPA.Location.address : '') %>">
+                      placeholder="Opposite Ijukaya Estate, Favos, Umuahia" value="<%= (corper.PPA && corper.PPA.Location?.address ? corper.PPA.Location.address : '') %>">
                     <div class="input-group-append">
                       <a id="geo" class="btn btn-secondary">Geo</a>
                     </div>
@@ -446,9 +446,9 @@
                   <% if (ppas.length > 0) { %>
                   <datalist id="ppaaddr">
                     <% for (let w = 0; w < ppas.length; w++) { %>
-    
-                    <option value="<%= ppas[w].Location.address %>"><%= ppas[w].name %></option>
-    
+                      <% if (ppas[w].Location && ppas[w].name) { %> <!-- needs optimization -->
+                        <option value="<%= ppas[w].Location.address %>"><%= ppas[w].name %></option>
+                      <% } %>
                     <% } %>
                   </datalist>
                   <% } %>
@@ -508,7 +508,7 @@
                 <div class=" mb-3">
                   <label for="lgas">Directions</label>
                   <textarea class="form-control" name="ppa_directions" id="pd" spellcheck="true"
-                    placeholder="Please give directions to the PPA from a popular nearby junction or hard-to-miss building"><%= (corper.PPA ? corper.PPA.Location.directions : '') %></textarea>
+                    placeholder="Please give directions to the PPA from a popular nearby junction or hard-to-miss building"><%= (corper.PPA && corper.PPA.Location?.directions ? corper.PPA.Location.directions : '') %></textarea>
                 </div>
     
                 <script>
@@ -727,11 +727,11 @@
                     <label for="name_of_ppa">Want an SPA ?</label>
                     <div class="d-block">
                       <div class="custom-control custom-radio">
-                        <input id="wantspaornot_yes" value="1" name="wantspaornot" type="radio" class="custom-control-input" checked="<%- (corper.wantspaornot && corper.wantspaornot === 1 ? 'true' : 'false' ) %>">
+                        <input id="wantspaornot_yes" value="1" name="wantspaornot" type="radio" class="custom-control-input" checked="<%- (corper.wantspaornot && corper.wantspaornot === true ? 'true' : 'false' ) %>">
                         <label class="custom-control-label" for="wantspaornot_yes">Yes</label>
                       </div>
                       <div class="custom-control custom-radio">
-                        <input id="wantspaornot_no" value="0" name="wantspaornot" type="radio" class="custom-control-input" checked="<%- (corper.wantspaornot || corper.wantspaornot === 0 ? 'true' : 'false'  ) %>">
+                        <input id="wantspaornot_no" value="0" name="wantspaornot" type="radio" class="custom-control-input" checked="<%- (corper.wantspaornot || corper.wantspaornot === false ? 'true' : 'false'  ) %>">
                         <label class="custom-control-label" for="wantspaornot_no">No</label>
                       </div>
                     </div>
@@ -744,11 +744,11 @@
                     <label for="name_of_ppa">In search for an accommodation ?</label>
                     <div class="d-block">
                       <div class="custom-control custom-radio">
-                        <input id="accommodationornot_yes" value="1" name="accommodationornot" type="radio" class="custom-control-input" checked="<%- (corper.accommodationornot && corper.accommodationornot === 1 ? 'true' : 'false'  ) %>">
+                        <input id="accommodationornot_yes" value="1" name="accommodationornot" type="radio" class="custom-control-input" checked="<%- (corper.accommodationornot && corper.accommodationornot === true ? 'true' : 'false'  ) %>">
                         <label class="custom-control-label" for="accommodationornot_yes">Yes</label>
                       </div>
                       <div class="custom-control custom-radio">
-                        <input id="accommodationornot_no" value="0" name="accommodationornot" type="radio" class="custom-control-input" checked="<%- (corper.accommodationornot || corper.accommodationornot === 0 ? 'true' : 'false' ) %>">
+                        <input id="accommodationornot_no" value="0" name="accommodationornot" type="radio" class="custom-control-input" checked="<%- (corper.accommodationornot || corper.accommodationornot === false ? 'true' : 'false' ) %>">
                         <label class="custom-control-label" for="accommodationornot_no">No</label>
                       </div>
                     </div>
@@ -763,12 +763,12 @@
     
                 <div class="d-block my-3">
                   <div class="custom-control custom-radio">
-                    <input id="public_profile_yes" value="1" name="public_profile" type="radio" class="custom-control-input" checked="<%- (corper.public_profile && corper.public_profile === 1 ? 'true' : 'false'  ) %>">
+                    <input id="public_profile_yes" value="1" name="public_profile" type="radio" class="custom-control-input" checked="<%- (corper.public_profile && corper.public_profile === true ? 'true' : 'false'  ) %>">
                     <label class="custom-control-label" for="public_profile_yes">Publicly visible</label>
                   </div>
                   <div class="custom-control custom-radio">
                     <!-- we'll tell them to should make public so they can easily connect with others esp. during project work ... make Nigeria great (not sure it was before, so we can't say 'again') -->
-                    <input id="public_profile_no" value="0" name="public_profile" type="radio" class="custom-control-input" checked="<%- (corper.public_profile || corper.public_profile === 0 ? 'true' : 'false' ) %>">
+                    <input id="public_profile_no" value="0" name="public_profile" type="radio" class="custom-control-input" checked="<%- (corper.public_profile || corper.public_profile === false ? 'true' : 'false' ) %>">
                     <label class="custom-control-label" for="public_profile_no">Publicly invisible</label>
                   </div>
                   <small class="text-muted">A publicly visible profile means you can <b>search for other corpers</b> and <b>be seen by them too</b>.

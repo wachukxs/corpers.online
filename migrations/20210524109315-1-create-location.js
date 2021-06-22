@@ -9,7 +9,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       directions: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       createdAt: {
         allowNull: false,
@@ -27,6 +27,15 @@ module.exports = {
         references: {
           model: {
             tableName: 'PPA',
+          },
+          key: 'id'
+        },
+      },
+      accommodationId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: 'Accommodation',
           },
           key: 'id'
         },

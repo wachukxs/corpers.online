@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "btlnnbzltngela",
-    "password": "19ed81ac999fb00a7137bb59a314a4fb2e087b8ad26a46ccb0280572059a46cb",
-    "database": "dc46f9g2hh8hud",
-    "host": "ec2-52-5-247-46.compute-1.amazonaws.com",
+    "username": "vkkpmuqgatgtby",
+    "password": "c8139ad7b4539dc2f1b58b26073af428d458d41ee8dda8bb9743f954ed46afd5",
+    "database": "d5gpbjk5cr8ilu",
+    "host": "ec2-52-2-118-38.compute-1.amazonaws.com",
     "dialect": "postgres",
     
     "port": 5432,
@@ -23,10 +23,10 @@
   
   },
   "test": {
-    "username": "btlnnbzltngela",
-    "password": "19ed81ac999fb00a7137bb59a314a4fb2e087b8ad26a46ccb0280572059a46cb",
-    "database": "dc46f9g2hh8hud",
-    "host": "ec2-52-5-247-46.compute-1.amazonaws.com",
+    "username": "vkkpmuqgatgtby",
+    "password": "c8139ad7b4539dc2f1b58b26073af428d458d41ee8dda8bb9743f954ed46afd5",
+    "database": "d5gpbjk5cr8ilu",
+    "host": "ec2-52-2-118-38.compute-1.amazonaws.com",
     "dialect": "postgres",
 
     "port": 5432,
@@ -45,10 +45,10 @@
     }
   },
   "production": {
-    "username": "btlnnbzltngela",
-    "password": "19ed81ac999fb00a7137bb59a314a4fb2e087b8ad26a46ccb0280572059a46cb",
-    "database": "dc46f9g2hh8hud",
-    "host": "ec2-52-5-247-46.compute-1.amazonaws.com",
+    "username": "vkkpmuqgatgtby",
+    "password": "c8139ad7b4539dc2f1b58b26073af428d458d41ee8dda8bb9743f954ed46afd5",
+    "database": "d5gpbjk5cr8ilu",
+    "host": "ec2-52-2-118-38.compute-1.amazonaws.com",
     "dialect": "postgres",
 
     "port": 5432,
