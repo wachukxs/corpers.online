@@ -528,27 +528,66 @@ module.exports = {
         // update req.session
         console.log('updated profile', corpMemberUpdate);
 
-        let _ppaUpdate = await PPA.create({
-          name: _profile_data.name_of_ppa,
-          type_of_ppa: _profile_data.type_of_ppa
-        }, {
-          returning: PPA.getAllActualAttributes()
-        })
 
-        let _locationUpdate = await Location.create({
-          directions: _profile_data.ppa_directions,
-          address: _profile_data.ppa_address,
-        })
+        /**
+         * From https://sequelize.org/master/manual/model-querying-basics.html
+         * Similarly, it's also possible to remove a selected few attributes:
+
+          Model.findAll({
+            attributes: { exclude: ['baz'] }
+          });
+         */
 
         // update ppa if the corp has ppa
-        let ppaUpdate = await _corpMemberUpdate.setPPA(_ppaUpdate)
+        let corpMemberPPA = await _corpMemberUpdate.getPPA({
+          attributes: PPA.getAllActualAttributes()
+        });
+        console.log('\n\nis corpMemberPPA instanceof PPA ??\n\n', corpMemberPPA instanceof PPA);
+        console.log('corpMemberPPA is', corpMemberPPA);
+        if (corpMemberPPA && (_profile_data.name_of_ppa && _profile_data.type_of_ppa)) { // also check if profile data has name_of_ppa & type_of_ppa
+          corpMemberPPA.name = _profile_data.name_of_ppa
+          corpMemberPPA.type_of_ppa = _profile_data.type_of_ppa
 
-        // update location if the corp member's ppa has location
-        let __ppaUpdate = await _ppaUpdate.setLocation(_locationUpdate)
+          
+          let corpMemberPPALocation = await corpMemberPPA.getLocation(); // get PPA or use .getPPA instanch
+          console.log('\n\nis corpMemberPPALocation instanceof Location ??\n\n', corpMemberPPALocation instanceof Location);
+          console.log('corpMemberPPALocation is', corpMemberPPALocation);
+          if (corpMemberPPALocation && (_profile_data.ppa_address && _profile_data.ppa_directions)) {
+            corpMemberPPALocation.directions = _profile_data.ppa_directions
+            corpMemberPPALocation.address = _profile_data.ppa_address
+          } else {
+            let _locationUpdate = await Location.create({
+              directions: _profile_data.ppa_directions,
+              address: _profile_data.ppa_address,
+            })
+  
+            // update location if the corp member's ppa has location
+            let __ppaUpdate = await _ppaUpdate.setLocation(_locationUpdate)
+  
+          }
+        } else {
+          let _ppaUpdate = await PPA.create({
+            name: _profile_data.name_of_ppa,
+            type_of_ppa: _profile_data.type_of_ppa
+          }, {
+            returning: PPA.getAllActualAttributes()
+          })
 
-        console.log('updated ppa profile', ppaUpdate);
+          let ppaUpdate = await _corpMemberUpdate.setPPA(_ppaUpdate)
 
-        console.log('updated ppa profile', __ppaUpdate);
+          let _locationUpdate = await Location.create({
+            directions: _profile_data.ppa_directions,
+            address: _profile_data.ppa_address,
+          })
+
+          // update location if the corp member's ppa has location
+          let __ppaUpdate = await _ppaUpdate.setLocation(_locationUpdate)
+
+          console.log('updated ppa profile', ppaUpdate);
+
+          console.log('updated ppa profile', __ppaUpdate);
+        }
+        
 
         try {
           const __model = CorpMember

@@ -446,7 +446,10 @@
                   <% if (ppas.length > 0) { %>
                   <datalist id="ppaaddr">
                     <% for (let w = 0; w < ppas.length; w++) { %>
-                      <% if (ppas[w].Location && ppas[w].name) { %> <!-- needs optimization -->
+                      <!--
+                        sometimes ppas[w].Location would be defined, but .address property empty ... ppas[w].Location.address check might be redundant ... needs optimization
+                      -->
+                      <% if (ppas[w].Location && ppas[w].Location.address && ppas[w].name) { %>
                         <option value="<%= ppas[w].Location.address %>"><%= ppas[w].name %></option>
                       <% } %>
                     <% } %>
