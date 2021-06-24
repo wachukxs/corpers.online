@@ -3,6 +3,7 @@ const moment = require('moment');
 
 const CorpMember = require('../models').CorpMember
 const Accommodation = require('../models').Accommodation
+const Location = require('../models').Location
 const Chat = require('../models').Chat
 const Sale = require('../models').Sale
 const Media = require('../models').Media
@@ -211,6 +212,9 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
                     model: CorpMember,
                     as: 'accommodationByCorper',
                     attributes: CorpMember.getSafeAttributes()
+                },
+                {
+                    model: Location,
                 }
             ],
             attributes: Accommodation.getAllActualAttributes()

@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
         throw new Error('Do not try to set the Sale.`age` value!');
       }
     },
-    last_updated_age: { // do we need this ?
+    last_updated_age: { // do we need this ? // uhmmm maybe for when they change price, plus we know if it's still available and how fresh it is since the corp member(original poster) is still interacting with it
       type: DataTypes.VIRTUAL,
       get() {
         return moment(this.getDataValue('updatedAt')).fromNow();

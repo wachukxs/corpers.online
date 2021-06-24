@@ -11,6 +11,14 @@ module.exports = (sequelize, DataTypes) => {
       
       return safeAccommodationAttributes
     }
+
+    static getCreationAttributes() {
+      let safeAccommodationAttributes = Object.keys(Accommodation.rawAttributes)
+      safeAccommodationAttributes.splice(safeAccommodationAttributes.indexOf('accommodationId'), 1);
+      safeAccommodationAttributes.splice(safeAccommodationAttributes.indexOf('type'), 1);
+      safeAccommodationAttributes.splice(safeAccommodationAttributes.indexOf('age'), 1);
+      return safeAccommodationAttributes
+    }
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -77,15 +85,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE, // must be greater than createdAt
     },
     statecode: DataTypes.STRING,
-    age: {
-      type: DataTypes.VIRTUAL,
-      get() {
-        return moment(this.getDataValue('createdAt')).fromNow();
-      },
-      set(value) {
-        throw new Error('Do not try to set the Accommodation.`age` value!');
-      }
-    },
     locationId: {
       type:DataTypes.INTEGER
     },
@@ -103,7 +102,16 @@ module.exports = (sequelize, DataTypes) => {
     },
     updatedAt: {
       type: DataTypes.DATE
-    }
+    },
+    age: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return moment(this.getDataValue('createdAt')).fromNow();
+      },
+      set(value) {
+        throw new Error('Do not try to set the Accommodation.`age` value!');
+      }
+    },
   }, {
     sequelize,
     modelName: 'Accommodation',

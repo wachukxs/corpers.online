@@ -2,6 +2,7 @@ const Sale = require('../models').Sale
 const Media = require('../models').Media
 const CorpMember = require('../models').CorpMember
 const Accommodation = require('../models').Accommodation
+const Location = require('../models').Location
 const helpers = require('../utilities/helpers')
 const Busboy = require('busboy');
 const ggle = require('../helpers/uploadgdrive');
@@ -308,28 +309,49 @@ module.exports = {
 
               console.log('\n\ndo we have statecode', req.session.corper.statecode);
 
-              let _accommodation_to_save = await Accommodation.create(
+              let _accommodation_to_save = await Accommodation.create( // causes error for virtual fields when returning values : SequelizeDatabaseError: column "type" does not exist
                 {
                   statecode: req.session.corper.statecode,
                   ..._text,
                   accommodationMedia: {
                     urls: (_media.length > 0 ? _media.toString() : _text.mapimage ? _text.mapimage : ''), // deal with mapimage later
                     // altText: '', // add later
-                  }
+                  },
+                  // Location: {
+                  //   address: _text.address,
+                  //   directions: _text.directions
+                  // }
                 }
               , {
                 include: [
                     {
-                        model: Media,
-                        as: 'accommodationMedia', // ideally we shouldn't do this ...but sequlize says we must ...will create an OS PR for it
+                      model: Media,
+                      as: 'accommodationMedia', // ideally we shouldn't do this ...but sequlize says we must ... maybe ... might create an OS PR for it
                     },
                     {
-                        model: CorpMember,
-                        as: 'accommodationByCorper',
-                        attributes: CorpMember.getSafeAttributes()
+                      model: CorpMember,
+                      as: 'accommodationByCorper',
+                      attributes: CorpMember.getSafeAttributes()
+                    },
+                    {
+                      model: Location,
                     }
-                ]
+                ],
+                returning: Accommodation.getCreationAttributes()
+              },)
+
+
+              // since it's a new accommodation, no need to check if it already has accommodation:
+
+              // NO NEED ANYMORE
+              console.log('_accommodation_to_save.id \n\n', _accommodation_to_save.id);
+              await _accommodation_to_save.createLocation({
+                address: _text.address,
+                directions: _text.directions,
+                CorpMemberId: req.session.corper.id,
+                accommodationId: _accommodation_to_save.id
               })
+              
 
               /* query.InsertRowInAccommodationsTable({
                 statecode: req.session.corper.statecode,
@@ -356,7 +378,11 @@ module.exports = {
               /// FUCKKK
               _accommodation_to_save.accommodationByCorper = await _accommodation_to_save.getAccommodationByCorper()
               _accommodation_to_save.dataValues.accommodationByCorper = await _accommodation_to_save.getAccommodationByCorper()
-              // await _accommodation_to_save.setAccommodationByCorper(); // seems this needs a statecode for it to set
+              
+              _accommodation_to_save.Location = await _accommodation_to_save.getLocation()
+              _accommodation_to_save.dataValues.Location = await _accommodation_to_save.getLocation()
+              
+              
 
                 res.sendStatus(200);
 

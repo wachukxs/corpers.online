@@ -51,9 +51,6 @@ module.exports = (sequelize, DataTypes) => {
       set(value) {
         throw new Error('Do not try to set the Sale.`age` value!');
       }
-    },
-    updatedAt: {
-      type: DataTypes.DATE
     }
   }, {
     sequelize,

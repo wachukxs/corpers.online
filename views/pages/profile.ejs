@@ -719,7 +719,7 @@
                       class="text-muted">(Optional)</span></label>
                   <input type="text" name="accommodation_location" class="form-control" id="accomodation_location"
                     placeholder="What part of town is it?" value="<%= (corper.accommodation_location ? corper.accommodation_location : '') %>">
-                  <small class="text-muted">Please enter a known area, or be at least specific.</small>
+                  <small class="text-muted">So corp members can know where other corp members are.</small>
                   <div class="invalid-feedback">
                     Please enter the name of a place or an area.
                   </div>
@@ -730,11 +730,11 @@
                     <label for="name_of_ppa">Want an SPA ?</label>
                     <div class="d-block">
                       <div class="custom-control custom-radio">
-                        <input id="wantspaornot_yes" value="1" name="wantspaornot" type="radio" class="custom-control-input" checked="<%- (corper.wantspaornot && corper.wantspaornot === true ? 'true' : 'false' ) %>">
+                        <input id="wantspaornot_yes" value="1" name="wantspaornot" type="radio" class="custom-control-input" <%- (corper.wantspaornot === true ? 'checked="true"' : '' ) %>>
                         <label class="custom-control-label" for="wantspaornot_yes">Yes</label>
                       </div>
                       <div class="custom-control custom-radio">
-                        <input id="wantspaornot_no" value="0" name="wantspaornot" type="radio" class="custom-control-input" checked="<%- (corper.wantspaornot || corper.wantspaornot === false ? 'true' : 'false'  ) %>">
+                        <input id="wantspaornot_no" value="0" name="wantspaornot" type="radio" class="custom-control-input" <%- (corper.wantspaornot === false ? 'checked="true"' : ''  ) %>>
                         <label class="custom-control-label" for="wantspaornot_no">No</label>
                       </div>
                     </div>
@@ -747,11 +747,11 @@
                     <label for="name_of_ppa">In search for an accommodation ?</label>
                     <div class="d-block">
                       <div class="custom-control custom-radio">
-                        <input id="accommodationornot_yes" value="1" name="accommodationornot" type="radio" class="custom-control-input" checked="<%- (corper.accommodationornot && corper.accommodationornot === true ? 'true' : 'false'  ) %>">
+                        <input id="accommodationornot_yes" value="1" name="accommodationornot" type="radio" class="custom-control-input" <%- (corper.accommodationornot === true ? 'checked="true"' : ''  ) %>>
                         <label class="custom-control-label" for="accommodationornot_yes">Yes</label>
                       </div>
                       <div class="custom-control custom-radio">
-                        <input id="accommodationornot_no" value="0" name="accommodationornot" type="radio" class="custom-control-input" checked="<%- (corper.accommodationornot || corper.accommodationornot === false ? 'true' : 'false' ) %>">
+                        <input id="accommodationornot_no" value="0" name="accommodationornot" type="radio" class="custom-control-input" <%- (corper.accommodationornot === false ? 'checked="true"' : '' ) %>>
                         <label class="custom-control-label" for="accommodationornot_no">No</label>
                       </div>
                     </div>
@@ -766,12 +766,12 @@
     
                 <div class="d-block my-3">
                   <div class="custom-control custom-radio">
-                    <input id="public_profile_yes" value="1" name="public_profile" type="radio" class="custom-control-input" checked="<%- (corper.public_profile && corper.public_profile === true ? 'true' : 'false'  ) %>">
+                    <input id="public_profile_yes" value="1" name="public_profile" type="radio" class="custom-control-input" <%- (corper.public_profile === true ? 'checked="true"' : ''  ) %>>
                     <label class="custom-control-label" for="public_profile_yes">Publicly visible</label>
                   </div>
                   <div class="custom-control custom-radio">
                     <!-- we'll tell them to should make public so they can easily connect with others esp. during project work ... make Nigeria great (not sure it was before, so we can't say 'again') -->
-                    <input id="public_profile_no" value="0" name="public_profile" type="radio" class="custom-control-input" checked="<%- (corper.public_profile || corper.public_profile === false ? 'true' : 'false' ) %>">
+                    <input id="public_profile_no" value="0" name="public_profile" type="radio" class="custom-control-input" <%- (corper.public_profile === false ? 'checked="true"' : '' ) %>>
                     <label class="custom-control-label" for="public_profile_no">Publicly invisible</label>
                   </div>
                   <small class="text-muted">A publicly visible profile means you can <b>search for other corpers</b> and <b>be seen by them too</b>.
@@ -1325,7 +1325,7 @@
 
                     setTimeout(function () {
                         $('#profileposted').alert('close'); // Closes an alert by removing it from the DOM
-                    }, 2000);
+                    }, 5000);
 
 
                 });

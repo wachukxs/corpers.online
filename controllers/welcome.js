@@ -274,7 +274,7 @@ auth.verifyJWT, function (req, res) {
 });
  */
 
-router.get('/chat', auth.verifyJWT, function (req, res) {
+router.get('/oldchat', auth.verifyJWT, function (req, res) {
   res.set('Content-Type', 'text/html');
   // req.query.posts.who and req.query.posts.when
 

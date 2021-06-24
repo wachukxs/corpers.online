@@ -78,11 +78,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     createdAt: { // convert to string, it causes error for .ejs template ...plus it's just safer to have '2021-06-12T18:44:22.683Z' in stead of 2021-06-12T18:44:22.683Z
       type: DataTypes.DATE,
-      // get() {
-      //   return new Date(this.getDataValue('createdAt')).getTime();
-      // },
     },
-    timeWithUs: {
+    timeWithUs: { // must be aftr 'createdAt' ... should we make a PR to fix this ?
       type: DataTypes.VIRTUAL,
       get() {
         return moment(this.getDataValue('createdAt')).fromNow();
@@ -110,9 +107,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     updatedAt: { // convert to string, it causes error for .ejs template ...plus it's just safer to have '2021-06-12T18:44:22.683Z' in stead of 2021-06-12T18:44:22.683Z
       type: DataTypes.DATE,
-      // get() {
-      //   return new Date(this.getDataValue('updatedAt')).getTime() ;
-      // },
     },
     mediaId: {
       type: DataTypes.INTEGER

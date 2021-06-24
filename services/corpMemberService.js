@@ -544,17 +544,25 @@ module.exports = {
         });
         console.log('\n\nis corpMemberPPA instanceof PPA ??\n\n', corpMemberPPA instanceof PPA);
         console.log('corpMemberPPA is', corpMemberPPA);
-        if (corpMemberPPA && (_profile_data.name_of_ppa && _profile_data.type_of_ppa)) { // also check if profile data has name_of_ppa & type_of_ppa
-          corpMemberPPA.name = _profile_data.name_of_ppa
-          corpMemberPPA.type_of_ppa = _profile_data.type_of_ppa
-
+        if (corpMemberPPA) { // also check if profile data has name_of_ppa & type_of_ppa
+          if (_profile_data.name_of_ppa) {
+            corpMemberPPA.name = _profile_data.name_of_ppa
+          }
+          if (_profile_data.type_of_ppa) {
+            corpMemberPPA.type_of_ppa = _profile_data.type_of_ppa
+          }
           
           let corpMemberPPALocation = await corpMemberPPA.getLocation(); // get PPA or use .getPPA instanch
           console.log('\n\nis corpMemberPPALocation instanceof Location ??\n\n', corpMemberPPALocation instanceof Location);
           console.log('corpMemberPPALocation is', corpMemberPPALocation);
-          if (corpMemberPPALocation && (_profile_data.ppa_address && _profile_data.ppa_directions)) {
-            corpMemberPPALocation.directions = _profile_data.ppa_directions
-            corpMemberPPALocation.address = _profile_data.ppa_address
+          if (corpMemberPPALocation) {
+            if (_profile_data.ppa_address) {
+              corpMemberPPALocation.directions = _profile_data.ppa_directions
+            }
+            if (_profile_data.ppa_directions) {
+              corpMemberPPALocation.address = _profile_data.ppa_address
+            }
+            
           } else {
             let _locationUpdate = await Location.create({
               directions: _profile_data.ppa_directions,

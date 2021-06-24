@@ -1107,7 +1107,7 @@
                 } */
 
                 // Define what happens on successful data submission
-                XHR.addEventListener("load", function (event) { // alert(event.target.responseText);
+                XHR.addEventListener("load", function (event) {
                     console.log(event.target.responseText, event.target, event.timeStamp);
                     // calculate the time a post was clicked, when it was submitted and when the response was given to the user
 
@@ -1131,9 +1131,8 @@
                     // how do we ensure they are closed as they come ? A dedicated functions to handle notifications ????/
 
                     if (event.target.status === 200) {
-                         // formerly #tl
                         $("#1or0")
-                        .before(`<div class="alert alert-success mt-3 fade show" id="postposted" role="alert">Post created successfully.
+                        .before(`<div class="alert alert-success mt-3 fade show post-posted" id="postposted" role="alert">Post created successfully.
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -1141,23 +1140,34 @@
                                 `);
 
                     } else {
-                         // formerly #tl
                         $("#1or0")
-                        .before(`<div class="alert alert-success mt-3 fade show" id="postposted" role="alert">We didn\'t get that. Please post again.
+                        .before(`<div class="alert alert-success mt-3 fade show post-posted" id="postposted" role="alert">We didn\'t get that. Please post again.
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                     </div>`);
                     }
-                    setTimeout(function () {
-                        $('div.alert.alert-success.mt-3.fade.show').alert('close'); // Closes an alert (for now all) by removing it from the DOM
-                    }, 2000);
+                    
 
                 });
 
                 // Define what happens in case of error
                 XHR.addEventListener("error", function (event) {
-                    alert('Oops! Something went wrong.');
+                    $("#1or0")
+                        .before(`<div class="alert alert-danger mt-3 fade show post-posted" id="postposted" role="alert">Oops! Something went wrong. It's us, not you.
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    </div>`);
+                    
+                });
+
+                // Define what happens at end of request
+                XHR.addEventListener("loadend", function (event) {
+                    setTimeout(function () {
+                        $('div.alert.mt-3.fade.post-posted.show').alert('close'); // Closes all opened alert (for now all) by removing it from the DOM
+                    }, 4000);
+                    
                 });
 
                 // Set up our request
@@ -1193,7 +1203,7 @@
                 let FD1 = new FormData(form1);
 
                 // Define what happens on successful data submission
-                XHR1.addEventListener("load", function (event) { // alert(event.target.responseText);
+                XHR1.addEventListener("load", function (event) {
                     console.log(event);
 
                     // and reset the form
@@ -1230,10 +1240,6 @@
                                     </div>`);
                     }
 
-                    setTimeout(function () {
-                        $('#accommodationposted').alert('close'); // Closes an alert by removing it from the DOM
-                    }, 2000);
-
                     /**
                      * resetting the accommodation for element, Important!!
                      * should this be a function ?
@@ -1249,9 +1255,22 @@
 
                 });
 
+                // Define what happens at end of request
+                XHR1.addEventListener("loadend", function (event) {
+                    setTimeout(function () {
+                        $('#accommodationposted').alert('close'); // Closes an alert by removing it from the DOM
+                    }, 4000);
+                    
+                });
+
                 // Define what happens in case of error
                 XHR1.addEventListener("error", function (event) {
-                    alert('Oops! Something went wrong.');
+                    $("#tl")
+                        .before(`<div class="alert alert-danger mt-3 fade show" id="accommodationposted" role="alert">Oops! Something went wrong. It's us, not you.
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    </div>`);
                 });
 
                 // Set up our request
@@ -1371,7 +1390,7 @@
                                     you shouldn’t add role="tablist" directly to it.
                                 </div>
                             </div> -->
-                            <ul lass="list-group" id="tl"> 
+                            <ul class="list-group" id="tl"> 
                             <!--
                                 <li class="list-group-item">
                                 <div class="media mb-4">
@@ -2021,7 +2040,7 @@
                                 // to make the sentence thingy ['ggff','gfff'].toString().replace(',', ', ').replace(['ggff','gfff'][['ggff','gfff'].length - 1], 'and ' + ['ggff','gfff'][['ggff','gfff'].length - 1]) gives "ggff, and gfff" // there is a little edit with the ,
                                 k.innerHTML = `<address>
                                         <span class='font-italic text-muted'>Address</span>: <a href="#!">${
-                                    data.post[post_index].address
+                                    data.post[post_index]?.Location?.address
                                 } </a> 
                                     </address>
                                     <p>
@@ -2039,7 +2058,7 @@
                                     </p>
                                     <p>
                                         <span class='font-italic text-muted'>Directions</span>: ${
-                                    data.post[post_index].directions
+                                    data.post[post_index]?.Location?.directions
                                 }
                                     </p>`;
                                 let d = document.createElement('div');

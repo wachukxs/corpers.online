@@ -57,7 +57,13 @@ module.exports = (sequelize, DataTypes) => {
         }) : null;
       }
     },
-    altText: DataTypes.STRING
+    altText: DataTypes.STRING,
+    createdAt: {
+      type: DataTypes.DATE
+    },
+    updatedAt: {
+      type: DataTypes.DATE
+    },
   }, {
     sequelize,
     modelName: 'Media',
