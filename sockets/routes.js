@@ -359,16 +359,22 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
 
 const iochat = io.of('/chat').on('connection', function (socket) {
 
+    // let's do this first cause socket.handshake.query comes as sting ... will fix later
+    socket.handshake.query.corper = JSON.parse(socket.handshake.query.corper)
+
         // get user details...
-        query.GetFirstAndLastNameWithStatecode({
-            statecode: socket.handshake.query.from
+        // don't need anymore
+        /* query.GetFirstAndLastNameWithStatecode({
+            statecode: socket.handshake.query.corper.statecode
         }).then(result => {
             socket.names = result
         }, reject => {
             console.log('failed to get f & l names', reject);
         }).catch(reason => {
             console.log('error getting f & l name');
-        })
+        }) */
+
+
 
 
         // immediately join all the rooms presently online they are involved in, someone wants to chat with you
@@ -379,37 +385,58 @@ const iochat = io.of('/chat').on('connection', function (socket) {
         for (index = 0; index < everyRoomOnline.length; index++) {
             const onlineRoom = everyRoomOnline[index];
 
-            if (onlineRoom.includes(socket.handshake.query.from)) {
-                console.log('\nsaw onlineRoom', `${onlineRoom} is got in ${socket.handshake.query.from}`);
+            if (onlineRoom.includes(socket.handshake.query.corper.statecode)) {
+                console.log('\nsaw onlineRoom', `${onlineRoom} is got in ${socket.handshake.query.corper.statecode}`);
                 socket.join(onlineRoom);
             }
 
         } // ON EVERY MESSAGE, WE CAN ITERATE THROUGH ALL THE CONNECTED ROOMS AND IF A ROOM CONTAINS BOTH THE .TO AND .FROM, WE SEND TO THAT ROOM BUT THIS METHOD IS INEFFICIENT, IF THE ROOM ISN'T ALREADY EXISTING, CREATE IT AND JOIN, ELSE JUST ONLY JOIN
 
-        // socket.handshake.query.to and socket.handshake.query.from
+        // socket.handshake.query.to and socket.handshake.query.corper.statecode
 
         // [so we save traffic, a bit maybe] also select old rooms, i.e. rooms not in everyOnlineRooms, also show that these rooms[the participants] are online[maybe with green in the front end][from chat.adapter.rooms object]
         
         /**
          * this block of code gets offline rooms, that the corper was in, and join.
          */
-        query.GetStatecodeChatRooms(socket.handshake.query.from).then(results => {
-            for (index = 0; index < results.length; index++) {
+
+        // https://stackoverflow.com/a/51114095 // maybe create an OS MR for this.
+        Chat.findAll({
+            where: {
+                room: {
+                    [Op.like]: `%${socket.handshake.query.corper.statecode}%` // is statecode
+                },
+                message: {
+                    [Op.not]: null
+                }
+            },
+            attributes: ['room'],
+            group: ['room']
+        }).then(results => {
+            console.log('\t\t\n\n\nall previous rooms\n\n:', results);
+
+            let _rooms = results.map(result => result.room)
+            console.log("roooooms:\n\n\n", _rooms);
+            /* for (index = 0; index < results.length; index++) {
                 const offlineRoom = results[index].room;
 
-                if (offlineRoom.includes(socket.handshake.query.from)) {
-                    console.log('\nsaw offlineRoom', `${offlineRoom} is got in ${socket.handshake.query.from}`);
+                if (offlineRoom.includes(socket.handshake.query.corper.statecode)) {
+                    console.log('\nsaw offlineRoom', `${offlineRoom} is got in ${socket.handshake.query.corper.statecode}`);
                     socket.join(offlineRoom, () => {
                         console.log('\nand joined', `${offlineRoom}`);
                     });
                 }
 
-            }
+            } */
         }, reject => {
-
+            console.error;('\t\t\n\n\ndid not get all previous rooms\n\n:', reject);
         }).catch(reason => {
-
+            console.error;('\t\t\n\n\ncatchinggg did not get all previous rooms\n\n:', reason);
         })
+
+        // SELECT DISTINCT room FROM chats WHERE room LIKE '%" + statecode + "%' AND message IS NOT NULL
+        // query.GetStatecodeChatRooms(socket.handshake.query.corper.statecode)
+        
 
         
         // save all the ever rooms a socket has been in, and output it so 
@@ -459,30 +486,52 @@ const iochat = io.of('/chat').on('connection', function (socket) {
             var x = Object.keys(ns.sockets);
             var t = false; // false
             for (const s of x) {
-                if (ns.sockets[s].handshake.query.from == sc) { // if they're online
+                console.log('checking if', ns.sockets[s].handshake.query.corper.statecode, 'is online');
+                // should be query.corper.statecode ... need change in account.ejs
+                if (ns.sockets[s].handshake.query.corper.statecode == sc) { // if they're online
                     t = s; // true // return the socket.id
-                    console.log('they are/were...', s)
+                    console.log('they are online...', s)
                     break;
+                } else {
+                    console.log('they are not online');
                 }
             }
             return t;
         }
 
-        socket.on('message', (msg, fn) => {
+        socket.on('message', async (msg, fn) => {
+
+            console.log('got a message', msg);
             // declare the encapsulating object
             var m = {
                 'from': {},
                 'to': {}
             };
 
-            if (socket.handshake.query.from != ('' || null) && msg.to != ('' && socket.handshake.query.from && null)) { // send message only to a particular room
+            if (socket.handshake.query.corper.statecode != ('' || null) && msg.to != ('' && socket.handshake.query.corper.statecode && null)) { // send message only to a particular room
                 /* var m = {
-                  'from': { 'statecode': socket.handshake.query.from },
+                  'from': { 'statecode': socket.handshake.query.corper.statecode },
                   'to': { 'statecode': msg.to },
                   'it': msg
                 }; */
-                m.from.statecode = socket.handshake.query.from, m.to.statecode = msg.to, m.it = msg;
-                m.from.firstname = socket.names.firstname, m.from.lastname = socket.names.lastname;
+
+                // should make m.to the corper object
+                /**
+                 * m.to is an object of CorpMember
+                 */
+                m.to = await CorpMember.findOne({
+                    where: {
+                      statecode: msg.to
+                    }
+                  });
+                console.log('did we get to /?', m.to);
+                console.log('did we get to /0000?', m.to.id);
+                /**
+                 * m.from is an object of CorpMember
+                 */
+                m.from = socket.handshake.query.corper,
+                m.it = msg;
+                ;
 
                 var everyRoomOnline = Object.keys(iochat.adapter.rooms)
                 // ON EVERY MESSAGE, WE CAN ITERATE THROUGH ALL THE CONNECTED ROOMS AND IF A ROOM CONTAINS BOTH THE .TO AND .FROM, WE SEND TO THAT ROOM BUT THIS METHOD IS INEFFICIENT, IF THE ROOM ISN'T ALREADY EXISTING, CREATE IT AND JOIN, ELSE JUST ONLY JOIN
@@ -495,9 +544,9 @@ const iochat = io.of('/chat').on('connection', function (socket) {
 
                 // THE TWO IF STATEMENTS HAVE THE SAME LOGIC BUT DIFFERENT IMPLMENTATION
 
-                if (iochat.adapter.rooms[socket.handshake.query.from + '-' + msg.to] && c_online) {
+                if (iochat.adapter.rooms[socket.handshake.query.corper.statecode + '-' + msg.to] && c_online) {
                     // In the array!
-                    var room = socket.handshake.query.from + '-' + msg.to;
+                    var room = socket.handshake.query.corper.statecode + '-' + msg.to;
                     console.log('is in room ?', iochat.adapter.rooms[room].sockets[socket.id]);
                     if (!iochat.adapter.rooms[room].sockets[socket.id]) { // if the sending socket is NOT in the room
 
@@ -514,10 +563,10 @@ const iochat = io.of('/chat').on('connection', function (socket) {
                         m.sent = true;
                     });
                     console.log('\n\ngot close to deliver ? 001', !m.sent)
-                } else if (iochat.adapter.rooms[msg.to + '-' + socket.handshake.query.from] && c_online) {
+                } else if (iochat.adapter.rooms[msg.to + '-' + socket.handshake.query.corper.statecode] && c_online) {
                     // In the array!
                     console.log(socket.id, 'what ??????', c_online) // iochat.sockets[c_online].id
-                    var room = msg.to + '-' + socket.handshake.query.from;
+                    var room = msg.to + '-' + socket.handshake.query.corper.statecode;
 
                     console.log('are in room ? sender = ', iochat.adapter.rooms[room].sockets[socket.id], 'receipent =', iochat.adapter.rooms[room].sockets[c_online]);
                     if (iochat.adapter.rooms[room].sockets[socket.id] && iochat.adapter.rooms[room].sockets[c_online]) { // if they are both online and in the room
@@ -534,9 +583,9 @@ const iochat = io.of('/chat').on('connection', function (socket) {
                     console.log('\n\ngot close to deliver ? 02', !m.sent) // something is wrong here. if new delete all messages. and a new corper open a new chat with another corper. if the initiating corper sends messages, the other corper receives, the other corpers sends messages, the initiating corper doens't receive it immeidately 
                 } else {
                     // Not in the array
-                    // then add both sockets...from and to ...to thesame room [to get the .to, find the socket that the query.from is msg.to]
+                    // then add both sockets...from and to ...to thesame room [to get the .to, find the socket that the corper.statecode is msg.to]
 
-                    var room = socket.handshake.query.from + '-' + msg.to;
+                    var room = socket.handshake.query.corper.statecode + '-' + msg.to;
 
                     if (c_online) {
                         iochat.sockets[c_online].join(room, () => {
@@ -562,20 +611,30 @@ const iochat = io.of('/chat').on('connection', function (socket) {
                 fn(m) // run on client machine
                 
                 // save message to db
-                query.InsertRowInChatTable({
-                    room: room, 
-                    message_from: socket.handshake.query.from, 
-                    message_to: msg.to, 
-                    time: msg.time, 
-                    message: msg.message, 
+                Chat.create({
+                    room: room,
+                    message: msg.message,
+                    message_from: socket.handshake.query.corper.statecode,
+                    message_to: msg.to,
+                    // mediaId: , // add later
+                    time: msg.time,
                     message_sent: m.sent,
-                    post_time_by_to: msg.post_time_by_to,
-                    post_type_by_to: msg.post_type_by_to
-                }).then(result => {
+                })
+                // query.InsertRowInChatTable({
+                //     room: room, 
+                //     message_from: socket.handshake.query.corper.statecode, 
+                //     message_to: msg.to, 
+                //     time: msg.time, 
+                //     message: msg.message, 
+                //     message_sent: m.sent,
+                //     post_time_by_to: msg.post_time_by_to,
+                //     post_type_by_to: msg.post_type_by_to
+                // })
+                .then(result => {
                     // good
                 }, reject => {
                     // very bad
-                    console.log('what error?', error);
+                    console.log('what error?', reject);
                     
                 }).catch(reason => {
                     console.log('why did you fail?', reason);

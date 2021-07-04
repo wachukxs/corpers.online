@@ -30,7 +30,7 @@
 
 <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="/<%#= corper.statecode %>">
+    <a class="navbar-brand" href="/<%= corper.statecode %>">
         Home
     </a>
     </nav>
@@ -42,292 +42,239 @@
             <div class="sidebar-heading">
                 <div class="align-items-center">
                     Contacts
-                    <span id="totalunreadmsg" class="float-right badge badge-secondary badge-pill"><%#= (_total_num_unread_msg > 0 ? _total_num_unread_msg : '') %></span>
+                    <span id="totalunreadmsg" class="float-right badge badge-secondary badge-pill"><%= (_total_num_unread_msg > 0 ? _total_num_unread_msg : '') %></span>
                 </div>
             </div>
 
             <!-- maybe put a search box here, clone whatsapp -->
             <div class="list-group list-group-flush" style="height: 91vh;overflow-y: scroll;">
                 <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                    <!-- <a hidden class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</a> -->
+                   
+                    <% try { // add new name sidebar if there's item to chat about %>
 
-                    <%# try { %>
-                    <%## if (_all_corp_member_chats || oldunreadchats) { // select UNIQUE statecodes [message_to and message_from] from _all_corp_member_chats, later order them by most recent time %>
-                    <%## // https://codeburst.io/javascript-array-distinct-5edc93501dc4 %>
+                    <% if (_item_to_chat_about) { %>
+                        <% // if _item_to_chat_about, if it is, make it the first item of the array %>
+                    
+                        <a data-statecode="<%= _item_to_chat_about.statecode %>" class="nav-link active list-group-item list-group-item-action" id="v-pills-<%= _item_to_chat_about.statecode.replace(/\//g, '-') %>-tab" data-toggle="pill" href="#v-pills-<%= _item_to_chat_about.statecode.replace(/\//g, '-') %>" role="tab" aria-controls="v-pills-<%= _item_to_chat_about.statecode.replace(/\//g, '-') %>" aria-selected="true">
+                            <div><%= `${_item_to_chat_about?.accommodationByCorper.lastname || _item_to_chat_about?.saleByCorper.lastname} ${_item_to_chat_about?.accommodationByCorper.firstname || _item_to_chat_about?.saleByCorper.firstname}` %></div>
+                            
+                            <div>
+                                <small class="text-muted"><%= _item_to_chat_about.statecode %></small>
+                                <span class="float-right badge badge-secondary badge-pill"></span>
+                            </div>
+                        </a>
+                    <% } %>
 
-                    <%## var neww = [...new Set(_all_corp_member_chats.map(x => x.message_to))].concat([...new Set(_all_corp_member_chats.map(x => x.message_from))]) %>
-                    <%## var newwer = [...new Set(neww)]; %>
+                    <% if (_new_all_corp_member_chats) { %>
+          
+                    <% for (const _key_room_chat in _new_all_corp_member_chats) { %>
 
-                    <%## var _newwunread = [...new Set(oldunreadchats.map(x => x.message_to))].concat([...new Set(oldunreadchats.map(x => x.message_from))]) %>
-                    <%## var newwunread = [...new Set(_newwunread)]; %>
-                    <%## newwer.splice(newwer.indexOf(corper.statecode), 1) // if owner's statecode is in newwer, remove it, we don't need it, we really don't. in fact, we should not have it %>
+                    <% if(_new_all_corp_member_chats[_key_room_chat][0].CorpMember.statecode == corper.statecode) { // very important piece. don't show your own message. %>
+                        <% continue; %>
+                    <% } %>
 
-                    <%## newwunread.splice(newwunread.indexOf(corper.statecode), 1) // if owner's statecode is in newwer, remove it, we don't need it %>
-                    <%## console.log('>>>>>>>neww', neww, '\n\n\n\n newwer=', newwer, '\n\n\n\n newwunread=', newwunread)  %>
-                    <%## try { %>
-                    <%## // console.log(_all_corp_member_chats, '\n\n\n\n\n-',_item_to_chat_about,newwer,  ! newwer.includes(_item_to_chat_about.statecode))  %>
-                    <%## if (_item_to_chat_about) { %>
-                    <%## check if _item_to_chat_about is in newwer, if it isnt, output this next lines of code--  if it is, make it the first item of the array %>
-                    <a hidden class="nav-link" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="false">Home</a>
-
-                    <a data-statecode="<%##= _item_to_chat_about.statecode %>" class="nav-link active list-group-item list-group-item-action" id="v-pills-<%#= _item_to_chat_about.statecode.replace(/\//g, '-') %>-tab" data-toggle="pill" href="#v-pills-<%#= _item_to_chat_about.statecode.replace(/\//g, '-') %>" role="tab" aria-controls="v-pills-<%#= _item_to_chat_about.statecode.replace(/\//g, '-') %>" aria-selected="true">
-                        <div><%= `${_item_to_chat_about?.accommodationByCorper.lastname || _item_to_chat_about?.saleByCorper.lastname} ${_item_to_chat_about?.accommodationByCorper.firstname || _item_to_chat_about?.saleByCorper.firstname}` %></div>
-                        
+                    <% if(_item_to_chat_about && _new_all_corp_member_chats[_key_room_chat][0].CorpMember.statecode == _item_to_chat_about.statecode) { // very important piece. don't show item to chat about. %>
+                        <% continue; %>
+                    <% } %>
+                  
+                    <% // if an unread message is part of the old message, color the tab orange  %>
+                    <a data-statecode="<%= _new_all_corp_member_chats[_key_room_chat][0].CorpMember.statecode %>" class="nav-link list-group-item list-group-item-action old t-" id="v-pills-<%= _new_all_corp_member_chats[_key_room_chat][0].CorpMember.statecode.replace(/\//g, '-') %>-tab" data-toggle="pill" href="#v-pills-<%= _new_all_corp_member_chats[_key_room_chat][0].CorpMember.statecode.replace(/\//g, '-') %>" role="tab" aria-controls="v-pills-<%= _new_all_corp_member_chats[_key_room_chat][0].CorpMember.statecode.replace(/\//g, '-') %>" aria-selected="false">
+            
+                        <% console.log('\noladchh===', _all_corp_member_chats); %>
                         <div>
-                            <small class="text-muted"><%#= _item_to_chat_about.statecode %></small>
-                            <span class="float-right badge badge-secondary badge-pill"></span>
+                            <%= _new_all_corp_member_chats[_key_room_chat][0].CorpMember.lastname + ' ' +_new_all_corp_member_chats[_key_room_chat][0].CorpMember.firstname %>
                         </div>
-                    </a>
-                    <%# } else { %>
-                    <%# // console.log('there is new chat') %>
-                    <a hidden class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</a>
-                    <%# } %>
-                    <%# } catch(error) { %>
-                    <!-- <a hidden class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</a> -->
-                    <%# // console.log('err 01', error); %>
-                    <%# } %>
-
-                    <%# for (newweri = 0; newweri < newwer.length; newweri++) { %>
-                    <%##  %>
-                    <%#  if ( _item_to_chat_about && newwer[newweri] == _item_to_chat_about.statecode ) { %>
-                    <%# // console.log('skipping _item_to_chat_about ...we already outputted it'); %>
-                    <%# continue; // if _item_to_chat_about is in newwer, skip it, we already outputted it up %>
-                    <%# } %>
-                    <%## if an unread message is part of the old message, color the tab orange  %>
-                    <a data-statecode="<%#= newwer[newweri] %>" class="<%#= ( newwunread.includes(newwer[newweri]) ? 'bg-warning' : '' ) %> nav-link list-group-item list-group-item-action old t-" id="v-pills-<%#= newwer[newweri].replace(/\//g, '-') %>-tab" data-toggle="pill" href="#v-pills-<%#= newwer[newweri].replace(/\//g, '-') %>" role="tab" aria-controls="v-pills-<%#= newwer[newweri].replace(/\//g, '-') %>" aria-selected="false">
-                        <%## get fullname from _all_corp_member_chats, iterate through the objects' properties %>
-                        <%## var f = _all_corp_member_chats.concat(oldunreadchats).find(x => x.message_from == newwer[newweri] );  %>
-                        <%# console.log('\noladchh===', _all_corp_member_chats); %>
-                        <div><%#= `${_all_corp_member_chats[newweri].sender_lastname} ${_all_corp_member_chats[newweri].sender_firstname}` %></div>
                         <div>
-                            <small class="text-muted"><%#= newwer[newweri] %></small>
-                            <%# var num_unread_msg = oldunreadchats.filter((value, index, array) => { return value.message_from == newwer[newweri] && value.message_to == corper.statecode && value.message_sent == 0 }).length ; %>
-                            <span class="float-right badge badge-secondary badge-pill"><%#= (num_unread_msg > 0 ? num_unread_msg : '') %></span>
+                            <small class="text-muted"><%= _new_all_corp_member_chats[_key_room_chat][0].CorpMember.statecode %></small>
+                            <% let _unread = _new_all_corp_member_chats[_key_room_chat].reduce((counter, obj) => !obj.read_by_to ? counter += 1 : counter, 0) %>
+                            <span class="float-right badge badge-secondary badge-pill"><%= (_unread > 0 ? _unread : '') %></span>
                         </div>
 
                     </a>
 
-                    <%# } %>
-                    <%# } %>
-                    <%# } catch (error) { %>
-                    <%# console.log('err 02:', error); %>
-                    <%## here prints if the chat opens with nobody %>
-                    <%# } %>
+                    <% } %>
+                    <% } %>
+                    
+                    <% } catch (error) { %>
+                    <% console.log('err 02:', error); %>
+                    <% // here prints if the chat opens with nobody %>
+                    <% } %>
 
-                    <!-- for the test tabs -->
-                    <!-- <a data-statecode="AB/17A/3457" class="nav-link list-group-item list-group-item-action" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">
-                        <div>Full Name</div>
-                        <div>
-                            <small class="text-muted">AB/17B/3456</small> <span class="float-right badge badge-secondary badge-pill">5</span>
-                        </div>
-                    </a>
-
-                    <a class="nav-link list-group-item list-group-item-action" id="v-pills-AB-17B-1214-tab" data-toggle="pill" href="#v-pills-AB-17B-1214" role="tab" aria-controls="v-pills-AB-17B-1214" aria-selected="false">Messages</a>
-
-                    <a class="nav-link list-group-item list-group-item-action" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</a> -->
-
+                    
                 </div>
             </div>
         </div>
-        <!-- /#sidebar-wrapper -->
+        <!-- //sidebar-wrapper -->
+
+
+
+
+
+
+
+
+
+
 
         <!-- Page Content -->
         <div id="page-content-wrapper">
 
             <nav class="navbar navbar-light bg-light sticky-top">
                 <button class="btn btn-primary" id="menu-toggle">
-                    <!-- small screens, chat shows, large screens, chats doesn't show  -->
-                    <!-- Visible only on xs, sm -->
+                  
                     <div id="a" class="d-block d-sm-none  d-none d-sm-block d-md-none">
                         <i class="fas fa-chevron-left"></i>
                         Chats
                     </div>
-
-                    <!-- large screens, x shows, small screens x doesn't show  -->
-                    <!-- Visible only on md, lg, xl -->
                     <div id="b" class="d-none d-md-block d-lg-none  leftnone d-lg-block d-xl-none  leftnone d-xl-block"><i class="fas fa-times"></i></div>
                 </button>
 
                 <div class="d-none d-sm-block" id="notifications">
                     <!-- maybe some/all notifications show here -->
                 </div>
-                <!-- only on big screens -->
 
-                <!-- <div class="dropdown">
-                    <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-ellipsis-v"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Block user</a>
-                        <a class="dropdown-item" href="#">Pay for item [escrow]</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Close deal, or verify goods</a>
-                    </div>
-                </div> -->
             </nav>
 
             <div class="container-fluid">
 
-                <!-- <p>The starting state of the menu will appear collapsed on smaller screens, and will appear
-            non-collapsed on larger screens. When toggled using the button below, the menu will change.</p>
-          <p>Make sure to keep all page content within the <code>#page-content-wrapper</code>.
-            The top navbar is optional, and just for demonstration. Just create an element with the
-            <code>#menu-toggle</code> ID which will toggle the menu when clicked.</p> -->
                 <div class="tab-content" id="v-pills-tabContent">
-                    <!-- <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                    
+                    <% try { %>
+                    <% if (!_item_to_chat_about && !_new_all_corp_member_chats) { // if there is nothing at all %>
+                        <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
 
-                        <div class="text-center mt-5 align-middle">
-                            <div class="">
-                                <img src="assets/images/chat/undraw_chat_1wo5.png" alt="chat icon" width="250" height="250" srcset="assets/images/chat/undraw_chat_1wo5.svg" class="rounded">
+                            <div class="text-center mt-5 align-middle">
+                                <div class="">
+                                    <img src="assets/images/chat/undraw_chat_1wo5.png" alt="chat icon" width="250" height="250" srcset="assets/images/chat/undraw_chat_1wo5.svg" class="rounded">
+                                </div>
+    
+                                <h5 class="font-weight-light">
+                                    Your chats show up here.
+                                </h5>
                             </div>
-
-                            <h5 class="font-weight-light">
-                                Corpers who have chatted you up show here.
-                            </h5>
+    
                         </div>
 
-                    </div> -->
-                    <%## the socket will be in every unread message group. so we would loop the unread message array inside the neww for loop, so if the message is in unread we color it and count it. and maybe even demacate it... then we arrange it ||| we also need to arrange the sidebar tab %>
-
-                    <%## try { %>
-                    <%## if there is _item_to_chat_about, it either is in newwer or it isn't so we only need to check if _item_to_chat_about is in newwer, if it isnt, output this next lines of code-- that means if it exists, it is in newwer %>
-                    <%## if (_item_to_chat_about) { // %>
-                    <%## console.log('err88888888 03', _item_to_chat_about); %>
-                    <div class="tab-pane fade" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                    
+                    <% } else { %>
+                  
+                    
 
 
-                        <div class="text-center mt-5 align-middle">
-                            <div class="">
-                                <img src="assets/images/chat/undraw_chat_1wo5.png" alt="chat icon" width="250" height="250" srcset="assets/images/chat/undraw_chat_1wo5.svg" class="rounded">
-                            </div>
-
-                            <h5 class="font-weight-light">
-                                Your chats show up here.
-                            </h5>
-                        </div>
-
-                    </div>
-
-                    <%## if ( newwer.length == 0 || !newwer.includes(_item_to_chat_about.statecode)) { // for when they open up a new chat and if they've never chatted before // i.e. this guy has no old chat AT ALL they possibly couldn't have chatted before %>
-                    <div class="tab-pane fade show active" id="v-pills-<%##= _item_to_chat_about.statecode.replace(/\//g, '-') %>" role="tabpanel" aria-labelledby="v-pills-<%##= _item_to_chat_about.statecode.replace(/\//g, '-') %>-tab">
-                        <h6><%#= _item_to_chat_about.statecode %></h6>
+                    <% if ( _item_to_chat_about ) { // for when they open up a new chat and if they've never chatted before // i.e. this guy has no old chat AT ALL they possibly couldn't have chatted before %>
+                    <% console.log('the tiem to chat aobut\n\n', _item_to_chat_about) %>
+                    <div class="tab-pane fade show active" id="v-pills-<%= _item_to_chat_about.statecode.replace(/\//g, '-') %>" role="tabpanel" aria-labelledby="v-pills-<%= _item_to_chat_about.statecode.replace(/\//g, '-') %>-tab">
+                        <h6><%= _item_to_chat_about.statecode %></h6>
                         <div class="wall">
-                            <% console.log('the tiem to chat aobut\n\n', _item_to_chat_about) %>
-                            Start your first message with <%= _item_to_chat_about?.accommodationByCorper.firstname || _item_to_chat_about?.saleByCorper.firstname %>
+                            
+                            
                             <div class="messages">
+                                <% // show old messages if they have any %>
+                                <% let _previous_chat_room_key = Object.keys(_new_all_corp_member_chats).find(_chat_room => _chat_room.includes(_item_to_chat_about.statecode)); %>
+                                <% if ( _new_all_corp_member_chats && _previous_chat_room_key ) { %>
 
-                            </div>
+                                <% // append the old chat messages here %>
+                              
+                                <% for (let old_chats_index = 0; old_chats_index < _new_all_corp_member_chats[_previous_chat_room_key].length; old_chats_index++) { %>
 
-                            <div class="chatbox insidewall">
-                                <!-- the chat box will be inside every user's wall, help us save drafts and be more particular -->
-                                <!-- append before the new tab is shown -->
-                                <!-- <div class="row">
-                                    
-                                    <div class="col-10">
-                                        <textarea class="form-control text" sc="<%#= _item_to_chat_about.statecode.replace(/\//g, '-') %>" rows="3"></textarea>
-                                    </div>
-                                    <div class="col-2">
-                                        <button class="btn btn-primary send" sc="<%#= _item_to_chat_about.statecode.replace(/\//g, '-') %>" disabled='true'>Send</button>
-                                    </div>
-                                </div> -->
-                                <div class="input-group mb-3">
-                                    <input type="text" class="form-control text" spellcheck="true" placeholder="Type a message" sc="<%#= statecode.replace(/\//g, '-') %>" aria-label="Message box" aria-describedby="textbox">
-                                    <div class="input-group-append">
-                                      <button class="btn btn-outline-secondary send" type="button" sc="<%#= statecode.replace(/\//g, '-') %>">Send</button>
-                                    </div>
-                                  </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <%# } %>
-
-                    <%# } else { %>
-                    <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
-
-                        <div class="text-center mt-5 align-middle">
-                            <div class="">
-                                <img src="assets/images/chat/undraw_chat_1wo5.png" alt="chat icon" width="250" height="250" srcset="assets/images/chat/undraw_chat_1wo5.svg" class="rounded">
-                            </div>
-
-                            <h5 class="font-weight-light">
-                                Your chats show up here.
-                            </h5>
-                        </div>
-
-                    </div>
-                    <%# } %>
-                    <%# } catch (error) { // if there is no _item_to_chat_about, this is what happens %>
-                    <%##  %>
-
-                    <%# console.log('err 03', error); %>
-                    <%# } %>
-                    <!--end new chats -->
-
-                    <!-- old chats [the chatting tab]  -->
-                    <%# if (newwer) { // if there are old chats [newwer] // if there is no new chat, we don't need to check if it is in newwer %>
-                    <%## console.log('\n\n\t newwer=', newwer); %>
-                    <%# for (index = 0; index < newwer.length; index++) { %>
-                    <%## if _item_to_chat_about is in newwer, then show the tab, make it's class to contain "show active" and aria-selected=true %>
-                    <div class="tab-pane fade <%#= ( _item_to_chat_about && newwer[index] == _item_to_chat_about.statecode ? 'show active' : '' )  %> " id="v-pills-<%#= newwer[index].replace(/\//g, '-') %>" role="tabpanel" aria-labelledby="v-pills-<%#= newwer[index].replace(/\//g, '-') %>-tab">
-                        <h6><%#= newwer[index] %>'s chat</h6>
-                        <div class="wall">
-                            <div class="messages">
-                                <%## append the old chat messages here %>
-                                <%# _all_corp_member_chats = _all_corp_member_chats.sort( (a, b) => (a.time > b.time) ? 1 : -1 ) // don't change // https://flaviocopes.com/how-to-sort-array-of-objects-by-property-javascript/ %>
-                                <%## the appending %>
-                                <%## /**
-                                    * within the wall, sort _all_corp_member_chats according to oldchat[index].time or _time
-                                    * then loop through _all_corp_member_chats
-                                    * if the newwer[index] is contained in the oldchat[index].room == true && oldchat[index].message_from == newwer[index] == true, append to the RIGHT [i.e. they sent the message]
-                                    * 
-                                    * if the newwer[index] is contained in the oldchat[index].room == true && oldchat[index].message_to newwer[index] == true, append to the LEFT [i.e they received the message]
-                                    */ %>
-
-                                <%# for (ocindex = 0; ocindex < _all_corp_member_chats.length; ocindex++) { %>
-
-                                <%# if ( _all_corp_member_chats[ocindex].room.includes( newwer[index] ) && _all_corp_member_chats[ocindex].message_to == newwer[index] && _all_corp_member_chats[ocindex].message_from == corper.statecode) { // append to right %>
+                                <% if ( _new_all_corp_member_chats[_previous_chat_room_key][old_chats_index].message_from == corper.statecode) { // append to right %>
                                 <div class="pl-5">
                                     <div class="card mb-2">
                                         <div class="card-body">
-                                            <div class="float-right"><%#= _all_corp_member_chats[ocindex].message %></div>
+                                            <div class="float-right"><%= _new_all_corp_member_chats[_previous_chat_room_key][old_chats_index].message %></div>
                                         </div>
                                         <div class="text-right small p-2 bg-dark text-muted">
-                                            <%#= new Date(_all_corp_member_chats[ocindex].time).toLocaleString("en-US") %> <span id="<%#= _all_corp_member_chats[ocindex].time %>"></span> </div>
+                                            <%= new Date(_new_all_corp_member_chats[_previous_chat_room_key][old_chats_index].time).toLocaleString("en-US") %> <span id="<%= _new_all_corp_member_chats[_previous_chat_room_key][old_chats_index].time %>"></span> </div>
                                     </div>
                                 </div>
-                                <%# } else if (_all_corp_member_chats[ocindex].room.includes( newwer[index] ) && _all_corp_member_chats[ocindex].message_to == corper.statecode && _all_corp_member_chats[ocindex].message_from == newwer[index]) { // append to left %>
+                                <% } else if ( _new_all_corp_member_chats[_previous_chat_room_key][old_chats_index].message_to == corper.statecode ) { // append to left %>
                                 <div class="pr-5">
                                     <div class="card mb-2">
                                         <div class="card-body">
-                                            <div class="float-left"><%#= _all_corp_member_chats[ocindex].message %></div>
+                                            <div class="float-left"><%= _new_all_corp_member_chats[_previous_chat_room_key][old_chats_index].message %></div>
                                         </div>
                                         <div class="small p-2 bg-dark text-muted">
-                                            <%#= new Date(_all_corp_member_chats[ocindex].time).toLocaleString("en-US") %> <span id="<%#= _all_corp_member_chats[ocindex].time %>"></span> </div>
+                                            <%= new Date(_new_all_corp_member_chats[_previous_chat_room_key][old_chats_index].time).toLocaleString("en-US") %> <span id="<%= _new_all_corp_member_chats[_previous_chat_room_key][old_chats_index].time %>"></span> </div>
                                     </div>
                                 </div>
-                                <%# } %>
+                                <% } %>
 
-                                <%# } %>
+                                <% } %>
+
+
+
+                                <% } else { %>
+                                    Start your first message with <%= _item_to_chat_about?.accommodationByCorper.firstname || _item_to_chat_about?.saleByCorper.firstname %>
+                                <% }%>
+                            </div>
+
+                            <div class="chatbox insidewall">
+                                <!-- the chat box will be inside every user's wall, help us save drafts and be more particular -->
+                                <!-- append before the new tab is shown -->
+                                
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control text" spellcheck="true" placeholder="Type a message" sc="<%= corper.statecode.replace(/\//g, '-') %>" aria-label="Message box" aria-describedby="textbox">
+                                    <div class="input-group-append">
+                                      <button class="btn btn-outline-secondary send" type="button" sc="<%= corper.statecode.replace(/\//g, '-') %>">Send</button>
+                                    </div>
+                                  </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <% } %>
+
+
+                    <!-- old chats [the chatting tab]  -->
+                    <% if (_new_all_corp_member_chats) { // if there are old chats [newwer] // if there is no new chat, we don't need to check if it is in newwer %>
+                    <% console.log('\n\n\t templating _new_all_corp_member_chats'); %>
+                    <% for (const _key_room_chat in _new_all_corp_member_chats) { %>
+
+                        <% console.log('\n\n\t templating _new_all_corp_member_chats', _key_room_chat); %>
+                    <div class="tab-pane fade " id="v-pills-<%= _new_all_corp_member_chats[_key_room_chat][0].message_from.replace(/\//g, '-') %>" role="tabpanel" aria-labelledby="v-pills-<%= _new_all_corp_member_chats[_key_room_chat][0].message_from.replace(/\//g, '-') %>-tab">
+                        <h6><%= _new_all_corp_member_chats[_key_room_chat][0].message_from %>'s chat</h6>
+                        <div class="wall">
+                            <div class="messages">
+                           
+                                <% // append the old chat messages here %>
+                              
+                                <% for (let old_chats_index = 0; old_chats_index < _new_all_corp_member_chats[_key_room_chat].length; old_chats_index++) { %>
+
+                                <% if (_new_all_corp_member_chats[_key_room_chat][old_chats_index].message_from == corper.statecode) { // append to right %>
+                                    <% console.log('\n\n\t templating _new_all_corp_member_chats', _key_room_chat); %>
+                                <div class="pl-5">
+                                    <div class="card mb-2">
+                                        <div class="card-body">
+                                            <div class="float-right"><%= _new_all_corp_member_chats[_key_room_chat][old_chats_index].message %></div>
+                                        </div>
+                                        <div class="text-right small p-2 bg-dark text-muted">
+                                            <%= new Date(_new_all_corp_member_chats[_key_room_chat][old_chats_index].time).toLocaleString("en-US") %> <span id="<%= _new_all_corp_member_chats[_key_room_chat][old_chats_index].time %>"></span> </div>
+                                    </div>
+                                </div>
+                                <% } else if (_new_all_corp_member_chats[_key_room_chat][old_chats_index].message_to == corper.statecode ) { // append to left %>
+                                <div class="pr-5">
+                                    <div class="card mb-2">
+                                        <div class="card-body">
+                                            <div class="float-left"><%= _new_all_corp_member_chats[_key_room_chat][old_chats_index].message %></div>
+                                        </div>
+                                        <div class="small p-2 bg-dark text-muted">
+                                            <%= new Date(_new_all_corp_member_chats[_key_room_chat][old_chats_index].time).toLocaleString("en-US") %> <span id="<%= _new_all_corp_member_chats[_key_room_chat][old_chats_index].time %>"></span> </div>
+                                    </div>
+                                </div>
+                                <% } %>
+
+                                <% } %>
                             </div>
 
 
                             <div class="chatbox insidewall">
                                 <!-- the chat box will be inside every user's wall, help us save drafts and be more particular -->
                                 <!-- append before the new tab is shown -->
-                                <!-- <div class="row">
-                                    
-                                    <div class="col-10">
-                                        <textarea class="form-control text" sc="<%#= newwer[index].replace(/\//g, '-') %>" rows="3"></textarea>
-                                    </div>
-                                    <div class="col-2">
-                                        <button class="btn btn-primary send" sc="<%#= newwer[index].replace(/\//g, '-') %>" disabled='true'>Send</button>
-                                    </div>
-                                </div> -->
+                                
                                 <div class="input-group mb-3 mt-3">
-                                    <input type="text" class="form-control text" spellcheck="true" sc="<%#= newwer[index].replace(/\//g, '-') %>" placeholder="Type a message" aria-label="Message box" aria-describedby="textbox">
+                                    <input type="text" class="form-control text" spellcheck="true" sc="<%= _new_all_corp_member_chats[_key_room_chat][0].message_to.replace(/\//g, '-') %>" placeholder="Type a message" aria-label="Message box" aria-describedby="textbox">
                                     <div class="input-group-append">
-                                      <button class="btn btn-outline-secondary send" type="button" sc="<%#= newwer[index].replace(/\//g, '-') %>">Send</button>
+                                      <button class="btn btn-outline-secondary send" type="button" sc="<%= _new_all_corp_member_chats[_key_room_chat][0].message_to.replace(/\//g, '-') %>">Send</button>
                                     </div>
                                   </div>
                             </div>
@@ -335,54 +282,22 @@
                         </div>
                     </div>
 
-                    <%# } %>
+                    <% } %>
 
-                    <%# } %>
+                    <% } %>
                     <!-- end old chats -->
 
-                    <!-- test tabs -->
-                    <!-- <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
-                        <p>
-                            profile tab
-                        </p>
 
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora nobis necessitatibus
-                        molestias! Nisi
-                        labore, a eaque, dolorem molestias, optio ratione soluta mollitia deserunt id consequatur
-                        explicabo
-                        quisquam totam officiis sapiente!
-                        <div class="wall">
+                    
+                    <% } %>
+                    <% } catch(error) { %>
+                    <% console.log('err 04', error); %>
+                    <% } %>
+                    <!--end new chats -->
 
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="v-pills-AB-17B-1214" role="tabpanel" aria-labelledby="v-pills-AB-17B-1214-tab">
-                        <h6>messages</h6>
-
-                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Atque cum quas corporis totam
-                        quasi eius, porro vitae iusto laudantium commodi velit illo alias repudiandae similique
-                        praesentium enim
-                        necessitatibus aperiam reprehenderit!
-
-                        <div class="wall">
-
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
-                        <h6>settings ?!??!?! we need sth bettr</h6>
-                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Fuga nobis vel dolore error, quam
-                        esse
-                        ratione tempore sed, sapiente earum nisi eveniet cum asperiores voluptatibus impedit
-                        molestiae molestias
-                        sint hic.
-
-                        <div class="wall">
-
-                        </div>
-                    </div> -->
-
-
+                    
                 </div>
-                <!-- chat box was formerly here -->
+             
             </div>
 
         </div>
@@ -418,23 +333,18 @@
     <script>
         var chat = io.connect( '/chat', {
             transports: [ 'websocket' ],
-            query: {
-                from: '<%#= corper.statecode %>' // new URLSearchParams( window.location.search ).get( 's' ) // '<%#= corper.statecode %>' // might change <%#= corper.statecode %>, because if tabs are open from the same browser, it's value is thesame on both tabs from the backend
+            query: { // must be query
+                corper: JSON.stringify(<%- JSON.stringify(corper) %>)
             }
         } );
         var k = {
-            to: ( new URLSearchParams( window.location.search )
-                .get( 'posts[who]' ) != null ? new URLSearchParams( window.location.search )
-                .get( 'posts[who]' )
-                .toUpperCase() : '' ),
-            post_time_by_to: ( new URLSearchParams( window.location.search )
-                .get( 'posts[when]' ) != null ? new URLSearchParams( window.location.search )
-                .get( 'posts[when]' )
-                .toUpperCase() : '' ),
-            post_type_by_to: ( new URLSearchParams( window.location.search )
+            to: "<%= _item_to_chat_about ? _item_to_chat_about.statecode : '' %>",
+            item_id: ( new URLSearchParams( window.location.search )
+                .get( 'posts[id]' ) != null ? new URLSearchParams( window.location.search )
+                .get( 'posts[id]' ) : '' ),
+            item_type: ( new URLSearchParams( window.location.search )
                 .get( 'posts[type]' ) != null ? new URLSearchParams( window.location.search )
-                .get( 'posts[type]' )
-                .toUpperCase() : '' )
+                .get( 'posts[type]' ) : '' )
         }
         
         // console.log( 'chat socket', chat );
@@ -531,6 +441,7 @@
                     .addClass( "bg-warning" );
             }
 
+            console.log('appenidng');
             // append the message to the account's wall
             $( `#v-pills-${data.from.statecode.replace(/\//g, '-')} > .wall > .messages` )
                 .append( `<div class="pr-5"><div class="card mb-2"><div class="card-body">
@@ -540,7 +451,7 @@
         } ); // new Date(Date.now()).toLocaleTimeString() ---- then if not today new Date(Date.now()).toLocaleString() ---maybe    [new Date(Date.now()).toDateString()]
 
         /* inputtextarea.addEventListener( 'keypress', function() {
-            chat.emit( 'typing', '<%#= corper.statecode %>' ); // <%#= corper.PPA?.name %> <%#= corper.servicestate %>
+            chat.emit( 'typing', '<%= corper.statecode %>' ); // <%= corper.PPA?.name %> <%= corper.servicestate %>
         } ); */
 
         chat.on( 'typing', function( data ) {
@@ -694,10 +605,10 @@
                 e.target.children[ 1 ].children[ 1 ].innerText = '';
 
                 // if unread messages, emit that the messages have been read!!
-                // chat.emit( 'read', {message_from: e.target.attributes[ 'data-statecode' ].value, message_to: '<%#= corper.statecode %>'} ); // when it gets to them if they are online, put double ticks
+                // chat.emit( 'read', {message_from: e.target.attributes[ 'data-statecode' ].value, message_to: '<%= corper.statecode %>'} ); // when it gets to them if they are online, put double ticks
                 chat.emit( 'read', {
                     message_from: e.target.attributes[ 'data-statecode' ].value,
-                    message_to: '<%#= corper.statecode %>'
+                    message_to: '<%= corper.statecode %>'
                 }, ( data ) => {
                     // this funtion will run here to show the server has gotten our message.
                     // console.log( 'was just read', data ); // data will be 'woot ...' // then double tick

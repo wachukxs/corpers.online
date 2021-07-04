@@ -280,26 +280,7 @@ module.exports = {
                 // once it saves in db them emit to other users
                 socket.of('/user').emit('boardcast message', { // or 'accommodation'
                   to: 'be received by everyoneELSE',
-                  post: [_accommodation_to_save.toJSON()] /* {
-                    firstname: _text.firstname,
-                    statecode: req.session.corper.statecode,
-                    // streetname: _text.streetname,
-                    rentrange: _text.rentrange,
-                    rooms: _text.rooms,
-                    tenure: _text.tenure,
-                    expiredate: (_text.expiredate ? _text.expiredate : ''),
-                    post_location: req.session.corper.location,
-                    media: [], // make an empty array because there were no media posted
-                    post_time: _text.post_time,
-                    type: _text.accommodationtype,
-                    address: _text.address,
-                    directions: _text.directions,
-                    // age: moment(Date.now()).fromNow(), // is this correct?
-                    price: _text.price,
-                    picture_id: req.session.corper.picture_id,
-                    roommate_you: (_text.roommate_you ? _text.roommate_you : ''),
-                    roommate_type: (_text.roommate_type ? _text.roommate_type : '')
-                  } */
+                  post: [_accommodation_to_save.toJSON()]
                 });
               
         
@@ -340,10 +321,10 @@ module.exports = {
                 returning: Accommodation.getCreationAttributes()
               },)
 
-
               // since it's a new accommodation, no need to check if it already has accommodation:
 
               // NO NEED ANYMORE
+              // we do this, so we can associate the accommodationId
               console.log('_accommodation_to_save.id \n\n', _accommodation_to_save.id);
               await _accommodation_to_save.createLocation({
                 address: _text.address,
@@ -352,27 +333,6 @@ module.exports = {
                 accommodationId: _accommodation_to_save.id
               })
               
-
-              /* query.InsertRowInAccommodationsTable({
-                statecode: req.session.corper.statecode,
-                streetname: _text.streetname,
-                type: _text.accommodationtype,
-                price: _text.price,
-                media: _media.toString(), // .toString() only on the query
-                rentrange: _text.rentrange,
-                rooms: _text.rooms.toString(),
-                address: _text.address,
-                directions: _text.directions,
-                tenure: _text.tenure,
-                expire: (_text.expiredate ? _text.expiredate : ''),
-                post_location: req.session.corper.location,
-                post_time: _text.post_time,
-                acc_geodata: (_text.acc_geodata ? _text.acc_geodata : ''),
-                roommate_you: (_text.roommate_you ? _text.roommate_you : ''),
-                roommate_type: (_text.roommate_type ? _text.roommate_type : '')
-              }) */
-
-
               let k = (await _accommodation_to_save.getAccommodationMedia()).toJSON();
 
               /// FUCKKK
@@ -383,7 +343,6 @@ module.exports = {
               _accommodation_to_save.dataValues.Location = await _accommodation_to_save.getLocation()
               
               
-
                 res.sendStatus(200);
 
         

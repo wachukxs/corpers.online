@@ -438,9 +438,9 @@
                             <span id="totalunreadmsg" class="float-right badge badge-secondary badge-pill"><%= (total_num_unread_msg > 0 ? total_num_unread_msg : '') %></span>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link" href="/map" aria-selected="true">Maps</a>
-                    </li>
+                    </li> -->
                     <li class="nav-item">
                         <a class="nav-link" href="/logout" aria-selected="true">Logout</a>
                     </li>
@@ -1625,6 +1625,7 @@
             let socket = io('/user', {
                 transports: ['websocket'],
                 query: {
+                    // corper: // should be corper object
                     user: pathArray[2],
                     sutl: user_timeline_sale,
                     autl: user_timeline_accommodations,
@@ -1843,7 +1844,7 @@
                                 k.innerHTML = `<p><span class='font-italic text-muted'>Item</span>: ${
                                     data.post[post_index].itemname
                                 } selling for &#8358;${
-                                    data.post[post_index].price
+                                    new Intl.NumberFormat().format(data.post[post_index].price)
                                 }.</p> ${
                                     data.post[post_index].text ? "<p><span class='font-italic text-muted'>More info</span>: " + data.post[post_index].text + "</p>" : ''
                                 }`;
@@ -1876,10 +1877,8 @@
                                     for (let index = 0; index < 3; index++) {
                                         let zx = document.createElement('a');
                                         if (index == 1) {
-                                            zx.href = `/chat?s=<%= statecode %>&posts[type]=sale&posts[who]=${
-                                                data.post[post_index].statecode
-                                            }&posts[when]=${
-                                                (data.post[post_index].post_time || Date.parse(data.post[post_index].input_time))
+                                            zx.href = `/chat?posts[type]=sale&posts[id]=${
+                                                data.post[post_index].id
                                             }`;
                                         }
                                         zx.setAttribute('class', 'col-4 text-center');
@@ -2049,7 +2048,7 @@
                                 } ${
                                     (rms.length > 1 ? 'with ' + rms.toString().replace('', 'and ').split(',').reverse().toString().replace(/,/g, ', ') : 'with a ' + rms[0])
                                 } at &#8358;${
-                                    data.post[post_index].rent
+                                    new Intl.NumberFormat().format(data.post[post_index].rent)
                                 } ${
                                     data.post[post_index].rentRange
                                 }. ${
@@ -2089,10 +2088,8 @@
                                     for (let index = 0; index < 3; index++) {
                                         let zx = document.createElement('a');
                                         if (index == 1) {
-                                            zx.href = `/chat?s=<%= statecode %>&posts[type]=accommodation&posts[who]=${
-                                                data.post[post_index].statecode
-                                            }&posts[when]=${
-                                                (data.post[post_index].createdAt)
+                                            zx.href = `/chat?posts[type]=accommodation&posts[id]=${
+                                                data.post[post_index].id
                                             }`;
                                         }
                                         zx.setAttribute('class', 'col-4 text-center');
@@ -2195,10 +2192,8 @@
                                     for (let index = 0; index < 3; index++) {
                                         let zx = document.createElement('a');
                                         if (index == 1) {
-                                            zx.href = `/chat?s=<%= statecode %>&posts[type]=sale&posts[who]=${
-                                                data.post[post_index].statecode
-                                            }&posts[when]=${
-                                                (data.post[post_index].post_time || Date.parse(data.post[post_index].input_time))
+                                            zx.href = `/chat?posts[type]=sale&posts[id]=${
+                                                data.post[post_index].id
                                             }`;
                                         }
                                         zx.setAttribute('class', 'col-4 text-center');

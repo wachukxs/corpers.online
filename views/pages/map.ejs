@@ -291,7 +291,7 @@
         console.log('all tiles loaded');
       });
 
-      console.log( <% - JSON.stringify(mapdata) %> ); // JSON.parse(JSON.stringify(mapdata))
+      console.log( <%- JSON.stringify(mapdata) %> ); // JSON.parse(JSON.stringify(mapdata))
 
       mymap.on('zoom', function (
         event) { // based on where people expand in our maps, we'll know what they are intrested in, and we'd ask other corpers to provide info about such places.

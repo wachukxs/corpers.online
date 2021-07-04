@@ -41,6 +41,10 @@
         .wrong{
             color: red;
         }
+
+        .input-group .input-group-append {
+            cursor: pointer;
+        }
     </style>
     <script async defer data-website-id="58dce5f5-c238-4e98-b2c6-e701c258f01d" src="https://using-umami.herokuapp.com/umami.js" data-domains="corpers.online,www.corpers.online"></script>
 </head>
@@ -79,18 +83,23 @@
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="email">Email</label>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="inputGroupPrepend">@</span>
-								</div>
-                                <input type="email" class="form-control" autocomplete="email" name="email" id="email" placeholder="bensonojohakeem@gmail.com" aria-describedby="inputGroupPrepend" required>
-							</div>
+                            <input type="email" class="form-control" autocomplete="email" name="email" id="email" placeholder="bensonojohakeem@gmail.com" aria-describedby="inputGroupPrepend" required>
 							<div hidden class="wrong"></div>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="password">Password</label>
-                            <input name="password" autocomplete="current-password" type="password" class="form-control" id="validationPassword" placeholder="Password" required>
+                            <div class="input-group">
+                            
+                            
+                                <input name="password" autocomplete="current-password" type="password" class="form-control" id="validationPassword" placeholder="Password" required>
+                                <div class="input-group-append" id="sudo-button">
+                                    <span class="input-group-text" id="inputGroupPrepend">
+                                        &#128064;
+                                    </span>
+                                </div>
+                            </div>
                         </div>
+                        
                     </div>
 
 
@@ -222,6 +231,17 @@
 
             }
         }
+
+        document.getElementById('sudo-button').addEventListener('click', (event) => {
+            if (event.srcElement.innerHTML == "🔒") {
+                event.srcElement.innerHTML = "👀"
+                event.srcElement.parentElement.previousElementSibling.type = "password"
+            } else {
+                event.srcElement.innerHTML = "🔒"
+                event.srcElement.parentElement.previousElementSibling.type = "text"
+            }                            
+            
+        })
 	</script>
 </body>
 

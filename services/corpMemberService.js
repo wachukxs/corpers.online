@@ -100,6 +100,13 @@ module.exports = {
 
   
     },
+
+    /**
+     * <% var total_num_unread_msg = oldunreadchats.filter((value, index, array) => { return value.message_to == corper.statecode && value.message_sent == 0 }).length ; %>
+     * @param {*} req 
+     * @param {*} res 
+     * @returns total unread message
+     */
     unreadMessges(req, res) {
       console.log('req.params/session', req.session, req.params) // req.path is shorthand for url.parse(req.url).pathname
 
@@ -140,7 +147,7 @@ module.exports = {
             servicestate: req.session.corper.servicestate, // isn't this Duplicated
             batch: req.params['3'],
             name_of_ppa: req.session.corper.name_of_ppa,
-            total_num_unread_msg: 0, // really ??? Zero?
+            total_num_unread_msg: 0, // ...
             picture_id: req.session.corper.picture_id, // if there's picture_id // hmmm
             firstname: req.session.corper.firstname
           });

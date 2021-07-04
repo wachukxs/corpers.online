@@ -14,6 +14,16 @@ module.exports = (sequelize, DataTypes) => {
       Chat.belongsTo(models.Media, { // means Chat have a mediaId
         foreignKey: 'mediaId'
       })
+
+      Chat.belongsTo(models.CorpMember, {
+        foreignKey: 'message_to',
+        targetKey: 'statecode'
+      })
+
+      Chat.belongsTo(models.CorpMember, {
+        foreignKey: 'message_from',
+        targetKey: 'statecode'
+      })
     }
   };
   Chat.init({

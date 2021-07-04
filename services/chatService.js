@@ -10,7 +10,7 @@ const socket = require('../sockets/routes')
 const ngplaces = require('../utilities/ngstates')
 inspect = require('util').inspect;
 const auth = require('../helpers/auth')
-
+const { Op } = require("sequelize");
 
 module.exports = {
     async getChatData (req, res) {
@@ -18,25 +18,50 @@ module.exports = {
       
         // to get old chats
       
-        console.log('logged in? we in chats now', req.session.loggedin, 'req.query =>', req.query, '\n??')
+        console.log('logged in? we in chats now', 'req.query =>', req.query, '\n??') // req.query => { posts: { type: 'sale', id: '2' } }
 
+        // seems we'll just use this only
+        // we need to format this in a way that would make it easy to be used in front end
         let _all_corp_member_chats = await Chat.findAll({
-        where: {
-            message_from: {
-                [Op.eq]: `${req.session.corper.statecode}`, // somewhat redundant
+            where: {
+                room: {
+                    [Op.like]: `%${req.session.corper.statecode}%` // or use req.query.s
+                },
+                message: {
+                    [Op.not]: null
+                }
             },
-            room: {
-                [Op.like]: `%${req.session.corper.statecode}%` // or use req.query.s
-            },
-            message: {
-                [Op.not]: null
-            }
-        },
+            group: [ // NOT WORKING //
+                ['Chat.id'], ['CorpMember.id'], ['CorpMember.Medium.id'], ['Medium.id'],
+                ['Chat.room'], 
+            ],
+            order: [['createdAt']],
+            include: [
+                {
+                    model: CorpMember,
+                    include: [{
+                      model: Media,
+                    }],
+                },
+                {
+                    model: Media,
+                }
+            ]
         });
 
-        // "SELECT * FROM chats WHERE message_to = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
-        // "SELECT * FROM chats WHERE message_from = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
+        // redundant, we can just count the results from ...
+        let _total_num_unread_msg = await Chat
+                    .count({
+                    where: {
+                        message_to: req.session.corper.statecode,
+                        message_sent: false,
+                        message: {
+                            [Op.not]: null
+                        }
+                    }
+                    })
 
+       
         let _all_chats_to_corp_member = await Chat.findAll({
             where: {
                 message_to: {
@@ -65,28 +90,53 @@ module.exports = {
             },
         })
 
-        let item_to_chat_about;
-        if (req.query.posts.type == 'sale') {
-            // "SELECT * FROM posts WHERE statecode = '" + req.query.posts.who + "' AND post_time = '" + req.query.posts.when + "' ;"
-            
-        } else if (req.query.posts.type == 'accommodation') {
-            // "SELECT * FROM accommodations WHERE expire > NOW() AND statecode = '" + req.query.posts.who + "' AND input_time = '" + moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss') + "' ; "
-            
+        let _item_to_chat_about;
+        if (req.query.posts && req.query.posts.type == 'sale') {
+            _item_to_chat_about = await Sale.findByPk(req.query.posts.id,{ include: {
+                model: CorpMember,
+                as: 'saleByCorper'
+            }})
+        } else if (req.query.posts && req.query.posts.type == 'accommodation') {
+            _item_to_chat_about = await Accommodation.findByPk(req.query.posts.id,{ include: {
+                model: CorpMember,
+                as: 'accommodationByCorper',
+            },
+            attributes: Accommodation.getAllActualAttributes()})
         }
       
         
-         /* return query.GetChatData(req).then(result => {
-           res.set('Content-Type', 'text/html');
-           console.log('all chat kini', result);
-           res.render('pages/chat', result);
-         }, reject => {
-           res.set('Content-Type', 'text/html');
-           res.redirect('/login');
-         }).catch(reason => {
-           // we hope we never get here
-           console.log('what happened at /chat???', reason);
-           res.redirect('/login');
-         }) */
+        res.set('Content-Type', 'text/html');
+
+        // need to format or arrange according to time
+        let _new_all_corp_member_chats;
+        
+        if (_all_corp_member_chats) {
+            _new_all_corp_member_chats = {}
+            _all_corp_member_chats.forEach((_chat, _i, _chat_arr) => {
+                if (_new_all_corp_member_chats[_chat.room]) {
+                    _new_all_corp_member_chats[_chat.room].push(_chat)
+                } else {
+                    _new_all_corp_member_chats[_chat.room] = []
+                    _new_all_corp_member_chats[_chat.room].push(_chat)
+                }
+                
+            })
+        }
+
+        console.log('all chat kini', _all_corp_member_chats);
+
+        console.log('\n\n\n\n\t\t formatted all chat kini', _new_all_corp_member_chats);
+
+        console.log('the item to chat about', _item_to_chat_about);
+
+        console.log('\t\n_total_num_unread_msg\n\n', _total_num_unread_msg);
+        res.render('pages/chat', {
+         _all_corp_member_chats,
+         _item_to_chat_about: _item_to_chat_about,
+         _total_num_unread_msg,
+         _new_all_corp_member_chats,
+         corper: req.session.corper
+        });
       
     }
 }

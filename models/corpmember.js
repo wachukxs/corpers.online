@@ -47,6 +47,16 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'statecode',
         sourceKey: 'statecode'
       })
+
+      CorpMember.hasMany(models.Chat, {
+        foreignKey: 'message_from',
+        sourceKey: 'statecode'
+      })
+
+      CorpMember.hasMany(models.Chat, {
+        foreignKey: 'message_to',
+        sourceKey: 'statecode'
+      })
       
       CorpMember.belongsTo(models.Media, { // This creates the `mediaId` foreign key in CorpMember.
         foreignKey: 'mediaId',
