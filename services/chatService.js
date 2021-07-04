@@ -109,8 +109,8 @@ module.exports = {
 
         // need to format or arrange according to time
         let _new_all_corp_member_chats;
-        
-        if (_all_corp_member_chats) {
+     
+        if (_all_corp_member_chats.length > 0) {
             _new_all_corp_member_chats = {}
             _all_corp_member_chats.forEach((_chat, _i, _chat_arr) => {
                 if (_new_all_corp_member_chats[_chat.room]) {
@@ -131,7 +131,7 @@ module.exports = {
 
         console.log('\t\n_total_num_unread_msg\n\n', _total_num_unread_msg);
         res.render('pages/chat', {
-         _all_corp_member_chats,
+         _all_corp_member_chats, // is an Array
          _item_to_chat_about: _item_to_chat_about,
          _total_num_unread_msg,
          _new_all_corp_member_chats,

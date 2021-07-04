@@ -80,7 +80,6 @@
                     <% // if an unread message is part of the old message, color the tab orange  %>
                     <a data-statecode="<%= _new_all_corp_member_chats[_key_room_chat][0].CorpMember.statecode %>" class="nav-link list-group-item list-group-item-action old t-" id="v-pills-<%= _new_all_corp_member_chats[_key_room_chat][0].CorpMember.statecode.replace(/\//g, '-') %>-tab" data-toggle="pill" href="#v-pills-<%= _new_all_corp_member_chats[_key_room_chat][0].CorpMember.statecode.replace(/\//g, '-') %>" role="tab" aria-controls="v-pills-<%= _new_all_corp_member_chats[_key_room_chat][0].CorpMember.statecode.replace(/\//g, '-') %>" aria-selected="false">
             
-                        <% console.log('\noladchh===', _all_corp_member_chats); %>
                         <div>
                             <%= _new_all_corp_member_chats[_key_room_chat][0].CorpMember.lastname + ' ' +_new_all_corp_member_chats[_key_room_chat][0].CorpMember.firstname %>
                         </div>
@@ -141,6 +140,7 @@
                     
                     <% try { %>
                     <% if (!_item_to_chat_about && !_new_all_corp_member_chats) { // if there is nothing at all %>
+                        <% console.log('\n\n\nada \n\n', !_item_to_chat_about && !_new_all_corp_member_chats, !_item_to_chat_about, !_new_all_corp_member_chats) %>
                         <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
 
                             <div class="text-center mt-5 align-middle">

@@ -30,14 +30,10 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
     // find a way so if the server restarts (maybe because of updates and changes to this file) and the user happens to be in this URL log the user out of this url
     // console.log('well', socket.handshake.query.last_post, isEmpty(socket.handshake.query.last_post) );
 
-    // console.log('socket.id: ', socket.id, ' connected on', new Date(Date.now()).toGMTString());
-    // console.log('everythin: \n', iouser.connected );
-
-    // console.log('\nsocket.handshake.query.statecode.substring(0, 2)?', socket.handshake.query.statecode.substring(0, 2));
-    // it's still not very perfect, count each unique url or something
-    iouser.emit('corpersCount', {
-        count: io.sockets.clients.length /* new Map(iouser.connected).size || Object.keys(iouser.connected).length */
-    }); // emit total corpers online https://stackoverflow.com/questions/126100/how-to-efficiently-count-the-number-of-keys-properties-of-an-object-in-javascrip
+    // doesn't work as expected, needs an OS PR
+    iouser.emit('corpersCount', { // https://stackoverflow.com/a/59495277
+        count:  socket.server.engine.clientsCount // iouser.server.engine.clientsCount // io.engine.clientsCount
+    });
 
     // find a way to work with cookies in socket.request.headers object for loggining in users again
 
@@ -362,20 +358,7 @@ const iochat = io.of('/chat').on('connection', function (socket) {
     // let's do this first cause socket.handshake.query comes as sting ... will fix later
     socket.handshake.query.corper = JSON.parse(socket.handshake.query.corper)
 
-        // get user details...
-        // don't need anymore
-        /* query.GetFirstAndLastNameWithStatecode({
-            statecode: socket.handshake.query.corper.statecode
-        }).then(result => {
-            socket.names = result
-        }, reject => {
-            console.log('failed to get f & l names', reject);
-        }).catch(reason => {
-            console.log('error getting f & l name');
-        }) */
-
-
-
+        // get user details... we should have middleware to handle this
 
         // immediately join all the rooms presently online they are involved in, someone wants to chat with you
         var everyRoomOnline = Object.keys(iochat.adapter.rooms)

@@ -41,7 +41,7 @@ module.exports.verifyJWT = (req, res, next) => {
     // console.log('Signed Cookies: ', req.signedCookies)
     if (req.cookies._online) { // trying to access dashboard directly
         console.log('coming from', req.path);
-        console.log('\n\n req.session.corper is', req.session); // req.session.corper is undefined during sign up ... cause ?? it shuldn't be...
+        // console.log('\n\n req.session.corper is', req.session);
         // we could also use req.cookies, but req.signedCookies is just an extra layer of security
         jwt.verify(req.cookies._online, process.env.SESSION_SECRET, function(err, decodedToken) {
             if (err) {
@@ -72,7 +72,7 @@ module.exports.verifyJWT = (req, res, next) => {
                 })
                 // query.AutoLogin(decodedToken.statecode)
                 .then(result => {
-                    console.log('corper result object', result);
+                    // console.log('corper result object', result);
                     if (result) { // sometimes, it's null ...but why though ? // on sign up it's null ...
                         req.session.corper = result.dataValues;
                         next()

@@ -60,7 +60,7 @@ const knexSessionStore = new KnexSessionStore({
     knex,
     createtable: true,
     tablename: '_Session', // wanna make it _Sessions || Sessions// optional. Defaults to 'sessions' // tip: don't use 'Session' ...it's for connect-sequelize-store
-});
+})
 
 let expressSessionOptions = {
     secret: process.env.SESSION_SECRET,
