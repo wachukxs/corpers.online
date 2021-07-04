@@ -16,6 +16,8 @@ const io = require('socket.io')();
 
 // change all "iouser" to "io.of('/user')" ...?
 const iouser = io.of('/user').on('connection', function (socket) { // when a new user is in the TIMELINE
+    // let's do this first cause socket.handshake.query comes as sting ... will fix later
+    socket.handshake.query.corper = JSON.parse(socket.handshake.query.corper)
 
     socket.join(socket.handshake.query.statecode.substring(0, 2));
     console.log('how many:', `total connection on all sockets ${io.sockets.clients.length}`, `& from timeline ${iouser.clients.length}`);
@@ -467,11 +469,13 @@ const iochat = io.of('/chat').on('connection', function (socket) {
         function corperonline(sc, ns) {
             console.log('checking if someone is online')
             var x = Object.keys(ns.sockets);
-            var t = false; // false
+            var t = false; // initialise to false
             for (const s of x) {
+                
                 console.log('checking if', ns.sockets[s].handshake.query.corper.statecode, 'is online');
+                // console.log(ns.sockets[s].handshake.query, ns.sockets[s].handshake.query.corper.statecode);
                 // should be query.corper.statecode ... need change in account.ejs
-                if (ns.sockets[s].handshake.query.corper.statecode == sc) { // if they're online
+                if (ns.sockets[s].handshake.query.corper?.statecode == sc) { // if they're online
                     t = s; // true // return the socket.id
                     console.log('they are online...', s)
                     break;

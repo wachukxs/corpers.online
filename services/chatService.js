@@ -123,11 +123,11 @@ module.exports = {
             })
         }
 
-        console.log('all chat kini', _all_corp_member_chats);
+        // console.log('all chat kini', _all_corp_member_chats);
 
-        console.log('\n\n\n\n\t\t formatted all chat kini', _new_all_corp_member_chats);
+        // console.log('\n\n\n\n\t\t formatted all chat kini', _new_all_corp_member_chats);
 
-        console.log('the item to chat about', _item_to_chat_about);
+        console.log('the item to chat about', _item_to_chat_about?.id, _item_to_chat_about?.type);
 
         console.log('\t\n_total_num_unread_msg\n\n', _total_num_unread_msg);
         res.render('pages/chat', {

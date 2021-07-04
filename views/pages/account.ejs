@@ -1324,7 +1324,7 @@
                                         <li>
                                             Serving at
                                             <a href="#!">
-                                                <%= servicestate %>
+                                                <%= corper.servicestate %>
                                             </a>
                                             <!--link should do what?-->
                                         </li>
@@ -1337,8 +1337,8 @@
                                         </li>
                                         <li>
                                             PPA at
-                                            <a href="<%= ( ppaId ? '#!/places?nop=' + PPA.name : '/profile#PPA' ) %>">
-                                                <%= ( ppaId ? PPA.name : '?' ) %>
+                                            <a href="<%= ( corper.ppaId ? '#!/places?nop=' + corper.PPA.name : '/profile#PPA' ) %>">
+                                                <%= ( corper.ppaId ? corper.PPA.name : '?' ) %>
                                             </a>
                                         </li>
                                     </ul>
@@ -1625,7 +1625,7 @@
             let socket = io('/user', {
                 transports: ['websocket'],
                 query: {
-                    // corper: // should be corper object
+                    corper: JSON.stringify(<%- JSON.stringify(corper) %>),
                     user: pathArray[2],
                     sutl: user_timeline_sale,
                     autl: user_timeline_accommodations,

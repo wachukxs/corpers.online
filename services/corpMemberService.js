@@ -136,7 +136,7 @@ module.exports = {
             statecode: req.session.corper.statecode.toUpperCase(),
             batch: req.params['3'],
             total_num_unread_msg: result.dataValues,
-            ...req.session.corper
+            corper: req.session.corper
           });
         }, reject => {
           console.log('why TF?!', reject);
