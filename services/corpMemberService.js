@@ -253,6 +253,10 @@ module.exports = {
                 order: [
                     ['createdAt', 'ASC']
                 ],
+                include: [{
+                  model: Media,
+                  as: 'saleMedia'
+                }],
               },
               {
                 model: Accommodation,
@@ -261,6 +265,9 @@ module.exports = {
                 ],
                 include: [{
                   model: Location
+                }, {
+                  model: Media,
+                  as: 'accommodationMedia'
                 }],
                 attributes: Accommodation.getAllActualAttributes()
               },
@@ -303,6 +310,7 @@ module.exports = {
                   console.log('all ppas', _all_ppas); // uncomment to check later
                   _info.ppas = _all_ppas;
                   console.log('we good good on profile', _info);
+                  console.log('what is acc', _info.corper.Accommodation);
                   res.render('pages/profile', _info);
             }, _err_all_ppas => {
 

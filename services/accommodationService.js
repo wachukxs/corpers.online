@@ -380,5 +380,64 @@ module.exports = {
           // handle post request, add data to database... do more
         
           return req.pipe(busboy)
+    },
+
+    /**
+     * needs work
+     * @param {*} req 
+     * @param {*} res 
+     * @returns 
+     */
+
+    update(req, res) {
+
+        const busboy = new Busboy({
+          headers: req.headers,
+          limits: { // set fields, fieldSize, and fieldNameSize later (security)
+            files: 12, // don't upload more than 12 media files
+            fileSize: 24 * 1024 * 1024 // 24MB
+          }
+        });
+      
+        _accommodation_data = {}
+        _accommodation_data.availableRooms = []; // hot fix
+        busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+          // console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+          
+          if (fieldname === 'rooms') {
+            _accommodation_data['availableRooms'].push(val)
+          } else {
+            _accommodation_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
+          }
+          console.warn(fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype);
+        });
+      
+        busboy.on('finish', async function () {
+          _accommodation_data.availableRooms = _accommodation_data.availableRooms.toString()
+          console.log('we are updating acc?', {
+            ..._accommodation_data
+          })
+          Accommodation.update({
+            ..._accommodation_data
+        }, {
+            where: {
+                id: _accommodation_data.id
+            }
+        })
+          .then(result => {
+            
+            console.log('updated accommodation', result);
+            res.sendStatus(200);
+          }, reject => {
+            console.error('update acc reject what happened?', reject)
+            res.sendStatus(500);
+          }).catch((err) => { // we should have this .catch on every query
+            console.error('update acc, our system should\'ve crashed:', err)
+            res.sendStatus(502) // we should tell you an error occured
+          })
+         })
+      
+        return req.pipe(busboy)
+      
     }
 }

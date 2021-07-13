@@ -308,4 +308,46 @@ module.exports = {
     
       return req.pipe(busboy)
     },
+
+    update (req, res) {
+      const busboy = new Busboy({
+        headers: req.headers,
+        limits: { // set fields, fieldSize, and fieldNameSize later (security)
+          files: 12, // don't upload more than 12 media files
+          fileSize: 24 * 1024 * 1024 // 24MB
+        }
+      });
+    
+      _sale_data = {}
+      busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+        // console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+        
+        _sale_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
+        
+        console.warn(fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype);
+      });
+    
+      busboy.on('finish', async function () {
+        console.log('updating sale')
+        Sale.update({
+          ..._sale_data
+        }, {
+          where: {
+              id: _sale_data.id
+          }
+        })
+        .then(result => {
+          console.log('sale update', result);
+          res.sendStatus(200);
+        }, reject => {
+          console.error('update sale reject err what happened?', reject)
+          res.sendStatus(500); // [e]dit=[y]es|[n]o
+        }).catch((err) => { // we should have this .catch on every query
+          console.error('update sales cath err our system should\'ve crashed:', err)
+          res.sendStatus(502) // we should tell you an error occured
+        })
+       })
+    
+      return req.pipe(busboy)
+    }
 }

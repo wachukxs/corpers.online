@@ -411,10 +411,18 @@
                 overflow-y: scroll;
             }
         </style>
+
+        <style>
+            #geo {
+                cursor: pointer;
+            }
+        </style>
         
         
         <script crossorigin="anonymous" src="/socket.io/socket.io.js"></script>
         <script async defer data-website-id="58dce5f5-c238-4e98-b2c6-e701c258f01d" src="https://using-umami.herokuapp.com/umami.js"></script>
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     </head>
 
 
@@ -570,13 +578,12 @@
                                             <div class="mx-1">
                                                 <fieldset>
                                                     <h2>Precise location</h2>
-                                                    <div
-                                                        class="form-group">
+                                                    <div class="form-group">
                                                         <!--
                                                             <label for="streetname">Apartment number</label>
                                                             <input type="text" name="streetname" autocomplete="address-level4" class="form-control" id="streetname" placeholder="No. 17B, Room 5.">
                                                         -->
-                                                        <div class=" d-none" style="display: none">
+                                                        <!-- <div class="d-none" style="display: none">
                                                             <label for="ppa_geodata">Geo data
                                                                 <span class="text-muted">(Optional, but kinda important)</span>
                                                             </label>
@@ -585,17 +592,19 @@
                                                                 We are trying to get an accurate as possible data, so we might ask you to try again if
                                                                 what we got won't be of help to other corpers.
                                                             </small>
-                                                        </div>
+                                                        </div> -->
 
-                                                        <div>
+                                                        <div class="mb-3">
                                                             <label for="address">Address
-                                                                <small class="form-text text-muted">If you're there right now click 'Geo' to locate in maps</small>
+                                                                <!-- <small class="form-text text-muted">If you're there right now click <i class="bi bi-pin-map-fill"></i> to locate in maps</small> -->
                                                             </label>
                                                             <div class="input-group">
-                                                                <input type="text" name="address" autocomplete="street-address" class="form-control" id="address" placeholder="Please specify apartment number, and street">
-                                                                <div class="input-group-append">
-                                                                    <a id="geo" class="btn btn-secondary">Geo</a>
-                                                                </div>
+                                                                <input type="text" name="address" autocomplete="street-address" class="form-control" id="address" placeholder="Please specify street, and area.">
+                                                                <!-- <div class="input-group-append" id="geo">
+                                                                    <span class="input-group-text">
+                                                                        <i class="bi bi-pin-map-fill"></i>
+                                                                    </span>
+                                                                </div> -->
                                                             </div>
                                                             <small id="accinfo"></small>
                                                         </div>
@@ -761,7 +770,7 @@
 
                                                         <div class="d-block my-3">
                                                             <div class="custom-control custom-radio">
-                                                                <input id="monthly" name="rentRange" type="radio" class="custom-control-input" value="monthly" checked required>
+                                                                <input id="monthly" name="rentRange" type="radio" class="custom-control-input" value="monthly" required>
                                                                 <label class="custom-control-label" for="monthly">Monthly</label>
                                                             </div>
                                                             <div class="custom-control custom-radio">
@@ -769,7 +778,7 @@
                                                                 <label class="custom-control-label" for="quarterly">Quarterly</label>
                                                             </div>
                                                             <div class="custom-control custom-radio">
-                                                                <input id="yearly" name="rentRange" type="radio" class="custom-control-input" value="yearly" required>
+                                                                <input id="yearly" name="rentRange" type="radio" class="custom-control-input" value="yearly" checked required>
                                                                 <label class="custom-control-label" for="yearly">Yearly</label>
                                                             </div>
                                                         </div>
@@ -1505,11 +1514,11 @@
 
                 <!-- fab Code begins here -->
                 <div class="float space-float d-md-none" data-toggle="modal" data-target="#accommodationModal">
-                    <i class="fa fa-home icon my-float"></i>
+                    <i class="fa fa-home icon my-float"></i> <!-- <i class="bi bi-house-door-fill icon my-float"></i> -->
                 </div>
                 <!-- hide on screens wider than md -->
                 <div class="float sale-float d-md-none" data-toggle="modal" data-target="#saleModal">
-                    <i class="fa fa-tag icon my-float"></i>
+                    <i class="fa fa-tag icon my-float"></i> <!-- <i class="bi bi-tags-fill icon my-float"></i> -->
                 </div>
             </main>
 

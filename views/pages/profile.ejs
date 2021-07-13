@@ -54,7 +54,7 @@
         height: 90px;
       }
 
-      .accommodation-posts-preview-image {
+      .accommodation-posts-preview-image, .sale-posts-preview-image {
         width: inherit;
         height: 100%;
       }
@@ -77,7 +77,7 @@
         
         <div style="display: flex;">
           <div>
-            <a href="/<%= corper.statecode %>">&larr; Your page</a>
+            <a href="/<%= corper.statecode %>">&larr; Home</a>
           </div>
           <img class="d-block mr-auto mb-4 rounded head-pic"
           src="<%- ( corper.mediaId ? corper.Medium.urls[0] : 'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2245%22%20height%3D%2245%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2045%2045%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_167df8c1bbc%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_167df8c1bbc%22%3E%3Crect%20width%3D%2245%22%20height%3D%2245%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%223.96875%22%20y%3D%2226.896875%22%3E' + corper.statecode.slice(0, 2) + ' ' + corper.statecode.slice(3, 5) + '%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E' ) %>" alt="<%= corper.statecode %> profile picture"
@@ -841,12 +841,12 @@
               <div class="collapse show" id="collapseAccommodations">
                 <hr class="my-4">
                 <div class="row row-cols-1 row-cols-md-2 accommodation-div">
-                  <% for (acc_index = 0; acc_index < corper.Accommodation.length; acc_index++) { %>
+                  <% for (let acc_index = 0; acc_index < corper.Accommodation.length; acc_index++) { %>
                     <div class="col" data-acc_div_index="<%= acc_index %>">
                       <div class="card mb-3" style="max-width: 540px;">
                         <div class="row no-gutters">
                           <div class="col-md-4">
-                            <img class="accommodation-posts-preview-image" src="<%= (corper.Accommodation[acc_index].mediaId ? corper.Accommodation[acc_index].media.urls[0] : '') %>" alt="Image of the accommodation">
+                            <img class="accommodation-posts-preview-image" src="<%= (corper.Accommodation[acc_index].mediaId ? corper.Accommodation[acc_index].accommodationMedia.urls[0] : '') %>" alt="Image of the accommodation">
                           </div>
                           <div class="col-md-8">
                             <div class="card-body">
@@ -880,10 +880,11 @@
                   <div class="modal-body">
                     <form id="editaccommodationform">
                       <div class="form-group">
+                        <input id="id" name="id" type="hidden" value="">
                         <label for="type">Accommodation type</label>
   
-                        <select class="custom-select pointer" name="type"
-                            id="type" required>
+                        <select class="custom-select pointer" name="accommodationType"
+                            id="accommodationType" required>
                             <option value="Self contain">Self contain</option>
                             <option value="Flat">Flat</option>
                             <option value="1 bedroom flat">1 bedroom flat</option>
@@ -1072,18 +1073,21 @@
                   // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
                   // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
                   let modal = $(this)
-                  modal.find('.modal-title').text('Edit ' + accommodation_posts[index].address)
-                  modal.find('.modal-body #price').val(accommodation_posts[index].price)
-                  modal.find('.modal-body #directions').val(accommodation_posts[index].directions)
-                  modal.find('.modal-body #type').val(accommodation_posts[index].type)
-                  modal.find('.modal-body #address').val(accommodation_posts[index].address)
+                  modal.find('.modal-body #id').val(accommodation_posts[index].id)
+
+                  modal.find('.modal-title').text('Edit ' + accommodation_posts[index].Location.address)
+                  modal.find('.modal-body #price').val(accommodation_posts[index].rent) // how would we attach room mate rent ???
+                  modal.find('.modal-body #directions').val(accommodation_posts[index].Location.directions)
+                  // modal.find(`.modal-body #accommodationType option[value="${accommodation_posts[index].accommodationType}"]`).prop("selected", true)
+                  modal.find('.modal-body #accommodationType').val(accommodation_posts[index].accommodationType)
+                  modal.find('.modal-body #address').val(accommodation_posts[index].Location.address)
   
                   let _rooms = accommodation_posts[index].availableRooms
                   for (let index = 0; index < _rooms.length; index++) {
-                    modal.find(`:checkbox[value=${_rooms[index]}]`).prop("checked", true);
+                    modal.find(`:checkbox[value="${_rooms[index]}"]`).prop("checked", true);
                   }
-                  modal.find(`:radio[value=${accommodation_posts[index].tenure}]`).prop("checked", true)
-                  modal.find(`:radio[value=${accommodation_posts[index].rentrange}]`).prop("checked", true)
+                  modal.find(`:radio[value="${accommodation_posts[index].tenure}"]`).prop("checked", true)
+                  modal.find(`:radio[value="${accommodation_posts[index].rentRange}"]`).prop("checked", true)
   
                   if (accommodation_posts[index].tenure == 'Roommate') { // means there's roommate_you and roommate_type ...or we could check for roommate_type | roommate_you
                     modal.find('.modal-body #roommate_type').val(accommodation_posts[index].roommate_type)
@@ -1122,19 +1126,9 @@
                         // console.log(event);
     
     
-                        if (event.target.status === 500) {
-                            // add UNsuccessful alert 
-                            $("#alert-div")
-                                .append(
-                                    `<div class="alert alert-danger mt-3 fade show" id="accommodationposted" role="alert">We couldn't update that. Please try again.
-                                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                      </button>
-                                      </div>`
-                                );
-                        } else {
-                            // add successful alert 
-                            $("#alert-div")
+                        if (event.target.status === 200 || event.target.status === 201) {
+                          // add successful alert 
+                          $("#alert-div")
                                 .append(
                                     `<div class="alert alert-success mt-3 fade show" id="accommodationposted" role="alert">Updated accommodation details successfully!
                                       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -1145,6 +1139,17 @@
                               $('.accommodation-div').find(`h5[data-index='${index}']`).text(_edit_accommodation_form.querySelector("input[name='address']").value)
                               $('.accommodation-div').find(`p[data-index='${index}']`).text(_edit_accommodation_form.querySelector("textarea[name='directions']").value)
                               console.log( );
+                            
+                        } else {
+                            // add UNsuccessful alert 
+                            $("#alert-div")
+                                .append(
+                                    `<div class="alert alert-danger mt-3 fade show" id="accommodationposted" role="alert">We couldn't update that. Please try again.
+                                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                      </button>
+                                      </div>`
+                                );
                         }
 
 
@@ -1161,7 +1166,7 @@
                     XHR1.addEventListener("error", function (event) {
                         $("#alert-div")
                                 .append(
-                                    `<div class="alert alert-success mt-3 fade show" id="accommodationposted" role="alert">Something went wrong. It\'s us, not you. Maybe try again.
+                                    `<div class="alert alert-danger mt-3 fade show" id="accommodationposted" role="alert">Something went wrong. It\'s us, not you. Maybe try again.
                                       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                       </button>
@@ -1365,12 +1370,12 @@
               <div class="collapse" id="collapseSales">
                 <hr class="my-4">
                 <div class="row row-cols-1 row-cols-md-2 sale-div">
-                  <% for (sales_index = 0; sales_index < corper.Sales.length; sales_index++) { %>
+                  <% for (let sales_index = 0; sales_index < corper.Sales.length; sales_index++) { %>
                     <div class="col" data-sale_div_index="<%= sales_index %>">
                       <div class="card mb-3" style="max-width: 540px;">
                         <div class="row no-gutters">
                           <div class="col-md-4">
-                            <img class="accommodation-posts-preview-image" src="<%= (corper.Sales[sales_index].mediaId ? corper.Sales[sales_index].media.urls[0] : '') %>" alt="Image of the sale">
+                            <img class="sale-posts-preview-image" src="<%= (corper.Sales[sales_index].mediaId ? corper.Sales[sales_index].saleMedia.urls[0] : '') %>" alt="Image of the sale">
                           </div>
                           <div class="col-md-8">
                             <div class="card-body">
@@ -1401,6 +1406,7 @@
                     </div>
                     <div class="modal-body">
                       <form id="editsaleform">
+                        <input id="id" name="id" type="hidden" value="">
                         <div class="form-group">
                           <label for="itemname" class="col-form-label">Item name:</label>
                           <input type="text" class="form-control" name="itemname" id="itemname">
@@ -1452,6 +1458,8 @@
                   // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
                   // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
                   let modal = $(this)
+                  modal.find('.modal-body #id').val(sales_posts[index].id)
+
                   modal.find('.modal-title').text('Edit ' + sales_posts[index].itemname)
                   modal.find('.modal-body #price').val(sales_posts[index].price)
                   modal.find('.modal-body #itemname').val(sales_posts[index].itemname)
@@ -1486,6 +1494,20 @@
                           // console.log(event);
 
                           if (event.target.status === 500) {
+                            // add successful alert 
+                            $("#alert-div")
+                                  .append(
+                                      `<div class="alert alert-success mt-3 fade show" id="saleposted" role="alert">Updated sale details successfully!
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>`
+                                  );
+
+                                  // update local instance
+                                // update the html elements 
+                              
+                          } else {
                               // add UNsuccessful alert 
                               $("#alert-div")
                                   .append(
@@ -1495,18 +1517,6 @@
                                         </button>
                                         </div>`
                                   );
-                          } else {
-                              // add successful alert 
-                              $("#alert-div")
-                                  .append(
-                                      `<div class="alert alert-success mt-3 fade show" id="saleposted" role="alert">Updated sale details successfully!
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                          <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>`
-                                  );
-
-                                // update the html elements
                           }
 
 

@@ -493,7 +493,7 @@ router.post('/oldprofile', auth.verifyJWT, /* bodyParser.urlencoded({
   return req.pipe(busboy)
 });
 
-router.post('/updateaccommodation', auth.verifyJWT, function (req, res) {
+router.post('/oldupdateaccommodation', auth.verifyJWT, function (req, res) {
   const busboy = new Busboy({
     headers: req.headers,
     limits: { // set fields, fieldSize, and fieldNameSize later (security)
@@ -517,15 +517,17 @@ router.post('/updateaccommodation', auth.verifyJWT, function (req, res) {
 
   busboy.on('finish', async function () {
     // console.log('we done?')
-    query.UpdateAccommodation(_accommodation_data).then(result => {
+    query.UpdateAccommodation(_accommodation_data)
+    
+    .then(result => {
       
-      // console.log('new pic id?', req.session.corper.picture_id);
+      console.log('updated accommodation', result);
       res.sendStatus(200);
     }, reject => {
-      console.error('update acc what happened?', reject)
+      console.error('update acc reject what happened?', reject)
       res.sendStatus(500);
     }).catch((err) => { // we should have this .catch on every query
-      console.error('our system should\'ve crashed:', err)
+      console.error('update acc, our system should\'ve crashed:', err)
       res.sendStatus(502) // we should tell you an error occured
     })
    })
@@ -533,7 +535,7 @@ router.post('/updateaccommodation', auth.verifyJWT, function (req, res) {
   return req.pipe(busboy)
 })
 
-router.post('/updatesale', auth.verifyJWT, function (req, res) {
+router.post('/oldupdatesale', auth.verifyJWT, function (req, res) {
   const busboy = new Busboy({
     headers: req.headers,
     limits: { // set fields, fieldSize, and fieldNameSize later (security)

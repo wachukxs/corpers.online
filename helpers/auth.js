@@ -76,8 +76,8 @@ module.exports.verifyJWT = (req, res, next) => {
                     if (result) { // sometimes, it's null ...but why though ? // on sign up it's null ...
                         req.session.corper = result.dataValues;
                         next()
-                    } else { // else what ? //
-                        throw new Error('Could not find corper')
+                    } else { // else what ?
+                        throw new Error('Could not find corper') // here is a ticking time bomb
                     }
 
                   }, reject => {

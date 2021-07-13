@@ -636,15 +636,29 @@ const iochat = io.of('/chat').on('connection', function (socket) {
             socket.broadcast.emit('typing', data);
         });
 
-        socket.on('read', (m, fn) => {
-
-            query.UpdateChatReadReceipts(m).then(result => {
-                fn(m);
-            }, reject => {
-                // we hope we don't come here
-            }).catch(reason => {
-                // and here too
+        socket.on('read', (chatInfo, fn) => {
+            console.log('what is chatInfo', chatInfo);
+            // UPDATE chats SET message_sent = true WHERE message IS NOT NULL AND message_from = '" + chatInfo.message_from + "' AND message_to = '" + chatInfo.message_to + "'"
+            Chat.update({
+                read_by_to: true,
+                time_read: chatInfo.time_read
+            }, {
+                where: {
+                    message_from: chatInfo.message_from,
+                    message_to: chatInfo.message_to,
+                    read_by_to: false,
+                }
             })
+            .then(result => {
+                console.log('updated read receipts', result);
+                fn(chatInfo);
+            }, reject => {
+                console.log('could not update read receipts', reject);
+            }).catch(reason => {
+                console.log('we really did not update read receipts', reason);
+            })
+            // check number of changed roles affected
+            
 
             // this funtion will run in the client to show/acknowledge the server has gotten the message.
             // emit an event to message_from to know that his/her message has been read

@@ -8,4 +8,6 @@ router.post('/deletesale', auth.verifyJWT, express.json(), saleService.deleteSal
 
 router.post('/posts', auth.verifyJWT, /* upload.array('see', 12), */ saleService.create);
 
+router.post('/updatesale', auth.verifyJWT, saleService.update)
+
 module.exports = router;

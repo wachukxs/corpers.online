@@ -9,4 +9,6 @@ router.post('/deleteaccommodation', auth.verifyJWT, express.json(), accommodatio
 
 router.post('/accommodations', auth.verifyJWT, /* upload.array('see', 12), */ accommodationService.create);
 
+router.post('/updateaccommodation', auth.verifyJWT, accommodationService.update)
+
 module.exports = router;

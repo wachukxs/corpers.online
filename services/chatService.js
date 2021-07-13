@@ -54,7 +54,8 @@ module.exports = {
                     .count({
                     where: {
                         message_to: req.session.corper.statecode,
-                        message_sent: false,
+                        // message_sent: false, // should we be using this, or better still, do we need it???
+                        read_by_to: false,
                         message: {
                             [Op.not]: null
                         }
@@ -67,7 +68,10 @@ module.exports = {
                 message_to: {
                     [Op.eq]: `${req.session.corper.statecode}`, // or use req.query.s
                 },
-                message_sent: {
+                // message_sent: {
+                //     [Op.is]: false,
+                // },
+                read_by_to: {
                     [Op.is]: false,
                 },
                 message: {
@@ -81,9 +85,9 @@ module.exports = {
                 message_from: {
                     [Op.eq]: `${req.session.corper.statecode}`, // or use req.query.s
                 },
-                message_sent: {
-                    [Op.is]: false,
-                },
+                // message_sent: {
+                //     [Op.is]: false,
+                // },
                 message: {
                     [Op.not]: null
                 }
@@ -123,7 +127,7 @@ module.exports = {
             })
         }
 
-        // console.log('all chat kini', _all_corp_member_chats);
+        console.log('all chat kini', _all_corp_member_chats);
 
         // console.log('\n\n\n\n\t\t formatted all chat kini', _new_all_corp_member_chats);
 

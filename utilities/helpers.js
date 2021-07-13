@@ -232,7 +232,7 @@ exports.sendSignupWelcomeEmail = async function (email, name, state) {
       },
       {
         filename: 'facebook.png',
-        path: 'https://static.xx.fbcdn.net/rsrc.php/yz/r/KFyVIAWzntM.ico',
+        path: 'https://static.xx.fbcdn.net/rsrc.php/yb/r/hLRJ1GG_y0J.ico',
         cid: '005@corpers.online' //same cid value as in the html img src
       },
       {

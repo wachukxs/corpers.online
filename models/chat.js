@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const moment = require('moment');
 module.exports = (sequelize, DataTypes) => {
   class Chat extends Model {
     /**
@@ -43,10 +44,16 @@ module.exports = (sequelize, DataTypes) => {
     time: {
       type: DataTypes.DATE
     },
-    read_by_to: DataTypes.BOOLEAN,
+    read_by_to: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
     time_read: DataTypes.DATE,
     _time: DataTypes.DATE,
-    message_sent: DataTypes.BOOLEAN,
+    message_sent: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
     createdAt: {
       type: DataTypes.DATE
     },
@@ -59,7 +66,7 @@ module.exports = (sequelize, DataTypes) => {
         return moment(this.getDataValue('createdAt')).fromNow();
       },
       set(value) {
-        throw new Error('Do not try to set the Sale.`age` value!');
+        throw new Error('Do not try to set the Chat.`age` value!');
       }
     }
   }, {

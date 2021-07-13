@@ -85,7 +85,7 @@
                         </div>
                         <div>
                             <small class="text-muted"><%= _new_all_corp_member_chats[_key_room_chat][0].CorpMember.statecode %></small>
-                            <% let _unread = _new_all_corp_member_chats[_key_room_chat].reduce((counter, obj) => !obj.read_by_to ? counter += 1 : counter, 0) %>
+                            <% let _unread = _new_all_corp_member_chats[_key_room_chat].reduce((counter, obj) => obj.read_by_to ? counter : counter += 1, 0) %>
                             <span class="float-right badge badge-secondary badge-pill"><%= (_unread > 0 ? _unread : '') %></span>
                         </div>
 
@@ -167,7 +167,6 @@
                         <h6><%= _item_to_chat_about.statecode %></h6>
                         <div class="wall">
                             
-                            
                             <div class="messages">
                                 <% // show old messages if they have any %>
                                 <% let _previous_chat_room_key = _new_all_corp_member_chats && Object.keys(_new_all_corp_member_chats).find(_chat_room => _chat_room.includes(_item_to_chat_about.statecode)); %>
@@ -200,8 +199,6 @@
                                 <% } %>
 
                                 <% } %>
-
-
 
                                 <% } else { %>
                                     Start your first message with <%= _item_to_chat_about.accommodationByCorper?.firstname || _item_to_chat_about.saleByCorper?.firstname %>
@@ -364,9 +361,9 @@
         //-----
         chat.on('a message', function( data ) { // when we receive 'a message'
             // console.log(data);
-            chat.emit('my other event', {
+            chat.emit('my other event', { // send 'my other event' to everyone in /chat
                 my: 'data-chat'
-            }); // send 'my other event' to everyone in /chat
+            });
         });
 
         chat.on('hi', function(data) { // when we receive 'a message'
@@ -394,18 +391,13 @@
                     } else { // i.e. no new messages before, make it one
                         num_msg.html(1);
                     }
-                    // increment the total number of unread messages
-                    var total_num_unread_msg = $( "#totalunreadmsg" );
-                    if ( !total_num_unread_msg.html() == '' ) { // if it is not empty, i.e. there was a number there, there's been unread messages
-                        var c = parseInt( total_num_unread_msg.html() );
-                        total_num_unread_msg.html( c + 1 ); //
-                    } else { //
-                        total_num_unread_msg.html( 1 );
-                    }
+                    
 
                     $( `#v-pills-tab > a[data-statecode="${data.from.statecode}"]` )
                         .insertBefore( '#v-pills-tab > a:nth-child(2)' );
                 }
+
+        
             } else { // if it wasn't there before, create it!!!!!!!!!
                 //if this sender hasn't messaged before, append his/her name to the side bar, at the top [2nd] and also their chatting tab
                 //& since the person hasn't messaged before, the number of unread message is one
@@ -448,6 +440,15 @@
                   <div class="float-left">${data.it.message}</div>
                   </div><div class="small p-2 bg-dark text-muted">
                   ${new Date(data.it.time).toLocaleTimeString()} <span id="${data.it.time}"></span> </div></div></div>` )
+
+
+            // then also add to the top summation of all unread message
+            let _t = document.getElementById('totalunreadmsg').innerText;
+            if (_t == "") {
+                document.getElementById('totalunreadmsg').innerText = 1;
+            } else {
+                document.getElementById('totalunreadmsg').innerText = parseInt(_t) + 1;
+            }
         } ); // new Date(Date.now()).toLocaleTimeString() ---- then if not today new Date(Date.now()).toLocaleString() ---maybe    [new Date(Date.now()).toDateString()]
 
         /* inputtextarea.addEventListener( 'keypress', function() {
@@ -459,7 +460,7 @@
             setTimeout( () => {
                 notify.innerHTML = 'a global variable or something that is easily coined';
             }, 1500 );
-        } );
+        });
 
         /**
          * socket.sockets || connected
@@ -590,16 +591,17 @@
 
                 // if this tab has unread messages, subtract from the total number of unread messages
                 var total_num_unread_msg = $( "#totalunreadmsg" );
-
-                if ( !total_num_unread_msg.html() == '' ) { // if it is not empty, i.e. there was a number there, there's been unread messages
-                    var c = parseInt( total_num_unread_msg.html() );
-                    var remove = parseInt( ( e.target.children[ 1 ].children[ 1 ].innerText == '' ? 0 : e.target.children[ 1 ].children[ 1 ].innerText ) );
-                    // console.log( 'total messages', e.target.children[ 1 ].children[ 1 ].innerText, c - remove )
-                    total_num_unread_msg.html( ( c - remove == 0 ? '' : c - remove ) ); // if it'll be zero, show nothing
-                } else { //
-                    // total_num_unread_msg.html( 1 );
+                let __t = document.getElementById('totalunreadmsg').innerText;
+                // logically, there should always be unread messages 
+                if (e.target.children[ 1 ].children[ 1 ].innerText !== '') {
+                    let _ttl = parseInt(__t) - parseInt(e.target.children[ 1 ].children[ 1 ].innerText)
+                    if (_ttl > 0) {
+                        document.getElementById('totalunreadmsg').innerText = _ttl
+                    } else {
+                        document.getElementById('totalunreadmsg').innerText = ''
+                    }
                 }
-
+                
                 // also remove number of unread messages once the chat is opened // use namedItem() instead not [1]
                 // console.log( e.target.children, '89', e.target.children[ 1 ].children[ 1 ].innerText )
                 e.target.children[ 1 ].children[ 1 ].innerText = '';
@@ -608,10 +610,12 @@
                 // chat.emit( 'read', {message_from: e.target.attributes[ 'data-statecode' ].value, message_to: '<%= corper.statecode %>'} ); // when it gets to them if they are online, put double ticks
                 chat.emit( 'read', {
                     message_from: e.target.attributes[ 'data-statecode' ].value,
-                    message_to: '<%= corper.statecode %>'
+                    message_to: '<%= corper.statecode %>',
+                    time_read: Date.now()
                 }, ( data ) => {
+                    console.log("e.target.attributes[ 'data-statecode' ].value", e.target.attributes[ 'data-statecode' ].value);
                     // this funtion will run here to show the server has gotten our message.
-                    // console.log( 'was just read', data ); // data will be 'woot ...' // then double tick
+                    console.log( 'was just read', data ); // data will be 'woot ...' // then double tick
                 } );
                 // for a scenerio where you click the chat icon from account page... what if your new chat has sent you an unread message before? does the number of unread message show? i think yes... is this shown event run, to sh0w that the message has been read ?... maybe, find out! ---did, answer is no ...what we can do now it to check if the new chat is in the oldunread array and maybe put a settimeout function to remove the number of unread messages the tab is in the user's view, i.e. the user has seen it
             } )
