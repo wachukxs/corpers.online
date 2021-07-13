@@ -209,12 +209,13 @@
                                 <!-- the chat box will be inside every user's wall, help us save drafts and be more particular -->
                                 <!-- append before the new tab is shown -->
                                 
-                                <div class="input-group mb-3">
+                                <div class="input-group">
                                     <input type="text" class="form-control text" spellcheck="true" placeholder="Type a message" sc="<%= corper.statecode.replace(/\//g, '-') %>" aria-label="Message box" aria-describedby="textbox">
                                     <div class="input-group-append">
                                       <button class="btn btn-outline-secondary send" type="button" sc="<%= corper.statecode.replace(/\//g, '-') %>">Send</button>
                                     </div>
                                   </div>
+                                  <small sc="<%= corper.statecode.replace(/\//g, '-') %>-message-help" class="form-text text-muted mb-3">Press Enter to send</small>
                             </div>
 
                         </div>
@@ -268,12 +269,13 @@
                                 <!-- the chat box will be inside every user's wall, help us save drafts and be more particular -->
                                 <!-- append before the new tab is shown -->
                                 
-                                <div class="input-group mb-3 mt-3">
+                                <div class="input-group mt-3">
                                     <input type="text" class="form-control text" spellcheck="true" sc="<%= _new_all_corp_member_chats[_key_room_chat][0].message_to.replace(/\//g, '-') %>" placeholder="Type a message" aria-label="Message box" aria-describedby="textbox">
                                     <div class="input-group-append">
                                       <button class="btn btn-outline-secondary send" type="button" sc="<%= _new_all_corp_member_chats[_key_room_chat][0].message_to.replace(/\//g, '-') %>">Send</button>
                                     </div>
                                   </div>
+                                  <small sc="<%= corper.statecode.replace(/\//g, '-') %>-message-help" class="form-text text-muted">Press Enter to send</small>
                             </div>
 
                         </div>
@@ -486,8 +488,8 @@
         }, false );
         } )
 
-        document.querySelectorAll( '.send' ).forEach( item => {
-                item.addEventListener( 'click', event => {
+        function sendMessage(event) {
+            
                     //handle click
                     // console.log( 'event', event, event.srcElement.attributes[ 'sc' ].value );
                     // console.log( 'h', document.querySelector( `input[sc='${event.srcElement.attributes['sc'].value}']` ) )
@@ -508,8 +510,17 @@
 
                     document.querySelector( `input[sc='${event.srcElement.attributes['sc'].value}']` ).value = ''; // inputtextarea.value = '';
 
-                }, false )
-            });
+                
+        }
+
+        document.querySelectorAll( '.send' ).forEach( item => {
+            item.addEventListener( 'click', sendMessage, false )
+        });
+        document.addEventListener("keyup", function(event) {
+            if (event.key === 'Enter') {
+                sendMessage(event)
+            }
+        });
 
         /* send.addEventListener( 'click', function( event ) {
             console.log( 'event', event );
