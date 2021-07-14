@@ -474,6 +474,81 @@
                         </div>
                     </div>
                 </form>
+
+                <a data-toggle="modal" data-target="#exampleModal" type="" class=" mr-3"><i class="bi bi-bell"></i></a>
+
+                <!-- Vertically centered modal for handling notifications -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Create an alert</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                        <div class="modal-body">
+                            <div>Type:</div>
+                            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link active" id="nav-accommodation-tab" data-toggle="tab" href="#nav-accommodation-alert" role="tab" aria-controls="nav-accommodation-alert" aria-selected="true">Accommodation</a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" id="nav-sale-tab" data-toggle="tab" href="#nav-sale-alert" role="tab" aria-controls="nav-sale-alert" aria-selected="false">Sale</a>
+                                </li>
+                              </ul>
+                            
+                            <div class="tab-content" id="nav-tabContent">
+                                <div class="tab-pane fade show active" id="nav-accommodation-alert" role="tabpanel" aria-labelledby="nav-accommodation-tab">
+                                    Accommodation should be here
+                                    <form>
+                                        <div class="mb-3">
+                                          <label for="alert-item-name" class="col-form-label">Accommodation type:</label>
+                                          <input type="text" class="form-control" id="alert-item-name">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="alert-item-name" class="col-form-label">Rooms:</label>
+                                            <input type="text" class="form-control" id="alert-item-name">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="alert-item-name" class="col-form-label">Price:</label>
+                                            <input type="text" class="form-control" id="alert-item-name">
+                                        </div>
+                                      </form>
+                                </div>
+                                <div class="tab-pane fade" id="nav-sale-alert" role="tabpanel" aria-labelledby="nav-sale-tab">
+                                    Something something sale
+                                    <form>
+                                        <div class="mb-3">
+                                            <label for="alert-item-name" class="col-form-label">Item name:</label>
+                                            <input type="text" class="form-control" id="alert-item-name">
+                                        </div>
+                                        <div class="">
+                                            <label for="alert-item-name" class="col-form-label">Price:</label>
+                                            <input type="text" class="form-control" id="alert-item-name">
+                                        </div>
+                                        <div>
+                                            <label for="customRange3">Price range</label>
+                                            <input type="range" class="custom-range" min="0" max="5" step="0.5" id="customRange3">
+                                        </div>
+                                        <div class="custom-control custom-checkbox">
+                                            <input name="relocated" type="checkbox" class="custom-control-input" id="relocated" value="relocated">
+                                            <label class="custom-control-label"  for="relocated">Relocated ?</label>
+                                          </div>
+                                        <!-- allow any price range option, like a checkbox -->
+                                      </form>
+                                </div>
+                              </div>
+                          
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-primary">Send message</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                 <!-- Button trigger modal for posting-->
                 <!-- hide on screens smaller than md -->
                 <div class="d-none d-md-block">
