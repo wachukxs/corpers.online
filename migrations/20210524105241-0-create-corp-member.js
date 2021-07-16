@@ -63,6 +63,9 @@ module.exports = {
       mediaId: {
         type: Sequelize.INTEGER,
       },
+      pushSubscriptionStringified: {
+        type: Sequelize.STRING(500)
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

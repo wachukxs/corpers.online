@@ -26,7 +26,9 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.INTEGER
     },
-    
+    pushSubscriptionStringified: {
+        type: DataTypes.STRING(500)
+    },
     createdAt: {
       type: DataTypes.DATE
     },

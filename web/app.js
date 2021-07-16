@@ -100,7 +100,8 @@ app.use(cookieParser(process.env.SESSION_SECRET))
 
 // https://stackoverflow.com/a/55787532/9259701
 app.use('/assets', express.static('assets'))
-app.use('/graphic', express.static('img'));
+app.use('/graphic', express.static('img')); // use /graphic for img folder
+app.use('/', express.static('./'));
 
 app.use([actionsRoutes, byeRoutes, welcomeRoutes, blogRoutes, corpMemberRoutes, saleRoutes, accommodationRoutes, chatRoutes]);
 

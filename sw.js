@@ -63,3 +63,12 @@ request and return the data if anything can be retrieved from the
       event.waitUntil(sendNotification(message));
   }
 });
+
+function checkForPushManager() {
+  if ('PushManager' in window) {
+    console.log('we have PM');
+  } else {
+    // Push Manager isn't supported on this browser, disable or hide UI.
+    throw new Error("PusH Manager isn't supported on this browser");
+  }
+}

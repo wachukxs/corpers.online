@@ -80,6 +80,9 @@ module.exports = {
           key: 'id'
         },
       },
+      pushSubscriptionStringified: {
+        type: Sequelize.STRING(500)
+      },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE

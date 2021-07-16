@@ -121,7 +121,23 @@ module.exports = (sequelize, DataTypes) => {
     mediaId: {
       type: DataTypes.INTEGER
     },
-
+    pushSubscriptionStringified: {
+        type: DataTypes.STRING(500),
+        get() {
+          let pushSubscription = JSON.parse(this.getDataValue('pushSubscriptionStringified'))
+          const subscriptionObject = {
+            endpoint: pushSubscription.endpoint,
+            keys: {
+              p256dh: pushSubscription.getKeys('p256dh'),
+              auth: pushSubscription.getKeys('auth')
+            }
+          };
+          
+          // The above is the same output as:
+          
+          return subscriptionObject // we could just return pushSubscription
+        },
+    },
     ppaId: DataTypes.INTEGER,
     password: DataTypes.STRING,
     middlename: DataTypes.STRING,
