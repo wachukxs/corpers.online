@@ -56,7 +56,7 @@ function askPermission() {
 
   function subscribeUserToPush() {
     // do an if check to make sure permission is granted
-    return navigator.serviceWorker.register('/sw.js')
+    return navigator.serviceWorker.register('/sw.js', {scope: './'})
     .then(function(registration) {
       const subscribeOptions = {
         userVisibleOnly: true,
@@ -76,48 +76,27 @@ function askPermission() {
   }
 
   function sendSubscriptionToBackEnd(subscription) {
-    return fetch('/api/save-subscription/', {
+    return fetch('/save-push-subscription/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(subscription)
+      body: JSON.stringify(subscription) // body must be stringfied
     })
     .then(function(response) {
+      console.log('servr saving push', response);
       if (!response.ok) {
         throw new Error('Bad status code from server.');
       }
   
-      return response.json();
+      return response // .json();
+    }, function catchErr(err) {
+      console.error('err saving push sub', err);
     })
     .then(function(responseData) {
-      if (!(responseData.data && responseData.data.success)) {
-        throw new Error('Bad response from server.');
-      }
-    });
-  }
-
-
-  function sendSubscriptionToBackEnd(subscription) {
-    return fetch('/save-subscription/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: {'subscription': JSON.stringify(subscription)}
-    })
-    .then(function(response) {
-      let _r = response.json();
-      console.log('res from our server saving pM', _r);
-      if (!response.ok) {
-        throw new Error('Bad status code from server.');
-      }
-  
-      return _r;
-    })
-    .then(function(responseData) {
-      if (!(responseData.data && responseData.data.success)) {
-        console.error('Bad response from server.');
+      console.log('res from our server saving pM', responseData);
+      if (!(responseData.ok)) {
+        console.error('Bad response from server.', responseData);
         throw new Error('Bad response from server.');
       }
     });

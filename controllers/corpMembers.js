@@ -27,6 +27,6 @@ router.get('/profile', auth.verifyJWT, corpMemberService.getProfile)
 
 router.post('/profile', auth.verifyJWT, corpMemberService.postProfile)
 
-router.post('/save-push-subscription', auth.verifyJWT, corpMemberService.postProfile)
+router.post('/save-push-subscription', auth.verifyJWT, express.json(), corpMemberService.savePushSubscription)
 
 module.exports = router;

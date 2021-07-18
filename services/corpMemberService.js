@@ -653,63 +653,48 @@ module.exports = {
       return req.pipe(busboy)
     },
 
-    savePushSubscription (req, res) {
-      const busboy = new Busboy({
-        headers: req.headers,
-        limits: { // set fields, fieldSize, and fieldNameSize later (security)
-          files: 12, // don't upload more than 12 media files
-          fileSize: 24 * 1024 * 1024 // 24MB
+    async savePushSubscription (req, res) { // Busboy doesn't support json https://github.com/mscdex/busboy/issues/125#issuecomment-237715028
+      console.log('oh well, here', req.body);
+      
+
+      let corpMemberUpdate = await CorpMember.update(
+        {
+          pushSubscriptionStringified: req.body
         }
-      });
-
-      busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
-        // console.log('Field [' + fieldname + ']: value: ' + inspect(val));
-        
-        _profile_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
-        
-        console.warn(fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype);
-      });
-
-      busboy.on('finish', async function () {
-        console.log('we done parsing form, now updating', _profile_data)
-
-        let corpMemberUpdate = await CorpMember.update(
-          {
-            pushSubscriptionStringified: _profile_data.subscription
+        ,{
+          where: {
+            statecode: req.session.corper.statecode
           }
-          ,{
-            where: {
-              statecode: req.session.corper.statecode
-            }
-          }
-          ,{
-            returning: true
-          }
-        )
-
-        
-        try {
-          const __model = CorpMember
-          for (let assoc of Object.keys(__model.associations)) {
-            for (let accessor of Object.keys(__model.associations[assoc].accessors)) {
-              console.log(__model.name + '.' + __model.associations[assoc].accessors[accessor]+'()');
-            }
-          }
-          
-        } catch (error) {
-          console.error('trying to get assocs', error);
         }
+        ,{
+          // returning: true
+        }
+      )
 
-        // checking if it updated:
+      
+      try {
+        const __model = CorpMember
+        for (let assoc of Object.keys(__model.associations)) {
+          for (let accessor of Object.keys(__model.associations[assoc].accessors)) {
+            console.log(__model.name + '.' + __model.associations[assoc].accessors[accessor]+'()');
+          }
+        }
         
+      } catch (error) {
+        console.error('trying to get assocs', error);
+      }
 
+      // checking if it updated:
+      if (corpMemberUpdate) {
         res.sendStatus(200) // sending a 'Created' response ... not 200 OK response
-        // .redirect(result); // no need to redirect, just send status code
-        
+      } else {
+        res.sendStatus(500)
+      }
+      console.log('did push sub update?', typeof corpMemberUpdate, corpMemberUpdate);
 
-       })
-    
-      return req.pipe(busboy)
+      
+      // .redirect(result); // no need to redirect, just send status code
+      
 
     }
 }

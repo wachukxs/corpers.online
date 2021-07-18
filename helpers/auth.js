@@ -88,10 +88,11 @@ module.exports.verifyJWT = (req, res, next) => {
                   }).catch(reason => {
                     console.log('auth auto login catching this err because:', reason);
                     res.status(502).redirect('/login?t=a')
-                  }).finally(() => {
-                      console.log('\nfinlly next?');
-                      // next() // very crucial
                   })
+                //   .finally(() => {
+                //       console.log('\nfinlly next?');
+                //       // next() // very crucial
+                //   })
             }
         })
     } else if (req.headers.referer && req.headers.referer.includes('/login') && req.headers['sec-fetch-site'] === 'same-origin') { // what does here do ? // if it's going to login page ...then we should remove the jwtVerify in 

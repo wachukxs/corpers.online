@@ -13,18 +13,19 @@ const ngstates = require('../utilities/ngstates');
  */
 module.exports = (sequelize, DataTypes) => {
   class CorpMember extends Model {
-    getServiceState() {
-      return ngstates.states_long[ngstates.states_short.indexOf(this.statecode.slice(0, 2))];
+    // this has only data present in the ongoing operation (like insert, delete, update, or select)
+    getServiceState() { // during an update, this.statecode turn up null ... why ??? ...
+      return this.statecode ? ngstates.states_long[ngstates.states_short.indexOf(this.statecode.slice(0, 2))] : '';
     }
     /**
-     * CorpMember attributes without password
+     * CorpMember attributes without password, and pushSubscriptionStringified
      * impl idea from https://stackoverflow.com/a/66956107/9259701
      * @returns array of attributes without password
      */
     static getSafeAttributes() {
       let safeCorpMemberAttributes = Object.keys(CorpMember.rawAttributes)
       safeCorpMemberAttributes.splice(safeCorpMemberAttributes.indexOf('password'), 1);
-      
+      // safeCorpMemberAttributes.splice(safeCorpMemberAttributes.indexOf('pushSubscriptionStringified'), 1)
       return safeCorpMemberAttributes
     }
     /**
@@ -124,19 +125,26 @@ module.exports = (sequelize, DataTypes) => {
     pushSubscriptionStringified: {
         type: DataTypes.STRING(500),
         get() {
-          let pushSubscription = JSON.parse(this.getDataValue('pushSubscriptionStringified'))
-          const subscriptionObject = {
-            endpoint: pushSubscription.endpoint,
-            keys: {
-              p256dh: pushSubscription.getKeys('p256dh'),
-              auth: pushSubscription.getKeys('auth')
-            }
-          };
-          
-          // The above is the same output as:
-          
-          return subscriptionObject // we could just return pushSubscription
+          if (this.getDataValue('pushSubscriptionStringified')) {
+            let pushSubscription = JSON.parse(this.getDataValue('pushSubscriptionStringified'))
+            // const subscriptionObject = {
+            //   endpoint: pushSubscription.endpoint,
+            //   keys: {
+            //     p256dh: pushSubscription.p256dh, // getKeys is not a function
+            //     auth: pushSubscription.auth
+            //   }
+            // };
+            
+            // The above is the same output as:
+            
+            return pushSubscription // we could just return pushSubscription
+          } else {
+            return null;
+          }
         },
+        set(value) {
+          this.setDataValue('pushSubscriptionStringified', JSON.stringify(value));
+        }
     },
     ppaId: DataTypes.INTEGER,
     password: DataTypes.STRING,
