@@ -116,6 +116,6 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Accommodation',
   });
-  Accommodation.sync({ alter: true })
+  // Accommodation.sync({ alter: true })
   return Accommodation;
 };

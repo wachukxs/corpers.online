@@ -47,12 +47,15 @@ module.exports = {
             req.session.corper = result.dataValues
             // send welcome email
             helpers.sendSignupWelcomeEmail(req.body.email, req.body.firstname, result.dataValues.servicestate)
-            jwt.sign({statecode: req.body.statecode.toUpperCase()}, process.env.SESSION_SECRET, (err, token) => {
+            jwt.sign({
+              statecode: req.body.statecode.toUpperCase(),
+            email: req.body.email.toLowerCase()
+          }, process.env.SESSION_SECRET, (err, token) => {
               if (err) {
                 console.error('sign up err', err)
                 throw err // ? can we throw
               } else {
-                console.log('======------------>signed up ...done jwt and', req.session.corper);
+                console.log('\n\n\n\nsigned up ...done jwt and', req.session.corper);
                 // res.setHeader('Set-Cookie', 'name=value')
                 
                 // problem here https://stackoverflow.com/questions/49476080/express-session-not-persistent-after-redirect
@@ -62,8 +65,8 @@ module.exports = {
               }
             })
           }, error => {
-            console.log('CorpersSignUp() error happened', error);
-            console.log('----> error happened', error.errors[0], error.fields);
+            console.error('CorpersSignUp() error happened', error);
+            console.error('----> error happened', error.errors[0], error.fields);
 
             
             
@@ -124,7 +127,7 @@ module.exports = {
           console.log('\n\n\nwhat is this', req.session);
 
           sequelize.getQueryInterface().showAllTables().then((tableObj) => {
-            console.log('\n\n\n// again Tables in database','==========================');
+            console.log('\n\n\nUnread messages part', req.session.corper);
             console.log(tableObj, tableObj.length);
           })
           .catch((err) => {
@@ -162,29 +165,38 @@ module.exports = {
       console.log('\n\n\nwhat are we getting', req.body);
       return CorpMember.findOne({
         where: { // we're gonna use email or state code soon.
-          [Op.or]: [
-            { email: req.body.statecode },
-            { statecode: req.body.statecode.toUpperCase() }, 
+          [Op.or]: [ // will use identifier
+            { email: req.body.identifier.toLowerCase() },
+            { statecode: req.body.identifier.toUpperCase() }, 
           ]
-        }
+        },
+        raw: false, // don't use raw: true, and result.dataValues together // also the link on this comment https://stackoverflow.com/a/60951697
+        attributes: { exclude: ['pushSubscriptionStringified'] }
       }).then(
         result => { // result is null if not statecode or email exists ... also tell when it's statecode or email that doesn't exist
-        console.log('\n\n\n\tlogin we good', result);
+         
+        console.log('\n\n\n\nlogin we good', result);
+        console.log("you?? >>", result.servicestate);
         if (result && result.dataValues.password === req.body.password) { // password match
-          req.session.corper = result.dataValues;
-        // req.session.corper.location = result.response[0].servicestate + (result.response[0].city_town ? ', ' + result.response[0].city_town : ''); // + (results1[0].region_street ? ', ' + results1[0].region_street : '' )
-        // req.session.loggedin = true;
-  
-        jwt.sign({statecode: req.body.statecode.toUpperCase()}, process.env.SESSION_SECRET, (err, token) => {
+          
+
+          console.log('do we have what we want ?', result.dataValues._location);
+
+          req.session.corper = result.dataValues
+        jwt.sign({
+          statecode: result.dataValues.statecode,
+          email: result.dataValues.email
+        }, process.env.SESSION_SECRET, (err, token) => {
           if (err) throw err // no throw of errors
           else {
             // res.setHeader('Set-Cookie', 'name=value')
             res.cookie('_online', token, cookieOptions)
+            console.log("pleaseee", req.session.corper._servicestate);
             console.log('we\'re moving', req.session);
             /* req.session.save(function(err) { // hate this
-              // session saved
+              console.log("saved session");
             }) */
-            res.status(200).redirect(req.body.statecode.toUpperCase());
+            res.status(200).redirect(result.dataValues.statecode.toUpperCase());
           }
         })
         } else if(result && result.dataValues.password !== req.body.password){

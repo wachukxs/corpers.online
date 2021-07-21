@@ -61,9 +61,9 @@
                     <form id="loginform" class="container" action="/login" method="POST" enctype="application/x-www-form-urlencoded">
                         <div class="form-row">
                             <div class="col-md-4 mb-3">
-                                <label for="statecode">State code:</label>
-                                <input name="statecode" type="text"
-                                tabindex="0" class="form-control text-uppercase" autocomplete="statecode" autofocus id="statecode" placeholder="AB/16A/2639" required='true'>
+                                <label for="identifier">Email or State code:</label>
+                                <input name="identifier" type="text"
+                                tabindex="0" class="form-control" autocomplete="statecode" autofocus id="identifier" placeholder="AB/16A/2639 or ab@c.com" required='true'>
                                 <div hidden class="wrong" style="color: red;">
 
                                 </div>
@@ -125,7 +125,7 @@
             // console.log(sc, OK);
             if (OK) {
                 // console.log(event.target.value + ' is a valid state code!', OK);
-                document.getElementById('statecode').classList.remove('is-invalid');
+                document.getElementById('identifier').classList.remove('is-invalid');
                 document.getElementsByClassName('wrong')[0].textContent = "";
 
             } else {
@@ -133,11 +133,11 @@
                 // console.log(sc001, OK001);
                 if (OK001) {
                     // you must be currently serving
-                    document.getElementById('statecode').classList.add('is-invalid');
+                    document.getElementById('identifier').classList.add('is-invalid');
                     event.target.setCustomValidity("You must be currently serving");
                 } else {
                     // invalid state code
-                    document.getElementById('statecode').classList.add('is-invalid');
+                    document.getElementById('identifier').classList.add('is-invalid');
                     event.target.setCustomValidity("Invalid statecode");
                 }
             }
@@ -153,7 +153,7 @@
 
             // document.getElementsByClassName('wrong')[0].textContent = "This doens't look like a statecode";
             document.getElementsByClassName('wrong')[0].removeAttribute('hidden');
-            document.getElementById('statecode')
+            document.getElementById('identifier')
                 .classList.add('is-invalid');
 
             var OKK = _sc.test(event.target.value); // OKK[0]
@@ -176,9 +176,9 @@
             if (urlParams.get('l') === 'n') {
                 document.getElementsByClassName('wrong')[0].textContent = "Somthing went wrong. Please try agian.";
                 document.getElementsByClassName('wrong')[0].removeAttribute('hidden');
-                // document.getElementById('statecode').classList.add('is-invalid');
+                // document.getElementById('identifier').classList.add('is-invalid');
             } else if ( urlParams.get("m") === "s" ) {
-                document.getElementById('statecode').classList.add('is-invalid');
+                document.getElementById('identifier').classList.add('is-invalid');
                 document.getElementsByClassName('wrong')[0].innerHTML = "State code doesn't exist. Check again or <a href='/signup'>sign up</a>";
                 document.getElementsByClassName('wrong')[0].removeAttribute('hidden');
             } else if ( urlParams.get("p") === "w" ) {
@@ -197,9 +197,9 @@
             if (getUrlParameter('l') && getUrlParameter('l') == 'n') {
                 document.getElementsByClassName('wrong')[0].textContent = "Something went wrong. Please try agian.";
                 document.getElementsByClassName('wrong')[0].removeAttribute('hidden');
-                // document.getElementById('statecode').classList.add('is-invalid');
+                // document.getElementById('identifier').classList.add('is-invalid');
             } else if (getUrlParameter('m') && getUrlParameter('m') === "s") {
-                document.getElementById('statecode').classList.add('is-invalid');
+                document.getElementById('identifier').classList.add('is-invalid');
                 document.getElementsByClassName('wrong')[0].innerHTML = "State code doesn't exist. Check again or <a href='/signup'>sign up</a>"; // State code or email doesn't exist ...
                 document.getElementsByClassName('wrong')[0].removeAttribute('hidden');
             } else if (getUrlParameter('p') && getUrlParameter('p') === "w" ) {

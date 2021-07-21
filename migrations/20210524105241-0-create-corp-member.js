@@ -35,9 +35,6 @@ module.exports = {
       stream: {
         type: Sequelize.STRING
       },
-      servicestate: {
-        type: Sequelize.STRING
-      },
       batch: {
         type: Sequelize.STRING
       },

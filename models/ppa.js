@@ -58,7 +58,7 @@ module.exports = (sequelize, DataTypes) => {
     // tableName: 'PPA', // since we're freezing, we don't need to specify tableName
     freezeTableName: true, // if you freeze table name, does that means foreign keys can't change ?
   });
-  PPA.sync({ alter: true })
+  // PPA.sync({ alter: true })
   return PPA;
 };
 

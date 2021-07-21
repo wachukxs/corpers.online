@@ -68,6 +68,6 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Media',
   });
-  Media.sync({ alter: true })
+  // Media.sync({ alter: true })
   return Media;
 };

@@ -14,7 +14,12 @@ const ngstates = require('../utilities/ngstates');
 module.exports = (sequelize, DataTypes) => {
   class CorpMember extends Model {
     // this has only data present in the ongoing operation (like insert, delete, update, or select)
+    /***
+     * depreciated method. will be using a virtual field in place of this.
+     * only use class methods for operations that doesn't need field/row data (except for insert/select operations)
+     */
     getServiceState() { // during an update, this.statecode turn up null ... why ??? ...
+      // console.log("\n\n\n\nwhy is this.statecode null??", this.statecode);
       return this.statecode ? ngstates.states_long[ngstates.states_short.indexOf(this.statecode.slice(0, 2))] : '';
     }
     /**
@@ -25,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     static getSafeAttributes() {
       let safeCorpMemberAttributes = Object.keys(CorpMember.rawAttributes)
       safeCorpMemberAttributes.splice(safeCorpMemberAttributes.indexOf('password'), 1);
-      // safeCorpMemberAttributes.splice(safeCorpMemberAttributes.indexOf('pushSubscriptionStringified'), 1)
+      safeCorpMemberAttributes.splice(safeCorpMemberAttributes.indexOf('pushSubscriptionStringified'), 1)
       return safeCorpMemberAttributes
     }
     /**
@@ -77,16 +82,14 @@ module.exports = (sequelize, DataTypes) => {
     accommodation_location: DataTypes.STRING, // needs to change!! put in location model
     region_street: DataTypes.STRING,
     city_town: DataTypes.STRING,
-    email: DataTypes.STRING,
-    lga: DataTypes.STRING, // shouldn't this be nested
-    stream: DataTypes.STRING,
-    servicestate: {
-      type: DataTypes.STRING,
-      // allowNull defaults to true
-      get() {
-        return this.getServiceState(); // return ngstates.states_long[ngstates.states_short.indexOf(this.getDataValue('statecode').trim().slice(0, 2).toUpperCase())];
+    email: {
+      type:DataTypes.STRING,
+      set(value) {
+        this.setDataValue('email', value.toLowerCase());
       }
     },
+    lga: DataTypes.STRING, // shouldn't this be nested
+    stream: DataTypes.STRING,
     createdAt: { // convert to string, it causes error for .ejs template ...plus it's just safer to have '2021-06-12T18:44:22.683Z' in stead of 2021-06-12T18:44:22.683Z
       type: DataTypes.DATE,
     },
@@ -97,16 +100,8 @@ module.exports = (sequelize, DataTypes) => {
       },
       set(value) {
         throw new Error('Do not try to set the CorpMember.`timeWithUs` value!');
-      }
-    },
-    _location: { // this will be depreciated soon
-      type: DataTypes.VIRTUAL,
-      get() {
-        return this.getServiceState() + (this.getDataValue('city_town') ? ', ' + this.getDataValue('city_town') : ''); // + (this.getDataValue('region_street') ? ', ' + this.getDataValue('region_street') : '' )
       },
-      set(value) {
-        throw new Error('Do not try to set the CorpMember.`location` value!');
-      }
+      comment: 'What should we do with this? Make them invite others after a while? Or ask them how it has been so far?'
     },
     batch: DataTypes.STRING,
     statecode: {
@@ -116,6 +111,27 @@ module.exports = (sequelize, DataTypes) => {
         this.setDataValue('statecode', value.toUpperCase());
       }
     },
+    /**
+     * virtual fields aren't ideal because they are not enumerable fields
+     */
+    // servicestate: { // must be after statecode ... should we do an Open Source PR to fix this ?
+    //   type: DataTypes.VIRTUAL,
+    //   get() {
+    //     return ngstates.states_long[ngstates.states_short.indexOf(this.getDataValue('statecode').trim().slice(0, 2).toUpperCase())];
+    //   },
+    //   set(value) {
+    //     throw new Error('Do not try to set the CorpMember.`servicestate` value!');
+    //   }
+    // },
+    // _location: { // this will be depreciated soon
+    //   type: DataTypes.VIRTUAL,
+    //   get() {
+    //     return this.getDataValue('servicestate') + (this.getDataValue('city_town') ? ', ' + this.getDataValue('city_town') : ''); // + (this.getDataValue('region_street') ? ', ' + this.getDataValue('region_street') : '' )
+    //   },
+    //   set(value) {
+    //     throw new Error('Do not try to set the CorpMember.`location` value!');
+    //   }
+    // },
     updatedAt: { // convert to string, it causes error for .ejs template ...plus it's just safer to have '2021-06-12T18:44:22.683Z' in stead of 2021-06-12T18:44:22.683Z
       type: DataTypes.DATE,
     },
@@ -159,7 +175,32 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'CorpMember',
+    hooks: {
+      afterCreate(corpMember, {}) {
+        corpMember.dataValues.servicestate = ngstates.states_long[ngstates.states_short.indexOf(corpMember.statecode.trim().slice(0, 2).toUpperCase())]
+        corpMember.dataValues._location = corpMember.servicestate; // only using servicestate because city_town won't be existing
+      },
+      afterFind(corpMember, {}) {
+        corpMember.dataValues.servicestate = ngstates.states_long[ngstates.states_short.indexOf(corpMember.statecode.trim().slice(0, 2).toUpperCase())]
+        corpMember.dataValues._location = corpMember.servicestate + (corpMember.city_town ? ', ' + corpMember.city_town : '')
+      },
+      afterUpdate(corpMember, {}) {
+        corpMember.dataValues.servicestate = ngstates.states_long[ngstates.states_short.indexOf(corpMember.statecode.trim().slice(0, 2).toUpperCase())]
+        corpMember.dataValues._location = corpMember.servicestate + (corpMember.city_town ? ', ' + corpMember.city_town : '')
+      },
+    }
   });
-  CorpMember.sync({ alter: true })
+  // CorpMember.sync({ alter: true })
   return CorpMember;
 };
+
+/**
+ * maybe add a hook that'll include virtual fields in the returned defaultValue object on creation/insert (only access it if you call result.virtualfield)
+ * 
+ * virtual field is a scam, it doesn't exist in the defaultValues section (even after you reassign). it's redundant adding it via hooks
+ * 
+ * This error happens for virtual servicestate field: (when sync({alter: true}))
+ * 
+ * Executing (default): ALTER TABLE "CorpMembers" ALTER COLUMN "servicestate" DROP NOT NULL;ALTER TABLE "CorpMembers" ALTER COLUMN "servicestate" DROP DEFAULT;ALTER TABLE "CorpMembers" ALTER COLUMN "servicestate" TYPE VIRTUAL;
+ * (node:2053) UnhandledPromiseRejectionWarning: SequelizeDatabaseError: type "virtual" does not exist
+ */

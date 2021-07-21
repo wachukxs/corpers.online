@@ -30,7 +30,13 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.INTEGER
     },
-    statecode: DataTypes.STRING, // need it ?
+    statecode: {
+      type:DataTypes.STRING,
+      references: {
+        model: 'CorpMember',
+        key: 'statecode'
+      }
+    }, // need it ?
     itemname: DataTypes.STRING,
     price: DataTypes.FLOAT,
     text: DataTypes.TEXT,
@@ -74,6 +80,6 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Sale',
   });
-  Sale.sync({ alter: true })
+  // Sale.sync({ alter: true })
   return Sale;
 };

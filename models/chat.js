@@ -73,6 +73,6 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Chat',
   });
-  Chat.sync({ alter: true })
+  // Chat.sync({ alter: true })
   return Chat;
 };
