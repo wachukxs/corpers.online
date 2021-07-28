@@ -21,23 +21,17 @@
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
 
-        <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-            crossorigin="anonymous"></script> -->
-
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
         <!-- 
             <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
               integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous"> -->
 
-        <!-- <script src="/font-awesome.min.css"></script> --><script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.4/holder.js" integrity="sha256-crfkMD0BL2TtiwpbIlXF/SVmGSvOtgbMM8GBkibVKyc=" crossorigin="anonymous"> </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.4/holder.js" integrity="sha256-crfkMD0BL2TtiwpbIlXF/SVmGSvOtgbMM8GBkibVKyc=" crossorigin="anonymous"> </script>
 
         <!-- jQuery's typeahead -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.10.6/jquery.typeahead.min.js" integrity="sha256-W+Cxk9exgjON2p73M4RcoKvCpQUZ+IjXhEzZk6rlg9M=" crossorigin="anonymous"></script>
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.10.6/jquery.typeahead.min.css" integrity="sha256-CU0/rbxVB3Eixd3bbIuJxHJLDnXriJS9cwp/BfcgpLw=" crossorigin="anonymous"/>
-
-        <!--- twitter's typeahead --->
-        <!-- <script src="/typeahead.bundle.js"></script> -->
 
         <!--forThatInput-->
         <link
@@ -472,17 +466,17 @@
                     </div>
                 </form>
 
-                <a data-toggle="modal" id="notification-bell" data-target="#exampleModal" type="" class=" mr-3"><i class="bi bi-bell"></i></a>
+                <a data-toggle="modal" id="notification-bell" data-target="#createAlertModal" type="" class=" mr-3"><i class="bi bi-bell"></i></a>
 
                 <!-- Vertically centered modal for handling notifications -->
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" id="createAlertModal" tabindex="-1" aria-labelledby="createAlertModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                       <div class="modal-content">
                         <div class="modal-header">
                             <div class="custom-control custom-switch">
                                 <input type="checkbox" class="custom-control-input" id="customSwitch1">
                                 <label class="custom-control-label" for="customSwitch1">
-                                    <h5 class="modal-title" id="exampleModalLabel">Create an alert</h5>
+                                    <h5 class="modal-title" id="createAlertModalLabel">Create an alert</h5>
                                 </label>
                                 <small id="create-alert-help" class="form-text text-muted">Grant permission to allow notifications.</small>
                             </div>
@@ -496,14 +490,14 @@
                             <div>Type:</div>
                             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                                 <li class="nav-item" role="presentation">
-                                    <a class="nav-link active" id="nav-accommodation-tab" data-toggle="tab" href="#nav-accommodation-alert" role="tab" aria-controls="nav-accommodation-alert" aria-selected="true">Accommodation</a>
+                                    <a class="nav-link active" id="nav-accommodation-tab" data-toggle="pill" href="#nav-accommodation-alert" role="tab" aria-controls="nav-accommodation-alert" aria-selected="true">Accommodation</a>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <a class="nav-link" id="nav-sale-tab" data-toggle="tab" href="#nav-sale-alert" role="tab" aria-controls="nav-sale-alert" aria-selected="false">Sale</a>
+                                    <a class="nav-link" id="nav-sale-tab" data-toggle="pill" href="#nav-sale-alert" role="tab" aria-controls="nav-sale-alert" aria-selected="false">Sale</a>
                                 </li>
                               </ul>
                             
-                            <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-content" id="nav-tab-content">
                                 <div class="tab-pane fade show active" id="nav-accommodation-alert" role="tabpanel" aria-labelledby="nav-accommodation-tab">
                                     Accommodation should be here
                                     <form>
@@ -574,7 +568,7 @@
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                          <button type="button" class="btn btn-primary">Send message</button>
+                          <button type="button" class="btn btn-primary">Create alert</button>
                         </div>
                       </div>
                     </div>
@@ -1123,7 +1117,9 @@
                                         <div class="form-group">
                                             <label for="itemname">Item name</label>
                                             <input type="text" required name="itemname" class="form-control" id="itemname" placeholder="Fridge, table, carpet, ...">
-
+                                            <!--
+                                                make a data list of suggestion of items already posted
+                                            -->
                                             <label for="ppa_geodata">Item price</label>
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
@@ -1512,7 +1508,7 @@
                                     <div class="media-body">
                                     <div class="d-flex w-100 justify-content-between">
                                         <h6 class="mb-1">AB/12F/9478</h6>
-                                        <small >2 days ago</small>
+                                        <small>2 days ago</small>
                                     </div>
                                     <p>f f sad a bbbbbb</p>
                                     <div >
@@ -1944,7 +1940,7 @@
 
                                 let z = document.createElement('h6');
                                 z.setAttribute('class', 'mb-1');
-                                z.innerHTML = data.post[post_index].saleByCorper.firstname + ' <br> <small>' + data.post[post_index].saleByCorper._location + '</small>';
+                                z.innerHTML = data.post[post_index].saleByCorper.firstname + '<br> <small>' + data.post[post_index].saleByCorper._location + '</small>';
 
                                 let y = document.createElement('small');
                                 y.setAttribute('class', '');

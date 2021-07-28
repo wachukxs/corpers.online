@@ -217,7 +217,7 @@ module.exports = {
               {
                 model: CorpMember,
                 as: 'saleByCorper',
-                attributes: CorpMember.getSafeAttributes()
+                attributes: CorpMember.getSafeAttributes() // { exclude: ['pushSubscriptionStringified', 'password'] }
               }
             ]
           });

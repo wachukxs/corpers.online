@@ -114,24 +114,24 @@ module.exports = (sequelize, DataTypes) => {
     /**
      * virtual fields aren't ideal because they are not enumerable fields
      */
-    // servicestate: { // must be after statecode ... should we do an Open Source PR to fix this ?
-    //   type: DataTypes.VIRTUAL,
-    //   get() {
-    //     return ngstates.states_long[ngstates.states_short.indexOf(this.getDataValue('statecode').trim().slice(0, 2).toUpperCase())];
-    //   },
-    //   set(value) {
-    //     throw new Error('Do not try to set the CorpMember.`servicestate` value!');
-    //   }
-    // },
-    // _location: { // this will be depreciated soon
-    //   type: DataTypes.VIRTUAL,
-    //   get() {
-    //     return this.getDataValue('servicestate') + (this.getDataValue('city_town') ? ', ' + this.getDataValue('city_town') : ''); // + (this.getDataValue('region_street') ? ', ' + this.getDataValue('region_street') : '' )
-    //   },
-    //   set(value) {
-    //     throw new Error('Do not try to set the CorpMember.`location` value!');
-    //   }
-    // },
+    servicestate: { // must be after statecode ... should we do an Open Source PR to fix this ?
+      type: DataTypes.VIRTUAL,
+      get() {
+        return ngstates.states_long[ngstates.states_short.indexOf(this.getDataValue('statecode').trim().slice(0, 2).toUpperCase())];
+      },
+      set(value) {
+        throw new Error('Do not try to set the CorpMember.`servicestate` value!');
+      }
+    },
+    _location: { // this will be depreciated soon
+      type: DataTypes.VIRTUAL,
+      get() {
+        return this.getServiceState() + (this.getDataValue('city_town') ? ', ' + this.getDataValue('city_town') : ''); // + (this.getDataValue('region_street') ? ', ' + this.getDataValue('region_street') : '' )
+      },
+      set(value) {
+        throw new Error('Do not try to set the CorpMember.`location` value!');
+      }
+    },
     updatedAt: { // convert to string, it causes error for .ejs template ...plus it's just safer to have '2021-06-12T18:44:22.683Z' in stead of 2021-06-12T18:44:22.683Z
       type: DataTypes.DATE,
     },
@@ -176,7 +176,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'CorpMember',
-    hooks: {
+    hooks: { // used to add virtual fields to dataValues object
       afterCreate(corpMember, {}) {
         corpMember.dataValues.servicestate = ngstates.states_long[ngstates.states_short.indexOf(corpMember.statecode.trim().slice(0, 2).toUpperCase())]
         corpMember.dataValues._location = corpMember.getServiceState(); // or corpMember.dataValues.servicestate; // only using servicestate because city_town won't be existing
