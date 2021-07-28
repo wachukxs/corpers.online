@@ -179,7 +179,7 @@
                 // document.getElementById('identifier').classList.add('is-invalid');
             } else if ( urlParams.get("m") === "s" ) {
                 document.getElementById('identifier').classList.add('is-invalid');
-                document.getElementsByClassName('wrong')[0].innerHTML = "State code doesn't exist. Check again or <a href='/signup'>sign up</a>";
+                document.getElementsByClassName('wrong')[0].innerHTML = "Account doesn't exist. Check again or <a href='/signup'>sign up</a>";
                 document.getElementsByClassName('wrong')[0].removeAttribute('hidden');
             } else if ( urlParams.get("p") === "w" ) {
                 document.getElementById('password').classList.add('is-invalid');
@@ -200,7 +200,7 @@
                 // document.getElementById('identifier').classList.add('is-invalid');
             } else if (getUrlParameter('m') && getUrlParameter('m') === "s") {
                 document.getElementById('identifier').classList.add('is-invalid');
-                document.getElementsByClassName('wrong')[0].innerHTML = "State code doesn't exist. Check again or <a href='/signup'>sign up</a>"; // State code or email doesn't exist ...
+                document.getElementsByClassName('wrong')[0].innerHTML = "Account doesn't exist. Check again or <a href='/signup'>sign up</a>"; // State code or email doesn't exist ...
                 document.getElementsByClassName('wrong')[0].removeAttribute('hidden');
             } else if (getUrlParameter('p') && getUrlParameter('p') === "w" ) {
                 document.getElementById('password').classList.add('is-invalid');

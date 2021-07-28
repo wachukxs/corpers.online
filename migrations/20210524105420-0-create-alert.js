@@ -1,42 +1,45 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Locations', {
+    await queryInterface.createTable('Alerts', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      directions: {
+      statecode: {
+        type: Sequelize.STRING,
+      },
+      itemname: {
+        type: Sequelize.STRING
+      },
+      minPrice: {
+        type: Sequelize.FLOAT
+      },
+      maxPrice: {
+        type: Sequelize.FLOAT
+      },
+      accommodationType: {
+        type: Sequelize.STRING,
+      },
+      rooms: {
+        type: Sequelize.STRING,
+      },
+      note: {
         type: Sequelize.TEXT
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      mediaId: {
-        type: Sequelize.INTEGER,
-      },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
-      },
-      address: {
-        type: Sequelize.STRING
-      },
-      ppaId: {
-        type: Sequelize.INTEGER,
-      },
-      accommodationId: {
-        type: Sequelize.INTEGER,
-      },
-      CorpMemberId: {
-        type: Sequelize.INTEGER
-      },
+      }
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Locations');
+    await queryInterface.dropTable('Alerts');
   }
 };

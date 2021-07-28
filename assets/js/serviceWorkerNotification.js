@@ -17,9 +17,16 @@ if ('serviceWorker' in navigator) {
     throw new Error("Service Worker isn't supported on this browser");
 }
 
+function checkPermissionStatus() {
+  if (Notification.permission === "granted") { // hide the toggle button and helper text in create alert modal
+    
+  } else { // leave as is
+    
+  }
+}
 
 function testMethod() {
-    console.log('we are testing notifications');
+    console.log('I am in serviceWorkerNotifications');
 }
 
 function askPermission() {

@@ -40,6 +40,7 @@ module.exports = {
      */
     create(req, res) {
         console.log('\n\ncorpMember cntrl -- create()', req.body)
+        // req.body.remember: 'on' // also check if req.body.remember
         return CorpMember
           .create(req.body)
           .then(result => {
@@ -49,7 +50,7 @@ module.exports = {
             helpers.sendSignupWelcomeEmail(req.body.email, req.body.firstname, result.dataValues.servicestate)
             jwt.sign({
               statecode: req.body.statecode.toUpperCase(),
-            email: req.body.email.toLowerCase()
+              email: req.body.email.toLowerCase()
           }, process.env.SESSION_SECRET, (err, token) => {
               if (err) {
                 console.error('sign up err', err)
@@ -176,10 +177,8 @@ module.exports = {
         result => { // result is null if not statecode or email exists ... also tell when it's statecode or email that doesn't exist
          
         console.log('\n\n\n\nlogin we good', result);
-        console.log("you?? >>", result.servicestate);
         if (result && result.dataValues.password === req.body.password) { // password match
           
-
           console.log('do we have what we want ?', result.dataValues._location);
 
           req.session.corper = result.dataValues

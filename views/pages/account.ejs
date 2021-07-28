@@ -484,7 +484,8 @@
                                 <label class="custom-control-label" for="customSwitch1">
                                     <h5 class="modal-title" id="exampleModalLabel">Create an alert</h5>
                                 </label>
-                              </div>
+                                <small id="create-alert-help" class="form-text text-muted">Grant permission to allow notifications.</small>
+                            </div>
                             
                             
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -507,39 +508,65 @@
                                     Accommodation should be here
                                     <form>
                                         <div class="mb-3">
-                                          <label for="alert-item-name" class="col-form-label">Accommodation type:</label>
-                                          <input type="text" class="form-control" id="alert-item-name">
+                                          <label for="alert-accommodation-type" class="col-form-label">Accommodation type:</label>
+                                          <input type="text" class="form-control" id="alert-accommodation-type">
                                         </div>
                                         <div class="mb-3">
-                                            <label for="alert-item-name" class="col-form-label">Rooms:</label>
-                                            <input type="text" class="form-control" id="alert-item-name">
+                                            <label for="alert-rooms" class="col-form-label">Rooms:</label>
+                                            <input type="text" class="form-control" id="alert-rooms">
                                         </div>
                                         <div class="mb-3">
-                                            <label for="alert-item-name" class="col-form-label">Price:</label>
-                                            <input type="text" class="form-control" id="alert-item-name">
+                                            <label for="alert-price" class="col-form-label">Price:</label>
+                                            <input type="text" class="form-control" id="alert-price">
                                         </div>
                                       </form>
                                 </div>
                                 <div class="tab-pane fade" id="nav-sale-alert" role="tabpanel" aria-labelledby="nav-sale-tab">
-                                    Something something sale
                                     <form>
                                         <div class="mb-3">
                                             <label for="alert-item-name" class="col-form-label">Item name:</label>
                                             <input type="text" class="form-control" id="alert-item-name">
+                                            <!--
+                                                make a data list of suggestion of items already posted
+                                            -->
                                         </div>
                                         <div class="">
-                                            <label for="alert-item-name" class="col-form-label">Price:</label>
-                                            <input type="text" class="form-control" id="alert-item-name">
+                                            <label for="alert-min-price" class="col-form-label">Price range:</label>
+                                            
+                                                <div class="form-row align-items-center">
+                                                  <div class="col-sm-6 my-1">
+                                                    <label class="sr-only" for="alert-min-price">Min Price:</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                          <div class="input-group-text">Min, ₦</div>
+                                                        </div>
+                                                        <input type="text" class="form-control" id="alert-min-price" placeholder="₦ 2,000">
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-sm-6 my-1">
+                                                    <label class="sr-only" for="alert-max-price">Max Price:</label>
+                                                    <div class="input-group">
+                                                      <div class="input-group-prepend">
+                                                        <div class="input-group-text">Max, ₦</div>
+                                                      </div>
+                                                      <input type="text" class="form-control" id="alert-max-price" placeholder="₦ 15,000">
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              
                                         </div>
-                                        <div>
+                                        <!-- <div>
                                             <label for="customRange3">Price range</label>
                                             <input type="range" class="custom-range" min="0" max="5" step="0.5" id="customRange3">
                                         </div>
                                         <div class="custom-control custom-checkbox">
                                             <input name="relocated" type="checkbox" class="custom-control-input" id="relocated" value="relocated">
                                             <label class="custom-control-label"  for="relocated">Relocated ?</label>
-                                          </div>
-                                        <!-- allow any price range option, like a checkbox -->
+                                        </div> -->
+                                        <!-- 
+                                            allow any price range option, like a checkbox 
+                                            should we put an end date for alerts? like after this date, don't bother notifying the corp member ...
+                                        -->
                                       </form>
                                 </div>
                               </div>

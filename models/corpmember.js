@@ -172,21 +172,24 @@ module.exports = (sequelize, DataTypes) => {
     accommodationornot: DataTypes.BOOLEAN,
     public_profile: DataTypes.BOOLEAN,
     bio: DataTypes.TEXT,
+    // maybe have a session insight field of all the corp members's search histroy, liked items, (find how to figure out items they're intrested in)
   }, {
     sequelize,
     modelName: 'CorpMember',
     hooks: {
       afterCreate(corpMember, {}) {
         corpMember.dataValues.servicestate = ngstates.states_long[ngstates.states_short.indexOf(corpMember.statecode.trim().slice(0, 2).toUpperCase())]
-        corpMember.dataValues._location = corpMember.servicestate; // only using servicestate because city_town won't be existing
+        corpMember.dataValues._location = corpMember.getServiceState(); // or corpMember.dataValues.servicestate; // only using servicestate because city_town won't be existing
       },
       afterFind(corpMember, {}) {
-        corpMember.dataValues.servicestate = ngstates.states_long[ngstates.states_short.indexOf(corpMember.statecode.trim().slice(0, 2).toUpperCase())]
-        corpMember.dataValues._location = corpMember.servicestate + (corpMember.city_town ? ', ' + corpMember.city_town : '')
+        if (corpMember) { // for when we do a find during login, and corp member doesn't exist
+          corpMember.dataValues.servicestate = ngstates.states_long[ngstates.states_short.indexOf(corpMember.statecode.trim().slice(0, 2).toUpperCase())]
+          corpMember.dataValues._location = corpMember.getServiceState() + (corpMember.city_town ? ', ' + corpMember.city_town : '')
+        }
       },
       afterUpdate(corpMember, {}) {
         corpMember.dataValues.servicestate = ngstates.states_long[ngstates.states_short.indexOf(corpMember.statecode.trim().slice(0, 2).toUpperCase())]
-        corpMember.dataValues._location = corpMember.servicestate + (corpMember.city_town ? ', ' + corpMember.city_town : '')
+        corpMember.dataValues._location = corpMember.getServiceState() + (corpMember.city_town ? ', ' + corpMember.city_town : '')
       },
     }
   });
