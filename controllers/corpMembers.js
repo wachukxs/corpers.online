@@ -29,4 +29,6 @@ router.post('/profile', auth.verifyJWT, corpMemberService.postProfile)
 
 router.post('/save-push-subscription', auth.verifyJWT, express.json(), corpMemberService.savePushSubscription)
 
+router.post('/create-alert', auth.verifyJWT, corpMemberService.createAlert)
+
 module.exports = router;

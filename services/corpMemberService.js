@@ -2,6 +2,7 @@ const CorpMember = require('../models').CorpMember
 const Chat = require('../models').Chat
 const PPA = require('../models').PPA
 const Accommodation = require('../models').Accommodation
+const Alert = require('../models').Alert
 const Sale = require('../models').Sale
 const Media = require('../models').Media
 const Location = require('../models').Location
@@ -128,7 +129,7 @@ module.exports = {
           console.log('\n\n\nwhat is this', req.session);
 
           sequelize.getQueryInterface().showAllTables().then((tableObj) => {
-            console.log('\n\n\nUnread messages part', req.session.corper);
+            console.log('\n\n\nunread messages part', req.session.corper);
             console.log(tableObj, tableObj.length);
           })
           .catch((err) => {
@@ -416,7 +417,7 @@ module.exports = {
         }
       });
     
-      _profile_data = {
+      let _profile_data = {
         statecode: req.session.corper.statecode
       };
 
@@ -659,7 +660,7 @@ module.exports = {
         // .redirect(result); // no need to redirect, just send status code
         
 
-       })
+      })
     
       return req.pipe(busboy)
     },
@@ -707,5 +708,86 @@ module.exports = {
       // .redirect(result); // no need to redirect, just send status code
       
 
-    }
+    },
+
+    createAlert(req, res) {
+      const busboy = new Busboy({
+        headers: req.headers,
+        limits: { // set fields, fieldSize, and fieldNameSize later (security)
+          files: 12, // don't upload more than 12 media files
+          fileSize: 24 * 1024 * 1024 // 24MB
+        }
+      });
+    
+      let _alert_data = {
+        statecode: req.session.corper.statecode,
+        rooms: []
+      };
+
+      busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+        // console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+        switch (fieldname) {
+          // for accommodation
+          case 'alert-accommodation-rooms':
+            _alert_data['rooms'].push(val)
+            break;
+          case 'alert-accommodation-min-price':
+            _alert_data['minPrice'] = val;
+            break;
+          case 'alert-accommodation-max-price':
+            _alert_data['maxPrice'] = val;
+            break;
+          case 'alert-accommodation-type':
+            _alert_data['accommodationType'] = val;
+            break;
+          // for sale
+          case 'alert-sale-item-name':
+            _alert_data['itemname'] = val;
+            break;
+          case 'alert-sale-min-price':
+            _alert_data['minPrice'] = val;
+            break;
+          case 'alert-sale-max-price':
+            _alert_data['maxPrice'] = val;
+            break;
+
+          // for both
+          case 'type':
+            _alert_data['type'] = val;
+            break;
+        }
+        _alert_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
+
+        console.warn(fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype);
+      });
+
+      busboy.on('finish', function () {
+        // console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+        _alert_data.rooms = _alert_data.rooms.toString()
+        console.log("alert data", _alert_data);
+
+        Alert
+          .create(_alert_data)
+          .then(result => {
+            console.log('_alert_data re:', result);
+            
+            res.sendStatus(201)
+
+          }, error => {
+            console.error('alert creation() error happened', error);
+            console.error('----> this alert error happened', error.errors[0], error.fields);
+
+            res.sendStatus(501)
+          }).catch(reason => {
+            console.error('catching this alert err because:', reason);
+            res.sendStatus(501)
+          });
+       
+        
+      });
+    
+    
+    
+      return req.pipe(busboy)
+    },
 }

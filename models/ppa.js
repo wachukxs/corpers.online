@@ -48,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
     mediaId: {
       type:DataTypes.INTEGER
     },
-    locationId: {
+    locationId: { // TODO: specify that this references Location table
       type:DataTypes.INTEGER
     },
     type_of_ppa: DataTypes.STRING

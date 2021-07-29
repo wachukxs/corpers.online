@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     },
     type: {
-      type:DataTypes.INTEGER
+      type:DataTypes.STRING
     },
     itemname: {
         type:DataTypes.STRING
@@ -42,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
     statecode: {
       type:DataTypes.INTEGER
     },
-    minPrice: {
+    minPrice: { // should we move to attaching currency symbol from the back end ?
       type:DataTypes.INTEGER
     },
     accommodationType: {
@@ -64,9 +64,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         get() {
             return this.getDataValue('rooms').split(',');
+        },
+        set(value) {
+          if (!value) {
+            this.setDataValue('rooms', null); // for when value is ''
+          }
         }
     },
-    locationId: DataTypes.INTEGER,
+    locationId: DataTypes.INTEGER, // TODO: include location as a metric ...so we filter people leaving close to you
   }, {
     sequelize,
     modelName: 'Alert',

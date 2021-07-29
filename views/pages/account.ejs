@@ -499,33 +499,96 @@
                             
                             <div class="tab-content" id="nav-tab-content">
                                 <div class="tab-pane fade show active" id="nav-accommodation-alert" role="tabpanel" aria-labelledby="nav-accommodation-tab">
-                                    Accommodation should be here
-                                    <form>
+                                    
+                                    <form id="accommodation-alert-form" enctype="application/x-www-form-urlencoded">
+                                        <input type="text" name="type" value="accommodation" hidden>
                                         <div class="mb-3">
                                           <label for="alert-accommodation-type" class="col-form-label">Accommodation type:</label>
-                                          <input type="text" class="form-control" id="alert-accommodation-type">
+                                          
+                                          <select class="custom-select pointer form-control" required name="alert-accommodation-type" id="alert-accommodation-type">
+                                            <option value="" selected>Choose...</option>
+                                            <option value="Self contain">Self contain</option>
+                                            <option value="Flat">Flat</option>
+                                            <option value="1 bedroom flat">1 bedroom flat</option>
+                                            <option value="2 bedroom flat">2 bedroom flat</option>
+                                            <option value="3 bedroom flat">3 bedroom flat</option>
+                                        </select>
+                                        <small class="form-text text-muted mb-3">What type of space are you looking for?</small>
+
                                         </div>
                                         <div class="mb-3">
                                             <label for="alert-rooms" class="col-form-label">Rooms:</label>
-                                            <input type="text" class="form-control" id="alert-rooms">
+                                            <!-- should be check boxes -->
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input name="alert-accommodation-rooms" type="checkbox" class="custom-control-input" id="alert-rooms-1" value="Sitting room">
+                                                <label class="custom-control-label" for="alert-rooms-1">Sitting room ?</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input name="alert-accommodation-rooms" type="checkbox" class="custom-control-input" id="alert-rooms-2" value="Kitchen">
+                                                <label class="custom-control-label" for="alert-rooms-2">Kitchen ?</label>
+                                                <!-- Maybe later seperate the two, with radio buttons, kitchen in the apartment or a general one tenant shares -->
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input name="alert-accommodation-rooms" type="checkbox" class="custom-control-input" id="alert-rooms-3" value="Bedroom">
+                                                <label class="custom-control-label" for="alert-rooms-3">Bedroom ?</label>
+                                                <!-- if it comes with a bedroom, then how many [do later] -->
+                                            </div>
+                                            <!-- input tag check box id attribute connects with the for attribute of label tag -->
+                                            <div class="custom-control custom-checkbox">
+                                                <input name="alert-accommodation-rooms" type="checkbox" class="custom-control-input" id="alert-rooms-4" value="Toilet">
+                                                <label class="custom-control-label" for="alert-rooms-4">Toilet ?</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input name="alert-accommodation-rooms" type="checkbox" class="custom-control-input" id="alert-rooms-5" value="Bathroom">
+                                                <label class="custom-control-label" for="alert-rooms-5">Bathroom ?</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input name="alert-accommodation-rooms" type="checkbox" class="custom-control-input" id="alert-rooms-6" value="Dining room">
+                                                <label class="custom-control-label" for="alert-rooms-6">Dining room ?</label>
+                                            </div>
+                                            <small class="form-text text-muted mb-4">What rooms do you want in the space?</small>
+
                                         </div>
                                         <div class="mb-3">
-                                            <label for="alert-price" class="col-form-label">Price:</label>
-                                            <input type="text" class="form-control" id="alert-price">
+                                            <label for="alert-accommodation-min-price" class="col-form-label">Price range:</label>
+                                            
+                                                <div class="form-row align-items-center">
+                                                  <div class="col-sm-6 my-1">
+                                                    <label class="sr-only" for="alert-accommodation-min-price">Min Price:</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                          <div class="input-group-text">Min, ₦</div>
+                                                        </div>
+                                                        <input type="text" name="alert-accommodation-min-price" class="form-control" id="alert-accommodation-min-price" placeholder="₦ 2,000">
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-sm-6 my-1">
+                                                    <label class="sr-only" for="alert-accommodation-max-price">Max Price:</label>
+                                                    <div class="input-group">
+                                                      <div class="input-group-prepend">
+                                                        <div class="input-group-text">Max, ₦</div>
+                                                      </div>
+                                                      <input name="alert-accommodation-max-price" type="text" class="form-control" id="alert-accommodation-max-price" placeholder="₦ 15,000">
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              
                                         </div>
                                       </form>
                                 </div>
                                 <div class="tab-pane fade" id="nav-sale-alert" role="tabpanel" aria-labelledby="nav-sale-tab">
-                                    <form>
+                                    <form id="sale-alert-form">
+                                        <input type="text" name="type" value="sale" hidden>
                                         <div class="mb-3">
-                                            <label for="alert-item-name" class="col-form-label">Item name:</label>
-                                            <input type="text" class="form-control" id="alert-item-name">
+                                            <label for="alert-sale-item-name" class="col-form-label">Item name:</label>
+                                            <input required type="text" class="form-control" name="alert-sale-item-name" id="alert-sale-item-name">
                                             <!--
                                                 make a data list of suggestion of items already posted
                                             -->
                                         </div>
                                         <div class="">
-                                            <label for="alert-min-price" class="col-form-label">Price range:</label>
+                                            <label for="alert-sale-min-price" class="col-form-label">Price range:</label>
                                             
                                                 <div class="form-row align-items-center">
                                                   <div class="col-sm-6 my-1">
@@ -534,16 +597,16 @@
                                                         <div class="input-group-prepend">
                                                           <div class="input-group-text">Min, ₦</div>
                                                         </div>
-                                                        <input type="text" class="form-control" id="alert-min-price" placeholder="₦ 2,000">
+                                                        <input type="text" name="alert-sale-min-price" class="form-control" id="alert-min-price" placeholder="₦ 2,000">
                                                       </div>
                                                   </div>
                                                   <div class="col-sm-6 my-1">
-                                                    <label class="sr-only" for="alert-max-price">Max Price:</label>
+                                                    <label class="sr-only" for="alert-sale-max-price">Max Price:</label>
                                                     <div class="input-group">
                                                       <div class="input-group-prepend">
                                                         <div class="input-group-text">Max, ₦</div>
                                                       </div>
-                                                      <input type="text" class="form-control" id="alert-max-price" placeholder="₦ 15,000">
+                                                      <input name="alert-sale-max-price" type="text" class="form-control" id="alert-sale-max-price" placeholder="₦ 15,000">
                                                     </div>
                                                   </div>
                                                 </div>
@@ -568,11 +631,159 @@
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                          <button type="button" class="btn btn-primary">Create alert</button>
+                          <button id="create-alert-button" type="button" class="btn btn-primary">Create alert</button>
                         </div>
                       </div>
                     </div>
-                  </div>
+                </div>
+                <!-- js for the alert modal -->
+                <script>
+                    document.getElementById('create-alert-button').addEventListener('click', function createAlert(event) {
+                        console.log('alert event', event);
+                        // maybe close the model, then show notification ... 
+                        if (document.getElementById('nav-accommodation-alert').classList.contains('active')) { // it's accommodation
+                            let _accommodation_alert_form = document.getElementById('accommodation-alert-form');
+
+                            // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
+                            const XHR = new XMLHttpRequest();
+
+                            // Bind the FormData object and the form element
+                            let accommodationAlertFormData = new FormData(_accommodation_alert_form);
+
+                            // Define what happens on successful data submission
+                            XHR.addEventListener("load", function (event) {
+                                console.log(event.target.responseText, event.target, event.timeStamp);
+                                // calculate the time a post was clicked, when it was submitted and when the response was given to the user
+
+                                // and reset the form
+                                _accommodation_alert_form.reset();
+                                
+                                // some times there are cases where posts happen immediately after each other
+                                // and there would then be more than one notifications on the user tl...
+                                // how do we ensure they are closed as they come ? A dedicated functions to handle notifications ????/
+
+                                if (event.target.status === 200 || event.target.status === 201) {
+                                    $("#1or0")
+                                    .before(`<div class="alert alert-success mt-3 fade show alert-posted" id="alertposted" role="alert">Alert created successfully.
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            `);
+
+                                } else {
+                                    $("#1or0")
+                                    .before(`<div class="alert alert-success mt-3 fade show alert-posted" id="postposted" role="alert">We didn\'t get that. Please post again.
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                                </div>`);
+                                }
+                                
+
+                            });
+
+                            // Define what happens in case of error
+                            XHR.addEventListener("error", function (event) {
+                                $("#1or0")
+                                    .before(`<div class="alert alert-danger mt-3 fade show alert-posted" id="alertposted" role="alert">Oops! Something went wrong. It's us, not you.
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                                </div>`);
+                                
+                            });
+
+                            // Define what happens at end of request
+                            XHR.addEventListener("loadend", function (event) {
+                                setTimeout(function () {
+                                    $('div.alert.mt-3.fade.alert-posted.show').alert('close'); // Closes all opened alert (for now all) by removing it from the DOM
+                                }, 4000);
+                                
+                            });
+
+                            // Set up our request
+                            XHR.open('POST', '/create-alert');
+                            // true makes it async request
+
+                            // XHR.setRequestHeader('Content-Type', 'multipart/form-data'); // causes error Error: Multipart: Boundary not found
+
+                            // The data sent is what the user provided in the form
+                            XHR.send(accommodationAlertFormData);
+
+                        } else {
+                            let _sale_alert_form = document.getElementById('sale-alert-form');
+
+                            // use fetch api later on or NOT https://gomakethings.com/why-i-still-use-xhr-instead-of-the-fetch-api/
+                            const XHR = new XMLHttpRequest();
+
+                            // Bind the FormData object and the form element
+                            let saleAlertFormData = new FormData(_sale_alert_form);
+
+                            // Define what happens on successful data submission
+                            XHR.addEventListener("load", function (event) {
+                                console.log(event.target.responseText, event.target, event.timeStamp);
+                                // calculate the time a post was clicked, when it was submitted and when the response was given to the user
+
+                                // and reset the form
+                                _sale_alert_form.reset();
+                                
+                                // some times there are cases where posts happen immediately after each other
+                                // and there would then be more than one notifications on the user tl...
+                                // how do we ensure they are closed as they come ? A dedicated functions to handle notifications ????/
+
+                                if (event.target.status === 200 || event.target.status === 201) {
+                                    $("#1or0")
+                                    .before(`<div class="alert alert-success mt-3 fade show alert-posted" id="alertposted" role="alert">Alert created successfully.
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            `);
+
+                                } else {
+                                    $("#1or0")
+                                    .before(`<div class="alert alert-success mt-3 fade show alert-posted" id="postposted" role="alert">We didn\'t get that. Please post again.
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                                </div>`);
+                                }
+                                
+
+                            });
+
+                            // Define what happens in case of error
+                            XHR.addEventListener("error", function (event) {
+                                $("#1or0")
+                                    .before(`<div class="alert alert-danger mt-3 fade show alert-posted" id="alertposted" role="alert">Oops! Something went wrong. It's us, not you.
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                                </div>`);
+                                
+                            });
+
+                            // Define what happens at end of request
+                            XHR.addEventListener("loadend", function (event) {
+                                setTimeout(function () {
+                                    $('div.alert.mt-3.fade.alert-posted.show').alert('close'); // Closes all opened alert (for now all) by removing it from the DOM
+                                }, 4000);
+                                
+                            });
+
+                            // Set up our request
+                            XHR.open('POST', '/create-alert');
+                            // true makes it async request
+
+                            // XHR.setRequestHeader('Content-Type', 'multipart/form-data'); // causes error Error: Multipart: Boundary not found
+
+                            // The data sent is what the user provided in the form
+                            XHR.send(saleAlertFormData);
+                        }
+                        
+                    })
+                </script>
 
                 <!-- Button trigger modal for posting-->
                 <!-- hide on screens smaller than md -->
@@ -1762,6 +1973,10 @@
                 }
             });
 
+
+            /*
+            kill connection after 5 mins of not connecting ...then show a message
+            */
             socket.on('connect', function () {
 
                 // console.log('connected', new Date(Date.now()).toLocaleString(), Date.now());
