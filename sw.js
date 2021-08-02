@@ -51,10 +51,12 @@ request and return the data if anything can be retrieved from the
 
   const sendNotification = body => {
       // you could refresh a notification badge here with postMessage API
-      const title = "Web Push example";
+      const title = "Hey! Found it.";
 
       return self.registration.showNotification(title, {
-          body,
+          body: body,
+          icon: 'assets/images/1/android-icon-48x48.png',
+          vibrate: [500, 100, 500]
       });
   };
 
