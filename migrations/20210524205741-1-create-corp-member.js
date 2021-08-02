@@ -78,7 +78,7 @@ module.exports = {
         },
       },
       pushSubscriptionStringified: {
-        type: Sequelize.STRING(500)
+        type: Sequelize.TEXT
       },
       updatedAt: {
         allowNull: false,

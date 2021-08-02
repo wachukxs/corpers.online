@@ -3,6 +3,10 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
+
+  /***
+   * How do we handle duplicate locations ...to make sure there aren't any.
+   */
   class Location extends Model {
     /**
      * Helper method for defining associations.

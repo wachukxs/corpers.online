@@ -655,14 +655,17 @@
                                 console.log(event.target.responseText, event.target, event.timeStamp);
                                 // calculate the time a post was clicked, when it was submitted and when the response was given to the user
 
-                                // and reset the form
-                                _accommodation_alert_form.reset();
-                                
                                 // some times there are cases where posts happen immediately after each other
                                 // and there would then be more than one notifications on the user tl...
                                 // how do we ensure they are closed as they come ? A dedicated functions to handle notifications ????/
 
                                 if (event.target.status === 200 || event.target.status === 201) {
+                                    // and reset the form
+                                    _accommodation_alert_form.reset();
+
+                                    // close the modal : what should happen on failed event?
+                                    $('#createAlertModal').modal('hide')
+                                
                                     $("#1or0")
                                     .before(`<div class="alert alert-success mt-3 fade show alert-posted" id="alertposted" role="alert">Alert created successfully.
                                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -2373,7 +2376,7 @@
                                 } ${
                                     (rms.length > 1 ? 'with ' + rms.toString().replace('', 'and ').split(',').reverse().toString().replace(/,/g, ', ') : 'with a ' + rms[0])
                                 } at &#8358;${
-                                    new Intl.NumberFormat().format(data.post[post_index].rent)
+                                    (data.post[post_index].tenure == 'Roommate' ? new Intl.NumberFormat().format(data.post[post_index].roommateRent) : new Intl.NumberFormat().format(data.post[post_index].rent) )
                                 } ${
                                     data.post[post_index].rentRange
                                 }. ${
@@ -2811,7 +2814,7 @@
                             .change(function (evt) {
                                 // console.log('name of change', evt, evt.target.attributes['id'].value)
                                 // the picture choosen
-                                let farr = document.forms[1].elements["roomsmedia"].files;
+                                let farr = document.getElementById("roomsmedia").files;
                                 for (let index = 0; index < farr.length; index++) {
                                     const f = farr[index];
                                     // console.log('fname', f.name, f.lastModified)

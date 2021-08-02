@@ -51,7 +51,7 @@ module.exports = {
      * @param {*} res 
      * @returns 
      */
-    create(req, res) {
+    create(req, res, next) {
         const busboy = new Busboy({
             headers: req.headers,
             limits: { // set fields, fieldSize, and fieldNameSize later (security)
@@ -209,12 +209,13 @@ module.exports = {
                   }
                 }
 
+            let _accommodation_to_save;
             if (!helpers.isEmpty(_text) && helpers.isEmpty(uploadPromise)) {
               console.log('what\'s _text?', _text)
 
               console.log('\n\ndo we have statecode', req.session.corper.statecode);
 
-              /**
+              /***
                * Heavy fix for Sequelize ...if you're chaining (not using await), you can't create models with include ...the result doesn't have the included data.
                * 
                * for instance if Accommodation.create() is a chained promise with .then().catch(), it creates fine if there's no nested model object ...
@@ -225,7 +226,7 @@ module.exports = {
                * It should filter out object id needs when creating a new model, and ignore the rest (does that already I think)
                */
 
-              let _accommodation_to_save = await Accommodation.create({
+              _accommodation_to_save = await Accommodation.create({
                   ..._text,
                   statecode: req.session.corper.statecode,
                 }, {
@@ -252,25 +253,6 @@ module.exports = {
                 _accommodation_to_save.accommodationByCorper = await _accommodation_to_save.getAccommodationByCorper()
                 _accommodation_to_save.dataValues.accommodationByCorper = await _accommodation_to_save.getAccommodationByCorper() // (await _accommodation_to_save.getAccommodationByCorper()).toJSON() works too
                 
-              /* let acc_data = { // why are we boardcasting req ?
-                statecode: req.session.corper.statecode,
-                // streetname: _text.streetname,
-                type: _text.accommodationtype,
-                price: _text.price,
-                media: [].toString(), // same as '' but for consistency sake
-                rentrange: _text.rentrange,
-                rooms: _text.rooms.toString(), // hot fix
-                address: _text.address,
-                directions: _text.directions,
-                tenure: _text.tenure,
-                expire: (_text.expiredate ? _text.expiredate : ''),
-                post_location: req.session.corper.location,
-                post_time: _text.post_time,
-                acc_geodata: (_text.acc_geodata ? _text.acc_geodata : ''),
-                roommate_you: (_text.roommate_you ? _text.roommate_you : ''),
-                roommate_type: (_text.roommate_type ? _text.roommate_type : '')
-              }
-              query.InsertRowInAccommodationsTable(acc_data) */
               
                 // then status code is good
                 res.sendStatus(200);
@@ -290,7 +272,7 @@ module.exports = {
 
               console.log('\n\ndo we have statecode', req.session.corper.statecode);
 
-              let _accommodation_to_save = await Accommodation.create( // causes error for virtual fields when returning values : SequelizeDatabaseError: column "type" does not exist
+              _accommodation_to_save = await Accommodation.create( // causes error for virtual fields when returning values : SequelizeDatabaseError: column "type" does not exist
                 {
                   statecode: req.session.corper.statecode,
                   ..._text,
@@ -336,7 +318,9 @@ module.exports = {
               let k = (await _accommodation_to_save.getAccommodationMedia()).toJSON();
 
               /// FUCKKK
-              _accommodation_to_save.accommodationByCorper = await _accommodation_to_save.getAccommodationByCorper()
+              _accommodation_to_save.accommodationByCorper = await _accommodation_to_save.getAccommodationByCorper({
+                // attributes: CorpMember.getSafeAttributes() // shouldn't have to comment out
+              })
               _accommodation_to_save.dataValues.accommodationByCorper = await _accommodation_to_save.getAccommodationByCorper()
               
               _accommodation_to_save.Location = await _accommodation_to_save.getLocation()
@@ -351,33 +335,18 @@ module.exports = {
                 // once it saves in db them emit to other users
                 socket.of('/user').emit('boardcast message', { // or 'accommodation'
                   to: 'be received by everyoneELSE',
-                  post: [_accommodation_to_save.toJSON()]/* {
-                    firstname: _text.firstname,
-                    statecode: req.session.corper.statecode,
-                    streetname: _text.streetname,
-                    rentrange: _text.rentrange,
-                    rooms: _text.rooms,
-                    tenure: _text.tenure,
-                    expiredate: (_text.expiredate ? _text.expiredate : ''),
-                    post_location: req.session.corper.location,
-                    media: _media,
-                    post_time: _text.post_time,
-                    type: _text.accommodationtype,
-                    address: _text.address,
-                    directions: _text.directions,
-                    age: moment(Number(_text.post_time)).fromNow(),
-                    price: _text.price,
-                    picture_id: req.session.corper.picture_id,
-                    roommate_you: (_text.roommate_you ? _text.roommate_you : ''),
-                    roommate_type: (_text.roommate_type ? _text.roommate_type : '')
-                  } */
+                  post: [_accommodation_to_save.toJSON()]
                 });
               
         
             }
+
+            req._accommodation_to_save = _accommodation_to_save; // for the next middleware (Alerts Service)
+            next()
           });
         
           // handle post request, add data to database... do more
+
         
           return req.pipe(busboy)
     },
@@ -439,5 +408,5 @@ module.exports = {
       
         return req.pipe(busboy)
       
-    }
+    },
 }

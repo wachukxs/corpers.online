@@ -349,5 +349,10 @@ module.exports = {
        })
     
       return req.pipe(busboy)
-    }
+    },
+
+    // will never send a response
+    checkAlerts(req, res){
+
+    },
 }

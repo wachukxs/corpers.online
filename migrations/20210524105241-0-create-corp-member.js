@@ -61,7 +61,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       pushSubscriptionStringified: {
-        type: Sequelize.STRING(500)
+        type: Sequelize.TEXT
       },
       createdAt: {
         allowNull: false,

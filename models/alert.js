@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const moment = require('moment');
 module.exports = (sequelize, DataTypes) => {
   class Alert extends Model {
     /**
@@ -68,9 +69,17 @@ module.exports = (sequelize, DataTypes) => {
         set(value) {
           if (!value) {
             this.setDataValue('rooms', null); // for when value is ''
+          } else {
+            this.setDataValue('rooms', value);
           }
         }
     },
+    // expiresAt: {
+    //   type: Sequelize.DATE,
+    //   defaultValue() {
+    //     return moment().add(30, 'days').toDate();
+    //   },
+    // },
     locationId: DataTypes.INTEGER, // TODO: include location as a metric ...so we filter people leaving close to you
   }, {
     sequelize,

@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
      * depreciated method. will be using a virtual field in place of this.
      * only use class methods for operations that doesn't need field/row data (except for insert/select operations)
      */
-    getServiceState() { // during an update, this.statecode turn up null ... why ??? ...
+    getServiceState() { // during an update, this.statecode turn up null ... why ??? ...not anymore (because this.statecode is always set for every db operation)
       // console.log("\n\n\n\nwhy is this.statecode null??", this.statecode);
       return this.statecode ? ngstates.states_long[ngstates.states_short.indexOf(this.statecode.slice(0, 2))] : '';
     }
@@ -114,16 +114,16 @@ module.exports = (sequelize, DataTypes) => {
     /**
      * virtual fields aren't ideal because they are not enumerable fields
      */
-    servicestate: { // must be after statecode ... should we do an Open Source PR to fix this ?
+    /*servicestate: { // must be after statecode ... should we do an Open Source PR to fix this ?
       type: DataTypes.VIRTUAL,
       get() {
-        return ngstates.states_long[ngstates.states_short.indexOf(this.getDataValue('statecode').trim().slice(0, 2).toUpperCase())];
+        return this.getServiceState() // ngstates.states_long[ngstates.states_short.indexOf(this.getDataValue('statecode').trim().slice(0, 2).toUpperCase())];
       },
       set(value) {
         throw new Error('Do not try to set the CorpMember.`servicestate` value!');
       }
-    },
-    _location: { // this will be depreciated soon
+    },*/
+    /*_location: { // this will be depreciated soon
       type: DataTypes.VIRTUAL,
       get() {
         return this.getServiceState() + (this.getDataValue('city_town') ? ', ' + this.getDataValue('city_town') : ''); // + (this.getDataValue('region_street') ? ', ' + this.getDataValue('region_street') : '' )
@@ -131,7 +131,7 @@ module.exports = (sequelize, DataTypes) => {
       set(value) {
         throw new Error('Do not try to set the CorpMember.`location` value!');
       }
-    },
+    },*/
     updatedAt: { // convert to string, it causes error for .ejs template ...plus it's just safer to have '2021-06-12T18:44:22.683Z' in stead of 2021-06-12T18:44:22.683Z
       type: DataTypes.DATE,
     },
@@ -139,7 +139,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     },
     pushSubscriptionStringified: {
-        type: DataTypes.STRING(500),
+        type: DataTypes.TEXT,
         get() {
           if (this.getDataValue('pushSubscriptionStringified')) {
             let pushSubscription = JSON.parse(this.getDataValue('pushSubscriptionStringified'))
@@ -155,7 +155,7 @@ module.exports = (sequelize, DataTypes) => {
             
             return pushSubscription // we could just return pushSubscription
           } else {
-            return null;
+            return null; // or just return this.getDataValue('pushSubscriptionStringified')
           }
         },
         set(value) {
@@ -180,20 +180,37 @@ module.exports = (sequelize, DataTypes) => {
       afterCreate(corpMember, {}) {
         corpMember.dataValues.servicestate = ngstates.states_long[ngstates.states_short.indexOf(corpMember.statecode.trim().slice(0, 2).toUpperCase())]
         corpMember.dataValues._location = corpMember.getServiceState(); // or corpMember.dataValues.servicestate; // only using servicestate because city_town won't be existing
+
+        corpMember.servicestate = ngstates.states_long[ngstates.states_short.indexOf(corpMember.statecode.trim().slice(0, 2).toUpperCase())]
+        corpMember._location = corpMember.getServiceState(); // or corpMember.servicestate;
       },
       afterFind(corpMember, {}) {
         if (corpMember) { // for when we do a find during login, and corp member doesn't exist
           corpMember.dataValues.servicestate = ngstates.states_long[ngstates.states_short.indexOf(corpMember.statecode.trim().slice(0, 2).toUpperCase())]
           corpMember.dataValues._location = corpMember.getServiceState() + (corpMember.city_town ? ', ' + corpMember.city_town : '')
+
+          corpMember.servicestate = ngstates.states_long[ngstates.states_short.indexOf(corpMember.statecode.trim().slice(0, 2).toUpperCase())]
+          corpMember._location = corpMember.getServiceState() + (corpMember.city_town ? ', ' + corpMember.city_town : '')
         }
       },
       afterUpdate(corpMember, {}) {
         corpMember.dataValues.servicestate = ngstates.states_long[ngstates.states_short.indexOf(corpMember.statecode.trim().slice(0, 2).toUpperCase())]
         corpMember.dataValues._location = corpMember.getServiceState() + (corpMember.city_town ? ', ' + corpMember.city_town : '')
+
+        corpMember.servicestate = ngstates.states_long[ngstates.states_short.indexOf(corpMember.statecode.trim().slice(0, 2).toUpperCase())]
+        corpMember._location = corpMember.getServiceState() + (corpMember.city_town ? ', ' + corpMember.city_town : '')
       },
     }
   });
-  // CorpMember.sync({ alter: true })
+  CorpMember.sync({ alter: true })
+  .then((_done) => {
+    console.log(`Done syncing ${CorpMember.tableName}`, _done);
+  }, (_err) => {
+    console.error(`err sycing ${CorpMember.tableName}:\n\n`, _err);
+  })
+  .catch(_reason => { // catches .VIRTUAL data type when altering db
+    console.error(`caught this error while sycning ${CorpMember.tableName} table:\n\n`, _reason);
+  })
   return CorpMember;
 };
 

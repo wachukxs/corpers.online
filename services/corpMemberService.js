@@ -667,6 +667,15 @@ module.exports = {
 
     async savePushSubscription (req, res) { // Busboy doesn't support json https://github.com/mscdex/busboy/issues/125#issuecomment-237715028
       console.log('oh well, here', req.body);
+
+      // it would be good practice to make sure the payload has all the required data
+      // const subscriptionObject = {
+      //   endpoint: pushSubscription.endpoint,
+      //   keys: {
+      //     p256dh: pushSubscription.p256dh, // getKeys is not a function
+      //     auth: pushSubscription.auth
+      //   }
+      // };
       
 
       let corpMemberUpdate = await CorpMember.update(
@@ -682,6 +691,7 @@ module.exports = {
           // returning: true
         }
       )
+      
 
       
       try {
@@ -697,7 +707,7 @@ module.exports = {
       }
 
       // checking if it updated:
-      if (corpMemberUpdate) {
+      if (corpMemberUpdate && corpMemberUpdate[0] > 0) { // object [ 1 ]
         res.sendStatus(200) // sending a 'Created' response ... not 200 OK response
       } else {
         res.sendStatus(500)
@@ -725,7 +735,6 @@ module.exports = {
       };
 
       busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
-        // console.log('Field [' + fieldname + ']: value: ' + inspect(val));
         switch (fieldname) {
           // for accommodation
           case 'alert-accommodation-rooms':
@@ -751,18 +760,44 @@ module.exports = {
             _alert_data['maxPrice'] = val;
             break;
 
-          // for both
+          // for both ?? [on the finish event, we'll check to see if all the accommodation input were filled, if yes, then create accommodation alert. Can do same for sales too. Can happen for both.]
           case 'type':
             _alert_data['type'] = val;
             break;
+          default: // for things like statecode
+            _alert_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
+            break;
         }
-        _alert_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
 
+        /**
+         * alert data {
+              statecode: 'AB/20A/1234',
+              rooms: 'Sitting room,Bathroom,Dining room',
+              type: 'accommodation',
+              accommodationType: 'Flat',
+              minPrice: '1500',
+              maxPrice: '7800'
+            }
+
+
+            id: 4,
+            statecode: 'AB/20A/1234',
+            rooms: 'Sitting room,Kitchen,Dining room',
+            type: 'accommodation',
+            accommodationType: 'Self contain',
+            minPrice: 4000,
+            maxPrice: 18000,
+            updatedAt: 2021-08-02T06:58:25.806Z,
+            createdAt: 2021-08-02T06:58:25.806Z,
+            itemname: null,
+            note: null,
+            locationId: null
+         */
+        
         console.warn(fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype);
       });
 
       busboy.on('finish', function () {
-        // console.log('Field [' + fieldname + ']: value: ' + inspect(val));
         _alert_data.rooms = _alert_data.rooms.toString()
         console.log("alert data", _alert_data);
 
@@ -775,7 +810,7 @@ module.exports = {
 
           }, error => {
             console.error('alert creation() error happened', error);
-            console.error('----> this alert error happened', error.errors[0], error.fields);
+            console.error('alert error happened', error.errors[0], error.fields);
 
             res.sendStatus(501)
           }).catch(reason => {

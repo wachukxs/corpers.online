@@ -81,3 +81,9 @@ await Promise.all(uploadPromise);
             // res.sendStatus(500); // Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client // what's setting it first?
           })
           
+
+TO FIX: account.ejs
+
+An invalid form control with name='idealRoommate' is not focusable.
+1233:1 An invalid form control with name='occupantDescription' is not focusable.
+1233:1 An invalid form control with name='roommateRent' is not focusable.
