@@ -99,7 +99,8 @@ module.exports = (sequelize, DataTypes) => {
         return moment(this.getDataValue('createdAt')).fromNow();
       },
       set(value) {
-        throw new Error('Do not try to set the CorpMember.`timeWithUs` value!');
+        console.error('Do not try to set the CorpMember.`timeWithUs` value!');
+        // throw new Error('Do not try to set the CorpMember.`timeWithUs` value!');
       },
       comment: 'What should we do with this? Make them invite others after a while? Or ask them how it has been so far?'
     },
@@ -114,24 +115,26 @@ module.exports = (sequelize, DataTypes) => {
     /**
      * virtual fields aren't ideal because they are not enumerable fields
      */
-    /*servicestate: { // must be after statecode ... should we do an Open Source PR to fix this ?
+    servicestate: { // must be after statecode ... should we do an Open Source PR to fix this ?
       type: DataTypes.VIRTUAL,
       get() {
         return this.getServiceState() // ngstates.states_long[ngstates.states_short.indexOf(this.getDataValue('statecode').trim().slice(0, 2).toUpperCase())];
       },
       set(value) {
-        throw new Error('Do not try to set the CorpMember.`servicestate` value!');
+        console.error('Do not try to set the CorpMember.`servicestate` value!');
+        // throw new Error('Do not try to set the CorpMember.`servicestate` value!');
       }
-    },*/
-    /*_location: { // this will be depreciated soon
+    },
+    _location: { // this will be depreciated soon
       type: DataTypes.VIRTUAL,
       get() {
         return this.getServiceState() + (this.getDataValue('city_town') ? ', ' + this.getDataValue('city_town') : ''); // + (this.getDataValue('region_street') ? ', ' + this.getDataValue('region_street') : '' )
       },
-      set(value) {
-        throw new Error('Do not try to set the CorpMember.`location` value!');
+      set(value) { // virtual fields show up when model is included in queries ... but it doesn't if you set the variable via hooks. why? cause it's not enumurable when the model is included in queries ?
+        console.error('Do not try to set the CorpMember.`location` value!');
+        // throw new Error('Do not try to set the CorpMember.`location` value!');
       }
-    },*/
+    },
     updatedAt: { // convert to string, it causes error for .ejs template ...plus it's just safer to have '2021-06-12T18:44:22.683Z' in stead of 2021-06-12T18:44:22.683Z
       type: DataTypes.DATE,
     },
@@ -181,28 +184,29 @@ module.exports = (sequelize, DataTypes) => {
         corpMember.dataValues.servicestate = ngstates.states_long[ngstates.states_short.indexOf(corpMember.statecode.trim().slice(0, 2).toUpperCase())]
         corpMember.dataValues._location = corpMember.getServiceState(); // or corpMember.dataValues.servicestate; // only using servicestate because city_town won't be existing
 
-        corpMember.servicestate = ngstates.states_long[ngstates.states_short.indexOf(corpMember.statecode.trim().slice(0, 2).toUpperCase())]
-        corpMember._location = corpMember.getServiceState(); // or corpMember.servicestate;
+        // corpMember.servicestate = ngstates.states_long[ngstates.states_short.indexOf(corpMember.statecode.trim().slice(0, 2).toUpperCase())]
+        // corpMember._location = corpMember.getServiceState(); // or corpMember.servicestate;
       },
       afterFind(corpMember, {}) {
         if (corpMember) { // for when we do a find during login, and corp member doesn't exist
           corpMember.dataValues.servicestate = ngstates.states_long[ngstates.states_short.indexOf(corpMember.statecode.trim().slice(0, 2).toUpperCase())]
           corpMember.dataValues._location = corpMember.getServiceState() + (corpMember.city_town ? ', ' + corpMember.city_town : '')
 
-          corpMember.servicestate = ngstates.states_long[ngstates.states_short.indexOf(corpMember.statecode.trim().slice(0, 2).toUpperCase())]
-          corpMember._location = corpMember.getServiceState() + (corpMember.city_town ? ', ' + corpMember.city_town : '')
+          // commnet if virtual fields are in use ...or remove error thrown in virtual fields
+          // corpMember.servicestate = ngstates.states_long[ngstates.states_short.indexOf(corpMember.statecode.trim().slice(0, 2).toUpperCase())]
+          // corpMember._location = corpMember.getServiceState() + (corpMember.city_town ? ', ' + corpMember.city_town : '')
         }
       },
       afterUpdate(corpMember, {}) {
         corpMember.dataValues.servicestate = ngstates.states_long[ngstates.states_short.indexOf(corpMember.statecode.trim().slice(0, 2).toUpperCase())]
         corpMember.dataValues._location = corpMember.getServiceState() + (corpMember.city_town ? ', ' + corpMember.city_town : '')
 
-        corpMember.servicestate = ngstates.states_long[ngstates.states_short.indexOf(corpMember.statecode.trim().slice(0, 2).toUpperCase())]
-        corpMember._location = corpMember.getServiceState() + (corpMember.city_town ? ', ' + corpMember.city_town : '')
+        // corpMember.servicestate = ngstates.states_long[ngstates.states_short.indexOf(corpMember.statecode.trim().slice(0, 2).toUpperCase())]
+        // corpMember._location = corpMember.getServiceState() + (corpMember.city_town ? ', ' + corpMember.city_town : '')
       },
     }
   });
-  CorpMember.sync({ alter: true })
+/*   CorpMember.sync({ alter: true })
   .then((_done) => {
     console.log(`Done syncing ${CorpMember.tableName}`, _done);
   }, (_err) => {
@@ -210,7 +214,7 @@ module.exports = (sequelize, DataTypes) => {
   })
   .catch(_reason => { // catches .VIRTUAL data type when altering db
     console.error(`caught this error while sycning ${CorpMember.tableName} table:\n\n`, _reason);
-  })
+  }) */
   return CorpMember;
 };
 

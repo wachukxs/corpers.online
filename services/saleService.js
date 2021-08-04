@@ -167,6 +167,7 @@ module.exports = {
             Sale.setMedium()
             Sale.createMedium()
          */
+        let _sale_to_save;
         if (!helpers.isEmpty(_text) && !helpers.isEmpty(uploadPromise)) {
           await Promise.all(uploadPromise);
           // console.log('what\'s _text?', _text)
@@ -198,7 +199,7 @@ module.exports = {
           })
           console.log(f, "\n\n\n\n ===??++++ ///", jkl); */
 
-          const _sale_to_save = await Sale.create({
+          _sale_to_save = await Sale.create({
             statecode: req.session.corper.statecode,
             text: _text.text,
             itemname: _text.itemname,
@@ -262,7 +263,7 @@ module.exports = {
         } else if (!helpers.isEmpty(_text) && helpers.isEmpty(uploadPromise)) {
           
     
-          const _sale_to_save = await Sale.create({
+          _sale_to_save = await Sale.create({
             statecode: req.session.corper.statecode,
             type: (_text.type ? _text.type : "sale"),
             text: _text.text,
@@ -302,6 +303,9 @@ module.exports = {
             });
           
         }
+
+        req._sale_to_save = _sale_to_save; // for the next middleware (Alerts Service)
+        next()
       });
     
       // handle post request, add data to database... do more
@@ -351,8 +355,4 @@ module.exports = {
       return req.pipe(busboy)
     },
 
-    // will never send a response
-    checkAlerts(req, res){
-
-    },
 }

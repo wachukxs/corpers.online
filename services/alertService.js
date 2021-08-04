@@ -65,12 +65,6 @@ module.exports = {
                         .padEnd(_accommodation_to_find.availableRooms.join("|").length + 1, ']')
                         .padStart(_accommodation_to_find.availableRooms.join("|").length + 3, '^[')
                 },
-                ...(_accommodation_to_find.itemname && {
-                    itemname: {
-                        [Op.regexp]: _accommodation_to_find.itemname
-                          .padEnd(_accommodation_to_find.itemname.length + 3, ')?)')
-                          .padStart(_accommodation_to_find.itemname.length + 3 + 2, '((')
-                }})
             },
             include: [{
               model: CorpMember,
@@ -106,7 +100,7 @@ module.exports = {
                 console.error("caught this error tryna send push", _err);
               });
             } else {
-              console.log("whattt ?? why no alert sent:", _alert.alertByCorper);
+              console.log("whattt ?? why no accommodation alert sent:", _alert.alertByCorper);
             }
             
             
@@ -187,6 +181,7 @@ module.exports = {
           }
         **/
   
+          // maybe later, move the sending notification functionality else where so this method can be used for filtering matched alerts
   
         /* webpush.sendNotification(pushSubscription, 'Chair available for sale at ₦423.') // can payload be an object ?
         .catch((err) => {
@@ -202,7 +197,74 @@ module.exports = {
       
     },
 
-    checkSale(req, res) {
+    async checkSale(req, res) {
+        let _sale_to_find = req._sale_to_save.toJSON(); // might be unneccessary re-assigning
+          
+        console.log('sale to find== =>', _sale_to_find);
 
+        console.log("\n\n\ndid reg ex work?", new RegExp( _sale_to_find.itemname
+          .padEnd(_sale_to_find.itemname.length + 3, ')?)')
+          .padStart(_sale_to_find.itemname.length + 3 + 2, '((') ) );
+
+        let _found_alerts = await Alert.findAll({ // is an array
+            where: {
+                maxPrice: {
+                  [Op.gte]: _sale_to_find.price,
+                },
+                minPrice: {
+                  [Op.lte]: _sale_to_find.price,
+                },
+                [Op.or]: [
+                  { itemname: _sale_to_find.itemname }, // hmmm needs more work ...what if it's mis-spelt or sth
+                  // doing this just because
+                  {
+                    itemname: {
+                      [Op.regexp]: _sale_to_find.itemname
+                        .padEnd(_sale_to_find.itemname.length + 3, ')?)')
+                        .padStart(_sale_to_find.itemname.length + 3 + 2, '((')
+                    }
+                  }
+                ]
+            },
+            include: [{
+              model: CorpMember,
+              as: 'alertByCorper'
+            }]
+        })
+        // Executing (default): 
+        // SELECT "id", "type", "itemname", "statecode", "minPrice", 
+        // "accommodationType", "maxPrice", "note", "createdAt", 
+        // "updatedAt", "rooms", "locationId" 
+        // FROM "Alerts" AS "Alert" WHERE "Alert"."maxPrice" <= 5780 
+        // AND "Alert"."minPrice" >= 5780 
+        // AND "Alert"."rooms" ~ '^[Dining room]';
+
+        console.log("Found these alerts:\n\n\n", _found_alerts); // .toJSON() is not a function
+
+        if (_found_alerts && _found_alerts.length > 0) {
+          for (let index = 0; index < _found_alerts.length; index++) {
+            const _alert = _found_alerts[index].dataValues;
+
+            if (_alert.alertByCorper.pushSubscriptionStringified) {
+              webpush.sendNotification(
+                _alert.alertByCorper.pushSubscriptionStringified,
+                `${_sale_to_find.itemname} selling at ₦${_sale_to_find.price}`,
+                // {}
+              ).then((_done) => {
+                console.log("sent push msg", _done);
+                if (_done.statusCode == 201) { // we good
+                  
+                }
+              })
+              .catch((_err) => {
+                console.error("caught this error tryna send push", _err);
+              });
+            } else {
+              console.log("whattt ?? why no sale alert sent:", _alert.alertByCorper);
+            }
+            
+            
+          }
+        }
     },
 }

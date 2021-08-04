@@ -77,7 +77,7 @@ module.exports.verifyJWT = (req, res, next) => {
                         req.session.corper = result.dataValues;
                         next()
                     } else { // else what ?
-                        throw new Error('Could not find corper') // here is a ticking time bomb
+                        throw new Error('Could not find corper')
                     }
 
                   }, reject => {

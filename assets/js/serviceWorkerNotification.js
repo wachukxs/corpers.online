@@ -7,6 +7,7 @@ if ('serviceWorker' in navigator) {
     registerServiceWorker()
     .then(_srvcWrkr => { // maybe todo: enable ask for notification permission only after sw has registered
         console.log('is there result:', _srvcWrkr);
+        _srvcWrkr.update(); // should sparingly call this
     }, _rjct => {
         console.error('register service worker', _rjct);
     }).catch(err => {

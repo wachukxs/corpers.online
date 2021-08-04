@@ -209,7 +209,7 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
                 {
                     model: CorpMember,
                     as: 'accommodationByCorper',
-                    attributes: CorpMember.getSafeAttributes()
+                    attributes: CorpMember.getSafeAttributes(), // isn't bringing the other _location & service state
                 },
                 {
                     model: Location,
