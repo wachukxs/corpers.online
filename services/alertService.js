@@ -88,7 +88,7 @@ module.exports = {
             if (_alert.alertByCorper.pushSubscriptionStringified) {
               webpush.sendNotification(
                 _alert.alertByCorper.pushSubscriptionStringified,
-                `${_accommodation_to_find.type} at ₦${(_accommodation_to_find.roommateRent ? _accommodation_to_find.roommateRent + ' with a roommate.' : _accommodation_to_find.rent)}`,
+                `${_accommodation_to_find.type} at ₦${(_accommodation_to_find.roommateRent ? Intl.NumberFormat().format(_accommodation_to_find.roommateRent) + ' with a roommate.' : Intl.NumberFormat().format(_accommodation_to_find.rent))}`,
                 // {}
               ).then((_done) => {
                 console.log("sent push msg", _done);
@@ -231,13 +231,6 @@ module.exports = {
               as: 'alertByCorper'
             }]
         })
-        // Executing (default): 
-        // SELECT "id", "type", "itemname", "statecode", "minPrice", 
-        // "accommodationType", "maxPrice", "note", "createdAt", 
-        // "updatedAt", "rooms", "locationId" 
-        // FROM "Alerts" AS "Alert" WHERE "Alert"."maxPrice" <= 5780 
-        // AND "Alert"."minPrice" >= 5780 
-        // AND "Alert"."rooms" ~ '^[Dining room]';
 
         console.log("Found these alerts:\n\n\n", _found_alerts); // .toJSON() is not a function
 
@@ -248,7 +241,7 @@ module.exports = {
             if (_alert.alertByCorper.pushSubscriptionStringified) {
               webpush.sendNotification(
                 _alert.alertByCorper.pushSubscriptionStringified,
-                `${_sale_to_find.itemname} selling at ₦${_sale_to_find.price}`,
+                `${_sale_to_find.itemname} selling at ₦${Intl.NumberFormat().format(_sale_to_find.price)}`,
                 // {}
               ).then((_done) => {
                 console.log("sent push msg", _done);

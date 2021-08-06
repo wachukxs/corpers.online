@@ -466,7 +466,7 @@
                     </div>
                 </form>
 
-                <a data-toggle="modal" id="notification-bell" data-target="#createAlertModal" type="" class="mr-lg-3"><i class="bi bi-bell"></i></a>
+                <a data-toggle="modal" id="notification-bell" data-target="#createAlertModal" type="" class="mr-md-3 mr-lg-3"><i class="bi bi-bell"></i></a>
 
                 <!-- Vertically centered modal for handling notifications -->
                 <div class="modal fade" id="createAlertModal" tabindex="-1" aria-labelledby="createAlertModalLabel" aria-hidden="true">
@@ -474,8 +474,8 @@
                       <div class="modal-content">
                         <div class="modal-header">
                             <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="customSwitch1">
-                                <label class="custom-control-label" for="customSwitch1">
+                                <input type="checkbox" class="custom-control-input" id="alert-switch">
+                                <label class="custom-control-label" for="alert-switch">
                                     <h5 class="modal-title" id="createAlertModalLabel">Create an alert</h5>
                                 </label>
                                 <small id="create-alert-help" class="form-text text-muted">Grant permission to allow notifications.</small>
@@ -3111,8 +3111,9 @@
     </script>
 
     <script>
+        checkPermissionStatus();
         // also check if we have permission ...to set the default state of the toggle
-        document.getElementById('customSwitch1').addEventListener('change', (event) => {
+        document.getElementById('alert-switch').addEventListener('change', (event) => {
             if (event.target.checked) {
                 console.log('trying');
                 testMethod()

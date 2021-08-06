@@ -20,9 +20,13 @@ if ('serviceWorker' in navigator) {
 
 function checkPermissionStatus() {
   if (Notification.permission === "granted") { // hide the toggle button and helper text in create alert modal
-    
+    document.getElementById('alert-switch').checked = true
+    document.getElementById('create-alert-help').textContent = 'Get notifications when a post on interest is made.'
   } else { // leave as is
-    
+    // this is an over kill
+    document.getElementById('alert-switch').checked = false
+    document.getElementById('create-alert-help').textContent = 'Grant permission to allow notifications.'
+    // todo: if they've blocked us, we can add an info icon with a tooltip showing how they can enable notifications from settings
   }
 }
 
@@ -30,6 +34,7 @@ function testMethod() {
     console.log('I am in serviceWorkerNotifications');
 }
 
+// make this better ...
 function askPermission() {
     return new Promise(function(resolve, reject) {
       const permissionResult = Notification.requestPermission(function(result) {
@@ -44,10 +49,11 @@ function askPermission() {
     .then(function(permissionResult) {
       if (permissionResult !== 'granted') { // 'granted', 'default' or 'denied'
         throw new Error('We weren\'t granted permission.');
+         // here is a good time to ask again for another permission.
       } else {
         console.log('we alredy have permssion');
-        subscribeUserToPush()
-      } // here is a good time to ask again for another permission.
+        subscribeUserToPush() // we only want to run this the first time
+      }
     });
   }
 
