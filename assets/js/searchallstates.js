@@ -6,17 +6,17 @@ $.typeahead({
     // order: "asc", // asc or desc // no need for this, we already arrange it from server
     minLength: 1, // Accepts 0 to search on focus, minimum character length to perform a search
     offset: false, // Set to true to match items starting from their first character
-    cache: sessionStorage,
+    // cache: sessionStorage,
     hint: true,
     loadingAnimation: true,
     backdrop: {
         "background-color": "#fff"
     },
-    ttl: 3600000, // Cache time to live in ms
+    // ttl: 3600000, // Cache time to live in ms
     maxItem: 30, // highest number of results to show
 
     ///////////////////
-    group: {
+    /* group: {
         key: 'price',
         template: function (item) {
             if (item.ppa_address) {
@@ -25,7 +25,7 @@ $.typeahead({
                 return `${item.state} [accommodations]`
             }
         }
-    },
+    }, */
     dropdownFilter: [{
         key: 'state',
         template: '{{state}}',
@@ -36,16 +36,18 @@ $.typeahead({
             url: '/posts'
         }
     },
-    template: "{{address}} <br> <small class='text-muted text-uppercase'>{{type}}, &#8358;{{price}} {{rentrange}} by {{statecode}}</small>" +
+    /* template: "{{Location.address}} <br> <small class='text-muted text-uppercase'>{{type}}, &#8358;{{price || rent}} {{rentRange}} by {{statecode}}</small>" +
                 "<br> <small class='text-muted text-uppercase'>{{group}}</small>",
-                template: "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
-                "<br> <small class='text-muted text-uppercase'>{{group}}</small>",
+    template: "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
+    "<br> <small class='text-muted text-uppercase'>{{group}}</small>", */
     correlativeTemplate: true,
     //////////////////////////////////////////////////////////////
-    // correlativeTemplate: true,
+    delay: 500,
+    dynamic: true,
     group: { // use group to maybe group by LGAs and anything relevant
         template: "{{group}} STATE"
     },
+    maxItemPerGroup: 7,
     // template: "{{address}} {{ppa_address}} <br> <small class='text-muted text-uppercase'>{{group}}</small>",
     // href: "/search?title={{display}}",
 
@@ -58,28 +60,27 @@ $.typeahead({
         // group cannot be 'data'
         ABIA: {
             template: function (query, item) {
-                // console.log('t', item)
-                if (item.rentrange) {
-                    let d = moment(item.post_time).fromNow();
-                    return "{{address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{price}} {{rentrange}} by {{statecode}}  &#183; " + d + "</small>" +
+                console.log('abia t', item)
+                if (item.availableRooms) {
+                    return "{{Location.address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{rent}} {{rentRange}} by {{statecode}}  &#183; {{age}}</small>" +
                         "<br> <small class='text-muted'>accommodations</small>";
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
-                    let d = moment(item.post_time).fromNow();
-                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                    let d = moment(item.createdAt).fromNow();
+                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{saleByCorper._location}}  &#183; " + d + "</small>" +
                         "<br> <small class='text-muted'>sale</small>";
                 };
             },
-            display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'], // what you can search and it autocompletes // 'group' options works but isn't ideal yet because we can't implement // display cannot be a function
+            display: ['address', 'type', "rentRange", "rent", "roommateRent", 'price', 'itemname', '_location', 'accommodationType'], // what you can search and it autocompletes // 'group' options works but isn't ideal yet because we can't implement // display cannot be a function
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
                 console.log('=href', item);
                 if (item.name_of_ppa) { // if it's a ppa
                     return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
                         "&top=" + item.type_of_ppa;
-                } else if (item.rentrange) { // if it's an accommodation
+                } else if (item.availableRooms || item.rentRange) { // if it's an accommodation
                     return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
                         item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
                 } else if (item.itemname) { // if it's an item for sale
@@ -1436,8 +1437,8 @@ $.typeahead({
                         "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
                     let d = moment(item.post_time).fromNow();
-                    return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
-                        "<br> <small class='text-muted'>sale</small>";
+                    return `{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{location}}  &#183; " + d + "</small>" +
+                        "<br> <small class='text-muted'>sale</small>`;
                 };
             },
             display: ['address', 'type', "name_of_ppa", "ppa_address", "type_of_ppa", 'price', 'itemname', 'location'],

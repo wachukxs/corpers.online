@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
   class Accommodation extends Model {
     static getAllActualAttributes() {
       let safeAccommodationAttributes = Object.keys(Accommodation.rawAttributes)
-      safeAccommodationAttributes.splice(safeAccommodationAttributes.indexOf('accommodationId'), 1);
+      safeAccommodationAttributes.splice(safeAccommodationAttributes.indexOf('accommodationId'), 1); // ???
       
       return safeAccommodationAttributes
     }

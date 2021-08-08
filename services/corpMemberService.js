@@ -898,7 +898,7 @@ module.exports = {
             console.log("\n\n\n\n\n\ndid we get corp member's Accommodation?", _accommodations);
             // combine both ?? sort by
             let _sales_accommodations = _sales.concat(_accommodations);
-            _sales_accommodations.sort((firstEl, secondEl) => { firstEl.creeatedAt - secondEl.creeatedAt });
+            _sales_accommodations.sort((firstEl, secondEl) => { firstEl.createdAt - secondEl.createdAt });
             
             console.log("\n\n\n\n\n\ndid we all searching +?", _sales_accommodations);
             // will def change this later:
