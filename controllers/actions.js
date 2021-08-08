@@ -259,9 +259,7 @@ router.post('/contact', function (req, res) {
     }); */
 });
 
-// TODO: restore previous router.post('/posts, ...)
-
-router.get('/posts', auth.verifyJWT, function (req, res) {
+router.get('/oldposts', auth.verifyJWT, function (req, res) {
   // set resposnse type to application/json
   res.setHeader('Content-Type', 'application/json');
   query.GetPosts(req).then(result => {

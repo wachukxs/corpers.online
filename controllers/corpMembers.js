@@ -31,4 +31,7 @@ router.post('/save-push-subscription', auth.verifyJWT, express.json(), corpMembe
 
 router.post('/create-alert', auth.verifyJWT, corpMemberService.createAlert)
 
+// do we need auth.verify middle ware ?
+router.get('/posts', corpMemberService.getPosts);
+
 module.exports = router;

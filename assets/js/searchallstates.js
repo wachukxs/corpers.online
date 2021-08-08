@@ -16,7 +16,7 @@ $.typeahead({
     maxItem: 30, // highest number of results to show
 
     ///////////////////
-    /* group: {
+    group: {
         key: 'price',
         template: function (item) {
             if (item.ppa_address) {
@@ -40,7 +40,7 @@ $.typeahead({
                 "<br> <small class='text-muted text-uppercase'>{{group}}</small>",
                 template: "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                 "<br> <small class='text-muted text-uppercase'>{{group}}</small>",
-    correlativeTemplate: true, */
+    correlativeTemplate: true,
     //////////////////////////////////////////////////////////////
     // correlativeTemplate: true,
     group: { // use group to maybe group by LGAs and anything relevant

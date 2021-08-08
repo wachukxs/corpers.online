@@ -825,4 +825,142 @@ module.exports = {
     
       return req.pipe(busboy)
     },
+
+
+    getPosts(req, res) {
+      console.log("??????? req.query:", req.query);
+      res.setHeader('Content-Type', 'application/json');
+      Sale.findAll({ // also add PPA
+        where: {
+            itemname: {
+                [Op.substring]: req.query.q, // hmmm...
+            },
+            ... (req.query.s && {
+                statecode: {
+                    [Op.substring]: req.query.s.substring(0, 2),
+                }
+            })
+        },
+        order: [
+            ['createdAt', 'ASC']
+        ],
+        include: [
+            {
+                model: Media,
+                as: 'saleMedia',
+                
+            },
+            {
+                model: CorpMember,
+                as: 'saleByCorper',
+                attributes: CorpMember.getSafeAttributes()
+            }
+        ]
+    })
+    .then(_sales => {
+        console.log("\n\n\n\n\n\ndid we get corp member's Sales?", _sales);
+        Accommodation.findAll({ // also add PPA
+            where: {
+              [Op.or]: [
+                {
+                  accommodationType: {
+                      [Op.substring]: req.query.q,
+                  }
+                },
+                // ...
+              ],
+              
+              ... (req.query.s && {
+                  statecode: {
+                      [Op.substring]: req.query.s.substring(0, 2),
+                  }
+              })
+            },
+            order: [
+                ['createdAt', 'ASC']
+            ],
+            include: [
+                {
+                    model: Media,
+                    as: 'accommodationMedia',
+                },
+                {
+                    model: CorpMember,
+                    as: 'accommodationByCorper',
+                    attributes: CorpMember.getSafeAttributes(), // isn't bringing the other _location & service state
+                },
+                {
+                    model: Location,
+                }
+            ],
+            attributes: Accommodation.getAllActualAttributes()
+        }).then(_accommodations => {
+            console.log("\n\n\n\n\n\ndid we get corp member's Accommodation?", _accommodations);
+            // combine both ?? sort by
+            let _sales_accommodations = _sales.concat(_accommodations);
+            _sales_accommodations.sort((firstEl, secondEl) => { firstEl.creeatedAt - secondEl.creeatedAt });
+            
+            console.log("\n\n\n\n\n\ndid we all searching +?", _sales_accommodations);
+            // will def change this later:
+            let thisisit = {
+              data: {
+                // accommodations: _accommodations,
+                // ABIA: _sales,// [], // will include later // will need it like that STATES
+                // sales: _sales
+              }
+            };
+
+            
+            for (let index = 0; index < _sales_accommodations.length; index++) {
+             
+              let _post = _sales_accommodations[index]
+              /* if (thisisit.data[ngstates.states_long[(ngstates.states_short.indexOf(ele.statecode.substring(0,2)))]]) {
+                thisisit.data[ngstates.states_long[(ngstates.states_short.indexOf(ele.statecode.substring(0,2)))]].push(ele)
+              } else {
+                thisisit.data[ngstates.states_long[(ngstates.states_short.indexOf(ele.statecode.substring(0,2)))]] = [ele]
+              } */
+
+              if (ngstates.states_long[(ngstates.states_short.indexOf(_post.statecode.substring(0,2)))] in thisisit.data) {
+                thisisit.data[ngstates.states_long[(ngstates.states_short.indexOf(_post.statecode.substring(0,2)))]].push(_post)
+              } else {
+                thisisit.data[ngstates.states_long[(ngstates.states_short.indexOf(_post.statecode.substring(0,2)))]] = [_post]
+              }
+              
+            }
+
+            console.log("what next ?\n", thisisit);
+            
+            res
+            .status(200)
+            .send(thisisit)
+    
+        }, (reject) => {
+          res.sendStatus(500)
+            console.error('uhmmmm not good', reject);
+            console.log('emitting empty posts, first user or the tl is empty')
+        }).catch(reject => {
+            console.error('is this the error ?', reject);
+    
+            // right ?? ?? we can't just not send anything ...
+            res.sendStatus(500)
+        })
+
+        
+
+    }, (reject) => {
+      res.sendStatus(500)
+        console.error('uhmmmm not good', reject);
+        console.log('emitting empty posts, first user or the tl is empty')
+    }).catch(reject => {
+        console.error('is this the error ?', reject);
+
+        // right ?? ?? we can't just not send anything ...
+        res.sendStatus(500)
+    })
+
+
+      // res.status(200).send({ data: ["ghfc ty", "rewfhb iwre", "hblg er ieur\n\nthat apostrophe", "The happening place in Abia is NCCF!", "Well and NACC too. But NCCF would Never die!!!", "dsaf df asd", "5u96y j94938\nfdsig eor\n\ndfsnhgu es9rgre\n\ndsigj90e9re", "gfh r", "gejge rniog eoigrioerge ", "gf er rg erg", "fdg erei sug serugeis gr  \n\n\n\n\nThis", "test df gf byyyyyyyyy mee", "Okay. ", "This is it. And yep.", "I could sing. ... Oh"] });
+  
+
+    }
 }
