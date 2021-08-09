@@ -112,7 +112,8 @@ module.exports.verifyJWT = (req, res, next) => {
  * next() to continue execution
  * 
  * @description
- * a middleware to check jwt cookies in req object, to provide better servies to users(corpers). in pages like /search, helping to pre-populate some data
+ * middleware to check jwt cookies in req object, to provide better servies to corpers.
+ * In pages like /search, helping to pre-populate corper object
  */
 module.exports.checkJWT = (req, res, next) => {
     // Cookies that have not been signed

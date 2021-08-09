@@ -62,8 +62,8 @@ $.typeahead({
             template: function (query, item) {
                 console.log('abia t', item)
                 if (item.availableRooms) {
-                    return "{{Location.address}} <br> <small class='text-muted text-uppercase'>{{type}} at &#8358;{{rent}} {{rentRange}} by {{statecode}}  &#183; {{age}}</small>" +
-                        "<br> <small class='text-muted'>accommodations</small>";
+                    return "{{Location.address}} <br> <small class='text-muted text-uppercase'>{{accommodationType}}"+(item.tenure == 'Roommate' ? ", seeking roommate " :'')+" at &#8358;{{_rent}}{{_roommateRent}} {{rentRange}} <br> {{age}}</small>" +
+                        "<br> <small class='text-muted'>accommodations</small>"; // {{type}}
                 } else if (item.name_of_ppa) {
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted'>ppa</small>";
@@ -73,20 +73,11 @@ $.typeahead({
                         "<br> <small class='text-muted'>sale</small>";
                 };
             },
-            display: ['address', 'type', "rentRange", "rent", "roommateRent", 'price', 'itemname', '_location', 'accommodationType'], // what you can search and it autocompletes // 'group' options works but isn't ideal yet because we can't implement // display cannot be a function
+            display: ['address', 'type', "rentRange", "rent", "roommateRent", 'price', 'itemname', '_location', 'accommodationType', 'availableRooms', 'tenure'], // what you can search and it autocompletes // 'group' options works but isn't ideal yet because we can't implement // display cannot be a function
             // Be careful as item properties might contain Url-unsafe characters
             href: function (item) {
-                console.log('=href', item);
-                if (item.name_of_ppa) { // if it's a ppa
-                    return "/search?state=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address +
-                        "&top=" + item.type_of_ppa;
-                } else if (item.availableRooms || item.rentRange) { // if it's an accommodation
-                    return "/search?state=" + item.group + "&pt=" + item.post_time +  "&sc=" +
-                        item.statecode + "&rr=" + item.rentrange + "&p=" + item.price + "&t=" + item.type; // sn sc it
-                } else if (item.itemname) { // if it's an item for sale
-                    return "/search?sc=" + item.statecode + "&pt=" + item.post_time;
-                }
-
+                console.log('= href of item', item);
+                return "/search?type=" + item.type + "&id=" + item.id;
             },
             ajax: {
                 url: "/posts",

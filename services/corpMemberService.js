@@ -962,5 +962,42 @@ module.exports = {
       // res.status(200).send({ data: ["ghfc ty", "rewfhb iwre", "hblg er ieur\n\nthat apostrophe", "The happening place in Abia is NCCF!", "Well and NACC too. But NCCF would Never die!!!", "dsaf df asd", "5u96y j94938\nfdsig eor\n\ndfsnhgu es9rgre\n\ndsigj90e9re", "gfh r", "gejge rniog eoigrioerge ", "gf er rg erg", "fdg erei sug serugeis gr  \n\n\n\n\nThis", "test df gf byyyyyyyyy mee", "Okay. ", "This is it. And yep.", "I could sing. ... Oh"] });
   
 
+    },
+
+
+    async searchPosts(req, res) {
+
+      let _accommodations = await Accommodation.findAll()
+      let _sales = await Sale.findAll()
+      let result = { _accommodations, _sales }
+
+      // TODO, locations (and PPAs) // how do we filter PPAs
+      if (req.query.type == 'accommodation') {
+        result._accommodation = await Accommodation.findOne({
+          where: {
+            id: req.query.id
+          }
+        })
+      } else if (req.query.type == 'sale') {
+        result._sale = await Sale.findOne({
+          where: {
+            id: req.query.id
+          }
+        })
+      } else if (req.query.type == 'location') {
+        result._location = await Location.findOne({
+          where: {
+            id: req.query.id
+          }
+        })
+      }
+
+      result.current_year = new Date().getFullYear()
+      result.corper = null
+      if (req.session.corper) {
+        result.corper = req.session.corper
+      }
+      res.set('Content-Type', 'text/html');
+      res.render('pages/search', result)
     }
 }

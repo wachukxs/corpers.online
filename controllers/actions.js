@@ -87,7 +87,7 @@ router.get('/allppas', function (req, res) {
 
 });
 
-router.get('/search', auth.checkJWT, function (req, res) {
+router.get('/oldsearch', auth.checkJWT, function (req, res) {
   // maybe make use of [req.originalUrl .baseUrl .path] later. req.params too
 
   // "/search?type=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address + "&top=" + item.type_of_ppa; // nop type pa

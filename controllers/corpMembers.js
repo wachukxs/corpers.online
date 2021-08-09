@@ -34,4 +34,6 @@ router.post('/create-alert', auth.verifyJWT, corpMemberService.createAlert)
 // do we need auth.verify middle ware ?
 router.get('/posts', corpMemberService.getPosts);
 
+router.get('/search', auth.checkJWT, corpMemberService.searchPosts);
+
 module.exports = router;

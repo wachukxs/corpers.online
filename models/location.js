@@ -48,6 +48,15 @@ module.exports = (sequelize, DataTypes) => {
     updatedAt: {
       type: DataTypes.DATE
     },
+    type: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return 'location';
+      },
+      set(value) {
+        throw new Error('Do not try to set the Location.`type` value!');
+      }
+    },
     directions: DataTypes.TEXT,
     address: DataTypes.STRING,
     CorpMemberId: DataTypes.INTEGER,

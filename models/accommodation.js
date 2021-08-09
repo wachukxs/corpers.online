@@ -52,9 +52,23 @@ module.exports = (sequelize, DataTypes) => {
     },
     // address: DataTypes.STRING,
     // directions: DataTypes.TEXT,
-    rent: DataTypes.FLOAT,
+    rent: {
+      type: DataTypes.FLOAT
+    },
     roommateRent: { // should we be adding Naira sign to it ?? ...lol
       type: DataTypes.FLOAT
+    },
+    _rent: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return this.getDataValue('rent') ? Intl.NumberFormat().format(this.getDataValue('rent')) : null;
+      }
+    },
+    _roommateRent: { // should we be adding Naira sign to it ?? ...lol
+      type: DataTypes.VIRTUAL,
+      get() {
+        return this.getDataValue('roommateRent') ? Intl.NumberFormat().format(this.getDataValue('roommateRent')) : null;
+      }
     },
     rentRange: {
       type: DataTypes.ENUM,
