@@ -43,7 +43,7 @@ const sequelize = require('../not_models/db').sequelize
 
 
 const knex = Knex({
-    client: 'pg',
+    client: 'mysql', // || 'pg'
     connection: {
         host: sequelize.config.host,
         user: sequelize.config.username,
@@ -55,11 +55,20 @@ const knex = Knex({
         }
     },
 });
+// catching knex error // https://github.com/knex/knex/issues/407#issuecomment-52858626
+knex.raw('select 1+1 as result').then(function () {
+    console.log('there is a valid connection in the (knex) pool');
+}, function (_err) {
+    console.error('there is NO valid connection in the (knex) pool', _err);
+}).catch((_fail) => {
+    console.error('err: there really is NO valid connection in the (knex) pool', _fail);
+});
 
 const knexSessionStore = new KnexSessionStore({
     knex,
+    sidfieldname: 'sessionId',
     createtable: true,
-    tablename: '_Session', // wanna make it _Sessions || Sessions// optional. Defaults to 'sessions' // tip: don't use 'Session' ...it's for connect-sequelize-store
+    tablename: '_Sessions', // wanna make it _Sessions || Sessions// optional. Defaults to 'sessions' // tip: don't use 'Session' ...it's for connect-sequelize-store
 })
 
 let expressSessionOptions = {
@@ -79,15 +88,19 @@ let expressSessionOptions = {
 
 let morganFormat = 'tiny'
 if (app.get('env') === 'production') { // process.env.NODE_ENV
-    expressSessionOptions.cookie.secure = true; // hmmm
+    app.set('trust proxy', 1) // trust first proxy
+    expressSessionOptions.cookie.secure = true;
     morganFormat = ':remote-addr - :remote-user [:date[web]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"'
 }
+
 // set morgan to log info about our requests for development use.
 app.use(morgan(morganFormat))
 
 // app.use(session(mySQLSessionOptions));
 // app.use(session(sequelizeSessionOptions));
-app.use(session(expressSessionOptions));
+
+
+app.use(session(expressSessionOptions), );
 
 // The app.locals object has properties that are local variables within the application.
 app.locals.title = 'Corpers Online';

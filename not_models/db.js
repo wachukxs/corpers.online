@@ -1,12 +1,12 @@
 // 1st tutorial https://www.codementor.io/@mirko0/how-to-use-sequelize-with-node-and-express-i24l67cuz
-const mysql = require('mysql');
+const mysql = require('mysql2');
 
 const { Sequelize } = require('sequelize');
 // const sequelize = new Sequelize('postgres://btlnnbzltngela:19ed81ac999fb00a7137bb59a314a4fb2e087b8ad26a46ccb0280572059a46cb@ec2-52-5-247-46.compute-1.amazonaws.com:5432/dc46f9g2hh8hud') // Example for postgres
-const sequelize = new Sequelize('d5gpbjk5cr8ilu', 'vkkpmuqgatgtby', 'c8139ad7b4539dc2f1b58b26073af428d458d41ee8dda8bb9743f954ed46afd5', {
-    host: 'ec2-52-2-118-38.compute-1.amazonaws.com', // 'localhost',
-    dialect: 'postgres', // one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' 
-    port: 5432,
+const sequelize = new Sequelize(process.env.SHARED_HOST_MYSQL_TEST_DB_NAME, process.env.SHARED_HOST_MYSQL_DB_USERNAME, process.env.SHARED_HOST_MYSQL_DB_PASSWORD, {
+    host: process.env.SHARED_HOST, // 'localhost',
+    dialect: 'mysql', // one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' 
+    port: 3306, // postgre => 5432
     ssl: false,
     logging: (...opts) => console.log(opts, '\n\n'), // can really customize
     // retry: ,
@@ -32,17 +32,17 @@ const sequelize = new Sequelize('d5gpbjk5cr8ilu', 'vkkpmuqgatgtby', 'c8139ad7b45
  * connect to the back up
  * we could also use them interchangably for back up db, and sync when one is up.
  */
-sequelize.authenticate().then(() => {
-    console.log('made postgre connection from sequelize');
+sequelize.authenticate().then((e) => {
+    console.log('made db connection from sequelize');
     // sequelize.close() // after retrying ?
 }).catch((err) => {
-    console.error('oopsy error connecting to postgre db with Sequelize', err)
+    console.error('oopsy error connecting to db with Sequelize', err)
 })
 
 // sequelize.sync({ alter: true })
 
 sequelize.getQueryInterface().showAllSchemas().then((tableObj) => {
-  console.log('\n\n\n\t\t// Tables in database','==========================');
+  console.log('\n\n\n// Tables in database');
   console.log(tableObj);
 })
 .catch((err) => {
@@ -83,9 +83,9 @@ const connectionPool = mysql.createPool({
   user: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  acquireTimeout: 1800000, // 10000 is 10 secs
+  // acquireTimeout: 1800000, // 10000 is 10 secs
   multipleStatements: true, // it allows for SQL injection attacks if values are not properly escaped
-  // debug: true,
+  debug: true,
 });
 
 connectionPool.on('acquire', function (connection) {

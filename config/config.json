@@ -1,12 +1,12 @@
 {
   "development": {
-    "username": "vkkpmuqgatgtby",
-    "password": "c8139ad7b4539dc2f1b58b26073af428d458d41ee8dda8bb9743f954ed46afd5",
-    "database": "d5gpbjk5cr8ilu",
-    "host": "ec2-52-2-118-38.compute-1.amazonaws.com",
-    "dialect": "postgres",
+    "username": "chuksnam_mysql_007",
+    "password": "kE984Kn9@NZ@ky",
+    "database": "chuksnam_corpers_online_mysql_test",
+    "host": "chuks.name.ng",
+    "dialect": "mysql",
     
-    "port": 5432,
+    "port": 3306,
     "ssl": true,
     "dialectOptions": {
         "ssl": {
@@ -23,10 +23,10 @@
   
   },
   "test": {
-    "username": "vkkpmuqgatgtby",
-    "password": "c8139ad7b4539dc2f1b58b26073af428d458d41ee8dda8bb9743f954ed46afd5",
-    "database": "d5gpbjk5cr8ilu",
-    "host": "ec2-52-2-118-38.compute-1.amazonaws.com",
+    "username": "chuksnam_postgresql_007",
+    "password": "kE984Kn9@NZ@ky",
+    "database": "chuksnam_corpers_online_postgresql_test",
+    "host": "chuks.name.ng",
     "dialect": "postgres",
 
     "port": 5432,
@@ -45,13 +45,13 @@
     }
   },
   "production": {
-    "username": "vkkpmuqgatgtby",
-    "password": "c8139ad7b4539dc2f1b58b26073af428d458d41ee8dda8bb9743f954ed46afd5",
-    "database": "d5gpbjk5cr8ilu",
-    "host": "ec2-52-2-118-38.compute-1.amazonaws.com",
-    "dialect": "postgres",
-
-    "port": 5432,
+    "username": "chuksnam_mysql_007",
+    "password": "kE984Kn9@NZ@ky",
+    "database": "chuksnam_corpers_online_mysql_test",
+    "host": "chuks.name.ng",
+    "dialect": "mysql",
+    
+    "port": 3306,
     "ssl": true,
     "dialectOptions": {
         "ssl": {

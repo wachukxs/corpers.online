@@ -28,3 +28,7 @@ PATH=$PATH:/Users/chuks/Documents/Work/corpers.online/node_modules/ejs-lint/node
 
 # sample ejslint command to lint a file
 ejs ./views/pages/profile.ejs
+
+# access to files
+chmod +x ./file.sh
+https://stackoverflow.com/a/53229323/9259701

@@ -1,4 +1,4 @@
-const dotenv = require('dotenv'); // safe to call first, before using process.env.*
+const dotenv = require('dotenv'); // better to call first, before using process.env.*
 dotenv.config();
 
 const app = require('./web/app'); // Express
