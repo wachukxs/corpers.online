@@ -131,7 +131,7 @@ module.exports.checkJWT = (req, res, next) => {
                 next()
             } else {
                 /**
-                 * TODO: res.locals or req.session ?
+                 * TODO: remove query . auto loagin
                  */
                 query.AutoLogin(decodedToken.statecode).then(result => {
                     console.info('\n\n\n\ninnnnn')

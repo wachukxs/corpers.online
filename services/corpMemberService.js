@@ -827,6 +827,12 @@ module.exports = {
     },
 
 
+    /**
+     * when we add location search, we should only search for location that has ppa
+     * or we should directly search PPAs
+     * @param {*} req 
+     * @param {*} res 
+     */
     getPosts(req, res) {
       console.log("??????? req.query:", req.query);
       res.setHeader('Content-Type', 'application/json');
@@ -967,16 +973,32 @@ module.exports = {
 
     async searchPosts(req, res) {
 
-      let _accommodations = await Accommodation.findAll()
+      let _accommodations = await Accommodation.findAll({
+        include: [{
+          model: Location
+        }, {
+          model: Media,
+          as: 'accommodationMedia'
+        }],
+        attributes: Accommodation.getAllActualAttributes() // this is a hot fix
+      })
       let _sales = await Sale.findAll()
-      let result = { _accommodations, _sales }
+      let _location_ppas = await Location.findAll() // filter only PPAs
+      let result = { _accommodations, _sales, _location_ppas, _sale: [], _accommodation: [], _location_ppa: [] }
 
       // TODO, locations (and PPAs) // how do we filter PPAs
       if (req.query.type == 'accommodation') {
         result._accommodation = await Accommodation.findOne({
           where: {
             id: req.query.id
-          }
+          },
+          include: [{
+            model: Location
+          }, {
+            model: Media,
+            as: 'accommodationMedia'
+          }],
+          attributes: Accommodation.getAllActualAttributes() // why is `accommodationId` be looked for in the query 
         })
       } else if (req.query.type == 'sale') {
         result._sale = await Sale.findOne({
@@ -984,11 +1006,14 @@ module.exports = {
             id: req.query.id
           }
         })
-      } else if (req.query.type == 'location') {
-        result._location = await Location.findOne({
+      } else if (req.query.type == 'location') { // a location that is a ppa
+        result._location_ppa = await Location.findOne({
           where: {
             id: req.query.id
-          }
+          },
+          include: [{
+            model: PPA
+          }],
         })
       }
 

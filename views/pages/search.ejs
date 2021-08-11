@@ -214,19 +214,19 @@
 
     <nav class="mt-2">
         <div class="nav nav-tabs nav-justified container" id="nav-tab" role="tablist">
-          <a class="nav-item nav-link <%= sale.length > 0 ? ' active ' : theacc.length == theppa.length == sale.length == 0 ? ' active' : '' %>" id="nav-sales-tab" data-toggle="tab" href="#nav-sales" role="tab" aria-controls="nav-sales" aria-selected="true">Sales &middot; <%= sales.length %></a>
-          <a class="nav-item nav-link <%= theppa.length > 0 ? ' active ' : '' %>" id="nav-ppas-tab" data-toggle="tab" href="#nav-ppas" role="tab" aria-controls="nav-ppas" aria-selected="false">PPAs &middot; <%= ppas.length %></a>
-          <a class="nav-item nav-link <%= theacc.length > 0 ? ' active ' : '' %> " id="nav-acc-tab" data-toggle="tab" href="#nav-acc" role="tab" aria-controls="nav-accommodations" aria-selected="false">Accommodations &middot; <%= accommodations.length %></a>
+          <a class="nav-item nav-link <%= _sale.length > 0 ? ' active ' : _accommodation.length == _location_ppa.length == _sale.length == 0 ? ' active' : '' %>" id="nav-sales-tab" data-toggle="tab" href="#nav-sales" role="tab" aria-controls="nav-sales" aria-selected="true">Sales &middot; <%= _sales.length %></a>
+          <a class="nav-item nav-link <%= _location_ppa.length > 0 ? ' active ' : '' %>" id="nav-ppas-tab" data-toggle="tab" href="#nav-ppas" role="tab" aria-controls="nav-ppas" aria-selected="false">PPAs &middot; <%= _location_ppas.length %></a>
+          <a class="nav-item nav-link <%= _accommodation.length > 0 ? ' active ' : '' %> " id="nav-acc-tab" data-toggle="tab" href="#nav-acc" role="tab" aria-controls="nav-accommodations" aria-selected="false">Accommodations &middot; <%= _accommodations.length %></a>
         </div>
       </nav>
 
     <main role="main">
 
         <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade <%= sale.length > 0 ? ' show active ' : theacc.length == theppa.length == sale.length == 0 ? ' show active' : '' %> " id="nav-sales" role="tabpanel" aria-labelledby="nav-sales-tab">
+            <div class="tab-pane fade <%= _sale.length > 0 ? ' show active ' : _accommodation.length == _location_ppa.length == _sale.length == 0 ? ' show active' : '' %> " id="nav-sales" role="tabpanel" aria-labelledby="nav-sales-tab">
                 
-                <% console.log('one sale?', sale.length) %>
-                <% if (sale.length > 0) {%>
+                <% console.log('one sale?', _sale.length) %>
+                <% if (_sale.length > 0) {%>
                     <div class="container mt-4">
                         <div class="card mb-4 flex-md-row box-shadow h-md-250 hit-item" style="flex-direction: row;">
                             <div class="card-body align-items-start">
@@ -250,12 +250,12 @@
                 <% } %>
                 <div class="container mt-4">
         
-                    <% let categories = Array.from(new Set(sales.map(item => item.itemname))); %>
+                    <% let categories = Array.from(new Set(_sales.map(item => item.itemname))); %>
                     <% if(categories.length > 0) { %>
                        <% for (let index = 0; index < categories.length; index++) { %>
                         <% const category = categories[index]; %>
         
-                            <%  let items = sales.filter(item => item.itemname === category) %>
+                            <%  let items = _sales.filter(item => item.itemname === category) %>
                             <h2 class="mt-4"><%= category %> &#183; (<%= items.length %>)</h2>
                             
                             <div class="wrapper" style="overflow-x: scroll;">
@@ -294,7 +294,7 @@
                 </div> 
         
             </div>
-            <div class="tab-pane fade <%= theppa.length > 0 ? ' show active ' : '' %> " id="nav-ppas" role="tabpanel" aria-labelledby="nav-ppas-tab">
+            <div class="tab-pane fade <%= _location_ppa.length > 0 ? ' show active ' : '' %> " id="nav-ppas" role="tabpanel" aria-labelledby="nav-ppas-tab">
                 <div class="container mt-4">
                     <div class="card-columns">
                        
@@ -304,27 +304,27 @@
                 <div class="container">
                     <div class="section-one item">
         
-                            <%# console.log('what is theppa', theppa.length); %>
-                            <% if (theppa.length > 0){ %>
+                            <%# console.log('what is _location_ppa', _location_ppa.length); %>
+                            <% if (_location_ppa.length > 0){ %>
                                 <div class="card mb-4 box-shadow h-md-250 border-success">
         
-                                        <% if ( theppa[0].ppa_geodata != '' ) { %>
-                                            <% console.log( 'pppa', theppa[0].ppa_geodata  )  %>
-                                            <% var ppa_geo1 = JSON.parse(theppa[0].ppa_geodata); %>
+                                        <% if ( _location_ppa[0].geoData != '' ) { %>
+                                            <% console.log( 'pppa', _location_ppa[0].geoData  )  %>
+                                            <% var ppa_geo1 = JSON.parse(_location_ppa[0].geoData); %>
                                             
                                                 <div data-lat="<%= ppa_geo1.latitude %>" data-lng="<%= ppa_geo1.longitude %>" data-accuracy="<%= ppa_geo1.accuracy %>" ></div>
                                             <% } %>
         
                                         <div class="card-body align-items-start hover">
-                                            <strong class="d-inline-block mb-2 text-primary"><%= theppa[0].type_of_ppa %></strong>
+                                            <strong class="d-inline-block mb-2 text-primary"><%= _location_ppa[0].type_of_ppa %></strong>
                                             <h3 class="mb-0">
-                                                <a class="text-dark" href="#!"><%= theppa[0].name_of_ppa %></a>
-                                                <% if ( theppa[0].ppa_geodata != '' ) { %>
+                                                <a class="text-dark" href="#!"><%= _location_ppa[0].name_of_ppa %></a>
+                                                <% if ( _location_ppa[0].geoData != '' ) { %>
                                                     <span class="oi oi-map-marker" title="accommodation map marker" aria-hidden="true"></span>
                                                 <% } %>
                                             </h3>
-                                            <div class="mb-1 text-muted"><%= theppa[0].ppa_address %></div>
-                                            <p class="card-text mb-auto"><%= theppa[0].ppa_directions %></p>
+                                            <div class="mb-1 text-muted"><%= _location_ppa[0].Location.address %></div>
+                                            <p class="card-text mb-auto"><%= _location_ppa[0].Location.directions %></p>
                                             <!-- <a href="#!">Continue reading</a> -->
                                         </div>
                                     </div>
@@ -332,11 +332,11 @@
                             <%  }%>
         
                         <div class="thelist" id="tl">
-                                    <% if ( ppas.length > 0 ) { %>
+                                    <% if ( _location_ppas.length > 0 ) { %>
                                         <%# should we remove the selected ppa from the other ppas? %>
-                                        <% if ( theppa.length > 0 ) { // %>
+                                        <% if ( _location_ppa.length > 0 ) { // %>
                                             
-                                            <% var containsPPA = ppas.filter((value, index, array) => { return value.name_of_ppa == theppa[0].name_of_ppa && value.ppa_address == theppa[0].ppa_address }) ; %>
+                                            <% var containsPPA = _location_ppas.filter((value, index, array) => { return value.name_of_ppa == _location_ppa[0].name_of_ppa && value.Location.address == _location_ppa[0].Location.address }) ; // should we be checking address?? %>
                                             <% if ( containsPPA.length > 0 ) { // %>
                                                 <%# "it's in it" %>
                                             <% } %>
@@ -344,26 +344,29 @@
                                         <% } %>
                                         
 
-                                    <% for (i = 0; i < ppas.length; i++) { %>
+                                    <% for (i = 0; i < _location_ppas.length; i++) { %>
                                         <div class="card mb-4 box-shadow h-md-250">
 
-                                                <% if ( ppas[i].ppa_geodata != '' ) { %>
+                                                <% if ( _location_ppas[i].geoData && _location_ppas[i].geoData != '' ) { %>
                                                     
-                                                    <% var ppa_geo = JSON.parse(ppas[i].ppa_geodata); %>
+                                                    <% let ppa_geo = JSON.parse(_location_ppas[i].geoData); %>
                                                     <%#console.log( 'pppa', ppa_geo  )  %>
                                                         <div data-lat="<%= ppa_geo.latitude %>" data-lng="<%= ppa_geo.longitude %>" data-accuracy="<%= ppa_geo.accuracy %>" ></div>
                                                     <% } %>
 
                                                 <div class="card-body align-items-start hover">
-                                                    <strong class="d-inline-block mb-2 text-primary"><%= ppas[i].type_of_ppa %></strong>
+                                                    <strong class="d-inline-block mb-2 text-primary"><%= _location_ppas[i].type_of_ppa %></strong>
                                                     <h3 class="mb-0">
-                                                        <a class="text-dark" href="#!"><%= ppas[i].name_of_ppa %></a>
-                                                        <% if ( ppas[i].ppa_geodata != '' ) { %>
+                                                        <% if ( _location_ppas[i].PPA && _location_ppas[i].PPA.name != null ) { %>
+                                                            <a class="text-dark" href="#!"><%= _location_ppas[i].PPA.name %></a>
+                                                        <% } %>
+                                                        
+                                                        <% if ( _location_ppas[i].geoData && _location_ppas[i].geoData != null ) { %>
                                                             <span class="oi oi-map-marker" title="accommodation map marker" aria-hidden="true"></span>
                                                         <% } %>
                                                     </h3>
-                                                    <div class="mb-1 text-muted"><%= ppas[i].ppa_address %></div>
-                                                    <p class="card-text mb-auto"><%= ppas[i].ppa_directions %></p>
+                                                    <div class="mb-1 text-muted"><%= _location_ppas[i].address %></div>
+                                                    <p class="card-text mb-auto"><%= _location_ppas[i].directions %></p>
                                                     <!-- <a href="#!">Continue reading</a> -->
                                                 </div>
                                             </div>
@@ -378,38 +381,38 @@
                 </div>
         
             </div>
-            <div class="tab-pane fade <%= theacc.length > 0 ? ' show active ' : '' %> " id="nav-acc" role="tabpanel" aria-labelledby="nav-acc-tab">
+            <div class="tab-pane fade <%= _accommodation.length > 0 ? ' show active ' : '' %> " id="nav-acc" role="tabpanel" aria-labelledby="nav-acc-tab">
                 <div class="container mt-4">
 
-                        <%# console.log('what is theacc', theacc, theacc.length, accommodations); %>
-                            <% if (theacc.length > 0){ %>
+                        <%# console.log('what is _accommodation', _accommodation, _accommodation.length, accommodations); %>
+                            <% if (_accommodation.length > 0){ %>
                                 <div class="card mb-4 box-shadow h-md-250 border-success">
         
-                                        <% if ( theacc[0].acc_geodata != '' ) { %>
-                                            <% console.log('l', theacc[0], theacc[0].acc_geodata); %>
-                                            <% var acc_geo1 = JSON.parse(theacc[0].acc_geodata); %>
+                                        <% if ( _accommodation[0].Location.geoData && _accommodation[0].Location.geoData != null ) { %>
+                                            <% console.log('l', _accommodation[0], _accommodation[0].Location.geoData); %>
+                                            <% var acc_geo1 = JSON.parse(_accommodation[0].Location.geoData); %>
                                                 <div data-lat="<%= acc_geo1.geometry.coordinates[1] %>" data-lng="<%= acc_geo1.geometry.coordinates[0] %>" ></div>
                                             <% } %>
                                         <div class="card-body align-items-start hover">
                                                             
-                                                <strong class="d-inline-block mb-2 text-primary mr-auto"><%= theacc[0].type %></strong>
+                                                <strong class="d-inline-block mb-2 text-primary mr-auto"><%= _accommodation[0].type %></strong>
                                                 
                                             <h3 class="mb-0">
-                                                <a class="text-dark" href="#!"><%= theacc[0].address %></a>
-                                                <% if ( theacc[0].acc_geodata != '' ) { %>
+                                                <a class="text-dark" href="#!"><%= _accommodation[0].Location.address %></a>
+                                                <% if ( _accommodation[0].Location.geoData && _accommodation[0].Location.geoData != null ) { %>
                                                     <span class="oi oi-map-marker" title="accommodation map marker" aria-hidden="true"></span>
                                                 <% } %>
                                             </h3>
-                                            <div class="mb-1 text-muted">with <%= theacc[0].rooms.replace('', 'and ').split(',').reverse().toString().replace(/,/g, ', ') %></div>
-                                            <p class="card-text mb-auto"> &#8358;<%= theacc[0].price%> <%= theacc[0].rentrange %></p>
+                                            <div class="mb-1 text-muted">with <%= _accommodation[0].availableRooms.join().replace('', 'and ').split(',').reverse().toString().replace(/,/g, ', ') %></div>
+                                            <p class="card-text mb-auto"> &#8358;<%= (_accommodation[0].rent ? _accommodation[0]._rent : _accommodation[0]._roommateRent) %> <%= _accommodation[0].rentRange %></p>
                     
-                                            <% if ( theacc[0].directions != ('' || null ) ) { %>
-                                                <p class="card-text mb-auto font-italic font-weight-bold" style="display: none;" id="<%= new Date(theacc[0].input_time).getTime() %>"><%= theacc[0].directions %></p>
-                                                <a href="#!" onclick="toggle_visibility('<%= new Date(theacc[0].input_time).getTime() %>')">See directions</a>
+                                            <% if ( _accommodation[0].Location.directions != null  ) { %>
+                                                <p class="card-text mb-auto font-italic font-weight-bold" style="display: none;" id="<%= new Date(_accommodation[0].createdAt).getTime() %>"><%= _accommodation[0].Location.directions %></p>
+                                                <a href="#!" onclick="toggle_visibility('<%= new Date(_accommodation[0].createdAt).getTime() %>')">See directions</a>
                                             <% } %>
                                                 <br />
                                             <% if (corper) { %>
-                                                <a href="<%= `/chat?s=${corper.statecode}&posts[type]=accommodation&posts[who]=${theacc[0].statecode}&posts[when]=${(theacc[0].post_time || Date.parse(theacc[0].input_time))}` %>">Chat to rent</a>
+                                                <a href="<%= `/chat?s=${corper.statecode}&posts[type]=accommodation&posts[who]=${_accommodation[0].statecode}&posts[when]=${(_accommodation[0].post_time || Date.parse(_accommodation[0].input_time))}` %>">Chat to rent</a>
                                             <% } else { %>
                                                 <a href="/login">Login to rent</a>
                                             <% }  %>
@@ -419,36 +422,37 @@
                                 
                             <%  }  %>
 
-                    <% if ( accommodations.length > 0 ) { // for when they open up a new chat and if they've never chatted before // i.e. this guy has no old chat AT ALL they possibly couldn't have chatted before %>
-                <% for (i = 0; i < accommodations.length; i++) { %>
+                    <% if ( _accommodations.length > 0 ) { // for when they open up a new chat and if they've never chatted before // i.e. this guy has no old chat AT ALL they possibly couldn't have chatted before %>
+                <% for (i = 0; i < _accommodations.length; i++) { %>
         
                     <div class="card mb-4 box-shadow h-md-250" >
                             
-                        <% if ( accommodations[i].acc_geodata != '' ) { %>
-                            <% var acc_geo = JSON.parse(accommodations[i].acc_geodata); %>
+                        <% if ( _accommodations[i].Location.geoData && _accommodations[i].Location.geoData != '' ) { %>
+                            <% var acc_geo = JSON.parse(_accommodations[i].Location.geoData); %>
                                 <div data-lat="<%= acc_geo.geometry.coordinates[1] %>" data-lng="<%= acc_geo.geometry.coordinates[0] %>" ></div>
                             <% } %>
 
                         <div class="card-body align-items-start hover">
                                 
-                                    <strong class="d-inline-block mb-2 text-primary mr-auto"><%= accommodations[i].type %></strong>
+                                    <strong class="d-inline-block mb-2 text-primary mr-auto"><%= _accommodations[i].accommodationType %></strong>
                                     
                                 <h3 class="mb-0">
-                                    <a class="text-dark" href="#!"><%= accommodations[i].address %></a>
-                                    <% if ( accommodations[i].acc_geodata != '' ) { %>
+                                    <a class="text-dark" href="#!"><%= _accommodations[i].Location.address %></a>
+
+                                    <% if ( _accommodations[i].Location.geoData && _accommodations[i].Location.geoData != '' ) { %>
                                         <span class="oi oi-map-marker" title="accommodation map marker" aria-hidden="true"></span>
                                     <% } %>
                                 </h3>
-                                <div class="mb-1 text-muted">with <%= accommodations[i].rooms.replace('', 'and ').split(',').reverse().toString().replace(/,/g, ', ') %></div>
-                                <p class="card-text mb-auto"> &#8358;<%= accommodations[i].price%> <%= accommodations[i].rentrange %></p>
+                                <div class="mb-1 text-muted">with <%= _accommodations[i].availableRooms.join().replace('', 'and ').split(',').reverse().toString().replace(/,/g, ', ') %></div>
+                                <p class="card-text mb-auto"> &#8358;<%= (_accommodations[i].rent ? _accommodations[i]._rent : _accommodations[i]._roommateRent) %> <%= _accommodations[i].rentRange %></p>
 
-                                <% if ( accommodations[i].directions != ('' || null ) ) { %>
-                                    <p class="card-text mb-auto font-italic font-weight-bold" style="display: none;" id="<%= new Date(accommodations[i].input_time).getTime() %>"><%= accommodations[i].directions %></p>
-                                    <a href="#!" onclick="toggle_visibility('<%= new Date(accommodations[i].input_time).getTime() %>')">See directions</a>
+                                <% if ( _accommodations[i].Location.directions != null ) { %>
+                                    <p class="card-text mb-auto font-italic font-weight-bold" style="display: none;" id="<%= new Date(_accommodations[i].createdAt).getTime() %>"><%= _accommodations[i].Location.directions %></p>
+                                    <a href="#!" onclick="toggle_visibility('<%= new Date(_accommodations[i].createdAt).getTime() %>')">See directions</a>
                                 <% } %>
                                     <br />
                                 <% if (corper) { %>
-                                    <a href="<%= `/chat?s=${corper.statecode}&posts[type]=accommodation&posts[who]=${accommodations[i].statecode}&posts[when]=${(accommodations[i].post_time || Date.parse(accommodations[i].input_time))}` %>">Chat to rent</a>
+                                    <a href="<%= `/chat?s=${corper.statecode}&posts[type]=accommodation&posts[who]=${_accommodations[i].statecode}&posts[when]=${(_accommodations[i].post_time || Date.parse(_accommodations[i].input_time))}` %>">Chat to rent</a>
                                 <% } else { %>
                                     <a href="/login">Login to rent</a>
                                 <% }  %>
