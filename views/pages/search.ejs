@@ -214,19 +214,18 @@
 
     <nav class="mt-2">
         <div class="nav nav-tabs nav-justified container" id="nav-tab" role="tablist">
-          <a class="nav-item nav-link <%= _sale.length > 0 ? ' active ' : _accommodation.length == _location_ppa.length == _sale.length == 0 ? ' active' : '' %>" id="nav-sales-tab" data-toggle="tab" href="#nav-sales" role="tab" aria-controls="nav-sales" aria-selected="true">Sales &middot; <%= _sales.length %></a>
-          <a class="nav-item nav-link <%= _location_ppa.length > 0 ? ' active ' : '' %>" id="nav-ppas-tab" data-toggle="tab" href="#nav-ppas" role="tab" aria-controls="nav-ppas" aria-selected="false">PPAs &middot; <%= _location_ppas.length %></a>
-          <a class="nav-item nav-link <%= _accommodation.length > 0 ? ' active ' : '' %> " id="nav-acc-tab" data-toggle="tab" href="#nav-acc" role="tab" aria-controls="nav-accommodations" aria-selected="false">Accommodations &middot; <%= _accommodations.length %></a>
+          <a class="nav-item nav-link <%= _sale ? ' active ' : _accommodation == _location_ppa == _sale == null ? ' active' : '' %>" id="nav-sales-tab" data-toggle="tab" href="#nav-sales" role="tab" aria-controls="nav-sales" aria-selected="<%= _sale ? 'true' : _accommodation == _location_ppa == _sale == null ? 'true' : 'false' %>">Sales &middot; <%= _sales.length %></a>
+          <a class="nav-item nav-link <%= _location_ppa ? ' active' : '' %>" id="nav-ppas-tab" data-toggle="tab" href="#nav-ppas" role="tab" aria-controls="nav-ppas" aria-selected="<%= _location_ppa ? 'true' : 'false' %>">PPAs &middot; <%= _location_ppas.length %></a>
+          <a class="nav-item nav-link <%= _accommodation ? ' active ' : '' %>" id="nav-acc-tab" data-toggle="tab" href="#nav-acc" role="tab" aria-controls="nav-accommodations" aria-selected="<%= _accommodation ? 'true' : 'false' %>"">Accommodations &middot; <%= _accommodations.length %></a>
         </div>
       </nav>
 
     <main role="main">
 
         <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade <%= _sale.length > 0 ? ' show active ' : _accommodation.length == _location_ppa.length == _sale.length == 0 ? ' show active' : '' %> " id="nav-sales" role="tabpanel" aria-labelledby="nav-sales-tab">
+            <div class="tab-pane fade <%= _sale ? ' show active' : _accommodation == _location_ppa == _sale == null ? ' show active' : '' %>" id="nav-sales" role="tabpanel" aria-labelledby="nav-sales-tab">
                 
-                <% console.log('one sale?', _sale.length) %>
-                <% if (_sale.length > 0) {%>
+                <% if (_sale) {%>
                     <div class="container mt-4">
                         <div class="card mb-4 flex-md-row box-shadow h-md-250 hit-item" style="flex-direction: row;">
                             <div class="card-body align-items-start">
@@ -294,7 +293,7 @@
                 </div> 
         
             </div>
-            <div class="tab-pane fade <%= _location_ppa.length > 0 ? ' show active ' : '' %> " id="nav-ppas" role="tabpanel" aria-labelledby="nav-ppas-tab">
+            <div class="tab-pane fade <%= _location_ppa ? ' show active' : '' %>" id="nav-ppas" role="tabpanel" aria-labelledby="nav-ppas-tab">
                 <div class="container mt-4">
                     <div class="card-columns">
                        
@@ -305,7 +304,7 @@
                     <div class="section-one item">
         
                             <%# console.log('what is _location_ppa', _location_ppa.length); %>
-                            <% if (_location_ppa.length > 0){ %>
+                            <% if (_location_ppa){ %>
                                 <div class="card mb-4 box-shadow h-md-250 border-success">
         
                                         <% if ( _location_ppa[0].geoData != '' ) { %>
@@ -334,7 +333,7 @@
                         <div class="thelist" id="tl">
                                     <% if ( _location_ppas.length > 0 ) { %>
                                         <%# should we remove the selected ppa from the other ppas? %>
-                                        <% if ( _location_ppa.length > 0 ) { // %>
+                                        <% if ( _location_ppa ) { // %>
                                             
                                             <% var containsPPA = _location_ppas.filter((value, index, array) => { return value.name_of_ppa == _location_ppa[0].name_of_ppa && value.Location.address == _location_ppa[0].Location.address }) ; // should we be checking address?? %>
                                             <% if ( containsPPA.length > 0 ) { // %>
@@ -381,38 +380,38 @@
                 </div>
         
             </div>
-            <div class="tab-pane fade <%= _accommodation.length > 0 ? ' show active ' : '' %> " id="nav-acc" role="tabpanel" aria-labelledby="nav-acc-tab">
+            <div class="tab-pane fade <%= _accommodation ? ' show active' : '' %>" id="nav-acc" role="tabpanel" aria-labelledby="nav-acc-tab">
                 <div class="container mt-4">
 
                         <%# console.log('what is _accommodation', _accommodation, _accommodation.length, accommodations); %>
-                            <% if (_accommodation.length > 0){ %>
+                            <% if (_accommodation){ %>
                                 <div class="card mb-4 box-shadow h-md-250 border-success">
         
-                                        <% if ( _accommodation[0].Location.geoData && _accommodation[0].Location.geoData != null ) { %>
-                                            <% console.log('l', _accommodation[0], _accommodation[0].Location.geoData); %>
-                                            <% var acc_geo1 = JSON.parse(_accommodation[0].Location.geoData); %>
+                                        <% if ( _accommodation.Location.geoData && _accommodation.Location.geoData != null ) { %>
+                                            <% console.log('l', _accommodation, _accommodation.Location.geoData); %>
+                                            <% var acc_geo1 = JSON.parse(_accommodation.Location.geoData); %>
                                                 <div data-lat="<%= acc_geo1.geometry.coordinates[1] %>" data-lng="<%= acc_geo1.geometry.coordinates[0] %>" ></div>
                                             <% } %>
                                         <div class="card-body align-items-start hover">
                                                             
-                                                <strong class="d-inline-block mb-2 text-primary mr-auto"><%= _accommodation[0].type %></strong>
+                                                <strong class="d-inline-block mb-2 text-primary mr-auto"><%= _accommodation.type %></strong>
                                                 
                                             <h3 class="mb-0">
-                                                <a class="text-dark" href="#!"><%= _accommodation[0].Location.address %></a>
-                                                <% if ( _accommodation[0].Location.geoData && _accommodation[0].Location.geoData != null ) { %>
+                                                <a class="text-dark" href="#!"><%= _accommodation.Location.address %></a>
+                                                <% if ( _accommodation.Location.geoData && _accommodation.Location.geoData != null ) { %>
                                                     <span class="oi oi-map-marker" title="accommodation map marker" aria-hidden="true"></span>
                                                 <% } %>
                                             </h3>
-                                            <div class="mb-1 text-muted">with <%= _accommodation[0].availableRooms.join().replace('', 'and ').split(',').reverse().toString().replace(/,/g, ', ') %></div>
-                                            <p class="card-text mb-auto"> &#8358;<%= (_accommodation[0].rent ? _accommodation[0]._rent : _accommodation[0]._roommateRent) %> <%= _accommodation[0].rentRange %></p>
+                                            <div class="mb-1 text-muted">with <%= _accommodation.availableRooms.join().replace('', 'and ').split(',').reverse().toString().replace(/,/g, ', ') %></div>
+                                            <p class="card-text mb-auto"> &#8358;<%= (_accommodation.rent ? _accommodation._rent : _accommodation._roommateRent) %> <%= _accommodation.rentRange %></p>
                     
-                                            <% if ( _accommodation[0].Location.directions != null  ) { %>
-                                                <p class="card-text mb-auto font-italic font-weight-bold" style="display: none;" id="<%= new Date(_accommodation[0].createdAt).getTime() %>"><%= _accommodation[0].Location.directions %></p>
-                                                <a href="#!" onclick="toggle_visibility('<%= new Date(_accommodation[0].createdAt).getTime() %>')">See directions</a>
+                                            <% if ( _accommodation.Location.directions != null  ) { %>
+                                                <p class="card-text mb-auto font-italic font-weight-bold" style="display: none;" id="<%= new Date(_accommodation.createdAt).getTime() %>"><%= _accommodation.Location.directions %></p>
+                                                <a href="#!" onclick="toggle_visibility('<%= new Date(_accommodation.createdAt).getTime() %>')">See directions</a>
                                             <% } %>
                                                 <br />
                                             <% if (corper) { %>
-                                                <a href="<%= `/chat?s=${corper.statecode}&posts[type]=accommodation&posts[who]=${_accommodation[0].statecode}&posts[when]=${(_accommodation[0].post_time || Date.parse(_accommodation[0].input_time))}` %>">Chat to rent</a>
+                                                <a href="<%= `/chat?s=${corper.statecode}&posts[type]=accommodation&posts[who]=${_accommodation.statecode}&posts[when]=${_accommodation.createdAt}` %>">Chat about rent</a>
                                             <% } else { %>
                                                 <a href="/login">Login to rent</a>
                                             <% }  %>

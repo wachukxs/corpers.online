@@ -983,8 +983,14 @@ module.exports = {
         attributes: Accommodation.getAllActualAttributes() // this is a hot fix
       })
       let _sales = await Sale.findAll()
-      let _location_ppas = await Location.findAll() // filter only PPAs
-      let result = { _accommodations, _sales, _location_ppas, _sale: [], _accommodation: [], _location_ppa: [] }
+      let _location_ppas = await Location.findAll({
+        where: {
+          ppaId: {
+            [Op.not]: null
+          }
+        }
+      }) // filter only PPAs
+      let result = { _accommodations, _sales, _location_ppas, _sale: null, _accommodation: null, _location_ppa: null }
 
       // TODO, locations (and PPAs) // how do we filter PPAs
       if (req.query.type == 'accommodation') {
@@ -1009,7 +1015,10 @@ module.exports = {
       } else if (req.query.type == 'location') { // a location that is a ppa
         result._location_ppa = await Location.findOne({
           where: {
-            id: req.query.id
+            id: req.query.id,
+            ppaId: {
+              [Op.not]: null
+            }
           },
           include: [{
             model: PPA
