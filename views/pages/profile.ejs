@@ -850,10 +850,10 @@
                           </div>
                           <div class="col-md-8">
                             <div class="card-body">
-                              <h5 class="card-title" data-index="<%= acc_index %>"><%= corper.Accommodation[acc_index].address %></h5>
-                              <p class="card-text" data-index="<%= acc_index %>"><%= corper.Accommodation[acc_index].directions %></p>
+                              <h5 class="card-title" data-index="<%= acc_index %>"><%= corper.Accommodation[acc_index].Location.address %></h5>
+                              <p class="card-text" data-index="<%= acc_index %>"><%= corper.Accommodation[acc_index].Location.directions %></p>
                               <p class="card-text"><small class="text-muted">Posted <%= new Intl.DateTimeFormat("en" , {dateStyle: "long"}).format(new Date(corper.Accommodation[acc_index].createdAt)) %></small></p>
-                              <a href="#" class="btn btn-primary" data-index="<%= acc_index %>" data-post_time="<%= corper.Accommodation[acc_index].post_time %>" data-toggle="modal" data-target="#deleteAccommodationModal">Delete</a>
+                              <a href="#" class="btn btn-danger" data-index="<%= acc_index %>" data-post_time="<%= corper.Accommodation[acc_index].post_time %>" data-toggle="modal" data-target="#deleteAccommodationModal">Delete</a>
                               <a href="#" class="btn btn-outline-primary" data-toggle="modal" data-index="<%= acc_index %>" data-target="#editAccommodationModal">Edit</a>
                             </div>
                           </div>
@@ -980,7 +980,7 @@
                       </div>
                       <div class="form-group">
                         <label for="price" class="col-form-label">
-                          <div class="d-flex">Price <span id="roommate-price" style="display: none;">&nbsp;for your roommate</span>:</div>
+                          <div class="d-flex">Rent <span id="roommate-price" style="display: none;">&nbsp;for your roommate</span>:</div>
                         </label>
                         <input type="number" name="price" class="form-control" id="price">
                       </div>
@@ -1090,8 +1090,17 @@
                   modal.find(`:radio[value="${accommodation_posts[index].rentRange}"]`).prop("checked", true)
   
                   if (accommodation_posts[index].tenure == 'Roommate') { // means there's roommate_you and roommate_type ...or we could check for roommate_type | roommate_you
-                    modal.find('.modal-body #roommate_type').val(accommodation_posts[index].roommate_type)
-                    modal.find('.modal-body #roommate_you').val(accommodation_posts[index].roommate_you)
+                    modal.find('.modal-body #roommate_type').val(accommodation_posts[index].idealRoommate)
+                    modal.find('.modal-body #roommate_you').val(accommodation_posts[index].occupantDescription)
+                    modal.find('.modal-body #price').val(accommodation_posts[index].roommateRent)
+                    document.getElementById('roommatediv').style.display = 'block';
+                    document.getElementById('roommate-price').style.display = 'block';
+                    // document.forms["editaccommodationform"].elements["roommate_type"].required = true;
+                    // document.forms["editaccommodationform"].elements["roommate_you"].required = true;
+
+                    // console.log('new rent [lease]');
+                    document.getElementById('expirediv').style.display = 'none';
+                    document.forms["editaccommodationform"].elements["expire"].required = false;
                   }
   
                   if (accommodation_posts[index].tenure == 'Sublease') { // means there's expire date
@@ -1380,9 +1389,9 @@
                           <div class="col-md-8">
                             <div class="card-body">
                               <h5 class="card-title" data-index="<%= sales_index %>"><%= corper.Sales[sales_index].itemname %></h5>
-                              <p class="card-text">&#8358;<span data-index="<%= sales_index %>"><%= corper.Sales[sales_index].price %></span></p>
+                              <p class="card-text">&#8358;<span data-index="<%= sales_index %>"><%= corper.Sales[sales_index]._price %></span></p>
                               <p class="card-text"><small class="text-muted">Posted <%= new Intl.DateTimeFormat("en" , {dateStyle: "long"}).format(new Date(corper.Sales[sales_index].createdAt)) %></small></p>
-                              <a href="#" class="btn btn-primary" data-index="<%= sales_index %>" data-post_time="<%= corper.Sales[sales_index].post_time %>" data-toggle="modal" data-target="#deleteSaleModal">Delete</a>
+                              <a href="#" class="btn btn-danger" data-index="<%= sales_index %>" data-post_time="<%= corper.Sales[sales_index].post_time %>" data-toggle="modal" data-target="#deleteSaleModal">Delete</a>
                               <a href="#" class="btn btn-outline-primary" data-toggle="modal" data-index="<%= sales_index %>" data-target="#editSaleModal">Edit</a>
                             </div>
                           </div>

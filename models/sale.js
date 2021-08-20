@@ -39,6 +39,12 @@ module.exports = (sequelize, DataTypes) => {
     }, // need it ?
     itemname: DataTypes.STRING,
     price: DataTypes.FLOAT,
+    _price: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return this.getDataValue('price') ? Intl.NumberFormat().format(this.getDataValue('price')) : null;
+      }
+    },
     text: DataTypes.TEXT,
     mediaId: {
       type:DataTypes.INTEGER

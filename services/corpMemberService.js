@@ -179,7 +179,7 @@ module.exports = {
          
         console.log('\n\n\n\nlogin we good', result);
         if (result && result.dataValues.password === req.body.password) { // password match
-          
+          result.dataValues.password = result.dataValues.password.replace(/[a-zA-Z0-9]/ig, '*') // mask the password (most of it for now)
           console.log('do we have what we want ?', result.dataValues._location);
 
           req.session.corper = result.dataValues
@@ -191,7 +191,6 @@ module.exports = {
           else {
             // res.setHeader('Set-Cookie', 'name=value')
             res.cookie('_online', token, cookieOptions)
-            console.log("pleaseee", req.session.corper._servicestate);
             console.log('we\'re moving', req.session);
             /* req.session.save(function(err) { // hate this
               console.log("saved session");
