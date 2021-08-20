@@ -229,21 +229,21 @@
                     <div class="container mt-4">
                         <div class="card mb-4 flex-md-row box-shadow h-md-250 hit-item" style="flex-direction: row;">
                             <div class="card-body align-items-start">
-                                <strong class="d-inline-block mb-2 text-primary"><%=  sale[0].itemname  %></strong>
+                                <strong class="d-inline-block mb-2 text-primary"><%=  _sale.itemname  %></strong>
                                 <h3 class="mb-0">
-                                    <a class="text-dark" href="#!">&#8358; <%= sale[0].price %></a>
+                                    <a class="text-dark" href="#!">&#8358; <%= _sale.price %></a>
                                 </h3>
-                                <div class="mb-1 text-muted"><%= sale[0].statecode %> selling</div>
+                                <div class="mb-1 text-muted"><%= _sale.statecode %> selling</div>
                                 <p class="card-text mb-auto truncate-overflow">
-                                    <%- (sale[0].text.trim() === '' ? "<i>No description available</i>" : sale[0].text.trim() ) %>
+                                    <%- (_sale.text.trim() === '' ? "<i>No description available</i>" : _sale.text.trim() ) %>
                                 </p>
                                 <% if(corper) { %>
-                                    <a href="<%= `/chat?s=${corper.statecode}&posts[type]=sale&posts[who]=${sale[0].statecode}&posts[when]=${(sale[0].post_time || Date.parse(sale[0].input_time))}` %>">Chat to buy</a>
+                                    <a href="<%= `/chat?s=${corper.statecode}&posts[type]=sale&posts[who]=${_sale.statecode}&posts[when]=${(_sale.post_time || Date.parse(_sale.input_time))}` %>">Chat to buy</a>
                                 <% } else { %>
                                     <a href="/login">Login to buy</a>
                                 <% }  %>
                             </div>
-                            <img class="card-img-right flex-auto" alt="Picture of <%= sale[0].itemname %>" style="width: auto; height: 250px;" src="<%= ( sale[0].media ? 'https://drive.google.com/uc?id=' + sale[0].media.split(',')[0] : 'holder.js/200x250?theme=gray&text=No%20image%20available' ) %>" data-holder-rendered="true">
+                            <img class="card-img-right flex-auto" alt="Picture of <%= _sale.itemname %>" style="width: auto; height: 250px;" src="<%= ( _sale.media ? 'https://drive.google.com/uc?id=' + _sale.media.split(',')[0] : 'holder.js/200x250?theme=gray&text=No%20image%20available' ) %>" data-holder-rendered="true">
                         </div>
                     </div>
                 <% } %>
@@ -421,8 +421,13 @@
                                 
                             <%  }  %>
 
-                    <% if ( _accommodations.length > 0 ) { // for when they open up a new chat and if they've never chatted before // i.e. this guy has no old chat AT ALL they possibly couldn't have chatted before %>
+                    <% if ( _accommodations.length > 0 ) { %>
                 <% for (i = 0; i < _accommodations.length; i++) { %>
+
+                    <%# hot fix for skipping found accommodation among the whole list of accommodation %>
+                    <% if(_accommodation && _accommodations[i].id == _accommodation.id) { %>
+                    <%    continue; %>
+                    <% } %>
         
                     <div class="card mb-4 box-shadow h-md-250" >
                             
