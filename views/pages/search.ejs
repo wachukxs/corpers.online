@@ -248,10 +248,17 @@
                     </div>
                 <% } %>
                 <div class="container mt-4">
+
+                    <%# hot fix %>
+                    <% let __found_sale = _sales.find((_s) => _s.id == _sale.id); %>
+                    <% if (__found_sale) { %>
+                    <%# _sales.splice(__found_sale, 1); // not using this because, a "nothing yet" message shows for only one item, might use later when there's multiple items %>
+                    <% } %>
         
                     <% let categories = Array.from(new Set(_sales.map(item => item.itemname))); %>
                     <% if(categories.length > 0) { %>
                        <% for (let index = 0; index < categories.length; index++) { %>
+
                         <% const category = categories[index]; %>
         
                             <%  let items = _sales.filter(item => item.itemname === category) %>
@@ -261,6 +268,11 @@
         
                             <%  for (let index = 0; index < items.length; index++) { %>
                                 <% const element = items[index]; %>
+
+                                <%# hot fix for skipping found accommodation among the whole list of accommodation %>
+                                <% if(_sale.id == element.id) { %>
+                                <%    continue; %>
+                                <% } %>
                                 
                                 <div class="card mb-4 flex-md-row flex-md-row box-shadow h-md-250">
                                     <div class="card-body align-items-start">
@@ -331,19 +343,12 @@
                             <%  }%>
         
                         <div class="thelist" id="tl">
-                                    <% if ( _location_ppas.length > 0 ) { %>
-                                        <%# should we remove the selected ppa from the other ppas? %>
-                                        <% if ( _location_ppa ) { // %>
-                                            
-                                            <% var containsPPA = _location_ppas.filter((value, index, array) => { return value.name_of_ppa == _location_ppa[0].name_of_ppa && value.Location.address == _location_ppa[0].Location.address }) ; // should we be checking address?? %>
-                                            <% if ( containsPPA.length > 0 ) { // %>
-                                                <%# "it's in it" %>
-                                            <% } %>
-
-                                        <% } %>
-                                        
-
+                                     
+                                    <%# hot fix, removing the selected ppa from the other ppas %>
                                     <% for (i = 0; i < _location_ppas.length; i++) { %>
+                                        if (_location_ppa && _location_ppa.id == _location_ppas[i].id ) {
+                                            continue;
+                                        }
                                         <div class="card mb-4 box-shadow h-md-250">
 
                                                 <% if ( _location_ppas[i].geoData && _location_ppas[i].geoData != '' ) { %>
@@ -371,7 +376,7 @@
                                             </div>
                                         <% } %>
                                     <% } else { %>
-                                        <a>There's nothing for now. Check back later and you can also add a PPA.</a>
+                                        <a>There's nothing for now. Check back later and you can also add your PPA.</a>
                                     <% } %> %>
                                
                         </div>
