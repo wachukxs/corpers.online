@@ -231,9 +231,9 @@
                             <div class="card-body align-items-start">
                                 <strong class="d-inline-block mb-2 text-primary"><%=  _sale.itemname  %></strong>
                                 <h3 class="mb-0">
-                                    <a class="text-dark" href="#!">&#8358; <%= _sale.price %></a>
+                                    <a class="text-dark" href="#!">&#8358; <%= _sale._price %></a>
                                 </h3>
-                                <div class="mb-1 text-muted"><%= _sale.statecode %> selling</div>
+                                <div class="mb-1 text-muted">posted <%= _sale.age %></div>
                                 <p class="card-text mb-auto truncate-overflow">
                                     <%- (_sale.text.trim() === '' ? "<i>No description available</i>" : _sale.text.trim() ) %>
                                 </p>
@@ -243,7 +243,7 @@
                                     <a href="/login">Login to buy</a>
                                 <% }  %>
                             </div>
-                            <img class="card-img-right flex-auto" alt="Picture of <%= _sale.itemname %>" style="width: auto; height: 250px;" src="<%= ( _sale.media ? 'https://drive.google.com/uc?id=' + _sale.media.split(',')[0] : 'holder.js/200x250?theme=gray&text=No%20image%20available' ) %>" data-holder-rendered="true">
+                            <img class="card-img-right flex-auto" alt="Picture of <%= _sale.itemname %>" style="width: auto; height: 250px;" src="<%= ( _sale.mediaId ? _sale.saleMedia.urls[0] : 'holder.js/200x250?theme=gray&text=No%20image%20available' ) %>" data-holder-rendered="true">
                         </div>
                     </div>
                 <% } %>
@@ -278,9 +278,9 @@
                                     <div class="card-body align-items-start">
                                         <strong class="d-inline-block mb-2 text-primary"><%= (element.itemname ? element.itemname : 'Unnamed items' ) %></strong>
                                         <h3 class="mb-0">
-                                            <a class="text-dark" href="#!">&#8358; <%= element.price %></a>
+                                            <a class="text-dark" href="#!">&#8358; <%= element._price %></a>
                                         </h3>
-                                        <div class="mb-1 text-muted"><%= element.statecode %> selling</div>
+                                        <div class="mb-1 text-muted">posted <%= element.age %></div>
                                         <p class="card-text mb-auto truncate-overflow">
                                             <%= element.text %>
                                         </p>
@@ -502,7 +502,9 @@
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.7/holder.min.js" integrity="sha512-O6R6IBONpEcZVYJAmSC+20vdsM07uFuGjFf0n/Zthm8sOFW+lAq/OK1WOL8vk93GBDxtMIy6ocbj6lduyeLuqQ==" crossorigin="anonymous"></script>
-
+    <script>
+        console.log('sale', <%- JSON.stringify(_sale) %>);
+    </script>
 </body>
 
 </html>

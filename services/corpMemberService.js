@@ -1009,7 +1009,11 @@ module.exports = {
         result._sale = await Sale.findOne({
           where: {
             id: req.query.id
-          }
+          },
+          include: [{
+            model: Media,
+            as: 'saleMedia'
+          }],
         })
       } else if (req.query.type == 'location') { // a location that is a ppa
         result._location_ppa = await Location.findOne({
