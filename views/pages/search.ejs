@@ -344,19 +344,22 @@
         
                         <div class="thelist" id="tl">
                                      
-                                    <%# hot fix, removing the selected ppa from the other ppas %>
+                            <% if (  _location_ppas.length > 0 ) { %>
+                                    
                                     <% for (i = 0; i < _location_ppas.length; i++) { %>
-                                        if (_location_ppa && _location_ppa.id == _location_ppas[i].id ) {
-                                            continue;
-                                        }
+
+                                        
+                                        <% if (_location_ppa && _location_ppa.id == _location_ppas[i].id ) { %>
+                                            <% continue; %>
+                                        <% } %>
                                         <div class="card mb-4 box-shadow h-md-250">
 
                                                 <% if ( _location_ppas[i].geoData && _location_ppas[i].geoData != '' ) { %>
                                                     
                                                     <% let ppa_geo = JSON.parse(_location_ppas[i].geoData); %>
-                                                    <%#console.log( 'pppa', ppa_geo  )  %>
+                                                    <%# console.log( 'pppa', ppa_geo  )  %>
                                                         <div data-lat="<%= ppa_geo.latitude %>" data-lng="<%= ppa_geo.longitude %>" data-accuracy="<%= ppa_geo.accuracy %>" ></div>
-                                                    <% } %>
+                                                <% } %>
 
                                                 <div class="card-body align-items-start hover">
                                                     <strong class="d-inline-block mb-2 text-primary"><%= _location_ppas[i].type_of_ppa %></strong>
@@ -485,7 +488,7 @@
                         }
                     </script>
                 <% } else { %>
-                    <a>There's nothing for now. If you have an accommodations, please consider posting it.</a>
+                    <span>There's nothing for now. If you have an accommodations, please consider posting it.</span>
                 <% } %> %>
                 </div>
             </div>

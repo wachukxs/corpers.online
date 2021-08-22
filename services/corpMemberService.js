@@ -838,7 +838,7 @@ module.exports = {
       Sale.findAll({ // also add PPA
         where: {
             itemname: {
-                [Op.substring]: req.query.q, // hmmm...
+                [Op.substring]: req.query.q.substring(1), // hmmm...  // remove first letter
             },
             ... (req.query.s && {
                 statecode: {
