@@ -2137,8 +2137,7 @@
                                     for (let i = 0; i < jk; i++) { // let ii = 'img' + i.toString();
                                         ii = document.createElement('img');
                                         ii.setAttribute('class', 'img-fluid border');
-
-                                        
+                                        ii.setAttribute('loading', 'lazy');
                                         ii.setAttribute('src', data.post[post_index].saleMedia.urls[i]); // add the trailing slash for normal images that was uploaded.
                                         ii.setAttribute('alt', 'user\'s posted image'); // do better
                                         gg.appendChild(ii);
