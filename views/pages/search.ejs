@@ -451,7 +451,7 @@
                                 <h3 class="mb-0">
                                     <a class="text-dark" href="#!"><%= _accommodations[i].Location.address %></a>
 
-                                    <% if ( _accommodations[i].Location.geoData && _accommodations[i].Location.geoData != '' ) { %>
+                                    <% if ( _accommodations[i]?.Location?.geoData && _accommodations[i]?.Location?.geoData != '' ) { %>
                                         <span class="oi oi-map-marker" title="accommodation map marker" aria-hidden="true"></span>
                                     <% } %>
                                 </h3>
