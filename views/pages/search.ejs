@@ -458,7 +458,7 @@
                                 <div class="mb-1 text-muted">with <%= _accommodations[i].availableRooms.join().replace('', 'and ').split(',').reverse().toString().replace(/,/g, ', ') %></div>
                                 <p class="card-text mb-auto"> &#8358;<%= (_accommodations[i].rent ? _accommodations[i]._rent : _accommodations[i]._roommateRent) %> <%= _accommodations[i].rentRange %></p>
 
-                                <% if ( _accommodations[i].Location.directions != null ) { %>
+                                <% if ( _accommodations[i]?.Location?.directions != null ) { %>
                                     <p class="card-text mb-auto font-italic font-weight-bold" style="display: none;" id="<%= new Date(_accommodations[i].createdAt).getTime() %>"><%= _accommodations[i].Location.directions %></p>
                                     <a href="#!" onclick="toggle_visibility('<%= new Date(_accommodations[i].createdAt).getTime() %>')">See directions</a>
                                 <% } %>
