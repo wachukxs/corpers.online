@@ -270,7 +270,7 @@
                                 <% const element = items[index]; %>
 
                                 <%# hot fix for skipping found accommodation among the whole list of accommodation %>
-                                <% if(_sale.id == element.id) { %>
+                                <% if(_sale && _sale?.id == element.id) { %>
                                 <%    continue; %>
                                 <% } %>
                                 
