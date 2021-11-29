@@ -449,7 +449,7 @@
                                     <strong class="d-inline-block mb-2 text-primary mr-auto"><%= _accommodations[i].accommodationType %></strong>
                                     
                                 <h3 class="mb-0">
-                                    <a class="text-dark" href="#!"><%= _accommodations[i].Location.address %></a>
+                                    <a class="text-dark" href="#!"><%= _accommodations[i]?.Location?.address %></a>
 
                                     <% if ( _accommodations[i]?.Location?.geoData && _accommodations[i]?.Location?.geoData != '' ) { %>
                                         <span class="oi oi-map-marker" title="accommodation map marker" aria-hidden="true"></span>
