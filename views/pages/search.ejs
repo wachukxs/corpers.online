@@ -439,7 +439,7 @@
         
                     <div class="card mb-4 box-shadow h-md-250" >
                             
-                        <% if ( _accommodations[i].Location.geoData && _accommodations[i].Location.geoData != '' ) { %>
+                        <% if ( _accommodations[i]?.Location?.geoData && _accommodations[i]?.Location?.geoData != '' ) { %>
                             <% var acc_geo = JSON.parse(_accommodations[i].Location.geoData); %>
                                 <div data-lat="<%= acc_geo.geometry.coordinates[1] %>" data-lng="<%= acc_geo.geometry.coordinates[0] %>" ></div>
                             <% } %>
