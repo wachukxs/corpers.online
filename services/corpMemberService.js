@@ -46,7 +46,7 @@ module.exports = {
           .create(req.body)
           .then(result => {
             console.log('re:', result);
-            req.session.corper = result.dataValues
+            req.session.corper = result.dataValues // set inside successful jwt signing
             // send welcome email
             helpers.sendSignupWelcomeEmail(req.body.email, req.body.firstname, result.dataValues.servicestate)
             jwt.sign({
@@ -1025,6 +1025,8 @@ module.exports = {
           },
           include: [{
             model: PPA
+          }, {
+            model: Location
           }],
         })
       }
