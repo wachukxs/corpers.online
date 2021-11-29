@@ -250,7 +250,7 @@
                 <div class="container mt-4">
 
                     <%# hot fix %>
-                    <% let __found_sale = _sales.find((_s) => _s.id == _sale.id); %>
+                    <% let __found_sale = _sale && _sales.find((_s) => _s.id === _sale.id); %>
                     <% if (__found_sale) { %>
                     <%# _sales.splice(__found_sale, 1); // not using this because, a "nothing yet" message shows for only one item, might use later when there's multiple items %>
                     <% } %>
