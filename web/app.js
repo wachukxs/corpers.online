@@ -1,6 +1,7 @@
 // const app = require('express')(); // ?
 const express = require('express');
 const app = express();
+const cors = require('cors')
 // const bodyParser = require('body-parser'); // https://stackoverflow.com/a/24330353/9259701
 const cookieParser = require('cookie-parser')
 const session = require('express-session');
@@ -27,8 +28,6 @@ const accommodationRoutes = require('../controllers/accommodations')
 const chatRoutes = require('../controllers/chats')
 
 const testRoutes = require('../controllers/test');
-
-app.set('view engine', 'ejs');
 
 // const connectionPool = require('../not_models/db').connectionPool;
 // let mySQLSessionStore = new MySQLStore({}, connectionPool);
@@ -96,6 +95,9 @@ if (app.get('env') === 'production') { // process.env.NODE_ENV
 // set morgan to log info about our requests for development use.
 app.use(morgan(morganFormat))
 
+// use cors
+app.use(cors())
+
 // app.use(session(mySQLSessionOptions));
 // app.use(session(sequelizeSessionOptions));
 
@@ -121,8 +123,9 @@ app.use([actionsRoutes, byeRoutes, welcomeRoutes, blogRoutes, corpMemberRoutes, 
 app.use(testRoutes)
 // must always be last route, must be last route because of 404 pages/error
 app.use(function (req, res) {
-    res.render('pages/404', { // check the url they navigated to that got them lost, and try to offer suggestions in the front end that'll match why they got lost... maybe they missed a letter in their statecode url
-    });
+    // check the url they navigated to that got them lost, and try to offer suggestions in the front end that'll match why they got lost... maybe they missed a letter in their statecode url
+
+    res.status(404).send({ message: 'hey, that url does not exist' })
 });
 
 /**
@@ -134,30 +137,6 @@ var helmet = require('helmet');
 app.use(helmet());
 
 const ngstates = require('../utilities/ngstates');
-const sitemap = require('express-sitemap')({ // comes last, after setting up express
-    http: 'https',
-    url: 'corpers.online',
-    sitemapSubmission: '/sitemap.xml',
-    hideByRegex: [ ngstates.states_short_paths_regex, /\/^AB$/, '/about' ],
-    route: {
-        '/[A-Z]{2}$/': {
-            hide: true
-        },
-        '/[A-Z]{2}$/': {
-            hide: true
-        },
-        r1: {
-            hide: true
-        },
-        '/about': {
-            hide: true
-        }
-    }
-});
-sitemap.generate4(welcomeRoutes)
-sitemap.generate4(actionsRoutes)
-sitemap.generate4(blogRoutes)
-// sitemap.toFile() // uncomment till we figure out sitemap or use a diffrent library
 
 module.exports = app; // app.get('env')
 
@@ -165,4 +144,18 @@ module.exports = app; // app.get('env')
  * running on heroku at
  * Creating app... done, ⬢ corpers-online
  * https://corpers-online.herokuapp.com/ | https://git.heroku.com/corpers-online.git
+ */
+
+
+/**
+ * use 
+ * 
+if(thisSession.hasOwnProperty('merchant_id')){
+
+}
+
+to do a middleware to check we have data before creating a new model
+or do we find a module for it?
+
+maybe use helpers. if we're gonna do it ourselves
  */

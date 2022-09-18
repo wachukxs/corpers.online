@@ -1042,9 +1042,31 @@ module.exports = {
     },
 
     joinWaitList(req, res) {
-      // WaitList
-
       console.log('\n\ncorpMember cntrl -- joinWaitList()', req.body)
-      res.sendStatus(200)
+
+      return WaitList.create(req.body)
+
+      .then(result => {
+        console.log('re:', result);
+
+        res.status(200).send({
+          message: "We got that. Thanks for joining our waitlist"
+        })
+
+      }, error => {
+        console.error('CorpersSignUp() error happened', error);
+        console.error('----> error happened', error.errors[0], error.fields);
+        res.status(500).send({
+          message: "We had an error, that can be fixed."
+        })
+
+      }).catch(reason => {
+        console.error('catching this err because:', reason);
+        res.status(500).send({
+          message: "We had an error, so sorry about that."
+        })
+      });
+
+      
     }
 }
