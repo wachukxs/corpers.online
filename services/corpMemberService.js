@@ -1,4 +1,5 @@
 const CorpMember = require('../models').CorpMember
+const WaitList = require('../models').WaitList
 const Chat = require('../models').Chat
 const PPA = require('../models').PPA
 const Accommodation = require('../models').Accommodation
@@ -1038,5 +1039,12 @@ module.exports = {
       }
       res.set('Content-Type', 'text/html');
       res.render('pages/search', result)
+    },
+
+    joinWaitList(req, res) {
+      // WaitList
+
+      console.log('\n\ncorpMember cntrl -- joinWaitList()', req.body)
+      res.sendStatus(200)
     }
 }
