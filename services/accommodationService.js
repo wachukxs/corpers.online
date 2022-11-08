@@ -124,11 +124,11 @@ module.exports = {
         
               let fileMetadata = {
                 'name': filename, // Date.now() + 'test.jpg',
-                parents: ['15HYR0_TjEPAjBjo_m9g4aR-afULaAzrt'] // upload to folder CorpersOnline-TEST 15HYR0_TjEPAjBjo_m9g4aR-afULaAzrt
+                parents: [process.env.CO_TEST_GDRIVE]
               };
               let media = {
                 mimeType: mimetype,
-                body: filestream // fs.createReadStream("C:\\Users\\NWACHUKWU\\Pictures\\ad\\IMG-20180511-WA0001.jpg")
+                body: filestream
               };
               // how about we add meta data to the file with ggle APIs, like it is a picture of a bathroom or fridge
               const up = ggle.drive.files.create({ // up = [u]pload [p]romise

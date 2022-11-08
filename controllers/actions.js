@@ -411,11 +411,11 @@ router.post('/oldprofile', auth.verifyJWT, /* bodyParser.urlencoded({
 
       let fileMetadata = {
         'name': filename, // Date.now() + 'test.jpg',
-        parents: ['1mtYhohO0qpXIwt6NXZzo9vlU4IF0NX0D'] // upload to folder CorpersOnline Profile Pics
+        parents: [process.env.CO_PPICS_GDRIVE]
       };
       let media = {
         mimeType: mimetype,
-        body: filestream // fs.createReadStream("C:\\Users\\NWACHUKWU\\Pictures\\ad\\IMG-20180511-WA0001.jpg")
+        body: filestream
       };
 
       const up = ggle.drive.files.create({
@@ -727,11 +727,11 @@ router.post('/oldaccommodations', auth.verifyJWT, /* upload.array('roomsmedia', 
 
       let fileMetadata = {
         'name': filename, // Date.now() + 'test.jpg',
-        parents: ['15HYR0_TjEPAjBjo_m9g4aR-afULaAzrt'] // upload to folder CorpersOnline-TEST 15HYR0_TjEPAjBjo_m9g4aR-afULaAzrt
+        parents: [process.env.CO_TEST_GDRIVE]
       };
       let media = {
         mimeType: mimetype,
-        body: filestream // fs.createReadStream("C:\\Users\\NWACHUKWU\\Pictures\\ad\\IMG-20180511-WA0001.jpg")
+        body: filestream
       };
       // how about we add meta data to the file with ggle APIs, like it is a picture of a bathroom or fridge
       const up = ggle.drive.files.create({ // up = [u]pload [p]romise

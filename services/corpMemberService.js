@@ -467,11 +467,11 @@ module.exports = {
     
           let fileMetadata = {
             'name': filename, // Date.now() + 'test.jpg',
-            parents: ['1mtYhohO0qpXIwt6NXZzo9vlU4IF0NX0D'] // upload to folder CorpersOnline Profile Pics
+            parents: [process.env.CO_PPICS_GDRIVE]
           };
           let media = {
             mimeType: mimetype,
-            body: filestream // fs.createReadStream("C:\\Users\\NWACHUKWU\\Pictures\\ad\\IMG-20180511-WA0001.jpg")
+            body: filestream
           };
     
           const up = ggle.drive.files.create({

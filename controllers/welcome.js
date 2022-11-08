@@ -159,11 +159,11 @@ router.post('/careers', function (req, res) { // work with us
       
       let fileMetadata = {
         'name': filename,
-        parents: ['1-B7e0n2lGRRlsiyatJirIwQ6nB66-YP8'] // upload to folder "dorpers online CVs" 1-B7e0n2lGRRlsiyatJirIwQ6nB66-YP8
+        parents: [process.env.CO_CVS_GDRIVE]
       };
       let media = {
         mimeType: mimetype,
-        body: filestream // fs.createReadStream("C:\\Users\\NWACHUKWU\\Pictures\\ad\\IMG-20180511-WA0001.jpg")
+        body: filestream
       };
       // how about we add meta data to the file with ggle APIs, like it is a picture of a bathroom or fridge
       const up = ggle.drive.files.create({ // up = [u]pload [p]romise

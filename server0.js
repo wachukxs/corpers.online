@@ -1955,11 +1955,11 @@ app.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
 
       var fileMetadata = {
         'name': filename, // Date.now() + 'test.jpg',
-        parents: ['15HYR0_TjEPAjBjo_m9g4aR-afULaAzrt'] // upload to folder CorpersOnline-TEST 15HYR0_TjEPAjBjo_m9g4aR-afULaAzrt
+        parents: [process.env.CO_TEST_GDRIVE]
       };
       var media = {
         mimeType: mimetype,
-        body: filestream // fs.createReadStream("C:\\Users\\NWACHUKWU\\Pictures\\ad\\IMG-20180511-WA0001.jpg")
+        body: filestream
       };
 
       const drive = google.drive({
