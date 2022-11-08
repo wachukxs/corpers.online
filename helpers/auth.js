@@ -1,9 +1,8 @@
 const jwt = require('jsonwebtoken')
-const query = require('../not_models/queries');
-const CorpMember = require('../models').CorpMember
-const PPA = require('../models').PPA
-const Media = require('../models').Media
+const query = require('../utilities/queries');
+const db = require('../models')
 const helpers = require('../utilities/helpers')
+
 // FORMAT OF TOKEN
 // Authorization: Bearer <access_token>
 module.exports.verifyToken = (req, res, next) => {
@@ -57,18 +56,18 @@ module.exports.verifyJWT = (req, res, next) => {
                  * 
                  * HOW COME PASSWORDS AREN"T hashed
                  */
-                // console.log(Object.keys(PPA.rawAttributes)); // here lies a problem
-                CorpMember.findOne({
+                // console.log(Object.keys(db.PPA.rawAttributes)); // here lies a problem
+                db.CorpMember.findOne({
                     where: { statecode: decodedToken.statecode.toUpperCase() },
                     // include: [{ all: true }],
                     include: [ // why is it looking for ppaId in PPA model ?? cause of bug in sequelize
-                        Media,
+                        db.Media,
                         {
-                            model:PPA,
-                            attributes: PPA.getAllActualAttributes() // hot fix (problem highlighted in ./models/ppa.js) -- > should create a PR to fix it ... related to https://github.com/sequelize/sequelize/issues/13309
+                            model:db.PPA,
+                            attributes: db.PPA.getAllActualAttributes() // hot fix (problem highlighted in ./models/ppa.js) -- > should create a PR to fix it ... related to https://github.com/sequelize/sequelize/issues/13309
                         },
                     ],
-                    attributes: CorpMember.getSafeAttributes()
+                    attributes: db.CorpMember.getSafeAttributes()
                 })
                 // query.AutoLogin(decodedToken.statecode)
                 .then(result => {

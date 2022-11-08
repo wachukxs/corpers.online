@@ -5,7 +5,7 @@ const path = require('path');
 const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
+const config = require(__dirname + '/../config/config.js')[env];
 const db = {};
 
 let sequelize;
@@ -30,6 +30,18 @@ Object.keys(db).forEach(modelName => {
     db[modelName].associate(db);
   }
 });
+
+/**
+ * we need to try to connect to one db first, if that doesn't work,
+ * connect to the back up
+ * we could also use them interchangably for back up db, and sync when one is up.
+ */
+sequelize.authenticate().then((e) => {
+  console.log('made db connection from sequelize');
+  // sequelize.close() // after retrying ?
+}).catch((err) => {
+  console.error('oopsy error connecting to db with Sequelize', err)
+})
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

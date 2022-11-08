@@ -18,10 +18,10 @@ module.exports = {
         type: Sequelize.STRING
       },
       lastname: {
-        type: Sequelize.FLOAT
+        type: Sequelize.STRING
       },
       email: {
-        type: Sequelize.FLOAT
+        type: Sequelize.STRING
       },
       comment: {
         type: Sequelize.TEXT

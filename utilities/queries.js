@@ -1,4 +1,4 @@
-const connectionPool = require('./db').connectionPool;
+const db = require('../models');
 const moment = require('moment');
 const Busboy = require('busboy');
 const helpers = require('../utilities/helpers');
@@ -12,7 +12,7 @@ const saltRounds = 5;
 exports.DeleteSale = async (updateData) => {
     let re = new Promise((resolve, reject) => {
         let sqlquery = 'DELETE FROM posts WHERE post_time = ? AND statecode = ?';
-        connectionPool.query(sqlquery, updateData, function (error, result, fields) {
+        db.sequelize.query(sqlquery, updateData, function (error, result, fields) {
             if (error) {
                 reject(error)
             } else {
@@ -27,7 +27,7 @@ exports.DeleteSale = async (updateData) => {
 exports.DeleteAccommodation = async (updateData) => {
     let re = new Promise((resolve, reject) => {
         let sqlquery = 'DELETE FROM accommodations WHERE post_time = ? AND statecode = ?';
-        connectionPool.query(sqlquery, updateData, function (error, result, fields) {
+        db.sequelize.query(sqlquery, updateData, function (error, result, fields) {
             if (error) {
                 reject(error)
             } else {
@@ -42,7 +42,7 @@ exports.DeleteAccommodation = async (updateData) => {
 exports.UpdateSale = async (updateData) => {
     let re = new Promise((resolve, reject) => {
         let sqlquery = "UPDATE posts SET ?";
-        connectionPool.query(sqlquery, updateData, function (error, result, fields) {
+        db.sequelize.query(sqlquery, updateData, function (error, result, fields) {
             if (error) {
                 reject(error)
             } else {
@@ -59,7 +59,7 @@ exports.UpdateAccommodation = async (updateData) => {
     let re = new Promise((resolve, reject) => {
         // let sqlquery = "UPDATE accommodations SET address = :address, price = :price, directions = :directions, type = :type, rooms = :rooms, rentrange = :rentrange, tenure = :tenure, expire = :expire, roommate_type = :roommate_type, roommate_you = :roommate_you";
         let sqlquery = "UPDATE accommodations SET ?";
-        connectionPool.query(sqlquery, updateData, function (error, result, fields) {
+        db.sequelize.query(sqlquery, updateData, function (error, result, fields) {
             if (error) {
                 reject(error)
             } else {
@@ -80,7 +80,7 @@ exports.UpdateAccommodation = async (updateData) => {
 exports.GetCorperPosts = async (statecode) => {
     let re = await new Promise((resolve, reject) => {
         let sqlquery = "SELECT * from posts WHERE statecode = ?; SELECT * FROM `accommodations` WHERE statecode = ?";
-        connectionPool.query(sqlquery, [statecode, statecode], function (error, result, fields) {
+        db.sequelize.query(sqlquery, [statecode, statecode], function (error, result, fields) {
             if (error) {
                 reject(error)
             } else {
@@ -95,7 +95,7 @@ exports.GetCorperPosts = async (statecode) => {
 exports.CorpersInNG = async () => {
     let re = await new Promise((resolve, reject) => {
         let sqlquery = "SELECT bio, firstname, lastname, statecode, dateofreg, picture_id FROM info WHERE public_profile = 1"; //  AND bio != '' // make sure to select corpers with thier bio filled out, and want a public_profile [=1]
-        connectionPool.query(sqlquery, function (error, result, fields) {
+        db.sequelize.query(sqlquery, function (error, result, fields) {
             if (error) {
                 reject(error)
             } else if (result.length > 0) {
@@ -113,7 +113,7 @@ exports.CorpersInNG = async () => {
 exports.CorpersInState = async (state) => {
     let re = await new Promise((resolve, reject) => {
         let sqlquery = "SELECT bio, firstname, lastname, statecode, dateofreg, picture_id FROM info WHERE servicestate = ? AND public_profile = 1"; //  AND bio != '' // make sure to select corpers with thier bio filled out, and want a public_profile [=1]
-        connectionPool.query(sqlquery, [state], function (error, result, fields) {
+        db.sequelize.query(sqlquery, [state], function (error, result, fields) {
             if (error) {
                 reject(error)
             } else if (result.length > 0) {
@@ -186,7 +186,7 @@ exports.CorpersSignUp = async (signupData) => {
                             // replace password
                             signupData.password = hash
             
-                            connectionPool.query('INSERT INTO info SET ?', signupData, function (error, results, fields) {
+                            db.sequelize.query('INSERT INTO info SET ?', signupData, function (error, results, fields) {
                                 
                                 if (error) {
                                     console.log('the error code:', error.code, error.sqlMessage)
@@ -242,7 +242,7 @@ exports.CorpersSignUp = async (signupData) => {
 exports.AutoLogin = async (statecode) => {
     let re = await new Promise((resolve, reject) => {
         let sqlquery = "SELECT * FROM info WHERE statecode = ?";
-        let autologinquery = connectionPool.query(sqlquery, [statecode], function (error, result, fields) {
+        let autologinquery = db.sequelize.query(sqlquery, [statecode], function (error, result, fields) {
             if (error) {
                 reject(error)
             } else if (result.length === 1) {
@@ -261,14 +261,14 @@ exports.CorpersLogin = async (data) => {
         let sqlquery = "SELECT * FROM info WHERE statecode = ?";
         // .toUpperCase() is crucial
         let retries = 2;
-        let loginQuery = connectionPool.query(sqlquery, [data.statecode.toUpperCase()], function (error, result, fields) {
+        let loginQuery = db.sequelize.query(sqlquery, [data.statecode.toUpperCase()], function (error, result, fields) {
             if (error) {
                 console.error('the error code:', error.code)
                 switch (error.code) { // do more here
                     case 'ER_ACCESS_DENIED_ERROR':
                         break;
                     case 'ECONNREFUSED': // maybe send an email to myself or the delegated developer // try to connect again multiple times first                     
-                        connectionPool.ping(function (err) {
+                        db.sequelize.ping(function (err) {
                             if (err) {
                                 console.error(err);
                                 // email or notify developer
@@ -304,7 +304,7 @@ exports.CorpersLogin = async (data) => {
                         bcrypt.hash(data.password, salt, function(err, hash) {
                             // Store hash in your password DB. Basically update db
                             let q = "UPDATE info SET password = '" + hash + "', salt = '" + salt + "' WHERE statecode = '" + data.statecode.toUpperCase() + "'";
-                            connectionPool.query(q, function (err, rslts, flds) {
+                            db.sequelize.query(q, function (err, rslts, flds) {
                                 if (err) reject(err)
                                 else if (rslts.changedRows === 1) { // when we've saved it, the corper can now logged in
                                     console.log('\n\nupdated password & salt');
@@ -339,7 +339,7 @@ exports.CorpersLogin = async (data) => {
 exports.LoginSession = async (loginData) => {
     let re = await new Promise((resolve, reject) => {
         // insert login time and session id into db for usage details
-        connectionPool.query("INSERT INTO traces (statecode, session_id, user_agent) VALUES (?, ?, ?)", loginData, function (error2, results2, fields2) {
+        db.sequelize.query("INSERT INTO traces (statecode, session_id, user_agent) VALUES (?, ?, ?)", loginData, function (error2, results2, fields2) {
             if (error2) reject({ message: false })
             else if (results2.affectedRows === 1) {
                 resolve({ message: true })
@@ -358,7 +358,7 @@ exports.UnreadMessages = async (corpersData) => {
     /**[re]sponse for this funtion UnreadMessages() */
     let re = await new Promise((resolve, reject) => {
 
-        connectionPool.query("SELECT * FROM chats WHERE message_to = ? AND message IS NOT NULL AND message_sent = ?", corpersData, function (error, results, fields) {
+        db.sequelize.query("SELECT * FROM chats WHERE message_to = ? AND message IS NOT NULL AND message_sent = ?", corpersData, function (error, results, fields) {
 
             if (error) reject(error)
             else {
@@ -396,7 +396,7 @@ exports.FetchPostsForTimeLine = async (timeLineInfo) => {
         /*
         SELECT * FROM posts WHERE statecode LIKE '%DT%' AND post_time > "null" ORDER by posts.post_time ASC; SELECT * FROM accommodations WHERE expire > NOW() AND statecode LIKE '%DT%' AND input_time > "null" ORDER by accommodations.input_time ASC
          */
-        connectionPool.query(getpostsquery, function (error, results, fields) {
+        db.sequelize.query(getpostsquery, function (error, results, fields) {
             if (error) reject(error)
             else if (!helpers.isEmpty(results[0]) || !helpers.isEmpty(results[1])) {
 
@@ -479,7 +479,7 @@ exports.FetchPostsForTimeLine = async (timeLineInfo) => {
  */
 exports.InsertRowInMediaTable = async (mediaData) => {
     let re = await new Promise((resolve, reject) => {
-        connectionPool.query("INSERT INTO media SET ?", mediaData, function (error, result, fields) {
+        db.sequelize.query("INSERT INTO media SET ?", mediaData, function (error, result, fields) {
             if (error) reject(error)
             else if (result.affectedRows === 1) {
                 resolve()
@@ -495,7 +495,7 @@ exports.InsertRowInMediaTable = async (mediaData) => {
  */
 exports.InsertRowInPostsTable = async (postData) => {
     let re = await new Promise((resolve, reject) => {
-        connectionPool.query("INSERT INTO posts SET ?", postData, function (error, result, fields) {
+        db.sequelize.query("INSERT INTO posts SET ?", postData, function (error, result, fields) {
             if (error) reject(error)
             else if (result.affectedRows === 1) {
                 resolve()
@@ -508,7 +508,7 @@ exports.InsertRowInPostsTable = async (postData) => {
 
 exports.GetFirstAndLastNameWithStatecode = async (data) => {
     let re = await new Promise((resolve, reject) => {
-        connectionPool.query("SELECT firstname, lastname FROM info WHERE statecode = '" + data.statecode + "'", function (error, results, fields) { // bring the results in ascending order, rewrite query using mysql-npm special queries
+        db.sequelize.query("SELECT firstname, lastname FROM info WHERE statecode = '" + data.statecode + "'", function (error, results, fields) { // bring the results in ascending order, rewrite query using mysql-npm special queries
 
             if (error) reject(error)
             else if (!helpers.isEmpty(results)) {
@@ -526,7 +526,7 @@ exports.GetFirstAndLastNameWithStatecode = async (data) => {
 
 exports.GetStatecodeChatRooms = async (statecode) => {
     let re = await new Promise((resolve, reject) => {
-        connectionPool.query("SELECT DISTINCT room FROM chats WHERE room LIKE '%" + statecode + "%' AND message IS NOT NULL", function (error, results, fields) {
+        db.sequelize.query("SELECT DISTINCT room FROM chats WHERE room LIKE '%" + statecode + "%' AND message IS NOT NULL", function (error, results, fields) {
 
             if (error) reject(error);
             else if (!helpers.isEmpty(results)) { // an array of objects with the columns as keys
@@ -544,7 +544,7 @@ exports.GetStatecodeChatRooms = async (statecode) => {
 
 exports.InsertRowInChatTable = async (chatData) => {
     let re = await new Promise((resolve, reject) => {
-        connectionPool.query("INSERT INTO chats SET ?", chatData, function (error, result, fields) {
+        db.sequelize.query("INSERT INTO chats SET ?", chatData, function (error, result, fields) {
             if (error) reject(error)
             else if (result.affectedRows === 1) {
                 resolve()
@@ -558,7 +558,7 @@ exports.InsertRowInChatTable = async (chatData) => {
 exports.UpdateChatReadReceipts = async (chatInfo) => {
     let re = await new Promise((resolve, reject) => {
         let q = "UPDATE chats SET message_sent = true WHERE message IS NOT NULL AND message_from = '" + chatInfo.message_from + "' AND message_to = '" + chatInfo.message_to + "'";
-        connectionPool.query(q, function (error, results, fields) {
+        db.sequelize.query(q, function (error, results, fields) {
             if (error) reject(error)
             // connected!
             else if (results.changedRows > 0) { // when we've saved it, the corper can now join the room
@@ -575,7 +575,7 @@ exports.UpdateChatReadReceipts = async (chatInfo) => {
 
 exports.InsertRowInAccommodationsTable = async (postData) => {
     let re = await new Promise((resolve, reject) => {
-        connectionPool.query("INSERT INTO accommodations SET ?", postData, function (error, result, fields) {
+        db.sequelize.query("INSERT INTO accommodations SET ?", postData, function (error, result, fields) {
             if (error) reject(error)
             else if (result.affectedRows === 1) {
                 resolve()
@@ -589,7 +589,7 @@ exports.InsertRowInAccommodationsTable = async (postData) => {
 
 exports.InsertRowInCareersTable = async (postData) => {
     let re = await new Promise((resolve, reject) => {
-        connectionPool.query("INSERT INTO careers SET ?", postData, function (error, result, fields) {
+        db.sequelize.query("INSERT INTO careers SET ?", postData, function (error, result, fields) {
             if (error) reject(error)
             else if (result.affectedRows === 1) {
                 resolve()
@@ -608,7 +608,7 @@ exports.GetMapData = async () => {
     let re = await new Promise((resolve, reject) => {
         // what about name of the ppa ? this way of selecting might prove inefficient when we have large data set from all the states meanwhile this corper just need data from within a particular state.
         // also select ppa_directions from info and it should be like a reveal, corpers would click 'read directions' and it'll show them
-        connectionPool.query("SELECT ppa_address, ppa_geodata, type_of_ppa FROM info WHERE ppa_address != '' AND ppa_geodata != '' AND type_of_ppa != '' ; \
+        db.sequelize.query("SELECT ppa_address, ppa_geodata, type_of_ppa FROM info WHERE ppa_address != '' AND ppa_geodata != '' AND type_of_ppa != '' ; \
         SELECT ppa_geodata, name_of_ppa, ppa_address, lga, region_street, type_of_ppa, city_town FROM info WHERE ppa_geodata != '' ; \
         SELECT DISTINCT type_of_ppa FROM info WHERE type_of_ppa != '' ", function (error, results, fields) { // bring the results in ascending order
             // we shouldn't be rejecting with empty data
@@ -743,7 +743,7 @@ exports.GetChatData = async (req) => {
             }
             /**SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%AB/17B/1234%' AND chats.message IS NOT NULL   */
 
-            connectionPool.query(query, function (error, results, fields) {
+            db.sequelize.query(query, function (error, results, fields) {
 
                 if (error) {
                     console.error('got unread chats from db UNsuccessfully-00, rejecting', error);
@@ -786,7 +786,7 @@ exports.GetChatData = async (req) => {
                 "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;" +
                 "SELECT * FROM chats WHERE message_to = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
                 "SELECT * FROM chats WHERE message_from = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;";
-            connectionPool.query(query, function (error, results, fields) {
+            db.sequelize.query(query, function (error, results, fields) {
                 console.log('are we even inside?');
                 if (error) {
                     console.error('got unread chats from db UNsuccessfully-1', error);
@@ -830,7 +830,7 @@ exports.SubscribeToEmailUpdates = async (data) => {
         if (helpers.isEmpty(data.email)) {
             res.status(406).send('Not Acceptable');
         } else {
-            connectionPool.query("INSERT INTO subscribers SET ?", { email: data.email }, function (error, results, fields) {
+            db.sequelize.query("INSERT INTO subscribers SET ?", { email: data.email }, function (error, results, fields) {
                 if (error) reject(error)
                 else if (results.affectedRows === 1) {
                     resolve()
@@ -847,7 +847,7 @@ exports.SubscribeToEmailUpdates = async (data) => {
 
 exports.AllPPAs = async () => {
     let re = await new Promise((resolve, reject) => {
-        connectionPool.query("SELECT type_of_ppa FROM info WHERE type_of_ppa != ''", function (error, results, fields) {
+        db.sequelize.query("SELECT type_of_ppa FROM info WHERE type_of_ppa != ''", function (error, results, fields) {
 
             if (error) reject(error);
             else {
@@ -877,7 +877,7 @@ exports.AllPPAs = async () => {
 exports.AddPlace = async (data) => {
     let re = await new Promise((resolve, reject) => {
 
-        connectionPool.query("INSERT INTO places SET ?", data, function (error, results, fields) {
+        db.sequelize.query("INSERT INTO places SET ?", data, function (error, results, fields) {
             if (error) reject(error);
             else if (results.affectedRows === 1) {
                 console.log('inserted data from: ', results);
@@ -923,29 +923,29 @@ exports.UpdateProfile = async (_profile_data) => {
         profile_pic: ''
         }
      */
-    let sqlquery = "UPDATE info SET accommodation_location = " + connectionPool.escape(_profile_data.accommodation_location) +
-      (_profile_data.servicestate ? ", servicestate = " + connectionPool.escape(_profile_data.servicestate) : '') // if there's service state(i.e. corper changed service state in real life and from front end), insert it.
+    let sqlquery = "UPDATE info SET accommodation_location = " + db.sequelize.escape(_profile_data.accommodation_location) +
+      (_profile_data.servicestate ? ", servicestate = " + db.sequelize.escape(_profile_data.servicestate) : '') // if there's service state(i.e. corper changed service state in real life and from front end), insert it.
       +
-      ", name_of_ppa = " + connectionPool.escape(_profile_data.name_of_ppa) +
-      ", ppa_directions = " + connectionPool.escape(_profile_data.ppa_directions) +
-      ", bio = " + connectionPool.escape(_profile_data.bio) +
-      ", public_profile = " + connectionPool.escape(_profile_data.public_profile) +
-      ", lga = " + connectionPool.escape(_profile_data.lga) +
-      ", city_town = " + connectionPool.escape(_profile_data.city_town) +
-      ", region_street = " +  connectionPool.escape(_profile_data.region_street) +
-      ", stream = " + connectionPool.escape(_profile_data.stream) +
-      ", type_of_ppa = " + connectionPool.escape(_profile_data.type_of_ppa) +
-      ", ppa_geodata = " +  connectionPool.escape(_profile_data.ppa_geodata) +
-      ", ppa_address = " + connectionPool.escape(_profile_data.ppa_address) +
-      ", travel_from_state = " + connectionPool.escape(_profile_data.travel_from_state) +
-      ", travel_from_city = " + connectionPool.escape(_profile_data.travel_from_city) +
-      (_profile_data.newstatecode ? ", statecode = " + connectionPool.escape(_profile_data.newstatecode.toUpperCase()) : '') + // if there's a new statecode
-      ", accommodationornot = " +  connectionPool.escape(_profile_data.accommodationornot) +
-      ", wantspaornot = " + connectionPool.escape(_profile_data.wantspaornot) +
-      " WHERE statecode = " + connectionPool.escape(_profile_data.statecode.toUpperCase()) ; // always change state code to uppercase, that's how it is in the db
+      ", name_of_ppa = " + db.sequelize.escape(_profile_data.name_of_ppa) +
+      ", ppa_directions = " + db.sequelize.escape(_profile_data.ppa_directions) +
+      ", bio = " + db.sequelize.escape(_profile_data.bio) +
+      ", public_profile = " + db.sequelize.escape(_profile_data.public_profile) +
+      ", lga = " + db.sequelize.escape(_profile_data.lga) +
+      ", city_town = " + db.sequelize.escape(_profile_data.city_town) +
+      ", region_street = " +  db.sequelize.escape(_profile_data.region_street) +
+      ", stream = " + db.sequelize.escape(_profile_data.stream) +
+      ", type_of_ppa = " + db.sequelize.escape(_profile_data.type_of_ppa) +
+      ", ppa_geodata = " +  db.sequelize.escape(_profile_data.ppa_geodata) +
+      ", ppa_address = " + db.sequelize.escape(_profile_data.ppa_address) +
+      ", travel_from_state = " + db.sequelize.escape(_profile_data.travel_from_state) +
+      ", travel_from_city = " + db.sequelize.escape(_profile_data.travel_from_city) +
+      (_profile_data.newstatecode ? ", statecode = " + db.sequelize.escape(_profile_data.newstatecode.toUpperCase()) : '') + // if there's a new statecode
+      ", accommodationornot = " +  db.sequelize.escape(_profile_data.accommodationornot) +
+      ", wantspaornot = " + db.sequelize.escape(_profile_data.wantspaornot) +
+      " WHERE statecode = " + db.sequelize.escape(_profile_data.statecode.toUpperCase()) ; // always change state code to uppercase, that's how it is in the db
 
 
-    connectionPool.query(sqlquery, function (error, results, fields) {
+    db.sequelize.query(sqlquery, function (error, results, fields) {
         if (error) {
             console.error('update profile error', error);
             reject(error); // throw error;
@@ -969,7 +969,7 @@ exports.UpdateProfile = async (_profile_data) => {
                 " UPDATE chats SET message_to = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE message_to = '" + _profile_data.statecode.toUpperCase() + "' ;" +
                 " UPDATE posts SET statecode = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE statecode = '" + _profile_data.statecode.toUpperCase() + "' ; " +
                 " UPDATE accommodations SET statecode = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE statecode = '" + _profile_data.statecode.toUpperCase() + "' ";
-            connectionPool.query(updatequery, function (error, results, fields) {
+            db.sequelize.query(updatequery, function (error, results, fields) {
                 if (error) reject(error)
                 // connected!
                 // at least ONE or ALL of these MUST update, not necessarily all that why we are using || and NOT && because it could be possible they've not chatted or posted anything at all, but they must have at least registered!
@@ -1064,7 +1064,7 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
         if (req.query.nop) {
             // should we only be getting data from info ? how about [ppas in] places table ?????????????
             // we have req.query.nop=name_of_ppa + req.query.pa=ppa_address + req.query.top=type_of_ppa // also select ppa closer to it and other relevant info we'll find later
-            connectionPool.query(mustRunQuery + "SELECT name_of_ppa, ppa_address, type_of_ppa, ppa_geodata, ppa_directions FROM info WHERE name_of_ppa = '" + req.query.nop + "'; SELECT * FROM posts WHERE type = 'sale';", function (error, results, fields) { // bring the results in ascending order
+            db.sequelize.query(mustRunQuery + "SELECT name_of_ppa, ppa_address, type_of_ppa, ppa_geodata, ppa_directions FROM info WHERE name_of_ppa = '" + req.query.nop + "'; SELECT * FROM posts WHERE type = 'sale';", function (error, results, fields) { // bring the results in ascending order
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
                 console.error(error);
                 reject(error) // throw error;
@@ -1141,7 +1141,7 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
             });
         } else if (req.query.rr) { // if it's an accomodation
             // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
-            connectionPool.query(mustRunQuery + "SELECT * FROM accommodations WHERE expire > NOW() AND rentrange = '" + req.query.rr + "' AND post_time = '" + req.query.pt + "' ; SELECT * FROM posts WHERE type = 'sale';", function (error, results, fields) {
+            db.sequelize.query(mustRunQuery + "SELECT * FROM accommodations WHERE expire > NOW() AND rentrange = '" + req.query.rr + "' AND post_time = '" + req.query.pt + "' ; SELECT * FROM posts WHERE type = 'sale';", function (error, results, fields) {
 
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
                 console.log(error);
@@ -1217,7 +1217,7 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
             })
 
         } else if (req.query.pt) { // for getting sales items
-            connectionPool.query(mustRunQuery + "SELECT * FROM posts WHERE type = 'sale'; SELECT * FROM posts WHERE statecode = ? AND post_time = ?",Object.values(req.query), function (error, results, fields) {
+            db.sequelize.query(mustRunQuery + "SELECT * FROM posts WHERE type = 'sale'; SELECT * FROM posts WHERE statecode = ? AND post_time = ?",Object.values(req.query), function (error, results, fields) {
 
                 if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
                   reject(error);
@@ -1237,7 +1237,7 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
         } else {
             // SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address,ppa_geodata FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null)
 
-            connectionPool.query("SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions FROM info \
+            db.sequelize.query("SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions FROM info \
             WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null);\
             SELECT * FROM accommodations WHERE expire > UTC_DATE() ; SELECT `geo_data`, `when` FROM places \
             WHERE geo_data != '' ; SELECT * FROM posts WHERE type = 'sale';", function (error, results, fields) {
@@ -1299,7 +1299,7 @@ exports.GetPosts = async (data) => { // we're meant to be saving every search! p
     }
 
   // console.log('search sql query ', q)
-  connectionPool.query(q, function (error, results, fields) { // bring the results in ascending order
+  db.sequelize.query(q, function (error, results, fields) { // bring the results in ascending order
 
     if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
       console.log(error);
@@ -1355,7 +1355,7 @@ exports.GetPosts = async (data) => { // we're meant to be saving every search! p
 exports.GetPlacesByTypeInOurDB = async (req) => {
     let re = await new Promise((resolve, reject) => {
     // use the ones from their service state // AND servicestate = '" + req.session.corper.servicestate + "'
-    connectionPool.query("SELECT name_of_ppa FROM info WHERE name_of_ppa != '';\
+    db.sequelize.query("SELECT name_of_ppa FROM info WHERE name_of_ppa != '';\
       SELECT ppa_address from info WHERE ppa_address != '' AND servicestate = '" + req.session.corper.servicestate + "';\
       SELECT city_town FROM info WHERE city_town != '' AND servicestate = '" + req.session.corper.servicestate + "';\
       SELECT region_street FROM info WHERE region_street != '' AND servicestate = '" + req.session.corper.servicestate + "'", function (error2, results2, fields2) {
@@ -1384,7 +1384,7 @@ exports.SearchNOPs = async (req) => {
         // also we should track where the search is from coming from
     
         // use the ones from their service state // AND servicestate = '" + req.session.corper.servicestate + "'
-        connectionPool.query("SELECT name_of_ppa, ppa_address, type_of_ppa, ppa_geodata FROM info WHERE name_of_ppa = '" + req.query.nop + "'", function (error, results, fields) {  // bring the results in ascending order
+        db.sequelize.query("SELECT name_of_ppa, ppa_address, type_of_ppa, ppa_geodata FROM info WHERE name_of_ppa = '" + req.query.nop + "'", function (error, results, fields) {  // bring the results in ascending order
 
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
               reject(error);
@@ -1462,7 +1462,7 @@ exports.SearchNOPs = async (req) => {
 exports.SearchAcc = async (req) => { // doing nothing, really
     let re = await new Promise((resolve, reject) => {
         // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
-        connectionPool.query("SELECT * FROM accommodations WHERE expire > NOW() AND rentrange = '" + req.query.rr + "' AND post_time = '" + req.query.pt + "'", function (error, results, fields) {
+        db.sequelize.query("SELECT * FROM accommodations WHERE expire > NOW() AND rentrange = '" + req.query.rr + "' AND post_time = '" + req.query.pt + "'", function (error, results, fields) {
         if (error) reject(error)
         else {
             accommodation_details = {};
@@ -1478,7 +1478,7 @@ exports.SearchAcc = async (req) => { // doing nothing, really
 
 exports.SearchDefault = async () => {
     let re = await new Promise((resolve, reject) => {
-        connectionPool.query("SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null); SELECT * FROM accommodations WHERE expire > UTC_DATE()", function (error, results, fields) {
+        db.sequelize.query("SELECT DISTINCT name_of_ppa, type_of_ppa, ppa_address, ppa_geodata, ppa_directions FROM info WHERE (name_of_ppa != '' OR null and type_of_ppa != '' OR null and ppa_address != '' OR null and ppa_geodata != '' OR null); SELECT * FROM accommodations WHERE expire > UTC_DATE()", function (error, results, fields) {
 
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
               reject(error);
@@ -1499,7 +1499,7 @@ exports.SearchDefault = async () => {
 
 exports.GetSales = async () => {
     let re = await new Promise((resolve, reject) => {
-        connectionPool.query("SELECT * FROM `posts` WHERE `type` = 'sale'", function (error, results, fields) {
+        db.sequelize.query("SELECT * FROM `posts` WHERE `type` = 'sale'", function (error, results, fields) {
 
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
               reject(error);
@@ -1517,7 +1517,7 @@ exports.GetSales = async () => {
 
 exports.GetAllSalesAndOneSale = async (req_query) => {
     let re = await new Promise((resolve, reject) => {
-        connectionPool.query("SELECT * FROM posts WHERE type = 'sale'; SELECT * FROM posts WHERE statecode = ? AND post_time = ?",Object.values(req_query), function (error, results, fields) {
+        db.sequelize.query("SELECT * FROM posts WHERE type = 'sale'; SELECT * FROM posts WHERE statecode = ? AND post_time = ?",Object.values(req_query), function (error, results, fields) {
 
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
               reject(error);
@@ -1536,7 +1536,7 @@ exports.GetAllSalesAndOneSale = async (req_query) => {
 
 exports.GiveFeedback = async (reqbody) => {
     let re = await new Promise((resolve, reject) => {
-        connectionPool.query("INSERT INTO feedback SET ?", reqbody, function (error, result, fields) {
+        db.sequelize.query("INSERT INTO feedback SET ?", reqbody, function (error, result, fields) {
             if (error) reject(error);
             else if (result.affectedRows === 1) {
                 console.log('inserted data from feedback: ', result);

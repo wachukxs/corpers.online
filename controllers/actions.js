@@ -3,17 +3,15 @@ const Busboy = require('busboy');
 const multer = require('multer');
 inspect = require('util').inspect;
 const jwt = require('jsonwebtoken')
-const bodyParser = require('body-parser'); // redundant ?
 const auth = require('../helpers/auth')
 const helpers = require('../utilities/helpers')
 const socket = require('../sockets/routes')
 const ngstates = require('../utilities/ngstates')
 const moment = require('moment');
-const query = require('../not_models/queries');
+const query = require('../utilities/queries');
 const fs = require('fs');
 const ggle = require('../helpers/uploadgdrive');
-const connectionPool = require('../not_models/db').connectionPool;
-const sequelize = require('../not_models/db').sequelize
+const db = require('../models');
 // using path module removes the buffer object from the req.files array of uploaded files,... incase we ever need this... info!
 // const path = require('path');
 
@@ -433,7 +431,7 @@ router.post('/oldprofile', auth.verifyJWT, /* bodyParser.urlencoded({
           // console.log('thumbnailLink: ', file.data.thumbnailLink);
           req.session.corper.picture_id = file.data.id // or we could add picture_id to _profile_data
 
-          connectionPool.query('UPDATE info SET picture_id = ? WHERE statecode = ?', [file.data.id, req.session.corper.statecode.toUpperCase()], function (error, results, fields) {
+          db.sequelize.query('UPDATE info SET picture_id = ? WHERE statecode = ?', [file.data.id, req.session.corper.statecode.toUpperCase()], function (error, results, fields) {
             if (error) throw error;
             else {
               console.log('updated pic')

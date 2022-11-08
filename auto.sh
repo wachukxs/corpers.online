@@ -1,6 +1,8 @@
 # will run /migrations to create the tables in our database:
 npx sequelize-cli db:migrate
 
+npx sequelize-cli db:migrate --env=production
+
 npx sequelize-cli db:migrate:undo
 
 # adding new fields
@@ -17,7 +19,7 @@ sequelize db:create
 
 # Drop database specified by configuration
 sequelize db:drop
-
+npx sequelize-cli db:migrate:undo:all --env=development
 
 # Add ejs linter to comman line
 PATH=$PATH:/Users/chuks/Documents/Work/corpers.online/node_modules/ejs-lint/node_modules/.bin

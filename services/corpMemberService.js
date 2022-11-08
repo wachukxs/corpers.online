@@ -1,16 +1,7 @@
-const CorpMember = require('../models').CorpMember
-const WaitList = require('../models').WaitList
-const Chat = require('../models').Chat
-const PPA = require('../models').PPA
-const Accommodation = require('../models').Accommodation
-const Alert = require('../models').Alert
-const Sale = require('../models').Sale
-const Media = require('../models').Media
-const Location = require('../models').Location
 const { Op } = require("sequelize");
 const helpers = require('../utilities/helpers')
 const jwt = require('jsonwebtoken')
-const sequelize = require('../not_models/db').sequelize
+const db = require('../models')
 const auth = require('../helpers/auth')
 const fs = require('fs');
 const ngstates = require('../utilities/ngstates')
@@ -43,7 +34,7 @@ module.exports = {
     create(req, res) {
         console.log('\n\ncorpMember cntrl -- create()', req.body)
         // req.body.remember: 'on' // also check if req.body.remember
-        return CorpMember
+        return db.CorpMember
           .create(req.body)
           .then(result => {
             console.log('re:', result);
@@ -116,7 +107,7 @@ module.exports = {
     unreadMessges(req, res) {
       console.log('req.params/session', req.session, req.params) // req.path is shorthand for url.parse(req.url).pathname
 
-      return Chat
+      return db.Chat
         .count({
           where: {
             message_to: req.session.corper.statecode,
@@ -129,7 +120,7 @@ module.exports = {
         .then(result => {
           console.log('\n\n\nwhat is this', req.session);
 
-          sequelize.getQueryInterface().showAllTables().then((tableObj) => {
+          db.sequelize.getQueryInterface().showAllTables().then((tableObj) => {
             console.log('\n\n\nunread messages part', req.session.corper);
             console.log(tableObj, tableObj.length);
           })
@@ -166,7 +157,7 @@ module.exports = {
 
     login(req, res) {
       console.log('\n\n\nwhat are we getting', req.body);
-      return CorpMember.findOne({
+      return db.CorpMember.findOne({
         where: { // we're gonna use email or state code soon.
           [Op.or]: [ // will use identifier
             { email: req.body.identifier.toLowerCase() },
@@ -250,7 +241,7 @@ module.exports = {
             current_year: new Date().getFullYear() // will have no need when we start using express locals
           }
 
-          CorpMember.findOne({
+          db.CorpMember.findOne({
             where: {
                 statecode: {
                     [Op.eq]: req.session.corper.statecode,
@@ -258,41 +249,41 @@ module.exports = {
             },
             include: [
               {
-                model: Media,
+                model: db.Media,
               },
               {
-                model: Sale,
+                model: db.Sale,
                 order: [
                     ['createdAt', 'ASC']
                 ],
                 include: [{
-                  model: Media,
+                  model: db.Media,
                   as: 'saleMedia'
                 }],
               },
               {
-                model: Accommodation,
+                model: db.Accommodation,
                 order: [
                     ['createdAt', 'ASC']
                 ],
                 include: [{
-                  model: Location
+                  model: db.Location
                 }, {
-                  model: Media,
+                  model: db.Media,
                   as: 'accommodationMedia'
                 }],
-                attributes: Accommodation.getAllActualAttributes()
+                attributes: db.Accommodation.getAllActualAttributes()
               },
               {
-                model: PPA,
+                model: db.PPA,
                 include: [{
-                  model: Location
+                  model: db.Location
                 }],
                 // as: 'ppa',
-                attributes: PPA.getAllActualAttributes() // hot fix (problem highlighted in ./models/ppa.js) -- > should create a PR to fix it ... related to https://github.com/sequelize/sequelize/issues/13309
+                attributes: db.PPA.getAllActualAttributes() // hot fix (problem highlighted in ./models/ppa.js) -- > should create a PR to fix it ... related to https://github.com/sequelize/sequelize/issues/13309
               }
             ],
-            attributes: CorpMember.getSafeAttributes()
+            attributes: db.CorpMember.getSafeAttributes()
         })
         // .toJSON()
         .then(_corper_sales_accommodations_ppa => {
@@ -303,16 +294,16 @@ module.exports = {
             console.log("\n\n\n\n\n\ndid we get corp member's Sales n Accommodation n ppa?", _corper_sales_accommodations_ppa);
 
             _info.corper = _corper_sales_accommodations_ppa.dataValues;
-            PPA.findAll({
+            db.PPA.findAll({
               // where: { // how do we get PPAs from only a certain state! and even narrow it down to region
               //     statecode: { // doesn't exist on PPA model.
               //         [Op.eq]: `${req.session.corper.statecode.substring(0, 2)}`, // somewhat redundant
               //     },
               // },
               include: [{
-                model: Location
+                model: db.Location
               }],
-              attributes: PPA.getAllActualAttributes() // hot fix (problem highlighted in ./models/ppa.js) -- > should create a PR to fix it ... related to https://github.com/sequelize/sequelize/issues/13309
+              attributes: db.PPA.getAllActualAttributes() // hot fix (problem highlighted in ./models/ppa.js) -- > should create a PR to fix it ... related to https://github.com/sequelize/sequelize/issues/13309
             }).then(_all_ppas => {
               _all_ppas.forEach(element => {
                 if (element.dataValues.Location) {
@@ -531,7 +522,7 @@ module.exports = {
       busboy.on('finish', async function () {
         console.log('we done parsing form, now updating', _profile_data)
 
-        let corpMemberUpdate = await CorpMember.update(
+        let corpMemberUpdate = await db.CorpMember.update(
           {
             ..._profile_data
           }
@@ -545,7 +536,7 @@ module.exports = {
           }
         )
 
-        let _corpMemberUpdate = await CorpMember.findOne(
+        let _corpMemberUpdate = await db.CorpMember.findOne(
         {
           where: {
             statecode: req.session.corper.statecode
@@ -567,9 +558,9 @@ module.exports = {
 
         // update ppa if the corp has ppa
         let corpMemberPPA = await _corpMemberUpdate.getPPA({
-          attributes: PPA.getAllActualAttributes()
+          attributes: db.PPA.getAllActualAttributes()
         });
-        console.log('\n\nis corpMemberPPA instanceof PPA ??\n\n', corpMemberPPA instanceof PPA);
+        console.log('\n\nis corpMemberPPA instanceof PPA ??\n\n', corpMemberPPA instanceof db.PPA);
         console.log('corpMemberPPA is', corpMemberPPA);
         if (corpMemberPPA) { // also check if profile data has name_of_ppa & type_of_ppa
           if (_profile_data.name_of_ppa) {
@@ -580,7 +571,7 @@ module.exports = {
           }
           
           let corpMemberPPALocation = await corpMemberPPA.getLocation(); // get PPA or use .getPPA instanch
-          console.log('\n\nis corpMemberPPALocation instanceof Location ??\n\n', corpMemberPPALocation instanceof Location);
+          console.log('\n\nis corpMemberPPALocation instanceof Location ??\n\n', corpMemberPPALocation instanceof db.Location);
           console.log('corpMemberPPALocation is', corpMemberPPALocation);
           if (corpMemberPPALocation) {
             if (_profile_data.ppa_address) {
@@ -591,7 +582,7 @@ module.exports = {
             }
             
           } else {
-            let _locationUpdate = await Location.create({
+            let _locationUpdate = await db.Location.create({
               directions: _profile_data.ppa_directions,
               address: _profile_data.ppa_address,
             })
@@ -601,16 +592,16 @@ module.exports = {
   
           }
         } else {
-          let _ppaUpdate = await PPA.create({
+          let _ppaUpdate = await db.PPA.create({
             name: _profile_data.name_of_ppa,
             type_of_ppa: _profile_data.type_of_ppa
           }, {
-            returning: PPA.getAllActualAttributes()
+            returning: db.PPA.getAllActualAttributes()
           })
 
           let ppaUpdate = await _corpMemberUpdate.setPPA(_ppaUpdate)
 
-          let _locationUpdate = await Location.create({
+          let _locationUpdate = await db.Location.create({
             directions: _profile_data.ppa_directions,
             address: _profile_data.ppa_address,
           })
@@ -625,7 +616,7 @@ module.exports = {
         
 
         try {
-          const __model = CorpMember
+          const __model = db.CorpMember
           for (let assoc of Object.keys(__model.associations)) {
             for (let accessor of Object.keys(__model.associations[assoc].accessors)) {
               console.log(__model.name + '.' + __model.associations[assoc].accessors[accessor]+'()');
@@ -633,7 +624,7 @@ module.exports = {
           }
 
 
-          const ___model = PPA
+          const ___model = db.PPA
           for (let assoc of Object.keys(___model.associations)) {
             for (let accessor of Object.keys(___model.associations[assoc].accessors)) {
               console.log(___model.name + '.' + ___model.associations[assoc].accessors[accessor]+'()');
@@ -678,7 +669,7 @@ module.exports = {
       // };
       
 
-      let corpMemberUpdate = await CorpMember.update(
+      let corpMemberUpdate = await db.CorpMember.update(
         {
           pushSubscriptionStringified: req.body
         }
@@ -695,7 +686,7 @@ module.exports = {
 
       
       try {
-        const __model = CorpMember
+        const __model = db.CorpMember
         for (let assoc of Object.keys(__model.associations)) {
           for (let accessor of Object.keys(__model.associations[assoc].accessors)) {
             console.log(__model.name + '.' + __model.associations[assoc].accessors[accessor]+'()');
@@ -801,7 +792,7 @@ module.exports = {
         _alert_data.rooms = _alert_data.rooms.toString()
         console.log("alert data", _alert_data);
 
-        Alert
+        db.Alert
           .create(_alert_data)
           .then(result => {
             console.log('_alert_data re:', result);
@@ -836,7 +827,7 @@ module.exports = {
     getPosts(req, res) {
       console.log("??????? req.query:", req.query);
       res.setHeader('Content-Type', 'application/json');
-      Sale.findAll({ // also add PPA
+      db.Sale.findAll({ // also add PPA
         where: {
             itemname: {
                 [Op.substring]: req.query.q.substring(1), // hmmm...  // remove first letter
@@ -852,20 +843,20 @@ module.exports = {
         ],
         include: [
             {
-                model: Media,
+                model: db.Media,
                 as: 'saleMedia',
                 
             },
             {
-                model: CorpMember,
+                model: db.CorpMember,
                 as: 'saleByCorper',
-                attributes: CorpMember.getSafeAttributes()
+                attributes: db.CorpMember.getSafeAttributes()
             }
         ]
     })
     .then(_sales => {
         console.log("\n\n\n\n\n\ndid we get corp member's Sales?", _sales);
-        Accommodation.findAll({ // also add PPA
+        db.Accommodation.findAll({ // also add PPA
             where: {
               [Op.or]: [
                 {
@@ -887,19 +878,19 @@ module.exports = {
             ],
             include: [
                 {
-                    model: Media,
+                    model: db.Media,
                     as: 'accommodationMedia',
                 },
                 {
-                    model: CorpMember,
+                    model: db.CorpMember,
                     as: 'accommodationByCorper',
-                    attributes: CorpMember.getSafeAttributes(), // isn't bringing the other _location & service state
+                    attributes: db.CorpMember.getSafeAttributes(), // isn't bringing the other _location & service state
                 },
                 {
-                    model: Location,
+                    model: db.Location,
                 }
             ],
-            attributes: Accommodation.getAllActualAttributes()
+            attributes: db.Accommodation.getAllActualAttributes()
         }).then(_accommodations => {
             console.log("\n\n\n\n\n\ndid we get corp member's Accommodation?", _accommodations);
             // combine both ?? sort by
@@ -973,17 +964,17 @@ module.exports = {
 
     async searchPosts(req, res) {
 
-      let _accommodations = await Accommodation.findAll({
+      let _accommodations = await db.Accommodation.findAll({
         include: [{
-          model: Location
+          model: db.Location
         }, {
-          model: Media,
+          model: db.Media,
           as: 'accommodationMedia'
         }],
-        attributes: Accommodation.getAllActualAttributes() // this is a hot fix
+        attributes: db.Accommodation.getAllActualAttributes() // this is a hot fix
       })
-      let _sales = await Sale.findAll()
-      let _location_ppas = await Location.findAll({
+      let _sales = await db.Sale.findAll()
+      let _location_ppas = await db.Location.findAll({
         where: {
           ppaId: {
             [Op.not]: null
@@ -994,30 +985,30 @@ module.exports = {
 
       // TODO, locations (and PPAs) // how do we filter PPAs
       if (req.query.type == 'accommodation') {
-        result._accommodation = await Accommodation.findOne({
+        result._accommodation = await db.Accommodation.findOne({
           where: {
             id: req.query.id
           },
           include: [{
-            model: Location
+            model: db.Location
           }, {
-            model: Media,
+            model: db.Media,
             as: 'accommodationMedia'
           }],
-          attributes: Accommodation.getAllActualAttributes() // why is `accommodationId` be looked for in the query 
+          attributes: db.Accommodation.getAllActualAttributes() // why is `accommodationId` be looked for in the query 
         })
       } else if (req.query.type == 'sale') {
-        result._sale = await Sale.findOne({
+        result._sale = await db.Sale.findOne({
           where: {
             id: req.query.id
           },
           include: [{
-            model: Media,
+            model: db.Media,
             as: 'saleMedia'
           }],
         })
       } else if (req.query.type == 'location') { // a location that is a ppa
-        result._location_ppa = await Location.findOne({
+        result._location_ppa = await db.Location.findOne({
           where: {
             id: req.query.id,
             ppaId: {
@@ -1025,9 +1016,9 @@ module.exports = {
             }
           },
           include: [{
-            model: PPA
+            model: db.PPA
           }, {
-            model: Location
+            model: db.Location
           }],
         })
       }
@@ -1044,8 +1035,7 @@ module.exports = {
     joinWaitList(req, res) {
       console.log('\n\ncorpMember cntrl -- joinWaitList()', req.body)
 
-      return WaitList.create(req.body)
-
+      return db.WaitList.create(req.body)
       .then(result => {
         console.log('re:', result);
 
@@ -1054,7 +1044,7 @@ module.exports = {
         })
 
       }, error => {
-        console.error('CorpersSignUp() error happened', error);
+        console.error('joinWaitList() error happened', error);
         console.error('----> error happened', error.errors[0], error.fields);
         res.status(500).send({
           message: "We had an error, that can be fixed."

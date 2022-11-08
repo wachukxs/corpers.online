@@ -1,13 +1,7 @@
-const query = require('../not_models/queries');
+const query = require('../utilities/queries');
 const moment = require('moment');
 
-const CorpMember = require('../models').CorpMember
-const Accommodation = require('../models').Accommodation
-const Location = require('../models').Location
-const Chat = require('../models').Chat
-const Sale = require('../models').Sale
-const Media = require('../models').Media
-const PPA = require('../models').PPA
+const db = require('../models')
 const { Op } = require("sequelize");
 
 // https://www.npmjs.com/package/socket.io#standalone
@@ -23,6 +17,7 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
     console.log('how many:', `total connection on all sockets ${io.sockets.clients.length}`, `& from timeline ${iouser.clients.length}`);
     socket.on('ferret', (asf, name, fn) => {
         // this funtion will run in the client to show/acknowledge the server has gotten the message.
+        // so we can like tell the client a message has been recorded, seen, or sent.
         fn('woot ' + name + asf);
     });
     socket.emit('callback', {
@@ -95,14 +90,14 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
         last_accommodation_time: aUTLlast
     });
 
-    /* CorpMember.findAll({ // also add PPA
+    /* db.CorpMember.findAll({ // TODO: also add PPA
         where: {
             statecode: {
                 [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`,
             }
         },
         include: [{ // how can we specify this can be empty if possible
-            model: Sale,
+            model: db.Sale,
             where: {
                 statecode: {
                     [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`, // somewhat redundant
@@ -117,7 +112,7 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
             ]
         },
         {
-            model: Accommodation,
+            model: db.Accommodation,
             where: {
                 statecode: {
                     [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`, // somewhat redundant
@@ -158,7 +153,7 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
         });
     }) */
 
-    Sale.findAll({ // also add PPA
+    db.Sale.findAll({ // TODO: also add PPA
         where: {
             statecode: {
                 [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`,
@@ -174,20 +169,20 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
         ],
         include: [
             {
-                model: Media,
+                model: db.Media,
                 as: 'saleMedia',
                 
             },
             {
-                model: CorpMember,
+                model: db.CorpMember,
                 as: 'saleByCorper',
-                attributes: CorpMember.getSafeAttributes()
+                attributes: db.CorpMember.getSafeAttributes()
             }
         ]
     })
     .then(_sales => {
         // console.log("\n\n\n\n\n\ndid we get corp member's Sales?", _sales);
-        Accommodation.findAll({ // also add PPA
+        db.Accommodation.findAll({ // TODO: also add PPA
             where: {
                 statecode: {
                     [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`,
@@ -203,19 +198,19 @@ const iouser = io.of('/user').on('connection', function (socket) { // when a new
             ],
             include: [
                 {
-                    model: Media,
+                    model: db.Media,
                     as: 'accommodationMedia',
                 },
                 {
-                    model: CorpMember,
+                    model: db.CorpMember,
                     as: 'accommodationByCorper',
-                    attributes: CorpMember.getSafeAttributes(), // isn't bringing the other _location & service state
+                    attributes: db.CorpMember.getSafeAttributes(), // isn't bringing the other _location & service state
                 },
                 {
-                    model: Location,
+                    model: db.Location,
                 }
             ],
-            attributes: Accommodation.getAllActualAttributes()
+            attributes: db.Accommodation.getAllActualAttributes()
         }).then(_accommodations => {
             // console.log("\n\n\n\n\n\ndid we get corp member's Accommodation?", _accommodations);
             // combine both ?? sort by
@@ -386,7 +381,7 @@ const iochat = io.of('/chat').on('connection', function (socket) {
          */
 
         // https://stackoverflow.com/a/51114095 // maybe create an OS MR for this.
-        Chat.findAll({
+        db.Chat.findAll({
             where: {
                 room: {
                     [Op.like]: `%${socket.handshake.query.corper.statecode}%` // is statecode
@@ -506,7 +501,7 @@ const iochat = io.of('/chat').on('connection', function (socket) {
                 /**
                  * m.to is an object of CorpMember
                  */
-                m.to = await CorpMember.findOne({
+                m.to = await db.CorpMember.findOne({
                     where: {
                       statecode: msg.to
                     }
@@ -598,7 +593,7 @@ const iochat = io.of('/chat').on('connection', function (socket) {
                 fn(m) // run on client machine
                 
                 // save message to db
-                Chat.create({
+                db.Chat.create({
                     room: room,
                     message: msg.message,
                     message_from: socket.handshake.query.corper.statecode,
@@ -639,7 +634,7 @@ const iochat = io.of('/chat').on('connection', function (socket) {
         socket.on('read', (chatInfo, fn) => {
             console.log('what is chatInfo', chatInfo);
             // UPDATE chats SET message_sent = true WHERE message IS NOT NULL AND message_from = '" + chatInfo.message_from + "' AND message_to = '" + chatInfo.message_to + "'"
-            Chat.update({
+            db.Chat.update({
                 read_by_to: true,
                 time_read: chatInfo.time_read
             }, {

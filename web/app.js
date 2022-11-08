@@ -2,7 +2,6 @@
 const express = require('express');
 const app = express();
 const cors = require('cors')
-// const bodyParser = require('body-parser'); // https://stackoverflow.com/a/24330353/9259701
 const cookieParser = require('cookie-parser')
 const session = require('express-session');
 const morgan = require('morgan');
@@ -29,30 +28,18 @@ const chatRoutes = require('../controllers/chats')
 
 const testRoutes = require('../controllers/test');
 
-// const connectionPool = require('../not_models/db').connectionPool;
-// let mySQLSessionStore = new MySQLStore({}, connectionPool);
-
-const sequelize = require('../not_models/db').sequelize
+const env = process.env.NODE_ENV || 'development';
+const config = require(__dirname + '/../config/config.js')[env];
 
 /* let sequelizeStore = new SequelizeStore({ not using because https://stackoverflow.com/questions/49476080/express-session-not-persistent-after-redirect
-    db: sequelize,
+    db: db.sequelize,
     checkExpirationInterval: 7 * 24 * 60 * 60 * 1000, // The interval at which to cleanup expired sessions in milliseconds.
     expiration: 7 * 24 * 60 * 60 * 1000  // The maximum age (in milliseconds) of a valid session.
 }).sync(); */
 
-
 const knex = Knex({
-    client: 'mysql', // || 'pg'
-    connection: {
-        host: sequelize.config.host,
-        user: sequelize.config.username,
-        password: sequelize.config.password,
-        database: sequelize.config.database,
-        ssl: {
-            require: true, // This will help you. But you will see new error
-            rejectUnauthorized: false // This line will fix new error
-        }
-    },
+    client: 'mysql',
+    connection: config,
 });
 // catching knex error // https://github.com/knex/knex/issues/407#issuecomment-52858626
 knex.raw('select 1+1 as result').then(function () {
@@ -95,6 +82,9 @@ if (app.get('env') === 'production') { // process.env.NODE_ENV
 // set morgan to log info about our requests for development use.
 app.use(morgan(morganFormat))
 
+// TODO: Remove once we're done migrating to angular
+app.set('view engine', 'ejs');
+
 // use cors
 app.use(cors())
 
@@ -121,7 +111,7 @@ app.use('/sw.js', express.static('./sw.js'));
 app.use([actionsRoutes, byeRoutes, welcomeRoutes, blogRoutes, corpMemberRoutes, saleRoutes, accommodationRoutes, chatRoutes]);
 
 app.use(testRoutes)
-// must always be last route, must be last route because of 404 pages/error
+// must be last route because of 404 pages/error
 app.use(function (req, res) {
     // check the url they navigated to that got them lost, and try to offer suggestions in the front end that'll match why they got lost... maybe they missed a letter in their statecode url
 
@@ -135,8 +125,6 @@ app.use(function (req, res) {
  */
 var helmet = require('helmet');
 app.use(helmet());
-
-const ngstates = require('../utilities/ngstates');
 
 module.exports = app; // app.get('env')
 
