@@ -163,3 +163,9 @@ todo.txt
 # template stuff
 /safario
 .DS_Store
+
+# other files
+/ebextensions
+/google
+auto.sh
+connarts_nysc.sql
