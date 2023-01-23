@@ -1,0 +1,170 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "corpers.online API",
+    "description": "Swagger documentation of our API endpoints.",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3051",
+  "basePath": "/",
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "paths": {
+    "/test": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/test/all": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/test/sth": {
+      "post": {
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/test/sth/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    }
+  },
+  "definitions": {
+    "CorpMember": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "travel_from_city": {
+          "type": "string",
+          "example": ""
+        },
+        "travel_from_state": {
+          "type": "string",
+          "example": ""
+        },
+        "accommodation_location": {
+          "type": "string",
+          "example": ""
+        },
+        "region_street": {
+          "type": "string",
+          "example": ""
+        },
+        "city_town": {
+          "type": "string",
+          "example": ""
+        },
+        "email": {
+          "type": "string",
+          "example": ""
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "2022-11-25T18:41:24.044Z"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "2022-11-25T18:41:24.044Z"
+        },
+        "lga": {
+          "type": "string",
+          "example": ""
+        },
+        "stream": {
+          "type": "string",
+          "example": ""
+        },
+        "statecode": {
+          "type": "string",
+          "example": ""
+        },
+        "mediaId": {
+          "type": "number",
+          "example": 34
+        },
+        "timeWithUs": {
+          "type": "string",
+          "example": "4 months"
+        },
+        "servicestate": {
+          "type": "string",
+          "example": ""
+        },
+        "_location": {
+          "type": "string",
+          "example": ""
+        },
+        "batch": {
+          "type": "string",
+          "example": ""
+        },
+        "pushSubscriptionStringified": {
+          "type": "string",
+          "example": "text"
+        },
+        "ppaId": {
+          "type": "number",
+          "example": 5
+        },
+        "password": {
+          "type": "string",
+          "example": ""
+        },
+        "middlename": {
+          "type": "string",
+          "example": ""
+        },
+        "firstname": {
+          "type": "string",
+          "example": ""
+        },
+        "lastname": {
+          "type": "string",
+          "example": ""
+        },
+        "wantspaornot": {
+          "type": "boolean",
+          "example": false
+        },
+        "accommodationornot": {
+          "type": "boolean",
+          "example": true
+        },
+        "public_profile": {
+          "type": "boolean",
+          "example": false
+        },
+        "bio": {
+          "type": "string",
+          "example": "text"
+        }
+      }
+    }
+  }
+}

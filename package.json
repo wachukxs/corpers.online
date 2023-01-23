@@ -6,8 +6,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified... yet\" && exit 1",
-    "custom-start": "nodemon --trace-sync-io --trace-warnings --unhandled-rejections=warn ./index.js",
-    "start": "nodemon --trace-warnings --unhandled-rejections=warn ./index.js"
+    "start:dev": "DEV=true nodemon  --ignore '*.json' --exec 'node ./swagger.js && node --trace-warnings --unhandled-rejections=warn ./index.js'",
+    "start:io": "nodemon --trace-sync-io --trace-warnings --unhandled-rejections=warn ./index.js",
+    "start": "node ./swagger.js && node --trace-warnings --unhandled-rejections=warn ./index.js",
+    "swagger-autogen": "node ./swagger.js"
   },
   "keywords": [
     "corpers",
@@ -18,9 +20,6 @@
     "know",
     "places"
   ],
-  "engines": {
-    "node": "14.15.x"
-  },
   "author": "@wachukxs, Mogaba Juliet, Chukwugbogum Blessing",
   "repository": {
     "type": "git",
@@ -44,6 +43,7 @@
     "express-session": "^1.17.0",
     "googleapis": "^39.2.0",
     "helmet": "3.22.0",
+    "joi": "^17.7.0",
     "jsonwebtoken": "8.5.1",
     "moment": "^2.24.0",
     "morgan": "^1.9.1",
@@ -58,6 +58,8 @@
     "sequelize": "^6.6.2",
     "sequelize-cli": "^6.2.0",
     "socket.io": "^2.3.0",
+    "swagger-autogen": "^2.22.0",
+    "swagger-ui-express": "^4.6.0",
     "web-push": "^3.4.5"
   },
   "eslintConfig": {},
