@@ -6,6 +6,8 @@ const auth = require('../helpers/auth')
 const fs = require('fs');
 const ngstates = require('../utilities/ngstates')
 const Busboy = require('busboy');
+const path = require('path');
+const _FILENAME = path.basename(__filename);
 
 /**
  * options for setting JWT cookies
@@ -24,11 +26,6 @@ if (process.env.NODE_ENV === 'production') {
 
 module.exports = {
     /**
-     * 
-     * @param {*} req 
-     * @param {*} res 
-     * @returns result of creating a new corpMember entry in our databasebundleRenderer.renderToStream
-     * 
      * Insert new data for a corp member in our database
      */
     create(req, res) {
@@ -41,10 +38,11 @@ module.exports = {
             req.session.corper = result.dataValues // set inside successful jwt signing
             // send welcome email
             helpers.sendSignupWelcomeEmail(req.body.email, req.body.firstname, result.dataValues.servicestate)
+
             jwt.sign({
               statecode: req.body.statecode.toUpperCase(),
               email: req.body.email.toLowerCase()
-          }, process.env.SESSION_SECRET, (err, token) => {
+            }, process.env.SESSION_SECRET, (err, token) => {
               if (err) {
                 console.error('sign up err', err)
                 throw err // ? can we throw
@@ -54,8 +52,10 @@ module.exports = {
                 
                 // problem here https://stackoverflow.com/questions/49476080/express-session-not-persistent-after-redirect
                 
-                res.cookie('_online', token, cookieOptions)
-                  .redirect(req.body.statecode.toUpperCase());
+                res.cookie('_online', token, cookieOptions).status(200).json({
+                  statecode: req.body.statecode.toUpperCase(),
+                  message: 'OK'
+                })
               }
             })
           }, error => {
@@ -1058,5 +1058,24 @@ module.exports = {
       });
 
       
+    },
+
+    getAllUsers(req, res) {
+      const _FUNCTIONNAME = 'getAllUsers'
+      console.log('hitting', _FILENAME, _FUNCTIONNAME);
+      return db.CorpMember.findAll().then(results => {
+        res.status(200).send({
+          data: results
+        })
+      }, error => {
+        res.status(500).send({
+          message: "We had an error, that can be fixed."
+        })
+      }).catch(reason => {
+        console.error('catching this err because:', reason);
+        res.status(500).send({
+          message: "We had an error, so sorry about that."
+        })
+      });
     }
 }

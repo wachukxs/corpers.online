@@ -1,4 +1,6 @@
 const Test = require('../models').Test;
+const path = require('path');
+const _FILENAME = path.basename(__filename);
 
 module.exports = {
     /**

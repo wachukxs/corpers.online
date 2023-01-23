@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken')
 const query = require('../utilities/queries');
 const db = require('../models')
 const helpers = require('../utilities/helpers')
+const path = require('path');
+const _FILENAME = path.basename(__filename);
 
 // FORMAT OF TOKEN
 // Authorization: Bearer <access_token>
@@ -45,15 +47,13 @@ module.exports.verifyJWT = (req, res, next) => {
         jwt.verify(req.cookies._online, process.env.SESSION_SECRET, function(err, decodedToken) {
             if (err) {
                 console.error(err);
-                res.redirect('/login?e')
+                res.sendStatus(502)
             } else if (helpers.statecodeFormat.test(req.path.substring(1)) && req.path !== '/' + decodedToken.statecode ) { // should we display a message asking them if they meant decodedToken.statecode ? or security flaw if we do that ?
                 console.log('catching this err because:');
-                res.status(502).redirect('/login?n=y') // [n]ot = [y]ou
+                res.sendStatus(502)
             } else /* if (!req.session.corper) */ {
 
                 /**
-                 * TODO: res.locals or req.session ?
-                 * 
                  * HOW COME PASSWORDS AREN"T hashed
                  */
                 // console.log(Object.keys(db.PPA.rawAttributes)); // here lies a problem
@@ -82,11 +82,11 @@ module.exports.verifyJWT = (req, res, next) => {
                   }, reject => {
               
                     console.log('auth autologin catching this err because:', reject);
-                    res.status(502).redirect('/login?t=a')
+                    res.sendStatus(502)
               
                   }).catch(reason => {
                     console.log('auth auto login catching this err because:', reason);
-                    res.status(502).redirect('/login?t=a')
+                    res.sendStatus(502)
                   })
                 //   .finally(() => {
                 //       console.log('\nfinlly next?');
@@ -97,7 +97,7 @@ module.exports.verifyJWT = (req, res, next) => {
     } else if (req.headers.referer && req.headers.referer.includes('/login') && req.headers['sec-fetch-site'] === 'same-origin') { // what does here do ? // if it's going to login page ...then we should remove the jwtVerify in 
         next()
     } else {
-        res.redirect('/login')
+        res.sendStatus(502)
     }
 }
 

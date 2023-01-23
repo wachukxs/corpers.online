@@ -1,6 +1,10 @@
 # a tool
 firstly for the people in khaki, then for the green and white people, then for all others.
 
+## On Security
+* https://owasp.org/www-project-top-ten/
+* 12 factor.net
+
 
 ## Roadmap and TODOs
 * Remove config/config.json and config.js from git history and repo

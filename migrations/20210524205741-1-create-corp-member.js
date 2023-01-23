@@ -13,7 +13,6 @@ module.exports = {
         references: {
           model: {
             tableName: 'PPA',
-
           },
           key: 'id'
         },

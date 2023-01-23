@@ -10,6 +10,8 @@ const socket = require('../sockets/routes')
 const ngplaces = require('../utilities/ngstates')
 inspect = require('util').inspect;
 const auth = require('../helpers/auth')
+const path = require('path');
+const _FILENAME = path.basename(__filename);
 
 // these are repeating in other services, they should be global.
 /**
@@ -131,6 +133,7 @@ module.exports = {
                 body: filestream
               };
               // how about we add meta data to the file with ggle APIs, like it is a picture of a bathroom or fridge
+
               const up = ggle.drive.files.create({ // up = [u]pload [p]romise
                 resource: fileMetadata,
                 media: media,
@@ -145,7 +148,6 @@ module.exports = {
                   _media.push(file.data.id)
         
                 }, function (err) {
-                  // Handle error
                   console.error('from where ?? google drive', err);
         
                 }
@@ -346,8 +348,6 @@ module.exports = {
           });
         
           // handle post request, add data to database... do more
-
-        
           return req.pipe(busboy)
     },
 

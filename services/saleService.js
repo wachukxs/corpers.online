@@ -7,11 +7,13 @@ const ggle = require('../helpers/uploadgdrive');
 const socket = require('../sockets/routes')
 const ngplaces = require('../utilities/ngstates')
 inspect = require('util').inspect;
+const path = require('path');
+const _FILENAME = path.basename(__filename);
 
 module.exports = {
     deleteSale(req, res) {
         
-      return Sale.destory({
+      return Sale.destroy({
         where: {
           id: req.body.id, // saleId ?
           statecode: req.session.corper.statecode.toUpperCase() 

@@ -38,9 +38,9 @@ Object.keys(db).forEach(modelName => {
  */
 sequelize.authenticate().then((e) => {
   console.log('made db connection from sequelize');
-  // sequelize.close() // after retrying ?
 }).catch((err) => {
   console.error('oopsy error connecting to db with Sequelize', err)
+  // sequelize.close() // after retrying ?
 })
 
 db.sequelize = sequelize;

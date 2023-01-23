@@ -1,5 +1,6 @@
 const fs = require('fs');
-
+const path = require('path');
+const _FILENAME = path.basename(__filename);
 // apparently, path is relative to ./index.js
 
 // https://developers.google.com/drive/api/v3/quickstart/nodejs

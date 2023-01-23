@@ -12,6 +12,8 @@ const ngplaces = require('../utilities/ngstates')
 inspect = require('util').inspect;
 const auth = require('../helpers/auth')
 const { Op } = require("sequelize");
+const path = require('path');
+const _FILENAME = path.basename(__filename);
 
 const webpush = require('web-push');
 

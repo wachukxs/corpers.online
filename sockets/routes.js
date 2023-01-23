@@ -1,6 +1,7 @@
 const query = require('../utilities/queries');
 const moment = require('moment');
-
+const path = require('path');
+const _FILENAME = path.basename(__filename);
 const db = require('../models')
 const { Op } = require("sequelize");
 
