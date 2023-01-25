@@ -1033,25 +1033,25 @@ module.exports = {
     },
 
     joinWaitList(req, res) {
-      console.log('\n\ncorpMember cntrl -- joinWaitList()', req.body)
+      const _FUNCTIONNAME = 'joinWaitList'
+      console.log('hitting', _FILENAME, _FUNCTIONNAME);
 
       return db.WaitList.create(req.body)
       .then(result => {
-        console.log('re:', result);
+        // console.log('re:', result);
 
         res.status(200).send({
           message: "We got that. Thanks for joining our waitlist"
         })
 
       }, error => {
-        console.error('joinWaitList() error happened', error);
-        console.error('----> error happened', error.errors[0], error.fields);
+        console.error(`ERR in ${_FILENAME} ${_FUNCTIONNAME}:`, error)
         res.status(500).send({
           message: "We had an error, that can be fixed."
         })
 
       }).catch(reason => {
-        console.error('catching this err because:', reason);
+        console.error(`Caught ERR in ${_FILENAME} ${_FUNCTIONNAME}:`, error)
         res.status(500).send({
           message: "We had an error, so sorry about that."
         })

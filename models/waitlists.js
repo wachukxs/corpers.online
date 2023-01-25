@@ -15,17 +15,30 @@ module.exports = (sequelize, DataTypes) => {
     },
     servingstate: {
       type:DataTypes.STRING,
+      allowNull: false,
     },
     comment: DataTypes.TEXT,
     middlename: DataTypes.STRING,
-    firstname: DataTypes.STRING,
+    firstname: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     lastname: DataTypes.STRING,
-    email: DataTypes.STRING,
+    email: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false,
+      validate: {
+        isEmail: true
+      }
+    },
     createdAt: {
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
+      allowNull: false,
     },
     updatedAt: {
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
+      allowNull: false,
     }
   }, {
     sequelize,

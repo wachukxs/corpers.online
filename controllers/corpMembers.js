@@ -3,6 +3,8 @@ let router = express.Router();
 const auth = require('../helpers/auth')
 const corpMemberService = require('../services').corpMemberService
 
+const dataValidation = require('../middlewares/data-validation')
+
 router.post('/signup', express.json(), corpMemberService.create);
 
 
@@ -38,7 +40,7 @@ router.get('/posts', auth.verifyJWT, corpMemberService.getPosts);
 
 router.get('/search', auth.checkJWT, corpMemberService.searchPosts);
 
-router.post('/join-waitlist', express.json(), corpMemberService.joinWaitList)
+router.post('/join-waitlist', express.json(), dataValidation.joinWaitListDataValidation, corpMemberService.joinWaitList)
 
 
 module.exports = router;
