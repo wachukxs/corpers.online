@@ -2,8 +2,8 @@ let express = require('express');
 let router = express.Router();
 const auth = require('../helpers/auth')
 
-const accommodationService = require('../services').accommodationService
-const alertService = require('../services').alertService
+const accommodationService = require('../services/accommodationService')
+const alertService = require('../services/alertService')
 
 // should rename to delete/accommodation ...other can be add/accommodation, /sale etc. then of course group them
 router.post('/deleteaccommodation', auth.verifyJWT, express.json(), accommodationService.delete);

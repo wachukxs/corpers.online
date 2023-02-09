@@ -13,7 +13,7 @@ router.get('/logout', function (req, res) {
       res.cookie('_online', '', { // clear the JWT value
         maxAge: 1 // remove the JWT ASAP
       })
-      res.redirect('/');
+      res.sendStatus(200);
     });
   
 });

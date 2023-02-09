@@ -36,11 +36,14 @@ module.exports.verifyToken = (req, res, next) => {
  * a middleware to verify jwt cookies in req object, to further authenticate users(corpers). use to protect routes
  */
 module.exports.verifyJWT = (req, res, next) => {
+    const _FUNCTIONNAME = 'updateProfilePhoto'
+    console.log('hitting', _FILENAME, _FUNCTIONNAME);
+    
     // Cookies that have not been signed
     // console.log('Cookies: ', req.cookies)
     // Cookies that have been signed
     // console.log('Signed Cookies: ', req.signedCookies)
-    if (req.cookies._online) { // trying to access dashboard directly
+    if (process.env.DEV && process.env.DEV != 'true' && req.cookies._online) { // trying to access dashboard directly
         console.log('coming from', req.path);
         // console.log('\n\n req.session.corper is', req.session);
         // we could also use req.cookies, but req.signedCookies is just an extra layer of security
@@ -94,10 +97,8 @@ module.exports.verifyJWT = (req, res, next) => {
                 //   })
             }
         })
-    } else if (req.headers.referer && req.headers.referer.includes('/login') && req.headers['sec-fetch-site'] === 'same-origin') { // what does here do ? // if it's going to login page ...then we should remove the jwtVerify in 
-        next()
     } else {
-        res.sendStatus(502)
+        next()
     }
 }
 
@@ -115,6 +116,9 @@ module.exports.verifyJWT = (req, res, next) => {
  * In pages like /search, helping to pre-populate corper object
  */
 module.exports.checkJWT = (req, res, next) => {
+    const _FUNCTIONNAME = 'updateProfilePhoto'
+    console.log('hitting', _FILENAME, _FUNCTIONNAME);
+
     // Cookies that have not been signed
     // console.log('Cookies: ', req.cookies)
     
@@ -127,7 +131,7 @@ module.exports.checkJWT = (req, res, next) => {
         jwt.verify(req.cookies._online, process.env.SESSION_SECRET, function(err, decodedToken) {
             console.info('\n\nveriffyiinnng')
             if (err) {
-                next()
+                res.sendStatus(502)
             } else {
                 /**
                  * TODO: remove query . auto loagin
@@ -164,6 +168,9 @@ module.exports.maxAge = 365 * (1000 * 60 * 60 * 24) // days * (1 sec * 60 secs *
  * because we want to keep our codebase async, calling this method this way isn't async
  */
 module.exports.createJWT = (statecode) => {
+    const _FUNCTIONNAME = 'updateProfilePhoto'
+    console.log('hitting', _FILENAME, _FUNCTIONNAME);
+    
     return jwt.sign({ statecode }, process.env.SESSION_SECRET, {
         expiresIn: this.maxAge
     })

@@ -44,6 +44,6 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'WaitList',
   });
-  // WaitList.sync({ alter: true })
+  WaitList.sync({ alter: true })
   return WaitList;
 };

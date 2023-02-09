@@ -2,9 +2,8 @@ let express = require('express');
 let router = express.Router();
 const auth = require('../helpers/auth')
 
-const saleService = require('../services').saleService
-const alertService = require('../services').alertService
-
+const saleService = require('../services/saleService')
+const alertService = require('../services/alertService')
 
 router.post('/deletesale', auth.verifyJWT, express.json(), saleService.deleteSale); // should def add alert logic here too
 

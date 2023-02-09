@@ -21,7 +21,7 @@ const TOKEN_PATH = './google/token.json'; // LINE 3 COMMENT
 
 // Load client secrets from a local file.
 fs.readFile('./google/credentials.json', (err, content) => { // LINE 3 COMMENT
-  if (err) return console.log('Error loading client secret file:', err);
+  if (err) return console.log('Error loading client secret file:', err); // have fallback here.
 
   console.log('GOT GGLE CRED')
 

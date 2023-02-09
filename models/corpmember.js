@@ -173,10 +173,12 @@ module.exports = (sequelize, DataTypes) => {
     email: DataTypes.STRING,
     wantspaornot: DataTypes.BOOLEAN,
     accommodationornot: DataTypes.BOOLEAN,
-    public_profile: DataTypes.BOOLEAN,
+    public_profile: DataTypes.STRING,
+    nickname: DataTypes.STRING,
     bio: DataTypes.TEXT,
     // maybe have a session insight field of all the corp members's search histroy, liked items, (find how to figure out items they're intrested in)
   }, {
+    comment: "Corp Member Table - For everything we can store about corp members",
     sequelize,
     modelName: 'CorpMember',
     hooks: { // used to add virtual fields to dataValues object
@@ -206,15 +208,15 @@ module.exports = (sequelize, DataTypes) => {
       },
     }
   });
-/*   CorpMember.sync({ alter: true })
+  CorpMember.sync({ alter: true })
   .then((_done) => {
-    console.log(`Done syncing ${CorpMember.tableName}`, _done);
+    console.log(`Done syncing ${CorpMember.tableName}`);
   }, (_err) => {
     console.error(`err sycing ${CorpMember.tableName}:\n\n`, _err);
   })
   .catch(_reason => { // catches .VIRTUAL data type when altering db
     console.error(`caught this error while sycning ${CorpMember.tableName} table:\n\n`, _reason);
-  }) */
+  })
   return CorpMember;
 };
 
