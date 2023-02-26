@@ -61,7 +61,7 @@
     "pg": "^8.6.0",
     "pg-hstore": "^2.3.3",
     "pug": "^2.0.4",
-    "sequelize": "^6.6.2",
+    "sequelize": "^6.29.0",
     "sequelize-cli": "^6.2.0",
     "socket.io": "^2.3.0",
     "swagger-autogen": "^2.22.0",
