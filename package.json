@@ -10,7 +10,12 @@
     "start:dev": "nodemon  --ignore '*.json' --exec 'node ./swagger.js && node --trace-warnings --unhandled-rejections=warn ./index.js'",
     "start:io": "nodemon --trace-sync-io --trace-warnings --unhandled-rejections=warn ./index.js",
     "start": "node ./swagger.js && node --trace-warnings --unhandled-rejections=warn ./index.js",
-    "swagger-autogen": "node ./swagger.js"
+    "swagger-autogen": "node ./swagger.js",
+    "migrate-db": "node_modules/.bin/sequelize db:migrate",
+    "seed-db": "node_modules/.bin/sequelize db:seed:all",
+    "migrate:up": "node_modules/.bin/sequelize db:migrate",
+    "migrate:undo": "node_modules/.bin/sequelize db:migrate:undo",
+    "migrate:undo:all": "node_modules/.bin/sequelize db:migrate:undo:all"
   },
   "keywords": [
     "corpers",

@@ -27,14 +27,13 @@ webpush.setVapidDetails(
 // will never send response
 exports.checkAccommodation = async (req, res) => {
 
+  const _FUNCTIONNAME = 'checkAccommodation'
+  console.log('hitting', _FILENAME, _FUNCTIONNAME);
+  try {
 
-  let _accommodation_to_find = req._accommodation_to_save.toJSON(); // might be unneccessary re-assigning
+    let _accommodation_to_find = req._accommodation_to_save.toJSON(); // might be unneccessary re-assigning
 
   console.log('== =>', _accommodation_to_find);
-
-  console.log("\n\n\ndid reg ex work?", new RegExp(_accommodation_to_find.availableRooms.join("|")
-    .padEnd(_accommodation_to_find.availableRooms.join("|").length + 1, ']')
-    .padStart(_accommodation_to_find.availableRooms.join("|").length + 3, '^[')).test('Dining room'));
 
   let _found_alerts = await db.Alert.findAll({ // is an array
     where: {
@@ -59,12 +58,11 @@ exports.checkAccommodation = async (req, res) => {
           [Op.lte]: _accommodation_to_find.roommateRent,
         }
       }),
-
-      rooms: { // [Op.regexp] (MySQL/PG only)
-        [Op.regexp]: _accommodation_to_find.availableRooms.join("|")
-          .padEnd(_accommodation_to_find.availableRooms.join("|").length + 1, ']')
-          .padStart(_accommodation_to_find.availableRooms.join("|").length + 3, '^[')
-      },
+      ...(_accommodation_to_find.availableRooms && {
+        rooms: { // [Op.regexp] (MySQL/PG only)
+          [Op.regexp]: _accommodation_to_find.availableRooms.replace(/,/g, '|')
+        }
+      }),
     },
     include: [{
       model: db.CorpMember,
@@ -193,11 +191,19 @@ exports.checkAccommodation = async (req, res) => {
     }
   }); */
 
+  } catch (error) {
+    console.log('Error in', _FILENAME, _FUNCTIONNAME);
+    console.error(error)
+  }
 
 }
 
 exports.checkSale = async (req, res) => {
-  let _sale_to_find = req._sale_to_save.toJSON(); // might be unneccessary re-assigning
+  const _FUNCTIONNAME = 'checkSale'
+  console.log('hitting', _FILENAME, _FUNCTIONNAME);
+
+  try {
+    let _sale_to_find = req._sale_to_save.toJSON(); // might be unneccessary re-assigning
 
   console.log('sale to find== =>', _sale_to_find);
 
@@ -257,5 +263,9 @@ exports.checkSale = async (req, res) => {
 
 
     }
+  }
+  } catch (error) {
+    console.log('Error in', _FILENAME, _FUNCTIONNAME);
+    console.error(error)
   }
 }

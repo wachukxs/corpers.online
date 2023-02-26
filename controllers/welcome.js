@@ -274,8 +274,7 @@ auth.verifyJWT, function (req, res) {
 });
  */
 
-router.get('/oldchat', auth.verifyJWT, function (req, res) {
-  res.set('Content-Type', 'text/html');
+router.get('/oldchat', /* auth.verifyJWT, */ function (req, res) {
   // req.query.posts.who and req.query.posts.when
 
   // to get old chats
@@ -298,6 +297,7 @@ router.get('/oldchat', auth.verifyJWT, function (req, res) {
   }).catch(reason => {
     // we hope we never get here
     console.log('what happened at /chat???', reason);
+    res.set('Content-Type', 'text/html');
     res.redirect('/login');
   })
 

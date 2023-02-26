@@ -11,6 +11,9 @@ const morgan = require('morgan');
 // initalize sequelize with session store
 // let SequelizeStore = require("connect-session-sequelize")(session.Store);
 
+const swaggerUi = require('swagger-ui-express')
+
+// might switch from using knex to SequelizeStore
 const KnexSessionStore = require('connect-session-knex')(session);
 
 const Knex = require('knex');
@@ -86,10 +89,14 @@ app.use(morgan(morganFormat))
 app.set('view engine', 'ejs');
 
 // use cors
-app.use(cors())
+app.use(cors({
+    origin: ['http://localhost:3043', 'https://corpers.online'],
+    credentials: true
+})) // response.headers['Access-Control-Allow-Credentials'] = 'true'
 
 // app.use(session(mySQLSessionOptions));
 // app.use(session(sequelizeSessionOptions));
+
 
 
 app.use(session(expressSessionOptions), );
@@ -108,9 +115,16 @@ app.use('/assets', express.static('assets'))
 app.use('/graphic', express.static('img')); // use /graphic for img folder
 app.use('/sw.js', express.static('./sw.js'));
 
-app.use([actionsRoutes, byeRoutes, welcomeRoutes, blogRoutes, corpMemberRoutes, saleRoutes, accommodationRoutes, chatRoutes]);
+// TODO: uncomment when we are ready for swagger and done removing redirects
+// app.use('(/api/v1.0)?', [actionsRoutes, byeRoutes, welcomeRoutes, blogRoutes, corpMemberRoutes, saleRoutes, accommodationRoutes, chatRoutes]);
+
+app.use('/api/v1.0', [actionsRoutes, byeRoutes, welcomeRoutes, blogRoutes, corpMemberRoutes, saleRoutes, accommodationRoutes, chatRoutes]);
 
 app.use(testRoutes)
+const swaggerFile = require('../swagger-output.json')
+// hot-fix
+app.use(['/api/v1.0/docs?', '/docs?'], swaggerUi.serve, swaggerUi.setup(swaggerFile))
+
 // must be last route because of 404 pages/error
 app.use(function (req, res) {
     // check the url they navigated to that got them lost, and try to offer suggestions in the front end that'll match why they got lost... maybe they missed a letter in their statecode url
@@ -118,12 +132,14 @@ app.use(function (req, res) {
     res.status(404).send({ message: 'hey, that url does not exist' })
 });
 
+
+
 /**
  * open https://using-umami.herokuapp.com/ to see amazing metrics
  * 
  * should we be using res.locals as opposed to req.session?
  */
-var helmet = require('helmet');
+const helmet = require('helmet');
 app.use(helmet());
 
 module.exports = app; // app.get('env')

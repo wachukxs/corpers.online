@@ -55,7 +55,7 @@ module.exports = (sequelize, DataTypes) => {
     rent: {
       type: DataTypes.FLOAT
     },
-    roommateRent: { // should we be adding Naira sign to it ?? ...lol
+    roommateRent: { // should we be adding Naira sign to it ??
       type: DataTypes.FLOAT
     },
     _rent: {
@@ -64,7 +64,7 @@ module.exports = (sequelize, DataTypes) => {
         return this.getDataValue('rent') ? Intl.NumberFormat().format(this.getDataValue('rent')) : null;
       }
     },
-    _roommateRent: { // should we be adding Naira sign to it ?? ...lol
+    _roommateRent: { // should we be adding Naira sign to it ??
       type: DataTypes.VIRTUAL,
       get() {
         return this.getDataValue('roommateRent') ? Intl.NumberFormat().format(this.getDataValue('roommateRent')) : null;
@@ -83,7 +83,7 @@ module.exports = (sequelize, DataTypes) => {
         return this.getDataValue('availableRooms').split(',');
       }
     },
-    tenure: {
+    tenure: { // what is tenure for?
       type: DataTypes.STRING,
     },
     idealRoommate: {
@@ -95,8 +95,8 @@ module.exports = (sequelize, DataTypes) => {
     occupantDescription: {
       type: DataTypes.TEXT,
     },
-    rentExpireDate: {
-      type: DataTypes.DATE, // must be greater than createdAt
+    rentExpireDate: { // must be greater than createdAt
+      type: DataTypes.DATE,
     },
     statecode: DataTypes.STRING,
     locationId: {
@@ -105,7 +105,7 @@ module.exports = (sequelize, DataTypes) => {
     type: {
       type: DataTypes.VIRTUAL,
       get() {
-        return 'accommodation';
+        return 'accommodation'; // ??
       },
       set(value) {
         throw new Error('Do not try to set the Accommodation.`type` value!');

@@ -18,4 +18,6 @@ router.post('/test/sth', auth.verifyJWT, express.urlencoded({extended: false}), 
 
 router.get('/test/sth/:id', testService.getTest);
 
+router.post('/test/form', express.urlencoded({extended: true}), testService.formTwo);
+
 module.exports = router;

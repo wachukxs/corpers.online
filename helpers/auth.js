@@ -9,7 +9,7 @@ const _FILENAME = path.basename(__filename);
 // Authorization: Bearer <access_token>
 module.exports.verifyToken = (req, res, next) => {
     // Get auth header value
-    bearerHeader = req.headers['authorization'];
+    bearerHeader = req.headers['authorization']; // TODO: shouldn't this be with an uppercase A?
     // check that bearer is not undefined
     if (!bearerHeader) { // if no authorization header is present.
         res.sendStatus(403); // we should change this later to a message or sth
@@ -36,25 +36,27 @@ module.exports.verifyToken = (req, res, next) => {
  * a middleware to verify jwt cookies in req object, to further authenticate users(corpers). use to protect routes
  */
 module.exports.verifyJWT = (req, res, next) => {
-    const _FUNCTIONNAME = 'updateProfilePhoto'
+    const _FUNCTIONNAME = 'verifyJWT'
     console.log('hitting', _FILENAME, _FUNCTIONNAME);
-    
+
     // Cookies that have not been signed
     // console.log('Cookies: ', req.cookies)
     // Cookies that have been signed
     // console.log('Signed Cookies: ', req.signedCookies)
-    if (process.env.DEV && process.env.DEV != 'true' && req.cookies._online) { // trying to access dashboard directly
+
+    console.log('req.session.corper', req.session.corper);
+
+    if (req.session.corper && req.session.corper.statecode) {
+        next()
+    } else if (process.env.DEV && process.env.DEV != 'true' && req.cookies._online) {
         console.log('coming from', req.path);
         // console.log('\n\n req.session.corper is', req.session);
         // we could also use req.cookies, but req.signedCookies is just an extra layer of security
-        jwt.verify(req.cookies._online, process.env.SESSION_SECRET, function(err, decodedToken) {
+        jwt.verify(req.cookies._online, process.env.SESSION_SECRET, function (err, decodedToken) {
             if (err) {
                 console.error(err);
                 res.sendStatus(502)
-            } else if (helpers.statecodeFormat.test(req.path.substring(1)) && req.path !== '/' + decodedToken.statecode ) { // should we display a message asking them if they meant decodedToken.statecode ? or security flaw if we do that ?
-                console.log('catching this err because:');
-                res.sendStatus(502)
-            } else /* if (!req.session.corper) */ {
+            } else {
 
                 /**
                  * HOW COME PASSWORDS AREN"T hashed
@@ -66,39 +68,36 @@ module.exports.verifyJWT = (req, res, next) => {
                     include: [ // why is it looking for ppaId in PPA model ?? cause of bug in sequelize
                         db.Media,
                         {
-                            model:db.PPA,
+                            model: db.PPA,
                             attributes: db.PPA.getAllActualAttributes() // hot fix (problem highlighted in ./models/ppa.js) -- > should create a PR to fix it ... related to https://github.com/sequelize/sequelize/issues/13309
                         },
                     ],
                     attributes: db.CorpMember.getSafeAttributes()
                 })
-                // query.AutoLogin(decodedToken.statecode)
-                .then(result => {
-                    // console.log('corper result object', result);
-                    if (result) { // sometimes, it's null ...but why though ? // on sign up it's null ...
-                        req.session.corper = result.dataValues;
-                        next()
-                    } else { // else what ?
-                        throw new Error('Could not find corper')
-                    }
+                    // query.AutoLogin(decodedToken.statecode)
+                    .then(result => {
+                        // console.log('corper result object', result);
+                        if (result) { // sometimes, it's null ...but why though ? // on sign up it's null ...
+                            req.session.corper = result.dataValues;
+                            next()
+                        } else {
+                            res.sendStatus(502)
+                            console.error('Could not find corper')
+                        }
 
-                  }, reject => {
-              
-                    console.log('auth autologin catching this err because:', reject);
-                    res.sendStatus(502)
-              
-                  }).catch(reason => {
-                    console.log('auth auto login catching this err because:', reason);
-                    res.sendStatus(502)
-                  })
-                //   .finally(() => {
-                //       console.log('\nfinlly next?');
-                //       // next() // very crucial
-                //   })
+                    }, reject => {
+
+                        console.log('auth autologin catching this err because:', reject);
+                        res.sendStatus(502)
+
+                    }).catch(reason => {
+                        console.log('auth auto login catching this err because:', reason);
+                        res.sendStatus(502)
+                    })
             }
         })
     } else {
-        next()
+        res.sendStatus(401)
     }
 }
 
@@ -121,14 +120,14 @@ module.exports.checkJWT = (req, res, next) => {
 
     // Cookies that have not been signed
     // console.log('Cookies: ', req.cookies)
-    
+
     // Cookies that have been signed
     // console.log('Signed Cookies: ', req.signedCookies)
     if (req.session.corper) {
         next()
     } else if (req.cookies._online) {
         // we could also use req.cookies, but req.signedCookies is just an extra layer of security
-        jwt.verify(req.cookies._online, process.env.SESSION_SECRET, function(err, decodedToken) {
+        jwt.verify(req.cookies._online, process.env.SESSION_SECRET, function (err, decodedToken) {
             console.info('\n\nveriffyiinnng')
             if (err) {
                 res.sendStatus(502)
@@ -139,13 +138,13 @@ module.exports.checkJWT = (req, res, next) => {
                 query.AutoLogin(decodedToken.statecode).then(result => {
                     console.info('\n\n\n\ninnnnn')
                     req.session.corper = result.response[0];
-                  }, reject => {
-                    // next() // no need
-                  }).catch(reason => {
-                    // next() // no need
-                  }).finally(() => {
-                      next()
-                  })
+
+                    next()
+                }, reject => {
+                    res.sendStatus(502)
+                }).catch(reason => {
+                    res.sendStatus(502)
+                })
             }
         })
     } else {
@@ -170,7 +169,7 @@ module.exports.maxAge = 365 * (1000 * 60 * 60 * 24) // days * (1 sec * 60 secs *
 module.exports.createJWT = (statecode) => {
     const _FUNCTIONNAME = 'updateProfilePhoto'
     console.log('hitting', _FILENAME, _FUNCTIONNAME);
-    
+
     return jwt.sign({ statecode }, process.env.SESSION_SECRET, {
         expiresIn: this.maxAge
     })

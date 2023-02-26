@@ -4,7 +4,7 @@ const {
 } = require('sequelize');
 const moment = require('moment');
 module.exports = (sequelize, DataTypes) => {
-  class Chat extends Model {
+  class Career extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,22 +12,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Chat.belongsTo(models.Media, { // means Chat have a mediaId
-        foreignKey: 'mediaId'
-      })
-
-      Chat.belongsTo(models.CorpMember, {
-        foreignKey: 'message_to',
-        targetKey: 'statecode'
-      })
-
-      Chat.belongsTo(models.CorpMember, {
-        foreignKey: 'message_from',
-        targetKey: 'statecode'
-      })
     }
   };
-  Chat.init({
+  Career.init({
     id: {
       allowNull: false,
       autoIncrement: true,
@@ -66,13 +53,13 @@ module.exports = (sequelize, DataTypes) => {
         return moment(this.getDataValue('createdAt')).fromNow();
       },
       set(value) {
-        throw new Error('Do not try to set the Chat.`age` value!');
+        throw new Error('Do not try to set the Career.`age` value!');
       }
     }
   }, {
     sequelize,
     modelName: 'Career',
   });
-  // Chat.sync({ alter: true })
-  return Chat;
+  // Career.sync({ alter: true })
+  return Career;
 };

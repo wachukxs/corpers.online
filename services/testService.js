@@ -11,7 +11,7 @@ const _FILENAME = path.basename(__filename);
  * needs body parser of busboy to parse html input forms
  */
 exports.create = (req, res) => {
-  const _FUNCTIONNAME = 'updateProfilePhoto'
+  const _FUNCTIONNAME = 'create'
   console.log('hitting', _FILENAME, _FUNCTIONNAME);
 
   console.log('test cntrl --', req.body)
@@ -25,7 +25,7 @@ exports.create = (req, res) => {
 }
 
 exports.all = (req, res) => {
-  const _FUNCTIONNAME = 'updateProfilePhoto'
+  const _FUNCTIONNAME = 'all'
   console.log('hitting', _FILENAME, _FUNCTIONNAME);
 
   return db.Test
@@ -35,7 +35,7 @@ exports.all = (req, res) => {
 }
 
 exports.getTest = (req, res) => {
-  const _FUNCTIONNAME = 'updateProfilePhoto'
+  const _FUNCTIONNAME = 'getTest'
   console.log('hitting', _FILENAME, _FUNCTIONNAME);
   
   return db.Test.findAll({
@@ -45,4 +45,13 @@ exports.getTest = (req, res) => {
   })
     .then(_tests => res.status(200).send(_tests))
     .catch(error => res.status(400).send(error));
+}
+
+exports.formTwo = (req, res) => {
+  const _FUNCTIONNAME = 'formTwo'
+  console.log('hitting', _FILENAME, _FUNCTIONNAME);
+
+  console.log('data', req.body);
+  
+  res.sendStatus(200)
 }
