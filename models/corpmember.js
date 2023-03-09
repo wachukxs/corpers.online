@@ -107,7 +107,7 @@ module.exports = (sequelize, DataTypes) => {
     batch: DataTypes.STRING,
     statecode: {
       type: DataTypes.STRING,
-      unique: true,
+      unique: 'statecode',
       set(value) { // not needed here??
         this.setDataValue('statecode', value.toUpperCase());
       }
