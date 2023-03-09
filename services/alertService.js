@@ -2,7 +2,6 @@ const db = require('../models')
 const helpers = require('../utilities/helpers')
 const Busboy = require('busboy');
 const ggle = require('../helpers/uploadgdrive');
-const socket = require('../sockets/routes')
 const ngplaces = require('../utilities/ngstates')
 inspect = require('util').inspect;
 const auth = require('../helpers/auth')

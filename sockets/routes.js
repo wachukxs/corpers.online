@@ -9,8 +9,22 @@ const { Op } = require("sequelize");
 const io = require('socket.io')();
 // find a more authentic way to calculate the numbers of corpers online using io(/user) --so even if they duplicate pages, it won't double count
 
+io.of('/').on('connection', (socket) => {
+    console.log('a user connected');
+    socket.on('hi', (msg) => {
+        io.emit('hi', `from server: ${msg}`);
+    });
+    socket.on('disconnect', () => {
+      console.log('user disconnected');
+    });
+});
+
 // change all "iouser" to "io.of('/user')" ...?
-const iouser = io.of('/user').on('connection', function (socket) { // when a new user is in the TIMELINE
+const iouser = io.of('/corp-member').on('connection', (socket) => { // when a new user is in the TIMELINE
+    console.log('New connection on /corp-member.');
+    socket.on('hi', (msg) => {
+        io.emit('hi', `from server: ${msg}`);
+    });
     // let's do this first cause socket.handshake.query comes as sting ... will fix later
     socket.handshake.query.corper = JSON.parse(socket.handshake.query.corper)
 

@@ -79,5 +79,8 @@
       "/sw.js",
       "/serviceWorkerNotification.js"
     ]
+  },
+  "devDependencies": {
+    "@types/socket.io": "^3.0.2"
   }
 }

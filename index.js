@@ -15,7 +15,7 @@ const server = http.createServer(app);
 
 // https://openclassrooms.com/en/courses/2504541-ultra-fast-applications-using-node-js/2505653-socket-io-let-s-go-to-real-time#/id/r-2505512
 const io = require('./sockets/routes');
-io.listen(server);
+io.attach(server); // knew this from https://blog.devgenius.io/integrating-socket-io-in-nodejs-application-8e6da4f5930e
 
 server.listen(port, () => { // auto change port if port is already in use, handle error gracefully
     console.log('node server running on %s mode, listening on port :%s', app.get('env'), port);
