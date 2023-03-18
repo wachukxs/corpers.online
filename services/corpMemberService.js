@@ -166,7 +166,6 @@ exports.login = (req, res) => {
   const _FUNCTIONNAME = 'login'
   console.log('hitting', _FILENAME, _FUNCTIONNAME);
 
-  console.log('\n\n\nwhat are we getting', req.body);
   return db.CorpMember.findOne({
     where: { // we're gonna use email or state code soon.
       [Op.or]: [ // will use username
@@ -179,11 +178,10 @@ exports.login = (req, res) => {
   }).then(
     result => { // result is null if not statecode or email exists ... also tell when it's statecode or email that doesn't exist
 
-      console.log('\n\n\n\nlogin we good', result);
+      console.log('\n\n\n\nlogin we good');
       if (result && result.dataValues.password === req.body.password) { // password match
         result.dataValues.password = result.dataValues.password.replace(/[a-zA-Z0-9]/ig, '*') // mask the password (most of it for now)
-        console.log('do we have what we want ?', result.dataValues._location);
-
+        
         req.session.corper = result.dataValues
         jwt.sign({
           statecode: result.dataValues.statecode,
@@ -195,7 +193,7 @@ exports.login = (req, res) => {
           } else {
             // res.setHeader('Set-Cookie', 'name=value')
             res.cookie('_online', token, cookieOptions)
-            console.log('we\'re moving', req.session);
+            console.log('Logged In', req.session.corper?.statecode?.toUpperCase());
             /* req.session.save(function(err) { // hate this
               console.log("saved session");
             }) */
@@ -858,7 +856,7 @@ exports.createAlert = (req, res) => {
         _alert_data['type'] = val;
         break;
       default: // for things like statecode
-        _alert_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
+        _alert_data[fieldname] = val;
         break;
     }
 

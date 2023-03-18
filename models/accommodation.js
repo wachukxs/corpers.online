@@ -53,7 +53,8 @@ module.exports = (sequelize, DataTypes) => {
     // address: DataTypes.STRING,
     // directions: DataTypes.TEXT,
     rent: {
-      type: DataTypes.FLOAT
+      type: DataTypes.FLOAT,
+      allowNull: false,
     },
     roommateRent: { // should we be adding Naira sign to it ??
       type: DataTypes.FLOAT
@@ -72,10 +73,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     rentRange: {
       type: DataTypes.ENUM,
-      values: ['monthly', 'quarterly', 'yearly']
+      values: ['monthly', 'quarterly', 'yearly'],
+      allowNull: false,
     },
     accommodationType: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     availableRooms: {
       type: DataTypes.STRING,

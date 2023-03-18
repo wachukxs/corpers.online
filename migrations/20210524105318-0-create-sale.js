@@ -17,6 +17,9 @@ module.exports = {
       mediaId: {
         type: Sequelize.INTEGER,
       },
+      minPrice: {
+        type: Sequelize.INTEGER,
+      },
       price: {
         type: Sequelize.FLOAT
       },

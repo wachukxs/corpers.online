@@ -4,7 +4,6 @@ const Busboy = require('busboy');
 const ggle = require('../helpers/uploadgdrive');
 const socket = require('../sockets/routes')
 const ngplaces = require('../utilities/ngstates')
-inspect = require('util').inspect;
 const auth = require('../helpers/auth')
 const path = require('path');
 const _FILENAME = path.basename(__filename);
@@ -61,7 +60,7 @@ exports.create = (req, res, next) => {
       headers: req.headers,
       limits: { // set fields, fieldSize, and fieldNameSize later (security)
         files: 12, // don't upload more than 12 media files
-        fileSize: 50 * 1024 * 1024 // 50 MB
+        fileSize: 50 * 1024 * 1024 // 50 MB TODO: Review if we really want limit to be 50mb ... seems too high
       }
     });
     let _media = []; // good, because we re-initialize on new post
@@ -70,7 +69,7 @@ exports.create = (req, res, next) => {
     let uploadPromise = [];
     let get = true;
   
-    busboy.on('file', function (fieldname, filestream, filename, transferEncoding, mimetype) {
+    busboy.on('file', function handleAccommodationFiles(fieldname, filestream, filename, transferEncoding, mimetype) {
   
       // there's also 'limit' and 'error' events https://www.codota.com/code/javascript/functions/busboy/Busboy/on
       filestream.on('limit', function () {
@@ -173,21 +172,16 @@ exports.create = (req, res, next) => {
       console.error('maybe some error that might happen', error);
     });
   
-    busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
-      console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+    busboy.on('field', function handleAccommodationFields(fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+      console.log('Field [' + fieldname + ']: value: ' + val);
       // this if block is an hot fix
-      if (fieldname === 'availableRooms') {
-        _text.availableRooms.push(val)
-        // let k = (_text.availableRooms ? _text.availableRooms : '') + `random ${index}`
-      } else if (fieldname && val) {
-        _text[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
-      }
+      _text[fieldname] = val;
       console.warn('fielddname Truncated:', fieldnameTruncated, valTruncated, transferEncoding, mimetype);
     });
   
     // answer this question: https://stackoverflow.com/questions/26859563/node-stream-data-from-busboy-to-google-drive
   
-    busboy.on('finish', async function () {
+    busboy.on('finish', async function doneHandleAccommodationFieldsAndFiles() {
       console.log('Done parsing form!', _text, " \n\n media", _media, " \n\n upload promise", uploadPromise);
       /**should we rename the names of file?
        * rename/change the file name appropriately // Date.now() part of name + get what's in the pic + file extension
@@ -377,12 +371,12 @@ exports.update = (req, res) => {
   _accommodation_data = {}
   _accommodation_data.availableRooms = []; // hot fix
   busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
-    // console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+    console.log('Field [' + fieldname + ']: value: ' + val);
 
     if (fieldname === 'rooms') {
       _accommodation_data['availableRooms'].push(val)
     } else {
-      _accommodation_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
+      _accommodation_data[fieldname] = val;
     }
     console.warn(fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype);
   });

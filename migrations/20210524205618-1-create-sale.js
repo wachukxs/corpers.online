@@ -31,6 +31,9 @@ module.exports = {
       itemname: {
         type: Sequelize.STRING
       },
+      minPrice: {
+        type: Sequelize.INTEGER,
+      },
       price: {
         type: Sequelize.FLOAT
       },

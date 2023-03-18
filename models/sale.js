@@ -37,8 +37,17 @@ module.exports = (sequelize, DataTypes) => {
         key: 'statecode'
       }
     }, // need it ?
-    itemname: DataTypes.STRING,
-    price: DataTypes.FLOAT,
+    itemname: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    minPrice: {
+      type: DataTypes.INTEGER,
+    },
+    price: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+    },
     _price: {
       type: DataTypes.VIRTUAL,
       get() {
@@ -49,7 +58,7 @@ module.exports = (sequelize, DataTypes) => {
     mediaId: {
       type:DataTypes.INTEGER
     },
-    age: {
+    _age: {
       type: DataTypes.VIRTUAL,
       get() {
         return moment(this.getDataValue('createdAt')).fromNow();
@@ -58,7 +67,7 @@ module.exports = (sequelize, DataTypes) => {
         throw new Error('Do not try to set the Sale.`age` value!');
       }
     },
-    last_updated_age: { // do we need this ? // uhmmm maybe for when they change price, plus we know if it's still available and how fresh it is since the corp member(original poster) is still interacting with it
+    lastUpdatedAge: { // do we need this ? // uhmmm maybe for when they change price, plus we know if it's still available and how fresh it is since the corp member(original poster) is still interacting with it
       type: DataTypes.VIRTUAL,
       get() {
         return moment(this.getDataValue('updatedAt')).fromNow();
@@ -67,7 +76,7 @@ module.exports = (sequelize, DataTypes) => {
         throw new Error('Do not try to set the `last_updated_age` value!');
       }
     },
-    type: {
+    _type: {
       type: DataTypes.VIRTUAL,
       get() {
         return 'sale';

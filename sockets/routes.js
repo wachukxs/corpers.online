@@ -10,12 +10,10 @@ const io = require('socket.io')();
 // find a more authentic way to calculate the numbers of corpers online using io(/user) --so even if they duplicate pages, it won't double count
 
 io.of('/').on('connection', (socket) => {
-    console.log('a user connected');
     socket.on('hi', (msg) => {
         io.emit('hi', `from server: ${msg}`);
     });
     socket.on('disconnect', () => {
-      console.log('user disconnected');
     });
 });
 

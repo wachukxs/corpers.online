@@ -85,12 +85,9 @@ if (app.get('env') === 'production') { // process.env.NODE_ENV
 // set morgan to log info about our requests for development use.
 app.use(morgan(morganFormat))
 
-// TODO: Remove once we're done migrating to angular
-app.set('view engine', 'ejs');
-
 // use cors
 app.use(cors({
-    origin: ['http://localhost:3043', 'https://corpers.online'],
+    origin: ['http://localhost:3043', 'https://corpers.online', /http\:\/\/192\.168\.\d{1,3}.\d{1,3}\:\d{4}$/], // the regex is for angular local-serve env.
     credentials: true
 })) // response.headers['Access-Control-Allow-Credentials'] = 'true'
 
@@ -111,9 +108,9 @@ app.locals.email = process.env.THE_EMAIL;
 app.use(cookieParser(process.env.SESSION_SECRET))
 
 // https://stackoverflow.com/a/55787532/9259701
-app.use('/assets', express.static('assets'))
-app.use('/graphic', express.static('img')); // use /graphic for img folder
-app.use('/sw.js', express.static('./sw.js'));
+// app.use('/assets', express.static('assets'))
+// app.use('/graphic', express.static('img')); // use /graphic for img folder
+// app.use('/sw.js', express.static('./sw.js'));
 
 // TODO: uncomment when we are ready for swagger and done removing redirects
 // app.use('(/api/v1.0)?', [actionsRoutes, byeRoutes, welcomeRoutes, blogRoutes, corpMemberRoutes, saleRoutes, accommodationRoutes, chatRoutes]);

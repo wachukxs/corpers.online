@@ -84,6 +84,7 @@ module.exports = (sequelize, DataTypes) => {
     city_town: DataTypes.STRING,
     email: {
       type:DataTypes.STRING,
+      unique: 'email',
       set(value) {
         this.setDataValue('email', value.toLowerCase());
       }
@@ -170,7 +171,6 @@ module.exports = (sequelize, DataTypes) => {
     middlename: DataTypes.STRING,
     firstname: DataTypes.STRING,
     lastname: DataTypes.STRING,
-    email: DataTypes.STRING,
     wantspaornot: DataTypes.BOOLEAN,
     accommodationornot: DataTypes.BOOLEAN,
     public_profile: DataTypes.STRING,
