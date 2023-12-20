@@ -14,17 +14,17 @@ module.exports = {
       type_of_ppa: {
         type: Sequelize.STRING
       },
-      createdAt: {
+      media_id: {
+        type: Sequelize.INTEGER,
+      },
+      location_id: {
+        type: Sequelize.INTEGER
+      },
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      mediaId: {
-        type: Sequelize.INTEGER,
-      },
-      locationId: {
-        type: Sequelize.INTEGER
-      },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       }

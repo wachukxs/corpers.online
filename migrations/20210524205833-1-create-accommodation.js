@@ -17,10 +17,10 @@ module.exports = {
       rent: {
         type: Sequelize.FLOAT
       },
-      roommateRent: {
+      roommate_rent: {
         type: Sequelize.FLOAT
       },
-      mediaId: {
+      media_id: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -29,7 +29,7 @@ module.exports = {
           key: 'id'
         },
       },
-      locationId: {
+      location_id: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -38,46 +38,50 @@ module.exports = {
           key: 'id'
         },
       },
-      rentRange: {
+      rent_interval: {
         type: Sequelize.ENUM,
         values: ['monthly', 'quarterly', 'yearly']
       },
-      accommodationType: {
+      accommodation_type: {
         type: Sequelize.STRING,
       },
-      availableRooms: {
+      available_rooms: {
         type: Sequelize.STRING,
       },
       tenure: {
         type: Sequelize.STRING,
       },
-      idealRoommate: {
+      ideal_roommate: {
         type: Sequelize.TEXT,
       },
-      roommateRent: {
+      roommate_rent: {
         type: Sequelize.FLOAT,
       },
-      occupantDescription: {
+      occupant_description: {
         type: Sequelize.TEXT,
       },
-      rentExpireDate: {
+      rent_expire_date: {
         type: Sequelize.DATE,
       },
-      statecode: {
+      state_code: {
         type: Sequelize.STRING,
         references: {
           model: {
             tableName: 'CorpMembers',
             
           },
-          key: 'statecode'
+          key: 'state_code'
         },
       },
-      createdAt: {
+      is_draft: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       }
@@ -88,15 +92,15 @@ module.exports = {
   down: async (queryInterface, Sequelize) => {
 
     // https://github.com/sequelize/sequelize/issues/2554#issuecomment-365383347
-    await queryInterface.removeColumn('Accommodation', 'rentRange').catch(err => {console.error('caught down 1', err);});
-    await queryInterface.sequelize.query('DROP TYPE "enum_Accommodation_rentRange";').catch(err => {console.error('caught down 1', err);});
+    await queryInterface.removeColumn('Accommodation', 'rentInterval').catch(err => {console.error('caught down 1', err);});
+    await queryInterface.sequelize.query('DROP TYPE "enum_Accommodation_rentInterval";').catch(err => {console.error('caught down 1', err);});
     await queryInterface.dropTable('Accommodation');
     /**
-     * To prevent error: (node:10501) UnhandledPromiseRejectionWarning: SequelizeDatabaseError: type "enum_Accommodation_rentRange" already exists
+     * To prevent error: (node:10501) UnhandledPromiseRejectionWarning: SequelizeDatabaseError: type "enum_Accommodation_rentInterval" already exists
      * 1. https://stackoverflow.com/questions/60898055/unhandled-rejection-sequelizedatabaseerror-type-enum-already-exists
      * 2. https://stackoverflow.com/questions/45437924/drop-and-create-enum-with-sequelize-correctly
      */
-    // await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_Accommodation_rentRange";');
+    // await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_Accommodation_rentInterval";');
 
     // https://github.com/sequelize/sequelize/issues/2554
     // await queryInterface.dropAllEnums();

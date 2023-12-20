@@ -20,7 +20,7 @@ module.exports = {
       message_to: {
         type: Sequelize.STRING,
       },
-      mediaId: {
+      media_id: {
         type: Sequelize.INTEGER,
       },
       time: {
@@ -38,11 +38,11 @@ module.exports = {
       message_sent: {
         type: Sequelize.BOOLEAN
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       }

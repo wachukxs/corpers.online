@@ -11,28 +11,28 @@ module.exports = {
       directions: {
         type: Sequelize.TEXT
       },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      mediaId: {
+      media_id: {
         type: Sequelize.INTEGER,
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
       },
       address: {
         type: Sequelize.STRING
       },
-      ppaId: {
+      ppa_id: {
         type: Sequelize.INTEGER,
       },
-      accommodationId: {
+      accommodation_id: {
         type: Sequelize.INTEGER,
       },
-      CorpMemberId: {
+      corp_member_id: {
         type: Sequelize.INTEGER
+      },
+      created_at: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updated_at: {
+        allowNull: false,
+        type: Sequelize.DATE
       },
     });
   },

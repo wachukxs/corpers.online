@@ -26,7 +26,8 @@ const iouser = io.of('/corp-member').on('connection', (socket) => { // when a ne
     // let's do this first cause socket.handshake.query comes as sting ... will fix later
     socket.handshake.query.corper = JSON.parse(socket.handshake.query.corper)
 
-    socket.join(socket.handshake.query.statecode.substring(0, 2));
+    // join State room
+    socket.join(socket.handshake.query.state_code.substring(0, 2));
     console.log('how many:', `total connection on all sockets ${io.sockets.clients.length}`, `& from timeline ${iouser.clients.length}`);
     socket.on('ferret', (asf, name, fn) => {
         // this funtion will run in the client to show/acknowledge the server has gotten the message.
@@ -53,7 +54,7 @@ const iouser = io.of('/corp-member').on('connection', (socket) => { // when a ne
 
     // when any user connects, send them (previous) posts in the db before now (that isn't in their timeline)
     // find a way to handle images and videos
-    /** sender, statecode, type, text, price, location, post_time, input_time */
+    /** sender, state_code, type, text, price, location, post_time, input_time */
 
     // posts currently in user's time line is socket.handshake.query.[p|a]utl.split(',')
     // console.log('socket.handshake.query', typeof socket.handshake.query, socket.handshake.query.sutl)
@@ -98,45 +99,45 @@ const iouser = io.of('/corp-member').on('connection', (socket) => { // when a ne
 
     // we stopped using sender column from posts table, so it's null !
     console.log('time line info =>', {
-        statecode_substr: socket.handshake.query.statecode.substring(0, 2),
+        statecode_substr: socket.handshake.query.state_code.substring(0, 2),
         last_sale_time: sUTLlast,
         last_accommodation_time: aUTLlast
     });
 
     /* db.CorpMember.findAll({ // TODO: also add PPA
         where: {
-            statecode: {
-                [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`,
+            state_code: {
+                [Op.like]: `%${socket.handshake.query.state_code.substring(0, 2)}%`,
             }
         },
         include: [{ // how can we specify this can be empty if possible
             model: db.Sale,
             where: {
-                statecode: {
-                    [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`, // somewhat redundant
+                state_code: {
+                    [Op.like]: `%${socket.handshake.query.state_code.substring(0, 2)}%`, // somewhat redundant
                 },
                 ... (sUTLlast && {
-                    createdAt: {
+                    created_at: {
                         [Op.gt]: sUTLlast,
                 }})
             },
             order: [
-                ['createdAt', 'ASC']
+                ['created_at', 'ASC']
             ]
         },
         {
             model: db.Accommodation,
             where: {
-                statecode: {
-                    [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`, // somewhat redundant
+                state_code: {
+                    [Op.like]: `%${socket.handshake.query.state_code.substring(0, 2)}%`, // somewhat redundant
                 },
                 ... (sUTLlast && {
-                    createdAt: {
+                    created_at: {
                         [Op.gt]: sUTLlast,
                 }})
             },
             order: [
-                ['createdAt', 'ASC']
+                ['created_at', 'ASC']
             ]
         }]
     })
@@ -168,17 +169,17 @@ const iouser = io.of('/corp-member').on('connection', (socket) => { // when a ne
 
     db.Sale.findAll({ // TODO: also add PPA
         where: {
-            statecode: {
-                [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`,
+            state_code: {
+                [Op.like]: `%${socket.handshake.query.state_code.substring(0, 2)}%`,
             },
             ... (sUTLlast && {
-                createdAt: {
+                created_at: {
                     [Op.gt]: sUTLlast,
                 }
             })
         },
         order: [
-            ['createdAt', 'ASC']
+            ['created_at', 'ASC']
         ],
         include: [
             {
@@ -197,17 +198,17 @@ const iouser = io.of('/corp-member').on('connection', (socket) => { // when a ne
         // console.log("\n\n\n\n\n\ndid we get corp member's Sales?", _sales);
         db.Accommodation.findAll({ // TODO: also add PPA
             where: {
-                statecode: {
-                    [Op.like]: `%${socket.handshake.query.statecode.substring(0, 2)}%`,
+                state_code: {
+                    [Op.like]: `%${socket.handshake.query.state_code.substring(0, 2)}%`,
                 },
                 ... (aUTLlast && {
-                    createdAt: {
+                    created_at: {
                         [Op.gt]: aUTLlast,
                     }
                 })
             },
             order: [
-                ['createdAt', 'ASC']
+                ['created_at', 'ASC']
             ],
             include: [
                 {
@@ -273,7 +274,7 @@ const iouser = io.of('/corp-member').on('connection', (socket) => { // when a ne
     })
 
     /* query.FetchPostsForTimeLine({
-        statecode_substr: socket.handshake.query.statecode.substring(0, 2),
+        statecode_substr: socket.handshake.query.state_code.substring(0, 2),
         last_sale_time: sUTLlast,
         last_accommodation_time: aUTLlast
     }).then((allposts_results) => {
@@ -328,7 +329,7 @@ const iouser = io.of('/corp-member').on('connection', (socket) => { // when a ne
 
         query.InsertRowInPostsTable({
             sender: data.sender , 
-            statecode: data.statecode, 
+            state_code: data.state_code, 
             type: (data.type ? data.type : ""), 
             text: data.text, 
             media: (data.images ? q : ""), 
@@ -336,7 +337,7 @@ const iouser = io.of('/corp-member').on('connection', (socket) => { // when a ne
             location: data.location, 
             post_time: data.post_time 
         }).then(result => {
-            socket.in(socket.handshake.query.statecode.substring(0, 2)).emit('boardcast message', {
+            socket.in(socket.handshake.query.state_code.substring(0, 2)).emit('boardcast message', {
                 to: 'be received by everyoneELSE',
                 post: [data] // should be an array
             });
@@ -378,14 +379,14 @@ const iochat = io.of('/chat').on('connection', function (socket) {
         for (index = 0; index < everyRoomOnline.length; index++) {
             const onlineRoom = everyRoomOnline[index];
 
-            if (onlineRoom.includes(socket.handshake.query.corper.statecode)) {
-                console.log('\nsaw onlineRoom', `${onlineRoom} is got in ${socket.handshake.query.corper.statecode}`);
+            if (onlineRoom.includes(socket.handshake.query.corper.state_code)) {
+                console.log('\nsaw onlineRoom', `${onlineRoom} is got in ${socket.handshake.query.corper.state_code}`);
                 socket.join(onlineRoom);
             }
 
         } // ON EVERY MESSAGE, WE CAN ITERATE THROUGH ALL THE CONNECTED ROOMS AND IF A ROOM CONTAINS BOTH THE .TO AND .FROM, WE SEND TO THAT ROOM BUT THIS METHOD IS INEFFICIENT, IF THE ROOM ISN'T ALREADY EXISTING, CREATE IT AND JOIN, ELSE JUST ONLY JOIN
 
-        // socket.handshake.query.to and socket.handshake.query.corper.statecode
+        // socket.handshake.query.to and socket.handshake.query.corper.state_code
 
         // [so we save traffic, a bit maybe] also select old rooms, i.e. rooms not in everyOnlineRooms, also show that these rooms[the participants] are online[maybe with green in the front end][from chat.adapter.rooms object]
         
@@ -397,7 +398,7 @@ const iochat = io.of('/chat').on('connection', function (socket) {
         db.Chat.findAll({
             where: {
                 room: {
-                    [Op.like]: `%${socket.handshake.query.corper.statecode}%` // is statecode
+                    [Op.like]: `%${socket.handshake.query.corper.state_code}%` // is state_code
                 },
                 message: {
                     [Op.not]: null
@@ -413,8 +414,8 @@ const iochat = io.of('/chat').on('connection', function (socket) {
             /* for (index = 0; index < results.length; index++) {
                 const offlineRoom = results[index].room;
 
-                if (offlineRoom.includes(socket.handshake.query.corper.statecode)) {
-                    console.log('\nsaw offlineRoom', `${offlineRoom} is got in ${socket.handshake.query.corper.statecode}`);
+                if (offlineRoom.includes(socket.handshake.query.corper.state_code)) {
+                    console.log('\nsaw offlineRoom', `${offlineRoom} is got in ${socket.handshake.query.corper.state_code}`);
                     socket.join(offlineRoom, () => {
                         console.log('\nand joined', `${offlineRoom}`);
                     });
@@ -427,8 +428,8 @@ const iochat = io.of('/chat').on('connection', function (socket) {
             console.error;('\t\t\n\n\ncatchinggg did not get all previous rooms\n\n:', reason);
         })
 
-        // SELECT DISTINCT room FROM chats WHERE room LIKE '%" + statecode + "%' AND message IS NOT NULL
-        // query.GetStatecodeChatRooms(socket.handshake.query.corper.statecode)
+        // SELECT DISTINCT room FROM chats WHERE room LIKE '%" + state_code + "%' AND message IS NOT NULL
+        // query.GetStatecodeChatRooms(socket.handshake.query.corper.state_code)
         
 
         
@@ -450,7 +451,7 @@ const iochat = io.of('/chat').on('connection', function (socket) {
          * 
          * when sockets come online, check if they have any unread message, then send it to them,
          * 
-         * the room name will be both involved parties statecode. if more, then all their statecode or something unique
+         * the room name will be both involved parties state_code. if more, then all their state_code or something unique
          * 
          * how do we know read and unread messages ?
          * 
@@ -473,17 +474,17 @@ const iochat = io.of('/chat').on('connection', function (socket) {
             fn('from server: we got the message woot ' + name + asf);
         });
 
-        /**this function checks if a corper is online, it takes the corper's statecode on a socket's query parameter and the socket namespace to check */
+        /**this function checks if a corper is online, it takes the corper's state_code on a socket's query parameter and the socket namespace to check */
         function corperonline(sc, ns) {
             console.log('checking if someone is online')
             var x = Object.keys(ns.sockets);
             var t = false; // initialise to false
             for (const s of x) {
                 
-                console.log('checking if', ns.sockets[s].handshake.query.corper.statecode, 'is online');
-                // console.log(ns.sockets[s].handshake.query, ns.sockets[s].handshake.query.corper.statecode);
-                // should be query.corper.statecode ... need change in account.ejs
-                if (ns.sockets[s].handshake.query.corper?.statecode == sc) { // if they're online
+                console.log('checking if', ns.sockets[s].handshake.query.corper.state_code, 'is online');
+                // console.log(ns.sockets[s].handshake.query, ns.sockets[s].handshake.query.corper.state_code);
+                // should be query.corper.state_code ... need change in account.ejs
+                if (ns.sockets[s].handshake.query.corper?.state_code == sc) { // if they're online
                     t = s; // true // return the socket.id
                     console.log('they are online...', s)
                     break;
@@ -503,10 +504,10 @@ const iochat = io.of('/chat').on('connection', function (socket) {
                 'to': {}
             };
 
-            if (socket.handshake.query.corper.statecode != ('' || null) && msg.to != ('' && socket.handshake.query.corper.statecode && null)) { // send message only to a particular room
+            if (socket.handshake.query.corper.state_code != ('' || null) && msg.to != ('' && socket.handshake.query.corper.state_code && null)) { // send message only to a particular room
                 /* var m = {
-                  'from': { 'statecode': socket.handshake.query.corper.statecode },
-                  'to': { 'statecode': msg.to },
+                  'from': { 'state_code': socket.handshake.query.corper.state_code },
+                  'to': { 'state_code': msg.to },
                   'it': msg
                 }; */
 
@@ -516,7 +517,7 @@ const iochat = io.of('/chat').on('connection', function (socket) {
                  */
                 m.to = await db.CorpMember.findOne({
                     where: {
-                      statecode: msg.to
+                      state_code: msg.to
                     }
                   });
                 console.log('did we get to /?', m.to);
@@ -539,9 +540,9 @@ const iochat = io.of('/chat').on('connection', function (socket) {
 
                 // THE TWO IF STATEMENTS HAVE THE SAME LOGIC BUT DIFFERENT IMPLMENTATION
 
-                if (iochat.adapter.rooms[socket.handshake.query.corper.statecode + '-' + msg.to] && c_online) {
+                if (iochat.adapter.rooms[socket.handshake.query.corper.state_code + '-' + msg.to] && c_online) {
                     // In the array!
-                    var room = socket.handshake.query.corper.statecode + '-' + msg.to;
+                    var room = socket.handshake.query.corper.state_code + '-' + msg.to;
                     console.log('is in room ?', iochat.adapter.rooms[room].sockets[socket.id]);
                     if (!iochat.adapter.rooms[room].sockets[socket.id]) { // if the sending socket is NOT in the room
 
@@ -558,10 +559,10 @@ const iochat = io.of('/chat').on('connection', function (socket) {
                         m.sent = true;
                     });
                     console.log('\n\ngot close to deliver ? 001', !m.sent)
-                } else if (iochat.adapter.rooms[msg.to + '-' + socket.handshake.query.corper.statecode] && c_online) {
+                } else if (iochat.adapter.rooms[msg.to + '-' + socket.handshake.query.corper.state_code] && c_online) {
                     // In the array!
                     console.log(socket.id, 'what ??????', c_online) // iochat.sockets[c_online].id
-                    var room = msg.to + '-' + socket.handshake.query.corper.statecode;
+                    var room = msg.to + '-' + socket.handshake.query.corper.state_code;
 
                     console.log('are in room ? sender = ', iochat.adapter.rooms[room].sockets[socket.id], 'receipent =', iochat.adapter.rooms[room].sockets[c_online]);
                     if (iochat.adapter.rooms[room].sockets[socket.id] && iochat.adapter.rooms[room].sockets[c_online]) { // if they are both online and in the room
@@ -578,9 +579,9 @@ const iochat = io.of('/chat').on('connection', function (socket) {
                     console.log('\n\ngot close to deliver ? 02', !m.sent) // something is wrong here. if new delete all messages. and a new corper open a new chat with another corper. if the initiating corper sends messages, the other corper receives, the other corpers sends messages, the initiating corper doens't receive it immeidately 
                 } else {
                     // Not in the array
-                    // then add both sockets...from and to ...to thesame room [to get the .to, find the socket that the corper.statecode is msg.to]
+                    // then add both sockets...from and to ...to thesame room [to get the .to, find the socket that the corper.state_code is msg.to]
 
-                    var room = socket.handshake.query.corper.statecode + '-' + msg.to;
+                    var room = socket.handshake.query.corper.state_code + '-' + msg.to;
 
                     if (c_online) {
                         iochat.sockets[c_online].join(room, () => {
@@ -609,15 +610,15 @@ const iochat = io.of('/chat').on('connection', function (socket) {
                 db.Chat.create({
                     room: room,
                     message: msg.message,
-                    message_from: socket.handshake.query.corper.statecode,
+                    message_from: socket.handshake.query.corper.state_code,
                     message_to: msg.to,
-                    // mediaId: , // add later
+                    // media_id: , // add later
                     time: msg.time,
                     message_sent: m.sent,
                 })
                 // query.InsertRowInChatTable({
                 //     room: room, 
-                //     message_from: socket.handshake.query.corper.statecode, 
+                //     message_from: socket.handshake.query.corper.state_code, 
                 //     message_to: msg.to, 
                 //     time: msg.time, 
                 //     message: msg.message, 

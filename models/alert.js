@@ -17,13 +17,13 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Alert.belongsTo(models.CorpMember, {
-        targetKey: 'statecode',
-        foreignKey: 'statecode',
+        targetKey: 'state_code',
+        foreignKey: 'state_code',
         as: 'alertByCorper'
       });
 
       Alert.belongsTo(models.Location, { // means PPA have a locationId
-        foreignKey: 'locationId'
+        foreignKey: 'location_id'
       })
     }
   };
@@ -37,29 +37,23 @@ module.exports = (sequelize, DataTypes) => {
     type: {
       type:DataTypes.STRING
     },
-    itemname: {
+    item_name: {
         type:DataTypes.STRING
     },
-    statecode: {
+    state_code: {
+      type:DataTypes.STRING
+    },
+    minimum_price: { // should we move to attaching currency symbol from the back end ?
       type:DataTypes.INTEGER
     },
-    minPrice: { // should we move to attaching currency symbol from the back end ?
-      type:DataTypes.INTEGER
-    },
-    accommodationType: {
+    accommodation_type: {
         type: DataTypes.STRING,
     },
-    maxPrice: {
+    max_price: {
         type:DataTypes.INTEGER
     },
     note: {
         type:DataTypes.TEXT
-    },
-    createdAt: {
-      type: DataTypes.DATE
-    },
-    updatedAt: {
-      type: DataTypes.DATE
     },
     rooms: {
         type: DataTypes.STRING,
@@ -80,10 +74,13 @@ module.exports = (sequelize, DataTypes) => {
     //     return moment().add(30, 'days').toDate();
     //   },
     // },
-    locationId: DataTypes.INTEGER, // TODO: include location as a metric ...so we filter people leaving close to you
+    location_id: DataTypes.INTEGER, // TODO: include location as a metric ...so we filter people leaving close to you
   }, {
     sequelize,
     modelName: 'Alert',
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
   });
   // Alert.sync({ alter: true })
   return Alert;

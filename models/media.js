@@ -11,23 +11,23 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Media.hasOne(models.Sale, { // means Sale has mediaId
-        foreignKey: 'mediaId'
+      Media.hasOne(models.Sale, { // means Sale has media_id
+        foreignKey: 'media_id'
       });
       Media.hasOne(models.Accommodation, {
-        foreignKey: 'mediaId'
+        foreignKey: 'media_id'
       });
       Media.hasOne(models.CorpMember, {
-        foreignKey: 'mediaId'
+        foreignKey: 'media_id'
       });
       Media.hasOne(models.PPA, {
-        foreignKey: 'mediaId'
+        foreignKey: 'media_id'
       });
       Media.hasOne(models.Chat, {
-        foreignKey: 'mediaId'
+        foreignKey: 'media_id'
       });
       Media.hasOne(models.Location, {
-        foreignKey: 'mediaId'
+        foreignKey: 'media_id'
       });
     }
   };
@@ -41,10 +41,11 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.INTEGER
     },
+    // TODO: should URLs be like a table on it's own??
     urls: {
       type:DataTypes.STRING,
     /**
-     * takes in 'dslfjakdla29_ljadskfjask,dajsfalsjfalsflas_9289js'
+     * takes in 'dslfjakdla29_ljadskfjask, dajsfalsjfalsflas_9289js'
      * @returns [
             'https://drive.google.com/uc?id=dslfjakdla29_ljadskfjask',
             'https://drive.google.com/uc?id=dajsfalsjfalsflas_9289js'
@@ -57,16 +58,13 @@ module.exports = (sequelize, DataTypes) => {
         }) : null;
       }
     },
-    altText: DataTypes.STRING,
-    createdAt: {
-      type: DataTypes.DATE
-    },
-    updatedAt: {
-      type: DataTypes.DATE
-    },
+    alt_text: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Media',
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
   });
   // Media.sync({ alter: true })
   return Media;

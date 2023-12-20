@@ -1599,17 +1599,22 @@
                 });
 
                 // Set up our request
-                XHR1.open('POST', '/accommodations', true);
+                // -- XHR1.open('POST', '/accommodations', true);
                 // true makes it async request
 
                 // XHR1.setRequestHeader('Content-Type', 'multipart/form-data'); // this causes error [Multipart, boundary not found], it should stay commented
 
                 // The data sent is what the user provided in the form
-                XHR1.send(FD1);
+                // -- XHR1.send(FD1);
             }
 
             // Access the form element...
             let form1 = document.getElementById("accommodationform");
+
+
+            form1.addEventListener("change", function (event) {
+                console.log('evt chg', event);
+            }, false, true);
 
             // ...and take over its submit event.
             form1.addEventListener("submit", function (event) {
@@ -1661,8 +1666,8 @@
                                         </li>
                                         <li>
                                             PPA at
-                                            <a href="<%= ( corper.ppaId ? '#!/places?nop=' + corper.PPA.name : '/profile#PPA' ) %>">
-                                                <%= ( corper.ppaId ? corper.PPA.name : '?' ) %>
+                                            <a href="<%= ( corper.ppa_id ? '#!/places?nop=' + corper.PPA.name : '/profile#PPA' ) %>">
+                                                <%= ( corper.ppa_id ? corper.PPA.name : '?' ) %>
                                             </a>
                                         </li>
                                     </ul>

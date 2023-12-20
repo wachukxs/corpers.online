@@ -90,7 +90,7 @@ router.get('/oldsearch', auth.checkJWT, function (req, res) {
 
   // "/search?type=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address + "&top=" + item.type_of_ppa; // nop type pa
 
-  // "/search?type=" + item.group + "&it=" + item.input_time + "&sn=" + item.address + "&sc=" + item.statecode; // sn sc it
+  // "/search?type=" + item.group + "&it=" + item.input_time + "&sn=" + item.address + "&sc=" + item.state_code; // sn sc it
   res.set('Content-Type', 'text/html');
   // res.sendFile(__dirname + '/search and places/index.html');
   
@@ -121,7 +121,7 @@ router.get('/items', function (req, res) {
 
   // "/search?type=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address + "&top=" + item.type_of_ppa; // nop type pa
 
-  // "/search?type=" + item.group + "&it=" + item.input_time + "&sn=" + item.address + "&sc=" + item.statecode; // sn sc it
+  // "/search?type=" + item.group + "&it=" + item.input_time + "&sn=" + item.address + "&sc=" + item.state_code; // sn sc it
   res.set('Content-Type', 'text/html');
   // res.sendFile(__dirname + '/search and places/index.html');
 
@@ -276,7 +276,7 @@ router.get('/oldprofile', auth.verifyJWT, function (req, res) {
     let jkl = JSON.parse(data);
     // let's hope there's no err
 
-      let jn = req.session.corper.statecode.toUpperCase()
+      let jn = req.session.corper.state_code.toUpperCase()
 
       /**an array of all the local government in the state */
       let lgas = jkl.states[ngstates.states_short.indexOf(jn.slice(0, 2))][ngstates.states_long[ngstates.states_short.indexOf(jn.slice(0, 2))]];
@@ -284,8 +284,8 @@ router.get('/oldprofile', auth.verifyJWT, function (req, res) {
       let info = {}
       query.GetPlacesByTypeInOurDB(req).then(data => {
         info = {
-          // statecode: req.session.corper.statecode.toUpperCase(),
-          // servicestate: req.session.corper.servicestate.toUpperCase(),
+          // state_code: req.session.corper.state_code.toUpperCase(),
+          // service_state: req.session.corper.service_state.toUpperCase(),
           // batch: req.session.corper.batch,
           names_of_ppas: data.names_of_ppas, // array of objects ie names_of_ppas[i].name_of_ppa
           ppa_addresses: data.ppa_addresses,
@@ -304,7 +304,7 @@ router.get('/oldprofile', auth.verifyJWT, function (req, res) {
         
         throw reject
       }).then(_info => {
-        query.GetCorperPosts(req.session.corper.statecode.toUpperCase())
+        query.GetCorperPosts(req.session.corper.state_code.toUpperCase())
           .then(val => { // val is an array of two arrays. each of these array contain objects of posts and accomodations
             console.log(' testing', val);
             _info.sales_posts = val[0] // array of objects
@@ -318,8 +318,8 @@ router.get('/oldprofile', auth.verifyJWT, function (req, res) {
       }).catch((err) => { // we should have this .catch on every query
         console.error('our system should\'ve crashed:', err)
         info = {
-          // statecode: req.session.corper.statecode.toUpperCase(),
-          // servicestate: req.session.corper.servicestate.toUpperCase(),
+          // state_code: req.session.corper.state_code.toUpperCase(),
+          // service_state: req.session.corper.service_state.toUpperCase(),
           // batch: req.session.corper.batch,
           states: ngstates.states_long,
           lgas: lgas,
@@ -338,7 +338,7 @@ router.get('/oldprofile', auth.verifyJWT, function (req, res) {
 /**
  * handles updating the corper's profile 
  * 
- * when they change their statecode, it should redirect to their new statecode
+ * when they change their state_code, it should redirect to their new state_code
  * 
  * */
 router.post('/oldprofile', auth.verifyJWT, /* bodyParser.urlencoded({
@@ -353,7 +353,7 @@ router.post('/oldprofile', auth.verifyJWT, /* bodyParser.urlencoded({
   });
 
   _profile_data = {
-    statecode: req.session.corper.statecode
+    state_code: req.session.corper.state_code
   };
 
   busboy.on('file', function (fieldname, filestream, filename, transferEncoding, mimetype) {
@@ -431,7 +431,7 @@ router.post('/oldprofile', auth.verifyJWT, /* bodyParser.urlencoded({
           // console.log('thumbnailLink: ', file.data.thumbnailLink);
           req.session.corper.picture_id = file.data.id // or we could add picture_id to _profile_data
 
-          db.sequelize.query('UPDATE info SET picture_id = ? WHERE statecode = ?', [file.data.id, req.session.corper.statecode.toUpperCase()], function (error, results, fields) {
+          db.sequelize.query('UPDATE info SET picture_id = ? WHERE state_code = ?', [file.data.id, req.session.corper.state_code.toUpperCase()], function (error, results, fields) {
             if (error) throw error;
             else {
               console.log('updated pic')
@@ -465,7 +465,7 @@ router.post('/oldprofile', auth.verifyJWT, /* bodyParser.urlencoded({
 
   busboy.on('finish', async function () {
     // console.log('we done?')
-    query.UpdateProfile(_profile_data).then(result => { // result is the statecode
+    query.UpdateProfile(_profile_data).then(result => { // result is the state_code
       
       // update req.session
       for (var key in _profile_data) {
@@ -473,10 +473,10 @@ router.post('/oldprofile', auth.verifyJWT, /* bodyParser.urlencoded({
       }
       
       if (_profile_data.newstatecode) {
-        req.session.corper.statecode = _profile_data.newstatecode.toUpperCase();
+        req.session.corper.state_code = _profile_data.newstatecode.toUpperCase();
       }
       // console.log('new pic id?', req.session.corper.picture_id);
-      res.status(200).redirect(result); // redirect to their [new?]statecode
+      res.status(200).redirect(result); // redirect to their [new?]state_code
     }, reject => {
       console.error('what happened?', reject)
       res.status(500).redirect('/profile?e=n'); // [e]dit=[y]es|[n]o
@@ -585,7 +585,7 @@ router.post('/olddeleteaccommodation', auth.verifyJWT, function (req, res) {
 
   busboy.on('finish', async function () {
     // console.log('we done?')
-    query.DeleteAccommodation([_accommodation_data.post_time, req.session.corper.statecode.toUpperCase()]).then(result => {
+    query.DeleteAccommodation([_accommodation_data.post_time, req.session.corper.state_code.toUpperCase()]).then(result => {
       res.sendStatus(200);
     }, reject => {
       console.error('delete acc what happened?', reject)
@@ -620,7 +620,7 @@ router.post('/deletesale', auth.verifyJWT, function (req, res) {
 
   busboy.on('finish', async function () {
     // console.log('we done?')
-    query.DeleteSale([_sale_data.post_time, req.session.corper.statecode.toUpperCase()]).then(result => {
+    query.DeleteSale([_sale_data.post_time, req.session.corper.state_code.toUpperCase()]).then(result => {
       res.sendStatus(200);
     }, reject => {
       console.error('delete sale what happened?', reject)
@@ -799,7 +799,7 @@ router.post('/oldaccommodations', auth.verifyJWT, /* upload.array('roomsmedia', 
     if (!helpers.isEmpty(_text) && helpers.isEmpty(uploadPromise)) {
       console.log('what\'s _text?', _text)
       let acc_data = { // why are we boardcasting req ?
-        statecode: req.session.corper.statecode,
+        state_code: req.session.corper.state_code,
         // streetname: _text.streetname,
         type: _text.accommodationtype,
         price: _text.price,
@@ -826,8 +826,8 @@ router.post('/oldaccommodations', auth.verifyJWT, /* upload.array('roomsmedia', 
         socket.of('/user').emit('boardcast message', { // or 'accommodation'
           to: 'be received by everyoneELSE',
           post: {
-            firstname: _text.firstname,
-            statecode: req.session.corper.statecode,
+            first_name: _text.first_name,
+            state_code: req.session.corper.state_code,
             // streetname: _text.streetname,
             rentrange: _text.rentrange,
             rooms: _text.rooms,
@@ -857,7 +857,7 @@ router.post('/oldaccommodations', auth.verifyJWT, /* upload.array('roomsmedia', 
       await Promise.all(uploadPromise);
 
       query.InsertRowInAccommodationsTable({
-        statecode: req.session.corper.statecode,
+        state_code: req.session.corper.state_code,
         streetname: _text.streetname,
         type: _text.accommodationtype,
         price: _text.price,
@@ -883,8 +883,8 @@ router.post('/oldaccommodations', auth.verifyJWT, /* upload.array('roomsmedia', 
         socket.of('/user').emit('boardcast message', { // or 'accommodation'
           to: 'be received by everyoneELSE',
           post: {
-            firstname: _text.firstname,
-            statecode: req.session.corper.statecode,
+            first_name: _text.first_name,
+            state_code: req.session.corper.state_code,
             streetname: _text.streetname,
             rentrange: _text.rentrange,
             rooms: _text.rooms,
@@ -966,7 +966,7 @@ router.post('/oldaccommodations', auth.verifyJWT, /* upload.array('roomsmedia', 
             console.log('media array null ?', arraymedia);
 
             query.InsertRowInAccommodationsTable({
-              statecode: req.session.corper.statecode,
+              state_code: req.session.corper.state_code,
               streetname: req.body.streetname,
               type: req.body.accommodationtype,
               price: req.body.price,
@@ -990,7 +990,7 @@ router.post('/oldaccommodations', auth.verifyJWT, /* upload.array('roomsmedia', 
               socket.of('/user').emit('boardcast message', { // or 'accommodation'
                 to: 'be received by everyoneELSE',
                 post: {
-                  statecode: req.session.corper.statecode,
+                  state_code: req.session.corper.state_code,
                   streetname: req.body.streetname,
                   rentrange: req.body.rentrange,
                   rooms: req.body.rooms,
@@ -1032,7 +1032,7 @@ router.post('/oldaccommodations', auth.verifyJWT, /* upload.array('roomsmedia', 
   } else {
 
     query.InsertRowInAccommodationsTable({
-      statecode: req.session.corper.statecode,
+      state_code: req.session.corper.state_code,
       streetname: req.body.streetname,
       type: req.body.accommodationtype,
       price: req.body.price,
@@ -1057,7 +1057,7 @@ router.post('/oldaccommodations', auth.verifyJWT, /* upload.array('roomsmedia', 
       socket.of('/user').emit('boardcast message', { // or 'accommodation'
         to: 'be received by everyoneELSE',
         post: {
-          statecode: req.session.corper.statecode,
+          state_code: req.session.corper.state_code,
           streetname: req.body.streetname,
           rentrange: req.body.rentrange,
           rooms: req.body.rooms,
@@ -1082,8 +1082,8 @@ router.post('/oldaccommodations', auth.verifyJWT, /* upload.array('roomsmedia', 
 
   }
   // ----------------------------------------------- delete this later. not yet, until we so if else for when there are no files.
-  /* pool.query("INSERT INTO accommodations( statecode, streetname, type, price, media, rentrange, rooms, address, tenure, expire) VALUES ('" +
-    req.session.corper.statecode + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
+  /* pool.query("INSERT INTO accommodations( state_code, streetname, type, price, media, rentrange, rooms, address, tenure, expire) VALUES ('" +
+    req.session.corper.state_code + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
     arraymedia + "', '" + req.body.rentrange + "', '" + req.body.rooms + "','" + req.body.address + "','" + req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : '') +
     "')", function (error, results, fields) {
  

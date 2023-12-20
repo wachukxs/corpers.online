@@ -12,18 +12,18 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Chat.belongsTo(models.Media, { // means Chat have a mediaId
-        foreignKey: 'mediaId'
+      Chat.belongsTo(models.Media, { // means Chat have a media_id
+        foreignKey: 'media_id'
       })
 
       Chat.belongsTo(models.CorpMember, {
         foreignKey: 'message_to',
-        targetKey: 'statecode'
+        targetKey: 'state_code'
       })
 
       Chat.belongsTo(models.CorpMember, {
         foreignKey: 'message_from',
-        targetKey: 'statecode'
+        targetKey: 'state_code'
       })
     }
   };
@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
     message: DataTypes.TEXT,
     message_from: DataTypes.STRING,
     message_to: DataTypes.STRING,
-    mediaId: {
+    media_id: {
       type:DataTypes.INTEGER
     },
     time: {
@@ -54,16 +54,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false
     },
-    createdAt: {
-      type: DataTypes.DATE
-    },
-    updatedAt: {
-      type: DataTypes.DATE
-    },
     age: {
       type: DataTypes.VIRTUAL,
       get() {
-        return moment(this.getDataValue('createdAt')).fromNow();
+        return moment(this.getDataValue('created_at')).fromNow();
       },
       set(value) {
         throw new Error('Do not try to set the Chat.`age` value!');
@@ -72,6 +66,9 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Chat',
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
   });
   // Chat.sync({ alter: true })
   return Chat;

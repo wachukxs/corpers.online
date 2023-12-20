@@ -11,11 +11,11 @@ module.exports = {
       directions: {
         type: Sequelize.TEXT
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      mediaId: {
+      media_id: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -24,14 +24,14 @@ module.exports = {
           key: 'id'
         },
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
       address: {
         type: Sequelize.STRING
       },
-      ppaId: {
+      ppa_id: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -40,7 +40,7 @@ module.exports = {
           key: 'id'
         },
       },
-      accommodationId: {
+      accommodation_id: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -49,7 +49,7 @@ module.exports = {
           key: 'id'
         },
       },
-      CorpMemberId: {
+      corp_member_id: {
         type: Sequelize.INTEGER,
         references: {
           model: {

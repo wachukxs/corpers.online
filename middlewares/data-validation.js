@@ -9,7 +9,7 @@ module.exports.joinWaitListDataValidation = (req, res, next) => {
     console.log('hitting', _FILENAME, _FUNCTIONNAME);
 
     const waitListSchema = Joi.object({
-        firstname: Joi.string()
+        first_name: Joi.string()
             .min(2)
             .max(70)
             .required(),
@@ -18,8 +18,8 @@ module.exports.joinWaitListDataValidation = (req, res, next) => {
         servingstate: Joi.string()
             .required(),
         comment: Joi.string().allow(''),
-        lastname: Joi.string().allow(''),
-        middlename: Joi.string().allow(''),
+        last_name: Joi.string().allow(''),
+        middle_name: Joi.string().allow(''),
     })
 
     const { error, value } = waitListSchema.validate(req.body);
@@ -38,15 +38,15 @@ module.exports.corpMemberSignUp = (req, res, next) => {
     console.log('hitting', _FILENAME, _FUNCTIONNAME);
 
     const waitListSchema = Joi.object({
-        firstname: Joi.string()
+        first_name: Joi.string()
             .min(2)
             .max(70)
             .required(),
-        lastname: Joi.string()
+        last_name: Joi.string()
             .min(2)
             .max(70)
             .required(),
-        middlename: Joi.string()
+        middle_name: Joi.string()
             .min(2)
             .max(70)
             .optional(),
@@ -54,7 +54,7 @@ module.exports.corpMemberSignUp = (req, res, next) => {
             .email({ minDomainSegments: 2 }).required(),
         password: Joi.string().required(),
         remember: Joi.string().allow(''),
-        statecode: Joi.string().required(),
+        state_code: Joi.string().required(),
     })
 
     const { error, value } = waitListSchema.validate(req.body);
@@ -82,6 +82,40 @@ module.exports.corpMemberLogin = (req, res, next) => {
     })
 
     const { error, value } = waitListSchema.validate(req.body);
+    if (error) {
+        res.status(400).json({
+            message: 'There is an issue with the data you provided',
+            error
+        })
+    } else {
+        next()
+    }
+}
+
+module.exports.corpMemberProfileUpdate = (req, res, next) => {
+    const _FUNCTIONNAME = 'corpMemberProfileUpdate'
+    console.log('hitting', _FILENAME, _FUNCTIONNAME);
+
+    const profileUpdateSchema = Joi.object({
+        service_state: Joi.string().required(),
+        lga: Joi.string().optional().allow(null),
+        city_or_town: Joi.string().optional().allow(null),
+        stream: Joi.string().optional().allow(null),
+        public_profile: Joi.boolean().optional().allow(null),
+        nickname: Joi.string().optional().allow(null),
+        bio: Joi.string().allow(null),
+        ppa_name: Joi.string().allow(null),
+        type_of_institution: Joi.string().allow(null),
+        ppa_address: Joi.string().allow(null),
+        ppa_directions: Joi.string().allow(null),
+        origin_state: Joi.string().allow(null),
+        where_they_found_accommodation: Joi.string().allow(null),
+        origin_city_or_town: Joi.string().allow(null),
+        want_spa_or_not: Joi.boolean().allow(null),
+        looking_for_accommodation_or_not: Joi.boolean().allow(null),
+    })
+
+    const { error, value } = profileUpdateSchema.validate(req.body);
     if (error) {
         res.status(400).json({
             message: 'There is an issue with the data you provided',

@@ -14,7 +14,7 @@ module.exports = {
       type_of_ppa: {
         type: Sequelize.STRING
       },
-      mediaId: {
+      media_id: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -23,7 +23,7 @@ module.exports = {
           key: 'id'
         },
       },
-      locationId: {
+      location_id: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -32,11 +32,11 @@ module.exports = {
           key: 'id'
         },
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       }

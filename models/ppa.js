@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
   class PPA extends Model {
     static getAllActualAttributes() {
       let safePPAAttributes = Object.keys(PPA.rawAttributes)
-      safePPAAttributes.splice(safePPAAttributes.indexOf('ppaId'), 1);
+      safePPAAttributes.splice(safePPAAttributes.indexOf('ppa_id'), 1);
       
       return safePPAAttributes
     }
@@ -18,16 +18,18 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       
-      PPA.belongsTo(models.Media, { // means PPA have a mediaId
-        foreignKey: 'mediaId'
+      PPA.belongsTo(models.Media, { // means PPA have a media_id
+        foreignKey: 'media_id'
       })
       PPA.belongsTo(models.Location, { // means PPA have a locationId
-        foreignKey: 'locationId'
+        foreignKey: 'location_id'
       })
       // PPA is source, CorpMember is target (foreign Key is in CorpMember)
-      // creates ppaId in CorpMember
-      PPA.hasMany(models.CorpMember, { // means ppaId is the forigen key in CorpMember, referencing primary key id in PPA
-        foreignKey: 'ppaId', // causes bug, leaving as PPId
+      // creates ppa_id in CorpMember
+      PPA.hasMany(models.CorpMember, { // means ppa_id is the forigen key in CorpMember, referencing primary key id in PPA
+        foreignKey: 'ppa_id', // leaving as PPId causes bug
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE'
       })
     }
   };
@@ -38,25 +40,20 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.INTEGER
     },
-    createdAt: {
-      type: DataTypes.DATE
-    },
-    updatedAt: {
-      type: DataTypes.DATE
-    },
     name: DataTypes.STRING,
-    mediaId: {
+    media_id: {
       type:DataTypes.INTEGER
     },
-    locationId: { // TODO: specify that this references Location table
+    location_id: { // TODO: specify that this references Location table
       type:DataTypes.INTEGER
     },
     type_of_ppa: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'PPA',
-    // tableName: 'PPA', // since we're freezing, we don't need to specify tableName
-    freezeTableName: true, // if you freeze table name, does that means foreign keys can't change ?
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
   });
   // PPA.sync({ alter: true })
   return PPA;

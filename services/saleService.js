@@ -16,7 +16,7 @@ exports.deleteSale = (req, res) => {
   return db.Sale.destroy({
     where: {
       id: req.body.id, // saleId ?
-      statecode: req.session.corper.statecode.toUpperCase()
+      state_code: req.session.corper.state_code.toUpperCase()
     }
   })
     .then(_result => res.status(200).send(_result))
@@ -147,9 +147,12 @@ exports.create = (req, res, next) => {
       console.log('Field [' + fieldname + ']: value: ' + inspect(val));
       console.log('raw value:', val);
 
+      if (val !== null || val !== undefined) {
+        _text[fieldname] = val; // seems inspect() adds double quote to the value
+      }
+
       // should we do like we did for accommodation ?? ...yess , we'll check too
 
-      _text[fieldname] = inspect(val); // seems inspect() adds double quote to the value
       console.warn('fielddname Truncated:', fieldnameTruncated, valTruncated, transferEncoding, mimetype);
     });
 
@@ -180,14 +183,14 @@ exports.create = (req, res, next) => {
 
       /* const _media_to_save = await db.Media.create({
         urls: (_media.length > 0 ? _media.toString() : _text.mapimage ? _text.mapimage : ''), // deal with mapimage later
-        // altText: '', // add later
+        // alt_text: '', // add later
       });
       const _sale_to_save = await db.Sale.create({
-        // mediaId: _media_to_save.id,
-        statecode: req.session.corper.statecode,
+        // media_id: _media_to_save.id,
+        state_code: req.session.corper.state_code,
         type: (_text.type ? _text.type : "sale"),
         text: _text.text,
-        itemname: _text.itemname,
+        item_name: _text.item_name,
         price: (_text.price ? _text.price : ""),
         location: req.session.corper.location,
         post_time: _text.post_time
@@ -203,16 +206,18 @@ exports.create = (req, res, next) => {
       console.log(f, "\n\n\n\n ===??++++ ///", jkl); */
 
       _sale_to_save = await db.Sale.create({
-        statecode: req.session.corper.statecode,
+        state_code: req.session.corper.state_code,
         text: _text.text,
-        itemname: _text.itemname,
+        item_name: _text.item_name,
         price: _text.price,
-        minPrice: _text.minPrice,
-        saleMedia: {
-          urls: (_media.length > 0 ? _media.toString() : _text.mapimage ? _text.mapimage : ''), // deal with mapimage later
-          // altText: '', // add later
-        }
-      }, { // TODO: only include this conditonally. Or seems we already do, just confirm
+        ...(_text?.minimum_price && {minimum_price: parseInt(_text.minimum_price),}),
+
+        // only add saleMedia if _media.length > 0
+        ...(_media.length > 0 && {saleMedia: {
+          urls: _media.toString(),
+          // alt_text: '', // add later
+        }})
+      }, { // TODO: only include this conditionally. Or seems we already do, just confirm
         include: [
           {
             model: db.Media,
@@ -221,7 +226,7 @@ exports.create = (req, res, next) => {
           {
             model: db.CorpMember,
             as: 'saleByCorper',
-            attributes: db.CorpMember.getSafeAttributes() // { exclude: ['pushSubscriptionStringified', 'password'] }
+            attributes: db.CorpMember.getSafeAttributes() // { exclude: ['push_subscription_stringified', 'password'] }
           }
         ]
       });
@@ -248,20 +253,20 @@ exports.create = (req, res, next) => {
       res.status(200).json({ data: _sale_to_save }); // for test // [will revert to] res.sendStatus(200);
       console.log("\n\n\n\nafter saving post\n\n:", _sale_to_save);
       // once it saves in db them emit to other users
-      socket.of('/corp-member').to(req.session.corper.statecode.substring(0, 2)).emit('boardcast message', {
+      socket.of('/corp-member').to(req.session.corper.state_code.substring(0, 2)).emit('boardcast message', {
         to: 'be received by everyone else',
         post: [_sale_to_save.toJSON()]
         /* {
-        statecode: req.session.corper.statecode,
+        state_code: req.session.corper.state_code,
         location: req.session.corper.location,
         media: false,
         post_time: _text.post_time,
         type: _text.type,
         mapdata: (_text.mapimage ? _text.mapimage : ''),
         text: _text.text,
-        itemname: _text.itemname,
+        item_name: _text.item_name,
         price: (_text.price ? _text.price : ''),
-        firstname: _text.firstname,
+        first_name: _text.first_name,
         picture_id: req.session.corper.picture_id
       } */
       });

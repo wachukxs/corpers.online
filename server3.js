@@ -579,7 +579,7 @@ var years = parseInt( new Date( Date.now() ).getFullYear().toFixed().slice( 2, 4
 var yearrange = '(' + ( years - 1 ).toString() + '|' + years.toString() + ')';
 
 app.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm))/:batch_stream(('+yearrange/**(17|18|19)*/+'([abcACB])))/:lastfour(([0-9]{4}))', function (req, res) { // ['/AB/:batch/:code', '/AD/:batch/:code', '/AK/:batch/:code', '/AN/:batch/:code', '/BA/:batch/:code', '/BY/:batch/:code', '/BN/:batch/:code', '/BO/:batch/:code', '/CR/:batch/:code', '/DT/:batch/:code', '/EB/:batch/:code', '/ED/:batch/:code', '/EK/:batch/:code', '/EN/:batch/:code', '/FC/:batch/:code', '/GM/:batch/:code', '/IM/:batch/:code', '/JG/:batch/:code', '/KD/:batch/:code', '/KN/:batch/:code', '/KT/:batch/:code', '/KB/:batch/:code', '/KG/:batch/:code', '/KW/:batch/:code', '/LA/:batch/:code', '/NS/:batch/:code', '/NG/:batch/:code', '/OG/:batch/:code', '/OD/:batch/:code', '/OS/:batch/:code', '/OY/:batch/:code', '/PL/:batch/:code', '/RV/:batch/:code', '/SO/:batch/:code', '/TR/:batch/:code', '/YB/:batch/:code', '/ZM/:batch/:code']
-  // console.log('tryna login ', req.session.statecode, req.session.id, req.session.loggedin);
+  // console.log('tryna login ', req.session.state_code, req.session.id, req.session.loggedin);
   // they should be able to change state code too !!!!!!!!!!!! --later
   console.log('\n\n\nreq.params', req.params.batch, req.params.code) // req.path is shorthand for url.parse(req.url).pathname
   // when they update their profile. it should immediately reflect. so set it in the session object after a successfully update
@@ -594,9 +594,9 @@ app.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT
 
       if (error) throw error;
       res.render('pages/account', { // having it named account.2 returns error cannot find module '2'
-        statecode: req.session.statecode.toUpperCase(),
+        state_code: req.session.state_code.toUpperCase(),
         statecode2: req.path.substring(1, 12).toUpperCase(),
-        servicestate: req.session.servicestate,
+        service_state: req.session.service_state,
         batch: req.session.batch,
         name_of_ppa: req.session.name_of_ppa,
         total_num_unread_msg: results.filter((value, index, array) => { return value.message_to == req.path.substring(1, 12).toUpperCase() && value.message_sent == 0 }).length
@@ -613,7 +613,7 @@ app.get('/newsearch', function (req, res) {
 
   // "/search?type=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address + "&top=" + item.type_of_ppa; // nop type pa
 
-  // "/search?type=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" + item.statecode; // sn sc it
+  // "/search?type=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" + item.state_code; // sn sc it
   res.set('Content-Type', 'text/html');
   // res.sendFile(__dirname + '/search and places/index.html');
   console.log('req.query:', req.query); // find every thing that is req.query.search.query
@@ -680,11 +680,11 @@ app.get('/newsearch', function (req, res) {
         user: {}
       };
 
-      if (req.session.statecode) {
-        ppa_details.user.statecode = req.session.statecode.toUpperCase();
+      if (req.session.state_code) {
+        ppa_details.user.state_code = req.session.state_code.toUpperCase();
       }
-      if (req.session.servicestate) {
-        ppa_details.user.servicestate = req.session.servicestate;
+      if (req.session.service_state) {
+        ppa_details.user.service_state = req.session.service_state;
       }
       if (req.session.batch) {
         ppa_details.user.batch = req.session.batch;
@@ -705,7 +705,7 @@ app.get('/newsearch', function (req, res) {
 
     });
   } else if (req.query.rr) { // if it's an accomodation
-    // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
+    // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.state_code
     pool.query(mustquery + "SELECT * FROM accommodations WHERE rentrange = '" + req.query.rr + "' AND input_time = '" + req.query.it + "'", function (error, results, fields) {
 
       if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
@@ -778,9 +778,9 @@ app.get('/newsearch', function (req, res) {
     })
 
   } else if (req.query.type == 'accommodations') { // if it's an accomodation
-    // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
+    // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.state_code
     // inputing time from js to sql causes ish
-    pool.query(mustquery + "SELECT * FROM accommodations WHERE statecode = '" + req.query.sc + "' AND input_time = '" + moment(new Date(req.query.it)).format('YYYY-MM-DD HH:mm:ss') + "' AND streetname = '" + req.query.sn + "'", function (error, results, fields) {
+    pool.query(mustquery + "SELECT * FROM accommodations WHERE state_code = '" + req.query.sc + "' AND input_time = '" + moment(new Date(req.query.it)).format('YYYY-MM-DD HH:mm:ss') + "' AND streetname = '" + req.query.sn + "'", function (error, results, fields) {
       console.log('should be here', results[3])
       if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
         console.log(error);
@@ -884,7 +884,7 @@ app.get('/search', function (req, res) {
 
   // "/search?type=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address + "&top=" + item.type_of_ppa; // nop type pa
 
-  // "/search?type=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" + item.statecode; // sn sc it
+  // "/search?type=" + item.group + "&it=" + item.input_time + "&sn=" + item.streetname + "&sc=" + item.state_code; // sn sc it
   res.set('Content-Type', 'text/html');
   // res.sendFile(__dirname + '/search and places/index.html');
   console.log('req.query:', req.query); // find every thing that is req.query.search.query
@@ -951,11 +951,11 @@ app.get('/search', function (req, res) {
 
       ppa_details = {};
 
-      if (req.session.statecode) {
-        ppa_details.user.statecode = req.session.statecode.toUpperCase();
+      if (req.session.state_code) {
+        ppa_details.user.state_code = req.session.state_code.toUpperCase();
       }
-      if (req.session.servicestate) {
-        ppa_details.user.servicestate = req.session.servicestate;
+      if (req.session.service_state) {
+        ppa_details.user.service_state = req.session.service_state;
       }
       if (req.session.batch) {
         ppa_details.user.batch = req.session.batch;
@@ -971,7 +971,7 @@ app.get('/search', function (req, res) {
 
     });
   } else if (req.query.rr) { // if it's an accomodation
-    // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
+    // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.state_code
     pool.query("SELECT * FROM accommodations WHERE rentrange = '" + req.query.rr + "' AND input_time = '" + moment(new Date(req.query.it)).format('YYYY-MM-DD HH:mm:ss') + "'", function (error, results, fields) {
 
       accommodation_details = {};
@@ -1023,25 +1023,25 @@ app.get('/chat', function (req, res) {
 
     // ALSO SELECT OLDMESSAGES THAT ARE NOT SENT... THEN COUNT THEM... 
     if (req.query.posts.type == 'accommodation') {
-      var query = "SELECT * FROM accommodations WHERE statecode = '" + req.query.posts.who + "' AND input_time = '" + moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss') + "' ; "
+      var query = "SELECT * FROM accommodations WHERE state_code = '" + req.query.posts.who + "' AND input_time = '" + moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss') + "' ; "
         // + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL ;"
-        + " SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;"
+        + " SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.state_code = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;"
         // + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL AND message_sent = false ;";
         + " SELECT * FROM chats WHERE message_to = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;"
         + " SELECT * FROM chats WHERE message_from = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;"
-        + " SELECT firstname, lastname FROM info WHERE statecode = '" + req.query.posts.who.toUpperCase() + "' ;";
+        + " SELECT firstname, lastname FROM info WHERE state_code = '" + req.query.posts.who.toUpperCase() + "' ;";
 
     } else if (req.query.posts.type == 'sale') { // we will only do escrow payments for products sale
-      var query = "SELECT * FROM posts WHERE statecode = '" + req.query.posts.who + "' AND post_time = '" + req.query.posts.when + "' ;"
+      var query = "SELECT * FROM posts WHERE state_code = '" + req.query.posts.who + "' AND post_time = '" + req.query.posts.when + "' ;"
         // + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL ;"
-        + " SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;"
+        + " SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.state_code = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;"
         // + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL AND message_sent = false ;";
         + " SELECT * FROM chats WHERE message_to = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;"
         + " SELECT * FROM chats WHERE message_from = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;"
-        + " SELECT firstname, lastname FROM info WHERE statecode = '" + req.query.posts.who.toUpperCase() + "' ;";
+        + " SELECT firstname, lastname FROM info WHERE state_code = '" + req.query.posts.who.toUpperCase() + "' ;";
 
     }
-    /**SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%AB/17B/1234%' AND chats.message IS NOT NULL   */
+    /**SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.state_code = chats.message_from AND chats.room LIKE '%AB/17B/1234%' AND chats.message IS NOT NULL   */
 
     pool.query(query, function (error, results, fields) {
 
@@ -1051,13 +1051,13 @@ app.get('/chat', function (req, res) {
       // so if the newchat has chatted before, i.e. is in oldchats, then just make it highlighted
       // then send it to the chat page of the involved parties so they are remainded of what they want to buy
       res.render('pages/newchat', { // having it named account.2 returns error cannot find module '2'
-        statecode: req.session.statecode.toUpperCase(),
+        state_code: req.session.state_code.toUpperCase(),
         statecode2: req.query.s,
-        servicestate: req.session.servicestate,
+        service_state: req.session.service_state,
         batch: req.session.batch,
         name_of_ppa: req.session.name_of_ppa,
         postdetails: (isEmpty(results[0]) ? null : results[0]), // tell user the post no longer exists, maybe it was bought or something, we should delete it if it was bought, we hope not to use this function
-        newchat: { statecode: req.query.posts.who.toUpperCase(), name: results[4][0] },
+        newchat: { state_code: req.query.posts.who.toUpperCase(), name: results[4][0] },
         posttime: req.query.posts.when,
         posttype: req.query.posts.type,
         oldchats: results[1], // leave it like this!!
@@ -1072,9 +1072,9 @@ app.get('/chat', function (req, res) {
   } else if (req.session.loggedin) {
     res.set('Content-Type', 'text/html');
     // res.sendFile(__dirname + '/account.html');
-    // console.log('wanna chat', req.session.statecode, req.query.s);
+    // console.log('wanna chat', req.session.state_code, req.query.s);
     var query = // "SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL;"
-      " SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;"
+      " SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.state_code = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;"
       + " SELECT * FROM chats WHERE message_to = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;"
       + " SELECT * FROM chats WHERE message_from = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;";
     pool.query(query, function (error, results, fields) {
@@ -1085,9 +1085,9 @@ app.get('/chat', function (req, res) {
 
       // then send it to the chat page of the involved parties so they are remainded of what they want to buy
       res.render('pages/newchat', { // having it named account.2 returns error cannot find module '2'
-        statecode: req.session.statecode.toUpperCase(),
+        state_code: req.session.state_code.toUpperCase(),
         statecode2: req.query.s,
-        servicestate: req.session.servicestate,
+        service_state: req.session.service_state,
         batch: req.session.batch,
         name_of_ppa: req.session.name_of_ppa,
         oldchats: results[0], // leave it like this!!
@@ -1197,8 +1197,8 @@ app.get(['/map', '/maps'], function (req, res) { // try to infer their location 
     }
 
     res.render('pages/map', {
-      statecode: req.session.statecode,
-      servicestate: req.session.servicestate,
+      state_code: req.session.state_code,
+      service_state: req.session.service_state,
       mapdata: JSON.stringify(results[0].concat(results[1])),
       types: listoftypesofppas
     });
@@ -1294,7 +1294,7 @@ app.get('/signup', upload.none(), function (req, res) {
 
 var iouser = io.of('/user').on('connection', function (socket) { // when a new user is in the TIMELINE
 
-  socket.join(socket.handshake.query.statecode.substring(0, 2));
+  socket.join(socket.handshake.query.state_code.substring(0, 2));
   console.log('how many', io.sockets.clients.length , iouser.clients.length);
   socket.on('ferret', (asf, name, fn) => {
     // this funtion will run in the client to show/acknowledge the server has gotten the message.
@@ -1308,7 +1308,7 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
   // console.log('socket.id: ', socket.id, ' connected on', new Date(Date.now()).toGMTString());
   // console.log('everythin: \n', iouser.connected );
 
-  // console.log('\nsocket.handshake.query.statecode.substring(0, 2)?', socket.handshake.query.statecode.substring(0, 2));
+  // console.log('\nsocket.handshake.query.state_code.substring(0, 2)?', socket.handshake.query.state_code.substring(0, 2));
   // it's still not very perfect, count each unique url or something
   iouser.emit('corpersCount', { count: Object.keys(iouser.connected).length /* new Map(iouser.connected).size || Object.keys(iouser.connected).length */ }); // emit total corpers online https://stackoverflow.com/questions/126100/how-to-efficiently-count-the-number-of-keys-properties-of-an-object-in-javascrip
 
@@ -1320,7 +1320,7 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
 
   // when any user connects, send them (previous) posts in the db before now (that isn't in their timeline)
   // find a way to handle images and videos
-  /** sender, statecode, type, text, price, location, post_time, input_time */
+  /** sender, state_code, type, text, price, location, post_time, input_time */
 
   // posts currently in user's time line is socket.handshake.query.utl.split(',')
 
@@ -1347,8 +1347,8 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
   // we stopped using sender column from posts table, so it's null !
 
   /// there's much work on this section maybe, just to make sure sql sees and calculates the value as they should (or NOT ????)
-  var getpostsquery = "SELECT * FROM posts WHERE statecode LIKE '%" + socket.handshake.query.statecode.substring(0, 2) + "%'" + (pUTL.length > 1 ? ' AND post_time > "' + pUTL[pUTL.length - 1] + '" ORDER by posts.post_time ASC' : ' ORDER by posts.post_time ASC')
-    + "; SELECT * FROM accommodations WHERE statecode LIKE '%" + socket.handshake.query.statecode.substring(0, 2) + "%'" + (aUTL.length > 1 ? ' AND input_time > "' + e + '" ORDER by accommodations.input_time ASC' : ' ORDER BY accommodations.input_time ASC');
+  var getpostsquery = "SELECT * FROM posts WHERE state_code LIKE '%" + socket.handshake.query.state_code.substring(0, 2) + "%'" + (pUTL.length > 1 ? ' AND post_time > "' + pUTL[pUTL.length - 1] + '" ORDER by posts.post_time ASC' : ' ORDER by posts.post_time ASC')
+    + "; SELECT * FROM accommodations WHERE state_code LIKE '%" + socket.handshake.query.state_code.substring(0, 2) + "%'" + (aUTL.length > 1 ? ' AND input_time > "' + e + '" ORDER by accommodations.input_time ASC' : ' ORDER BY accommodations.input_time ASC');
   pool.query(getpostsquery, function (error, results, fields) { // bring the results in ascending order
 
     if (error) { // gracefully handle error e.g. ECONNRESET & ETIMEDOUT, in this case re-execute the query or connect again, act approprately
@@ -1469,14 +1469,14 @@ var iouser = io.of('/user').on('connection', function (socket) { // when a new u
 
     }
     // save to db --put picture in different columns // increse packet size for media (pixs and vids)                                                                                                                & when using pool.escape(data.text), there's no need for the enclosing single quotes incase the user has ' or any funny characters
-    pool.query("INSERT INTO posts( sender, statecode, type, text, media, price, location, post_time) VALUES ('" + data.sender + "', '" + data.statecode + "', '" + (data.type ? data.type : "") + "', " + pool.escape(data.text) + ", '" + (data.images ? q : "") + "', " + pool.escape(data.price) + ", " + pool.escape(data.location) + ",'" + data.post_time + "')", function (error, results, fields) {
+    pool.query("INSERT INTO posts( sender, state_code, type, text, media, price, location, post_time) VALUES ('" + data.sender + "', '" + data.state_code + "', '" + (data.type ? data.type : "") + "', " + pool.escape(data.text) + ", '" + (data.images ? q : "") + "', " + pool.escape(data.price) + ", " + pool.escape(data.location) + ",'" + data.post_time + "')", function (error, results, fields) {
 
       if (error) throw error;
 
       if (results.affectedRows === 1) {
         console.info('saved post to db successfully');
 
-        socket.in(socket.handshake.query.statecode.substring(0, 2)).emit('boardcast message', { to: 'be received by everyoneELSE', post: data });
+        socket.in(socket.handshake.query.state_code.substring(0, 2)).emit('boardcast message', { to: 'be received by everyoneELSE', post: data });
       }
     });
 
@@ -1500,14 +1500,14 @@ app.get('/posts', function (req, res) {
   console.log('search query parameters', req.query)
 
   if (req.query.s) {
-    var q = "SELECT streetname, type, input_time, statecode, price, rentrange FROM accommodations WHERE statecode LIKE '" + req.query.s.substring(0, 2) + "%' ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != '' AND statecode LIKE '" + req.query.s.substring(0, 2) + "%'";
+    var q = "SELECT streetname, type, input_time, state_code, price, rentrange FROM accommodations WHERE state_code LIKE '" + req.query.s.substring(0, 2) + "%' ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != '' AND state_code LIKE '" + req.query.s.substring(0, 2) + "%'";
   } else {
     var q = '';
     for (let index = 0; index < states_short.length; index++) {
       const element = states_short[index];
-      q += "SELECT streetname, type, input_time, statecode, price, rentrange FROM accommodations WHERE statecode LIKE '" + element + "%' ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != '' AND statecode LIKE '" + element + "%' ;"; // the trailing ';' is very important
+      q += "SELECT streetname, type, input_time, state_code, price, rentrange FROM accommodations WHERE state_code LIKE '" + element + "%' ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != '' AND state_code LIKE '" + element + "%' ;"; // the trailing ';' is very important
     }
-    // var q = "SELECT streetname, type, input_time, statecode, price, rentrange FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != ''";
+    // var q = "SELECT streetname, type, input_time, state_code, price, rentrange FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != ''";
   }
 
   // console.log('search sql query ', q)
@@ -1560,8 +1560,8 @@ app.get('/profile', function (req, res) {
     res.set('Content-Type', 'text/html');
     // res.sendFile(__dirname + '/profile.html');
     res.render('pages/profile', {
-      statecode: req.session.statecode.toUpperCase(),
-      servicestate: req.session.servicestate,
+      state_code: req.session.state_code.toUpperCase(),
+      service_state: req.session.service_state,
       batch: req.session.batch
       // select all distinct ppa type / address / name and send it to the front end as suggestions for the input when the corpers type
     });
@@ -1580,12 +1580,12 @@ app.get('/newprofile', function (req, res) {
     
     
     if (req.session.loggedin) {
-      var jn = req.session.statecode.toUpperCase()
+      var jn = req.session.state_code.toUpperCase()
       
       /**an array of all the local government in the state */
       var lgas = jkl.states[states_short.indexOf(jn.slice(0, 2))][ states_long[states_short.indexOf(jn.slice(0, 2))] ] ;
-      // use the ones from their service state // AND servicestate = '" + req.session.servicestate + "'
-      pool.query("SELECT name_of_ppa FROM info WHERE name_of_ppa != '' ; SELECT ppa_address from info WHERE ppa_address != '' AND servicestate = '" + req.session.servicestate + "'; SELECT city_town FROM info WHERE city_town != '' AND servicestate = '" + req.session.servicestate + "'; SELECT region_street FROM info WHERE region_street != '' AND servicestate = '" + req.session.servicestate + "'", function (error2, results2, fields2) {
+      // use the ones from their service state // AND service_state = '" + req.session.service_state + "'
+      pool.query("SELECT name_of_ppa FROM info WHERE name_of_ppa != '' ; SELECT ppa_address from info WHERE ppa_address != '' AND service_state = '" + req.session.service_state + "'; SELECT city_town FROM info WHERE city_town != '' AND service_state = '" + req.session.service_state + "'; SELECT region_street FROM info WHERE region_street != '' AND service_state = '" + req.session.service_state + "'", function (error2, results2, fields2) {
   
         if (error2) throw error2;
         // console.log('PPAs', results2);
@@ -1593,8 +1593,8 @@ app.get('/newprofile', function (req, res) {
         res.set('Content-Type', 'text/html');
         // res.sendFile(__dirname + '/new profile/index.html');
         res.render('pages/newprofile', {
-          statecode: req.session.statecode.toUpperCase(),
-          servicestate: req.session.servicestate.toUpperCase(),
+          state_code: req.session.state_code.toUpperCase(),
+          service_state: req.session.service_state.toUpperCase(),
           batch: req.session.batch,
           names_of_ppas: results2[0], // array of objects ie names_of_ppas[i].name_of_ppa
           ppa_addresses: results2[1],
@@ -1616,27 +1616,27 @@ app.get('/newprofile', function (req, res) {
 });
 
 app.post('/profile', bodyParser.urlencoded({ extended: true/* , type: 'application/x-www-form-urlencoded' */ }), function (req, res) {
-  // cater for fields we already have, so that we don't touch them eg. servicestate
-  // UPDATE 'info' SET 'firstname'=[value-1],'lastname'=[value-2],'accommodation_location'=[value-3],'servicestate'=[value-4],'batch'=[value-5],'name_of_ppa'=[value-6],'statecode'=[value-7],'email'=[value-8],'middlename'=[value-9],'password'=[value-10],'phone'=[value-11],'dateofreg'=[value-12],'lga'=[value-13],'city_town'=[value-14],'region_street'=[value-15],'stream'=[value-16],'type_of_ppa'=[value-17],'ppa_address'=[value-18],'travel_from_state'=[value-19],'travel_from_city'=[value-20],'spaornot'=[value-21] WHERE email = req.body.email
-  // UPDATE info SET 'accommodation_location'=req.body.accommodation_location,'servicestate'=req.body.servicestate,'name_of_ppa'=[value-6],'lga'=req.body.lga,'city_town'=req.body.city_town,'region_street'=req.body.region_street,'stream'=req.body.stream,'type_of_ppa'=req.body.type_of_ppa,'ppa_address'=req.body.ppa_address,'travel_from_state'=req.body.travel_from_state,'travel_from_city'=req.body.travel_from_city,'spaornot'=req.body.spaornot WHERE email = req.body.email
-  // var sqlquery = "INSERT INTO info(servicestate, lga, city_town, region_street, stream, accommodation_location, type_of_ppa, travel_from_state, travel_from_city) VALUES ('" + req.body.servicestate + "', '" + req.body.lga + "', '" + req.body.city_town + "', '" + req.body.region_street + "', '" + req.body.stream + "', '" + req.body.accommodation_location + "', '" + req.body.type_of_ppa + "', '" + req.body.travel_from_state + "', '" + req.body.travel_from_city + "', '" + req.body.spaornot + "' )";
+  // cater for fields we already have, so that we don't touch them eg. service_state
+  // UPDATE 'info' SET 'firstname'=[value-1],'lastname'=[value-2],'accommodation_location'=[value-3],'service_state'=[value-4],'batch'=[value-5],'name_of_ppa'=[value-6],'state_code'=[value-7],'email'=[value-8],'middlename'=[value-9],'password'=[value-10],'phone'=[value-11],'dateofreg'=[value-12],'lga'=[value-13],'city_town'=[value-14],'region_street'=[value-15],'stream'=[value-16],'type_of_ppa'=[value-17],'ppa_address'=[value-18],'travel_from_state'=[value-19],'travel_from_city'=[value-20],'spaornot'=[value-21] WHERE email = req.body.email
+  // UPDATE info SET 'accommodation_location'=req.body.accommodation_location,'service_state'=req.body.service_state,'name_of_ppa'=[value-6],'lga'=req.body.lga,'city_town'=req.body.city_town,'region_street'=req.body.region_street,'stream'=req.body.stream,'type_of_ppa'=req.body.type_of_ppa,'ppa_address'=req.body.ppa_address,'travel_from_state'=req.body.travel_from_state,'travel_from_city'=req.body.travel_from_city,'spaornot'=req.body.spaornot WHERE email = req.body.email
+  // var sqlquery = "INSERT INTO info(service_state, lga, city_town, region_street, stream, accommodation_location, type_of_ppa, travel_from_state, travel_from_city) VALUES ('" + req.body.service_state + "', '" + req.body.lga + "', '" + req.body.city_town + "', '" + req.body.region_street + "', '" + req.body.stream + "', '" + req.body.accommodation_location + "', '" + req.body.type_of_ppa + "', '" + req.body.travel_from_state + "', '" + req.body.travel_from_city + "', '" + req.body.spaornot + "' )";
 
-  // var sqlquery = "UPDATE info SET accommodation_location = '" + req.body.accommodation_location + "', servicestate = '" + req.body.servicestate + "', name_of_ppa = '" + req.body.name_of_ppa + "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" + req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" + req.body.type_of_ppa + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" + req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city + "', spaornot = '" + req.body.spaornot + "' WHERE email = '" + req.body.email + "' " ;
+  // var sqlquery = "UPDATE info SET accommodation_location = '" + req.body.accommodation_location + "', service_state = '" + req.body.service_state + "', name_of_ppa = '" + req.body.name_of_ppa + "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" + req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" + req.body.type_of_ppa + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" + req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city + "', spaornot = '" + req.body.spaornot + "' WHERE email = '" + req.body.email + "' " ;
 
-  /*[req.body.accommodation_location, req.body.servicestate, req.body.name_of_ppa, req.body.lga, req.body.city_town, req.body.region_street, req.body.stream, req.body.type_of_ppa, req.body.ppa_address, req.body.travel_from_state, req.body.travel_from_city, req.body.spaornot, req.body.email],*/
-  console.log('\n\nthe req.body for /newprofile', req.body, '\n\n', req.body.statecode);
+  /*[req.body.accommodation_location, req.body.service_state, req.body.name_of_ppa, req.body.lga, req.body.city_town, req.body.region_street, req.body.stream, req.body.type_of_ppa, req.body.ppa_address, req.body.travel_from_state, req.body.travel_from_city, req.body.spaornot, req.body.email],*/
+  console.log('\n\nthe req.body for /newprofile', req.body, '\n\n', req.body.state_code);
   // console.log('\n\n', req);
   var sqlquery = "UPDATE info SET accommodation_location = '" + (req.body.accommodation_location ? req.body.accommodation_location : '') +
-    ( req.body.ss ? "', servicestate = '" + req.body.ss : '' ) // if there's service state(i.e. corper changed service state in real life and from front end), insert it.
+    ( req.body.ss ? "', service_state = '" + req.body.ss : '' ) // if there's service state(i.e. corper changed service state in real life and from front end), insert it.
     + "', name_of_ppa = '" + req.body.name_of_ppa +
     "', ppa_directions = '" + req.body.ppadirections +
     "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" +
     req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" +
     req.body.type_of_ppa + "', ppa_geodata = '" + (req.body.ppa_geodata ? req.body.ppa_geodata : '') + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" +
     req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city +
-     ( req.body.newstatecode ? "', statecode = '" + req.body.newstatecode.toUpperCase() : '' ) + // if there's a new statecode ...
+     ( req.body.newstatecode ? "', state_code = '" + req.body.newstatecode.toUpperCase() : '' ) + // if there's a new state_code ...
     /* "', accommodationornot = '" + (req.body.accommodationornot ? req.body.accommodationornot : 'yes') + */ "', wantspaornot = '" +
-    req.body.wantspaornot + "' WHERE statecode = '" + req.session.statecode.toUpperCase() + "' "; // always change state code to uppercase, that's how it is in the db
+    req.body.wantspaornot + "' WHERE state_code = '" + req.session.state_code.toUpperCase() + "' "; // always change state code to uppercase, that's how it is in the db
 
 
   pool.query(sqlquery, function (error, results, fields) {
@@ -1649,20 +1649,20 @@ app.post('/profile', bodyParser.urlencoded({ extended: true/* , type: 'applicati
       }
       /* 
       // todo later...
-      statecode: req.session.statecode.toUpperCase(),
-      servicestate: req.session.servicestate,
+      state_code: req.session.state_code.toUpperCase(),
+      service_state: req.session.service_state,
       batch: req.session.batch, */
 
-      if (req.body.newstatecode) { // if they are changing statecode to a different state, then their service state in the db should change and their ppa details too should change, tell them to change the ppa details if they don't change it
-        // change statecode in other places too
-        // this works because rooms only have one instance for every two corpers or statecode, so there's no DD/17B/7778-AB/17B/2334 and AB/17B/2334-DD/17B/7778 only one of it, same reason why there's no LIMIT 1 in the SELECT statement in REPLACE function
-        var updatequery = "UPDATE chats SET room = (SELECT REPLACE( ( SELECT DISTINCT room WHERE room LIKE '%"+req.session.statecode.toUpperCase()+"%' ) ,'"+req.session.statecode.toUpperCase()+"','"+req.body.newstatecode.toUpperCase()+"')) ; "+
-        " UPDATE chats SET message_from = '"+req.body.newstatecode.toUpperCase()+"' WHERE message_from = '"+req.session.statecode.toUpperCase()+"' ; "+
-        " UPDATE chats SET message_to = '"+req.body.newstatecode.toUpperCase()+"' WHERE message_to = '"+req.session.statecode.toUpperCase()+"' ;"+
-        " UPDATE posts SET statecode = '"+req.body.newstatecode.toUpperCase()+"' WHERE statecode = '"+req.session.statecode.toUpperCase()+"' ; "+
-        " UPDATE accommodations SET statecode = '"+req.body.newstatecode.toUpperCase()+"' WHERE statecode = '"+req.session.statecode.toUpperCase()+"' ";
+      if (req.body.newstatecode) { // if they are changing state_code to a different state, then their service state in the db should change and their ppa details too should change, tell them to change the ppa details if they don't change it
+        // change state_code in other places too
+        // this works because rooms only have one instance for every two corpers or state_code, so there's no DD/17B/7778-AB/17B/2334 and AB/17B/2334-DD/17B/7778 only one of it, same reason why there's no LIMIT 1 in the SELECT statement in REPLACE function
+        var updatequery = "UPDATE chats SET room = (SELECT REPLACE( ( SELECT DISTINCT room WHERE room LIKE '%"+req.session.state_code.toUpperCase()+"%' ) ,'"+req.session.state_code.toUpperCase()+"','"+req.body.newstatecode.toUpperCase()+"')) ; "+
+        " UPDATE chats SET message_from = '"+req.body.newstatecode.toUpperCase()+"' WHERE message_from = '"+req.session.state_code.toUpperCase()+"' ; "+
+        " UPDATE chats SET message_to = '"+req.body.newstatecode.toUpperCase()+"' WHERE message_to = '"+req.session.state_code.toUpperCase()+"' ;"+
+        " UPDATE posts SET state_code = '"+req.body.newstatecode.toUpperCase()+"' WHERE state_code = '"+req.session.state_code.toUpperCase()+"' ; "+
+        " UPDATE accommodations SET state_code = '"+req.body.newstatecode.toUpperCase()+"' WHERE state_code = '"+req.session.state_code.toUpperCase()+"' ";
         pool.query(updatequery, function (error, results, fields) {
-          console.log('updated statecode ', results);
+          console.log('updated state_code ', results);
           if (error) throw error;
           // connected!
           // at least ONE or ALL of these MUST update, not necessarily all that why we are using || and NOT && because it could be possible they've not chatted or posted anything at all, but they must have at least registered!
@@ -1670,10 +1670,10 @@ app.post('/profile', bodyParser.urlencoded({ extended: true/* , type: 'applicati
             // then status code is good
             console.log('we\'re really good with the update')
 
-            // then change the session statecode
-            req.session.statecode = req.body.newstatecode.toUpperCase();
+            // then change the session state_code
+            req.session.state_code = req.body.newstatecode.toUpperCase();
 
-            res.status(200).redirect(req.body.newstatecode.toUpperCase()); // if there's new statecode
+            res.status(200).redirect(req.body.newstatecode.toUpperCase()); // if there's new state_code
           } else {
             console.log('we\'re bad with the update') // we should find out what went wrong
             /**
@@ -1697,7 +1697,7 @@ app.post('/profile', bodyParser.urlencoded({ extended: true/* , type: 'applicati
              // we should redirect to somewhere and not just block the whole system!!!!!!!!!!
           }
         });
-        // should we save every change of statecode that ever occured ?
+        // should we save every change of state_code that ever occured ?
         // SELECT room FROM `chats` WHERE message_from = 'AB/17B/1234' or message_to = 'AB/17B/1234'
 
         // UPDATE `chats` SET `room`=[value-1],`message_from`=[value-3],`message_to`=[value-4] WHERE message_from = 'AB/17B/1234' or message_to = 'AB/17B/1234'
@@ -1717,7 +1717,7 @@ app.post('/profile', bodyParser.urlencoded({ extended: true/* , type: 'applicati
 
         
       } else { // if no newstatecode
-        res.status(200).redirect(req.session.statecode.toUpperCase() /* + '?e=y' */); // [e]dit=[y]es|[n]o
+        res.status(200).redirect(req.session.state_code.toUpperCase() /* + '?e=y' */); // [e]dit=[y]es|[n]o
       }
       // res.sendStatus(200);
     } else {
@@ -1793,7 +1793,7 @@ app.post('/posts', upload.array('see', 12), function (req, res, next) {
 
                 if (index == req.files.length - 1) { // on last iteration
                     
-                  var sqlquery = "INSERT INTO posts( media, statecode, type, text, price, location, post_time) VALUES ('" + (req.files.length > 0 ? [...new Set(req.files.map(x => x.filename))] : req.body.mapimage ? req.body.mapimage : '') + "','" + req.session.statecode + "', '" + (req.body.type ? req.body.type : "sale") + "', " + pool.escape(req.body.text) + ", " + pool.escape((req.body.price ? req.body.price : "")) + ", " + pool.escape(req.session.location) + ",'" + req.body.post_time + "')"
+                  var sqlquery = "INSERT INTO posts( media, state_code, type, text, price, location, post_time) VALUES ('" + (req.files.length > 0 ? [...new Set(req.files.map(x => x.filename))] : req.body.mapimage ? req.body.mapimage : '') + "','" + req.session.state_code + "', '" + (req.body.type ? req.body.type : "sale") + "', " + pool.escape(req.body.text) + ", " + pool.escape((req.body.price ? req.body.price : "")) + ", " + pool.escape(req.session.location) + ",'" + req.body.post_time + "')"
 
                   pool.query(sqlquery, function (error, results, fields) {
                     console.log('inserted data from: ', results);
@@ -1805,9 +1805,9 @@ app.post('/posts', upload.array('see', 12), function (req, res, next) {
                       res.sendStatus(200);
 
                       // once it saves in db them emit to other users
-                      iouser.to(req.session.statecode.substring(0, 2)).emit('boardcast message', {
+                      iouser.to(req.session.state_code.substring(0, 2)).emit('boardcast message', {
                         to: 'be received by everyoneELSE', post: {
-                          statecode: req.session.statecode,
+                          state_code: req.session.state_code,
                           location: req.session.location,
                           media: (req.files.length > 0 ? [...new Set(req.files.map(x => x.filename))] : false),
                           post_time: req.body.post_time,
@@ -1841,24 +1841,24 @@ app.post('/signup', bodyParser.urlencoded({ extended: true }), function (req, re
   // implement the hashing of password before saving to the db
   // also when some one signs up, it counts as login time too, so we should include it in usage details table
 
-  // we can find the service state with req.body.statecode.slice(0, 2) which gives the first two letters
+  // we can find the service state with req.body.state_code.slice(0, 2) which gives the first two letters
 
 
-  var theservicestate = states_long[states_short.indexOf(req.body.statecode.slice(0, 2).toUpperCase())];
+  var theservicestate = states_long[states_short.indexOf(req.body.state_code.slice(0, 2).toUpperCase())];
 
-  var thestream = req.body.statecode.slice(5, 6).toUpperCase();
+  var thestream = req.body.state_code.slice(5, 6).toUpperCase();
   function getstream(sb) {
     return sb == 'A' ? 1 : sb == 'B' ? 2 : sb == 'C' ? 3 : 4; // because we're sure it's gonna be 'D'
   }
 
-  var sqlquery = "INSERT INTO info(email, firstname, middlename, password, lastname, statecode, batch, servicestate, stream) VALUES ('" + req.body.email + "', '" + req.body.firstname + "', '" + req.body.middlename + "', '" + req.body.password + "', '" + req.body.lastname + "', '" + req.body.statecode.toUpperCase() + "', '" + req.body.statecode.slice(3, 6).toUpperCase() + "', '" + theservicestate + "' , '" + getstream(thestream) + "'  )";
+  var sqlquery = "INSERT INTO info(email, firstname, middlename, password, lastname, state_code, batch, service_state, stream) VALUES ('" + req.body.email + "', '" + req.body.firstname + "', '" + req.body.middlename + "', '" + req.body.password + "', '" + req.body.lastname + "', '" + req.body.state_code.toUpperCase() + "', '" + req.body.state_code.slice(3, 6).toUpperCase() + "', '" + theservicestate + "' , '" + getstream(thestream) + "'  )";
   pool.query(sqlquery, function (error, results, fields) {
     console.log('inserted data from: ', results);
     if (error) {
       console.log('the error code:', error.code, error.sqlMessage)
       switch (error.code) { // do more here
-        case 'ER_DUP_ENTRY': // ER_DUP_ENTRY if a statecode or email exists already
-          if (error.sqlMessage.includes('PRIMARY', req.body.statecode.toUpperCase())) { // Duplicate entry 'TR/19A/1234' for key 'PRIMARY'
+        case 'ER_DUP_ENTRY': // ER_DUP_ENTRY if a state_code or email exists already
+          if (error.sqlMessage.includes('PRIMARY', req.body.state_code.toUpperCase())) { // Duplicate entry 'TR/19A/1234' for key 'PRIMARY'
             res.redirect('/signup?m=ds'); // [m]essage = [d]uplicate [s]tatecode
           } else if (error.sqlMessage.includes('email', req.body.email)) { // Duplicate entry 'uyu@yud.eww' for key 'email'
             res.redirect('/signup?m=de'); // [m]essage = [d]uplicate [e]mail
@@ -1871,16 +1871,16 @@ app.post('/signup', bodyParser.urlencoded({ extended: true }), function (req, re
 
     // "else if" is very important
     else if (results.affectedRows === 1) {
-      req.session.statecode = req.body.statecode.toUpperCase();
+      req.session.state_code = req.body.state_code.toUpperCase();
       req.session.loggedin = true;
-      req.session.servicestate = theservicestate;
-      req.session.batch = req.body.statecode.toUpperCase().slice(3, 6);
+      req.session.service_state = theservicestate;
+      req.session.batch = req.body.state_code.toUpperCase().slice(3, 6);
       req.session.loggedin = true;
-      req.session.location = req.session.servicestate;
+      req.session.location = req.session.service_state;
 
       main(req.body.email, req.body.firstname, theservicestate).catch(console.error);
 
-      res.redirect(req.body.statecode.toUpperCase());
+      res.redirect(req.body.state_code.toUpperCase());
     }
   });
 
@@ -1938,8 +1938,8 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
           console.log('COMPARING key and req.files.length', key + 1, req.files.length, ((parseInt(key) + 1) === req.files.length)); // key is a number with string data type,
           if (((parseInt(key) + 1) === req.files.length)) {
             console.log('media array null ?', arraymedia);
-            var sqlquery = "INSERT INTO accommodations( statecode, streetname, type, price, media, rentrange, rooms, address, directions, tenure, expire, post_location, post_time, acc_geodata) VALUES ('" +
-              req.session.statecode + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
+            var sqlquery = "INSERT INTO accommodations( state_code, streetname, type, price, media, rentrange, rooms, address, directions, tenure, expire, post_location, post_time, acc_geodata) VALUES ('" +
+              req.session.state_code + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
               arraymedia + "', '" + req.body.rentrange + "', '" + req.body.rooms + "','" + req.body.address + "','" + req.body.directions + "','" +
               req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : '') + "', " + pool.escape(req.session.location) + ", " + pool.escape(req.body.post_time) +",'" + (req.body.acc_geodata ? req.body.acc_geodata : '') + "')";
 
@@ -1957,7 +1957,7 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
                 // once it saves in db them emit to other users
                 iouser.emit('boardcast message', { // or 'accommodation'
                   to: 'be received by everyoneELSE', post: {
-                    statecode: req.session.statecode,
+                    state_code: req.session.state_code,
                     streetname: req.body.streetname,
                     rentrange: req.body.rentrange,
                     rooms: req.body.rooms,
@@ -1997,8 +1997,8 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
     );
 
   } else {
-    var sqlquery = "INSERT INTO accommodations( statecode, streetname, type, price, media, rentrange, rooms, address, directions, tenure, expire, post_location, post_time, acc_geodata) VALUES ('" +
-              req.session.statecode + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
+    var sqlquery = "INSERT INTO accommodations( state_code, streetname, type, price, media, rentrange, rooms, address, directions, tenure, expire, post_location, post_time, acc_geodata) VALUES ('" +
+              req.session.state_code + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
               ''/**media is empty */ + "', '" + req.body.rentrange + "', '" + req.body.rooms + "','" + req.body.address + "','" + req.body.directions + "','" +
               req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : '') + "', " + pool.escape(req.session.location) + ", " + pool.escape(req.body.post_time) +",'" + (req.body.acc_geodata ? req.body.acc_geodata : '') + "')";
 
@@ -2016,7 +2016,7 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
                 // once it saves in db them emit to other users
                 iouser.emit('boardcast message', { // or 'accommodation'
                   to: 'be received by everyoneELSE', post: {
-                    statecode: req.session.statecode,
+                    state_code: req.session.state_code,
                     streetname: req.body.streetname,
                     rentrange: req.body.rentrange,
                     rooms: req.body.rooms,
@@ -2041,8 +2041,8 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
             });
   }
   // ----------------------------------------------- delete this later. not yet, until we so if else for when there are no files.
-  /* pool.query("INSERT INTO accommodations( statecode, streetname, type, price, media, rentrange, rooms, address, tenure, expire) VALUES ('" +
-    req.session.statecode + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
+  /* pool.query("INSERT INTO accommodations( state_code, streetname, type, price, media, rentrange, rooms, address, tenure, expire) VALUES ('" +
+    req.session.state_code + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
     arraymedia + "', '" + req.body.rentrange + "', '" + req.body.rooms + "','" + req.body.address + "','" + req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : '') +
     "')", function (error, results, fields) {
     if (error) {
@@ -2062,9 +2062,9 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
 app.post('/login', bodyParser.urlencoded({ extended: true }), function (req, res/*, handleRedirect*/) {
   // handle post request, validate data with database.
   // how to handle wrong password with right email or more rearly, right password and wrong password.
-  var sqlquery = "SELECT name_of_ppa, lga, region_street, city_town, batch, servicestate, statecode FROM info WHERE statecode = '" + req.body.statecode.toUpperCase() + "' AND password = '" + req.body.password + "' ";
+  var sqlquery = "SELECT name_of_ppa, lga, region_street, city_town, batch, service_state, state_code FROM info WHERE state_code = '" + req.body.state_code.toUpperCase() + "' AND password = '" + req.body.password + "' ";
   pool.query(sqlquery, function (error1, results1, fields1) {
-    //  console.log(req.body, req.body.statecode, req.body.password);
+    //  console.log(req.body, req.body.state_code, req.body.password);
     // console.log('selected data from db, logging In...', results1); // error sometimes, maybe when there's no db conn: ...
     if (error1) {
       console.log('the error code:', error1.code)
@@ -2095,19 +2095,19 @@ app.post('/login', bodyParser.urlencoded({ extended: true }), function (req, res
 
       // console.log('req.session.id: ', req.session.id);
       // insert login time and session id into db for usage details
-      pool.query("INSERT INTO session_usage_details( statecode, session_id, user_agent) VALUES ('" + req.body.statecode + "', '" + req.session.id + "', '" + req.headers["user-agent"] + "')", function (error2, results2, fields2) {
+      pool.query("INSERT INTO session_usage_details( state_code, session_id, user_agent) VALUES ('" + req.body.state_code + "', '" + req.session.id + "', '" + req.headers["user-agent"] + "')", function (error2, results2, fields2) {
 
         if (error2) throw error2;
 
         if (results2.affectedRows === 1) {
-          req.session.statecode = req.body.statecode.toUpperCase();
+          req.session.state_code = req.body.state_code.toUpperCase();
           req.session.batch = results1[0].batch;
           req.session.loggedin = true;
-          req.session.servicestate = results1[0].servicestate;
+          req.session.service_state = results1[0].service_state;
           req.session.name_of_ppa = results1[0].name_of_ppa;
-          req.session.location = req.session.servicestate + (results1[0].city_town ? ', ' + results1[0].city_town : '') /* + (results1[0].region_street ? ', ' + results1[0].region_street : '' ) */;
+          req.session.location = req.session.service_state + (results1[0].city_town ? ', ' + results1[0].city_town : '') /* + (results1[0].region_street ? ', ' + results1[0].region_street : '' ) */;
 
-          res.status(200).redirect(req.body.statecode.toUpperCase());
+          res.status(200).redirect(req.body.state_code.toUpperCase());
 
         }
 
@@ -2215,7 +2215,7 @@ var chat = io
   .on('connection', function (socket) {
 
     // get user details...
-    pool.query("SELECT firstname, lastname FROM info WHERE statecode = '" + socket.handshake.query.from + "'", function (error, results, fields) { // bring the results in ascending order
+    pool.query("SELECT firstname, lastname FROM info WHERE state_code = '" + socket.handshake.query.from + "'", function (error, results, fields) { // bring the results in ascending order
 
       if (error) {
         console.log(error);
@@ -2292,7 +2292,7 @@ var chat = io
      * 
      * when sockets come online, check if they have any unread message, then send it to them,
      * 
-     * the room name will be both involved parties statecode. if more, then all their statecode or something unique
+     * the room name will be both involved parties state_code. if more, then all their state_code or something unique
      * 
      * how do we know read and unread messages ?
      * 
@@ -2315,7 +2315,7 @@ var chat = io
       fn('from server: we got the message woot ' + name + asf);
     });
 
-    /**this function checks if a corper is online, it takes the corper's statecode on a socket's query parameter and the socket namespace to check */
+    /**this function checks if a corper is online, it takes the corper's state_code on a socket's query parameter and the socket namespace to check */
     function corperonline(sc, ns) {
       console.log('checking if someone is online')
       var x = Object.keys(ns.sockets);
@@ -2339,11 +2339,11 @@ var chat = io
 
       if (socket.handshake.query.from != ('' || null) && msg.to != ('' && socket.handshake.query.from && null)) { // send message only to a particular room
         /* var m = {
-          'from': { 'statecode': socket.handshake.query.from },
-          'to': { 'statecode': msg.to },
+          'from': { 'state_code': socket.handshake.query.from },
+          'to': { 'state_code': msg.to },
           'it': msg
         }; */
-        m.from.statecode = socket.handshake.query.from, m.to.statecode = msg.to, m.it = msg;
+        m.from.state_code = socket.handshake.query.from, m.to.state_code = msg.to, m.it = msg;
         m.from.firstname = socket.names.firstname, m.from.lastname = socket.names.lastname;
 
         var everyRoomOnline = Object.keys(chat.adapter.rooms)
@@ -2498,7 +2498,7 @@ socket.binary(false).emit('an event', { some: 'data' });
 app.use(function (req, res, next) {
   // res.status(404).send("Sorry can't find that! If you could just go back, please, or go <a href='/'>home</a>. Thank You.")
 
-  res.render('pages/404', { // check the url they navigated to that got them lost, and try to offer suggestions in the front end that'll match why they got lost... maybe they missed a letter in their statecode url
+  res.render('pages/404', { // check the url they navigated to that got them lost, and try to offer suggestions in the front end that'll match why they got lost... maybe they missed a letter in their state_code url
 
   });
 });

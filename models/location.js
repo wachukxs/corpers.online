@@ -15,14 +15,18 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Location.belongsTo(models.Media, { // means Location have a mediaId
-        foreignKey: 'mediaId'
+      Location.belongsTo(models.Media, { // means Location have a media_id
+        foreignKey: 'media_id'
       })
-      Location.hasOne(models.PPA, { // means Location has ppaId
-        foreignKey: 'ppaId'
+      Location.hasOne(models.PPA, { // means Location has ppa_id
+        foreignKey: 'ppa_id',
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE',
       });
       Location.hasOne(models.Accommodation, { // means Location has accommodationId
-        foreignKey: 'accommodationId'
+        foreignKey: 'accommodation_id',
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE',
       });
     }
   };
@@ -33,25 +37,19 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.INTEGER
     },
-    mediaId: {
+    media_id: {
       type:DataTypes.INTEGER
     },
-    ppaId: {
+    ppa_id: {
       type:DataTypes.INTEGER
     },
-    accommodationId: {
+    accommodation_id: {
       type:DataTypes.INTEGER
-    },
-    createdAt: {
-      type: DataTypes.DATE
-    },
-    updatedAt: {
-      type: DataTypes.DATE
     },
     type: {
       type: DataTypes.VIRTUAL,
       get() {
-        return 'location';
+        return 'location'; // hardcoded
       },
       set(value) {
         throw new Error('Do not try to set the Location.`type` value!');
@@ -59,10 +57,19 @@ module.exports = (sequelize, DataTypes) => {
     },
     directions: DataTypes.TEXT,
     address: DataTypes.STRING,
-    CorpMemberId: DataTypes.INTEGER,
+    corp_member_id: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'CorpMembers',
+        key: 'id'
+      }
+    },
   }, {
     sequelize,
     modelName: 'Location',
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
   });
   // Location.sync({ alter: true })
   return Location;

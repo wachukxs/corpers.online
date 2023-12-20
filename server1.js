@@ -160,7 +160,7 @@ app.post('/signup', function(req, res){
   //handle post request, add data to database.
   //implement the hashing of password before saving to the db
 
-  var sqlquery = "INSERT INTO info(email, firstname, middlename, password, lastname, statecode) VALUES ('" + req.body.email + "', '" + req.body.firstname + "', '" + req.body.middlename + "', '" + req.body.password + "', '" + req.body.lastname + "', '" + req.body.statecode + "' )" ;
+  var sqlquery = "INSERT INTO info(email, first_name, middle_name, password, last_name, state_code) VALUES ('" + req.body.email + "', '" + req.body.first_name + "', '" + req.body.middle_name + "', '" + req.body.password + "', '" + req.body.last_name + "', '" + req.body.state_code + "' )" ;
   connection.query(sqlquery, function (error, results, fields) {
     console.log('inserted data from: ', results);
     if (error) throw error;
@@ -238,7 +238,7 @@ app.post('/login', function(req, res /*, handleRedirect*/){
       //if data exists:
       //res.sendFile(__dirname + '/user.html');
 
-   }); //the second para is called projection, it just means that it returns only the statecode
+   }); //the second para is called projection, it just means that it returns only the state_code
     console.log('one in!');
   });
   */
@@ -317,11 +317,11 @@ io.of('/signup').on('connection', function (socket) {// when a new user is in th
       if (err) throw err;
       var dbo = db.db("corpersonline");
       var d = { 
-        firstname: data.firstname, 
-        lastname: data.lastname, 
+        first_name: data.first_name, 
+        last_name: data.last_name, 
         email: data.email, 
         password: data.password, 
-        statecode: data.statecode 
+        state_code: data.state_code 
       };
       dbo.collection("corpers").insertOne(d, function(err, res) {
         if (err) {

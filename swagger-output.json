@@ -15,7 +15,6 @@
     "/api/v1.0/allstateslgas": {
       "get": {
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -29,7 +28,6 @@
     "/api/v1.0/allppas": {
       "get": {
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -135,7 +133,6 @@
     "/api/v1.0/contact": {
       "post": {
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -147,8 +144,11 @@
       },
       "get": {
         "description": "",
-        "parameters": [],
-        "responses": {}
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
       }
     },
     "/api/v1.0/oldposts": {
@@ -183,7 +183,6 @@
     "/api/v1.0/oldprofile": {
       "get": {
         "description": "",
-        "parameters": [],
         "responses": {
           "401": {
             "description": "Unauthorized"
@@ -195,7 +194,6 @@
       },
       "post": {
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -215,7 +213,6 @@
     "/api/v1.0/oldupdateaccommodation": {
       "post": {
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -235,7 +232,6 @@
     "/api/v1.0/oldupdatesale": {
       "post": {
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -255,7 +251,6 @@
     "/api/v1.0/olddeleteaccommodation": {
       "post": {
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -275,7 +270,6 @@
     "/api/v1.0/addplace": {
       "post": {
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -352,7 +346,6 @@
     "/api/v1.0/logout": {
       "get": {
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -363,7 +356,6 @@
     "/api/v1.0/corpers": {
       "get": {
         "description": "",
-        "parameters": [],
         "responses": {
           "502": {
             "description": "Bad Gateway"
@@ -374,7 +366,6 @@
     "/api/v1.0ngstates.states_short_paths": {
       "get": {
         "description": "",
-        "parameters": [],
         "responses": {
           "502": {
             "description": "Bad Gateway"
@@ -385,26 +376,34 @@
     "/api/v1.0ngstates.states_short_paths_batch": {
       "get": {
         "description": "",
-        "parameters": [],
-        "responses": {}
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
       }
     },
     "/api/v1.0ngstates.states_short_paths_batch_regex_stringed": {
       "get": {
         "description": "",
-        "parameters": [],
-        "responses": {}
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
       }
     },
     "/api/v1.0/careers": {
       "get": {
         "description": "",
-        "parameters": [],
-        "responses": {}
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
       },
       "post": {
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -418,14 +417,16 @@
     "/api/v1.0/oldchat": {
       "get": {
         "description": "",
-        "parameters": [],
-        "responses": {}
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
       }
     },
     "/api/v1.0/subscribe": {
       "post": {
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -442,8 +443,11 @@
     "/api/v1.0/signup": {
       "get": {
         "description": "",
-        "parameters": [],
-        "responses": {}
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
       },
       "post": {
         "description": "",
@@ -457,10 +461,10 @@
                 "email": {
                   "example": "any"
                 },
-                "firstname": {
+                "first_name": {
                   "example": "any"
                 },
-                "statecode": {
+                "state_code": {
                   "example": "any"
                 }
               }
@@ -477,14 +481,16 @@
     "/api/v1.0/count": {
       "get": {
         "description": "",
-        "parameters": [],
-        "responses": {}
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
       }
     },
     "/api/v1.0/unread-messages": {
       "get": {
         "description": "",
-        "parameters": [],
         "responses": {
           "401": {
             "description": "Unauthorized"
@@ -529,14 +535,16 @@
       },
       "get": {
         "description": "",
-        "parameters": [],
-        "responses": {}
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
       }
     },
     "/api/v1.0/all-users": {
       "get": {
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -550,10 +558,29 @@
     "/api/v1.0/profile": {
       "get": {
         "description": "",
-        "parameters": [],
         "responses": {
           "401": {
             "description": "Unauthorized"
+          },
+          "502": {
+            "description": "Bad Gateway"
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "501": {
+            "description": "Not Implemented"
           },
           "502": {
             "description": "Bad Gateway"
@@ -571,7 +598,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "publicProfile": {
+                "public_profile": {
                   "example": "any"
                 },
                 "nickname": {
@@ -655,7 +682,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "publicProfile": {
+                "public_profile": {
                   "example": "any"
                 },
                 "nickname": {
@@ -694,7 +721,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "publicProfile": {
+                "public_profile": {
                   "example": "any"
                 },
                 "nickname": {
@@ -726,7 +753,6 @@
     "/api/v1.0/profile/profile-photo": {
       "post": {
         "description": "",
-        "parameters": [],
         "responses": {
           "201": {
             "description": "Created"
@@ -743,7 +769,6 @@
     "/api/v1.0/save-push-subscription": {
       "post": {
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -763,7 +788,6 @@
     "/api/v1.0/create-alert": {
       "post": {
         "description": "",
-        "parameters": [],
         "responses": {
           "201": {
             "description": "Created"
@@ -812,21 +836,6 @@
             "description": "Bad Gateway"
           }
         }
-      },
-      "post": {
-        "description": "",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "502": {
-            "description": "Bad Gateway"
-          }
-        }
       }
     },
     "/api/v1.0/search": {
@@ -854,7 +863,6 @@
     "/api/v1.0/join-waitlist": {
       "post": {
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -868,8 +876,8 @@
         }
       }
     },
-    "/api/v1.0/deletesale": {
-      "post": {
+    "/api/v1.0/sale": {
+      "delete": {
         "description": "",
         "parameters": [
           {
@@ -899,12 +907,26 @@
             "description": "Bad Gateway"
           }
         }
-      }
-    },
-    "/api/v1.0/updatesale": {
+      },
       "post": {
         "description": "",
-        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "502": {
+            "description": "Bad Gateway"
+          }
+        }
+      },
+      "patch": {
+        "description": "",
         "responses": {
           "200": {
             "description": "OK"
@@ -957,7 +979,6 @@
     "/api/v1.0/accommodations": {
       "post": {
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -970,6 +991,9 @@
           },
           "502": {
             "description": "Bad Gateway"
+          },
+          "504": {
+            "description": "Gateway Timeout"
           }
         }
       }
@@ -977,7 +1001,6 @@
     "/api/v1.0/updateaccommodation": {
       "post": {
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -1017,7 +1040,6 @@
     "/test": {
       "get": {
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -1028,7 +1050,6 @@
     "/test/all": {
       "get": {
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -1099,7 +1120,6 @@
     "/test/form": {
       "post": {
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -1132,7 +1152,7 @@
           "type": "string",
           "example": ""
         },
-        "city_town": {
+        "city_or_town": {
           "type": "string",
           "example": ""
         },
@@ -1140,11 +1160,11 @@
           "type": "string",
           "example": ""
         },
-        "createdAt": {
+        "created_at": {
           "type": "string",
           "example": "2022-11-25T18:41:24.044Z"
         },
-        "updatedAt": {
+        "updated_at": {
           "type": "string",
           "example": "2022-11-25T18:41:24.044Z"
         },
@@ -1156,19 +1176,19 @@
           "type": "string",
           "example": ""
         },
-        "statecode": {
+        "state_code": {
           "type": "string",
           "example": ""
         },
-        "mediaId": {
+        "media_id": {
           "type": "number",
           "example": 34
         },
-        "timeWithUs": {
+        "time_with_us": {
           "type": "string",
           "example": "4 months"
         },
-        "servicestate": {
+        "service_state": {
           "type": "string",
           "example": ""
         },
@@ -1180,11 +1200,11 @@
           "type": "string",
           "example": ""
         },
-        "pushSubscriptionStringified": {
+        "push_subscription_stringified": {
           "type": "string",
           "example": "text"
         },
-        "ppaId": {
+        "ppa_id": {
           "type": "number",
           "example": 5
         },
@@ -1192,23 +1212,23 @@
           "type": "string",
           "example": ""
         },
-        "middlename": {
+        "middle_name": {
           "type": "string",
           "example": ""
         },
-        "firstname": {
+        "first_name": {
           "type": "string",
           "example": ""
         },
-        "lastname": {
+        "last_name": {
           "type": "string",
           "example": ""
         },
-        "wantspaornot": {
+        "want_spa_or_not": {
           "type": "boolean",
           "example": false
         },
-        "accommodationornot": {
+        "looking_for_accommodation_or_not": {
           "type": "boolean",
           "example": true
         },

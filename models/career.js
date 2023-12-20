@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     message: DataTypes.TEXT,
     message_from: DataTypes.STRING,
     message_to: DataTypes.STRING,
-    mediaId: {
+    media_id: {
       type:DataTypes.INTEGER
     },
     time: {
@@ -41,16 +41,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false
     },
-    createdAt: {
-      type: DataTypes.DATE
-    },
-    updatedAt: {
-      type: DataTypes.DATE
-    },
     age: {
       type: DataTypes.VIRTUAL,
       get() {
-        return moment(this.getDataValue('createdAt')).fromNow();
+        return moment(this.getDataValue('created_at')).fromNow();
       },
       set(value) {
         throw new Error('Do not try to set the Career.`age` value!');
@@ -59,6 +53,10 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Career',
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    // comment: 'What are we using this for again?'
   });
   // Career.sync({ alter: true })
   return Career;

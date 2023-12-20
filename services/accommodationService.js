@@ -11,7 +11,6 @@ const _FILENAME = path.basename(__filename);
 // these are repeating in other services, they should be global.
 /**
  * options for setting JWT cookies
- * 
  * */
 let cookieOptions = {
   httpOnly: true, // frontend js can't access
@@ -37,7 +36,7 @@ exports.delete = (req, res) => {
   return db.Accommodation.destory({
     where: {
       id: req.body.id, // accommodationId ?
-      statecode: req.session.corper.statecode.toUpperCase()
+      state_code: req.session.corper.state_code.toUpperCase()
     }
   })
     .then(_result => res.status(200).send(_result))
@@ -212,7 +211,7 @@ exports.create = (req, res, next) => {
       if (!helpers.isEmpty(_text) && helpers.isEmpty(uploadPromise)) {
         console.log('what\'s _text?', _text)
   
-        console.log('\n\ndo we have statecode', req.session.corper.statecode);
+        console.log('\n\ndo we have state_code', req.session.corper.state_code);
   
         /***
          * Heavy fix for Sequelize ...if you're chaining (not using await), you can't create models with include ...the result doesn't have the included data.
@@ -225,57 +224,64 @@ exports.create = (req, res, next) => {
          * It should filter out object id needs when creating a new model, and ignore the rest (does that already I think)
          */
   
-        _accommodation_to_save = await db.Accommodation.create({
-          ..._text,
-          statecode: req.session.corper.statecode,
-        }, {
-          include: [
-            {
-              model: db.Media,
-              as: 'accommodationMedia', // ideally we shouldn't do this ...but sequlize says we must ...will create an OS PR for it
-            },
-            {
-              model: db.CorpMember,
-              as: 'accommodationByCorper',
-              attributes: db.CorpMember.getSafeAttributes()
-            }
-          ]
-        })
-  
-        /***
-         * Seems if we don't call this, the included nested models won't be included in the result
-         */
-        let _from_corper = await _accommodation_to_save.getAccommodationByCorper()
-        _accommodation_to_save.accommodationByCorper = await _accommodation_to_save.getAccommodationByCorper()
-        _accommodation_to_save.dataValues.accommodationByCorper = await _accommodation_to_save.getAccommodationByCorper() // (await _accommodation_to_save.getAccommodationByCorper()).toJSON() works too
-  
-  
-        // then status code is good
-        res.sendStatus(200);
-  
-        console.log('what acc we are now sedning to front end', _accommodation_to_save.toJSON());
-  
-        // once it saves in db them emit to other users
-        socket.of('/user').emit('boardcast message', { // or 'accommodation'
-          to: 'be received by everyoneELSE',
-          post: [_accommodation_to_save.toJSON()]
-        });
+        try {
+          _accommodation_to_save = await db.Accommodation.create({
+            ..._text,
+            state_code: req.session.corper.state_code,
+          }, {
+            include: [
+              {
+                model: db.Media,
+                as: 'accommodationMedia', // ideally we shouldn't do this ...but sequlize says we must ...will create an OS PR for it
+              },
+              {
+                model: db.CorpMember,
+                as: 'accommodationByCorper',
+                attributes: db.CorpMember.getSafeAttributes()
+              }
+            ]
+          })
+    
+          /***
+           * Seems if we don't call this, the included nested models won't be included in the result
+           */
+          let _from_corper = await _accommodation_to_save.getAccommodationByCorper()
+          _accommodation_to_save.accommodationByCorper = await _accommodation_to_save.getAccommodationByCorper()
+          _accommodation_to_save.dataValues.accommodationByCorper = await _accommodation_to_save.getAccommodationByCorper() // (await _accommodation_to_save.getAccommodationByCorper()).toJSON() works too
+    
+    
+          // then status code is good
+          res.sendStatus(200);
+    
+          console.log('what acc we are now sedning to front end', _accommodation_to_save.toJSON());
+    
+          // once it saves in db them emit to other users
+          socket.of('/user').emit('boardcast message', { // or 'accommodation'
+            to: 'be received by everyoneELSE',
+            post: [_accommodation_to_save.toJSON()]
+          });
+        } catch (error) {
+          console.error('errr5', error)
+          res.sendStatus(504);
+        }
   
   
       } else if (!helpers.isEmpty(_text) && !helpers.isEmpty(uploadPromise)) {
-        await Promise.all(uploadPromise);
+        try {
+          await Promise.all(uploadPromise);
   
   
-        console.log('\n\ndo we have statecode', req.session.corper.statecode);
+        console.log('\n\ndo we have state_code', req.session.corper.state_code);
   
+        // TODO: split the inputs, to fix something like (parent: Error: Incorrect datetime value: '42241-12-31 23:00:00' for column 'rentExpireDate' at row 1)
         _accommodation_to_save = await db.Accommodation.create( // causes error for virtual fields when returning values : SequelizeDatabaseError: column "type" does not exist
           {
-            statecode: req.session.corper.statecode,
+            state_code: req.session.corper.state_code,
             ..._text,
-            accommodationMedia: {
-              urls: (_media.length > 0 ? _media.toString() : _text.mapimage ? _text.mapimage : ''), // deal with mapimage later
-              // altText: '', // add later
-            },
+            ...(_media.length > 0 && {accommodationMedia: {
+              urls: _media.toString(),
+              // alt_text: '', // add later
+            }})
             // Location: {
             //   address: _text.address,
             //   directions: _text.directions
@@ -329,16 +335,21 @@ exports.create = (req, res, next) => {
         console.log('what acc we are sedning', _accommodation_to_save, "\n\n\nadddnndd", k);
   
         // once it saves in db them emit to other users
-        socket.of('/user').emit('boardcast message', { // or 'accommodation'
+        socket.of('/corp-member').emit('boardcast message', { // or 'accommodation'
           to: 'be received by everyoneELSE',
           post: [_accommodation_to_save.toJSON()]
         });
+        } catch (error) {
+          console.error('errr777', error)
+          res.sendStatus(504);
+        }
   
   
       }
   
-      req._accommodation_to_save = _accommodation_to_save; // for the next middleware (Alerts Service)
-      next()
+      // TODO: rework the logic for this.
+      // req._accommodation_to_save = _accommodation_to_save; // for the next middleware (Alerts Service)
+      // next()
     });
   
     // handle post request, add data to database... do more

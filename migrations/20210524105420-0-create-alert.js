@@ -8,22 +8,22 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      statecode: {
+      state_code: {
         type: Sequelize.STRING,
       },
       type: {
         type: Sequelize.STRING,
       },
-      itemname: {
+      item_name: {
         type: Sequelize.STRING
       },
-      minPrice: {
+      minimum_price: {
         type: Sequelize.FLOAT
       },
-      maxPrice: {
+      max_price: {
         type: Sequelize.FLOAT
       },
-      accommodationType: {
+      accommodation_type: {
         type: Sequelize.STRING,
       },
       rooms: {
@@ -32,15 +32,15 @@ module.exports = {
       note: {
         type: Sequelize.TEXT
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      locationId: {
+      location_id: {
         type: Sequelize.INTEGER
       },
     });

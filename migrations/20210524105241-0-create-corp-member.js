@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      ppaId: {
+      ppa_id: {
         type: Sequelize.INTEGER,
       },
       travel_from_city: {
@@ -23,7 +23,7 @@ module.exports = {
       region_street: {
         type: Sequelize.STRING
       },
-      city_town: {
+      city_or_town: {
         type: Sequelize.STRING
       },
       email: {
@@ -38,44 +38,40 @@ module.exports = {
       batch: {
         type: Sequelize.STRING
       },
-      statecode: {
+      state_code: {
         type: Sequelize.STRING,
-        unique: true
+        allowNull: false,
+        unique: true,
       },
       password: {
         type: Sequelize.STRING
       },
-      middlename: {
+      middle_name: {
         type: Sequelize.STRING
       },
-      firstname: {
+      first_name: {
         type: Sequelize.STRING
       },
-      lastname: {
+      last_name: {
+        type: Sequelize.STRING
+      },
+      nickname: {
         type: Sequelize.STRING
       },
       email: {
         type: Sequelize.STRING
       },
-      mediaId: {
+      media_id: {
         type: Sequelize.INTEGER,
       },
-      pushSubscriptionStringified: {
+      push_subscription_stringified: {
         type: Sequelize.TEXT
       },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      wantspaornot: {
+      want_spa_or_not: {
         type: Sequelize.BOOLEAN,
         default: false
       },
-      accommodationornot: {
+      looking_for_accommodation_or_not: {
         type: Sequelize.BOOLEAN,
         default: false
       },
@@ -85,6 +81,14 @@ module.exports = {
       },
       bio: {
         type: Sequelize.TEXT
+      },
+      created_at: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updated_at: {
+        allowNull: false,
+        type: Sequelize.DATE
       },
     });
   },

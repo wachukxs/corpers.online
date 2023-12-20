@@ -68,7 +68,7 @@ $.typeahead({
                     return "{{name_of_ppa}} ({{type_of_ppa}})<br> <small class='text-muted text-uppercase'>{{ppa_address}}</small>" +
                         "<br> <small class='text-muted'>ppa</small>";
                 } else if (item.itemname) {
-                    let d = moment(item.createdAt).fromNow();
+                    let d = moment(item.created_at).fromNow();
                     return "{{itemname}} selling at &#8358;{{price}}<br> <small class='text-muted text-uppercase'>{{saleByCorper._location}}  &#183; " + d + "</small>" +
                         "<br> <small class='text-muted'>sale</small>";
                 };

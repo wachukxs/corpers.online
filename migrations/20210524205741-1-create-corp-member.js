@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      ppaId: {
+      ppa_id: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -29,7 +29,10 @@ module.exports = {
       region_street: {
         type: Sequelize.STRING
       },
-      city_town: {
+      city_or_town: {
+        type: Sequelize.STRING
+      },
+      nickname: {
         type: Sequelize.STRING
       },
       email: {
@@ -44,26 +47,28 @@ module.exports = {
       batch: {
         type: Sequelize.STRING
       },
-      statecode: {
+      state_code: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      middle_name: {
         type: Sequelize.STRING
       },
-      middlename: {
+      first_name: {
         type: Sequelize.STRING
       },
-      firstname: {
-        type: Sequelize.STRING
-      },
-      lastname: {
+      last_name: {
         type: Sequelize.STRING
       },
       password: {
         type: Sequelize.STRING
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      mediaId: {
+      media_id: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -73,18 +78,18 @@ module.exports = {
           key: 'id'
         },
       },
-      pushSubscriptionStringified: {
+      push_subscription_stringified: {
         type: Sequelize.TEXT
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      wantspaornot: {
+      want_spa_or_not: {
         type: Sequelize.BOOLEAN,
         default: false
       },
-      accommodationornot: {
+      looking_for_accommodation_or_not: {
         type: Sequelize.BOOLEAN,
         default: false
       },

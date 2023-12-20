@@ -8,17 +8,16 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      statecode: {
+      state_code: {
         type: Sequelize.STRING,
         references: {
           model: {
             tableName: 'CorpMembers',
-            
           },
-          key: 'statecode'
+          key: 'state_code'
         },
       },
-      mediaId: {
+      media_id: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -28,10 +27,10 @@ module.exports = {
           key: 'id'
         },
       },
-      itemname: {
+      item_name: {
         type: Sequelize.STRING
       },
-      minPrice: {
+      minimum_price: {
         type: Sequelize.INTEGER,
       },
       price: {
@@ -40,11 +39,15 @@ module.exports = {
       text: {
         type: Sequelize.TEXT
       },
-      createdAt: {
+      is_draft: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       }

@@ -43,18 +43,18 @@ module.exports.verifyJWT = (req, res, next) => {
     // console.log('Cookies: ', req.cookies)
     // Cookies that have been signed
     // console.log('Signed Cookies: ', req.signedCookies)
+    console.log('for corper', req.session?.corper?.state_code);
 
-    console.log('req.session.corper', req.session.corper);
-
-    if (req.session.corper && req.session.corper.statecode) {
+    // TODO: check the format of state_code
+    if (req.session?.corper && req.session?.corper?.state_code) {
         next()
-    } else if (process.env.DEV && process.env.DEV != 'true' && req.cookies._online) {
+    } else if (req.cookies?._online) {
         console.log('coming from', req.path);
         // console.log('\n\n req.session.corper is', req.session);
         // we could also use req.cookies, but req.signedCookies is just an extra layer of security
         jwt.verify(req.cookies._online, process.env.SESSION_SECRET, function (err, decodedToken) {
             if (err) {
-                console.error(err);
+                console.error('err verifying cookie', err);
                 res.sendStatus(502)
             } else {
 
@@ -62,10 +62,11 @@ module.exports.verifyJWT = (req, res, next) => {
                  * HOW COME PASSWORDS AREN"T hashed
                  */
                 // console.log(Object.keys(db.PPA.rawAttributes)); // here lies a problem
+                console.log('decoded', decodedToken);
                 db.CorpMember.findOne({
-                    where: { statecode: decodedToken.statecode.toUpperCase() },
+                    where: { state_code: decodedToken.state_code.toUpperCase() },
                     // include: [{ all: true }],
-                    include: [ // why is it looking for ppaId in PPA model ?? cause of bug in sequelize
+                    include: [ // why is it looking for ppa_id in PPA model ?? cause of bug in sequelize
                         db.Media,
                         {
                             model: db.PPA,
@@ -74,7 +75,7 @@ module.exports.verifyJWT = (req, res, next) => {
                     ],
                     attributes: db.CorpMember.getSafeAttributes()
                 })
-                    // query.AutoLogin(decodedToken.statecode)
+                    // query.AutoLogin(decodedToken.state_code)
                     .then(result => {
                         // console.log('corper result object', result);
                         if (result) { // sometimes, it's null ...but why though ? // on sign up it's null ...
@@ -135,7 +136,7 @@ module.exports.checkJWT = (req, res, next) => {
                 /**
                  * TODO: remove query . auto loagin
                  */
-                query.AutoLogin(decodedToken.statecode).then(result => {
+                query.AutoLogin(decodedToken.state_code).then(result => {
                     console.info('\n\n\n\ninnnnn')
                     req.session.corper = result.response[0];
 
@@ -157,8 +158,8 @@ module.exports.maxAge = 365 * (1000 * 60 * 60 * 24) // days * (1 sec * 60 secs *
 
 /**
  * 
- * @param {string} statecode 
- * a pubic unique identifier(statecode) for our users(corpers)
+ * @param {string} state_code 
+ * a pubic unique identifier(state_code) for our users(corpers)
  * 
  * @description
  * create(sign) a JWT to issue
@@ -166,11 +167,11 @@ module.exports.maxAge = 365 * (1000 * 60 * 60 * 24) // days * (1 sec * 60 secs *
  * @deprecated
  * because we want to keep our codebase async, calling this method this way isn't async
  */
-module.exports.createJWT = (statecode) => {
+module.exports.createJWT = (state_code) => {
     const _FUNCTIONNAME = 'updateProfilePhoto'
     console.log('hitting', _FILENAME, _FUNCTIONNAME);
 
-    return jwt.sign({ statecode }, process.env.SESSION_SECRET, {
+    return jwt.sign({ state_code }, process.env.SESSION_SECRET, {
         expiresIn: this.maxAge
     })
 }

@@ -728,7 +728,7 @@ app.get('/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT
       res.render('pages/account', { // having it named account.2 returns error cannot find module '2'
         statecode: req.session.statecode.toUpperCase(),
         statecode2: req.path.substring(1, 12).toUpperCase(),
-        servicestate: req.session.servicestate,
+        service_state: req.session.service_state,
         batch: req.session.batch,
         name_of_ppa: req.session.name_of_ppa,
         total_num_unread_msg: results.filter((value, index, array) => {
@@ -815,8 +815,8 @@ app.get('/newsearch', function (req, res) {
       if (req.session.statecode) {
         ppa_details.user.statecode = req.session.statecode.toUpperCase();
       }
-      if (req.session.servicestate) {
-        ppa_details.user.servicestate = req.session.servicestate;
+      if (req.session.service_state) {
+        ppa_details.user.service_state = req.session.service_state;
       }
       if (req.session.batch) {
         ppa_details.user.batch = req.session.batch;
@@ -1086,8 +1086,8 @@ app.get('/search', function (req, res) {
       if (req.session.statecode) {
         ppa_details.user.statecode = req.session.statecode.toUpperCase();
       }
-      if (req.session.servicestate) {
-        ppa_details.user.servicestate = req.session.servicestate;
+      if (req.session.service_state) {
+        ppa_details.user.service_state = req.session.service_state;
       }
       if (req.session.batch) {
         ppa_details.user.batch = req.session.batch;
@@ -1189,7 +1189,7 @@ app.get('/chat', function (req, res) {
       res.render('pages/newchat', { // having it named account.2 returns error cannot find module '2'
         statecode: req.session.statecode.toUpperCase(),
         statecode2: req.query.s,
-        servicestate: req.session.servicestate,
+        service_state: req.session.service_state,
         batch: req.session.batch,
         name_of_ppa: req.session.name_of_ppa,
         postdetails: (isEmpty(results[0]) ? null : results[0]), // tell user the post no longer exists, maybe it was bought or something, we should delete it if it was bought, we hope not to use this function
@@ -1228,7 +1228,7 @@ app.get('/chat', function (req, res) {
       res.render('pages/newchat', { // having it named account.2 returns error cannot find module '2'
         statecode: req.session.statecode.toUpperCase(),
         statecode2: req.query.s,
-        servicestate: req.session.servicestate,
+        service_state: req.session.service_state,
         batch: req.session.batch,
         name_of_ppa: req.session.name_of_ppa,
         oldchats: results[0], // leave it like this!!
@@ -1339,7 +1339,7 @@ app.get(['/map', '/maps'], function (req, res) { // try to infer their location 
 
     res.render('pages/map', {
       statecode: req.session.statecode,
-      servicestate: req.session.servicestate,
+      service_state: req.session.service_state,
       mapdata: JSON.stringify(results[0].concat(results[1])),
       types: listoftypesofppas
     });
@@ -1724,7 +1724,7 @@ app.get('/profile', function (req, res) {
     // res.sendFile(__dirname + '/profile.html');
     res.render('pages/profile', {
       statecode: req.session.statecode.toUpperCase(),
-      servicestate: req.session.servicestate,
+      service_state: req.session.service_state,
       batch: req.session.batch
       // select all distinct ppa type / address / name and send it to the front end as suggestions for the input when the corpers type
     });
@@ -1747,8 +1747,8 @@ app.get('/newprofile', function (req, res) {
 
       /**an array of all the local government in the state */
       var lgas = jkl.states[states_short.indexOf(jn.slice(0, 2))][states_long[states_short.indexOf(jn.slice(0, 2))]];
-      // use the ones from their service state // AND servicestate = '" + req.session.servicestate + "'
-      pool.query("SELECT name_of_ppa FROM info WHERE name_of_ppa != '' ; SELECT ppa_address from info WHERE ppa_address != '' AND servicestate = '" + req.session.servicestate + "'; SELECT city_town FROM info WHERE city_town != '' AND servicestate = '" + req.session.servicestate + "'; SELECT region_street FROM info WHERE region_street != '' AND servicestate = '" + req.session.servicestate + "'", function (error2, results2, fields2) {
+      // use the ones from their service state // AND service_state = '" + req.session.service_state + "'
+      pool.query("SELECT name_of_ppa FROM info WHERE name_of_ppa != '' ; SELECT ppa_address from info WHERE ppa_address != '' AND service_state = '" + req.session.service_state + "'; SELECT city_town FROM info WHERE city_town != '' AND service_state = '" + req.session.service_state + "'; SELECT region_street FROM info WHERE region_street != '' AND service_state = '" + req.session.service_state + "'", function (error2, results2, fields2) {
 
         if (error2) throw error2;
         // console.log('PPAs', results2);
@@ -1757,7 +1757,7 @@ app.get('/newprofile', function (req, res) {
         // res.sendFile(__dirname + '/new profile/index.html');
         res.render('pages/newprofile', {
           statecode: req.session.statecode.toUpperCase(),
-          servicestate: req.session.servicestate.toUpperCase(),
+          service_state: req.session.service_state.toUpperCase(),
           batch: req.session.batch,
           names_of_ppas: results2[0], // array of objects ie names_of_ppas[i].name_of_ppa
           ppa_addresses: results2[1],
@@ -1778,18 +1778,18 @@ app.get('/newprofile', function (req, res) {
 app.post('/profile', bodyParser.urlencoded({
   extended: true /* , type: 'application/x-www-form-urlencoded' */
 }), function (req, res) {
-  // cater for fields we already have, so that we don't touch them eg. servicestate
-  // UPDATE 'info' SET 'firstname'=[value-1],'lastname'=[value-2],'accommodation_location'=[value-3],'servicestate'=[value-4],'batch'=[value-5],'name_of_ppa'=[value-6],'statecode'=[value-7],'email'=[value-8],'middlename'=[value-9],'password'=[value-10],'phone'=[value-11],'dateofreg'=[value-12],'lga'=[value-13],'city_town'=[value-14],'region_street'=[value-15],'stream'=[value-16],'type_of_ppa'=[value-17],'ppa_address'=[value-18],'travel_from_state'=[value-19],'travel_from_city'=[value-20],'spaornot'=[value-21] WHERE email = req.body.email
-  // UPDATE info SET 'accommodation_location'=req.body.accommodation_location,'servicestate'=req.body.servicestate,'name_of_ppa'=[value-6],'lga'=req.body.lga,'city_town'=req.body.city_town,'region_street'=req.body.region_street,'stream'=req.body.stream,'type_of_ppa'=req.body.type_of_ppa,'ppa_address'=req.body.ppa_address,'travel_from_state'=req.body.travel_from_state,'travel_from_city'=req.body.travel_from_city,'spaornot'=req.body.spaornot WHERE email = req.body.email
-  // var sqlquery = "INSERT INTO info(servicestate, lga, city_town, region_street, stream, accommodation_location, type_of_ppa, travel_from_state, travel_from_city) VALUES ('" + req.body.servicestate + "', '" + req.body.lga + "', '" + req.body.city_town + "', '" + req.body.region_street + "', '" + req.body.stream + "', '" + req.body.accommodation_location + "', '" + req.body.type_of_ppa + "', '" + req.body.travel_from_state + "', '" + req.body.travel_from_city + "', '" + req.body.spaornot + "' )";
+  // cater for fields we already have, so that we don't touch them eg. service_state
+  // UPDATE 'info' SET 'firstname'=[value-1],'lastname'=[value-2],'accommodation_location'=[value-3],'service_state'=[value-4],'batch'=[value-5],'name_of_ppa'=[value-6],'statecode'=[value-7],'email'=[value-8],'middlename'=[value-9],'password'=[value-10],'phone'=[value-11],'dateofreg'=[value-12],'lga'=[value-13],'city_town'=[value-14],'region_street'=[value-15],'stream'=[value-16],'type_of_ppa'=[value-17],'ppa_address'=[value-18],'travel_from_state'=[value-19],'travel_from_city'=[value-20],'spaornot'=[value-21] WHERE email = req.body.email
+  // UPDATE info SET 'accommodation_location'=req.body.accommodation_location,'service_state'=req.body.service_state,'name_of_ppa'=[value-6],'lga'=req.body.lga,'city_town'=req.body.city_town,'region_street'=req.body.region_street,'stream'=req.body.stream,'type_of_ppa'=req.body.type_of_ppa,'ppa_address'=req.body.ppa_address,'travel_from_state'=req.body.travel_from_state,'travel_from_city'=req.body.travel_from_city,'spaornot'=req.body.spaornot WHERE email = req.body.email
+  // var sqlquery = "INSERT INTO info(service_state, lga, city_town, region_street, stream, accommodation_location, type_of_ppa, travel_from_state, travel_from_city) VALUES ('" + req.body.service_state + "', '" + req.body.lga + "', '" + req.body.city_town + "', '" + req.body.region_street + "', '" + req.body.stream + "', '" + req.body.accommodation_location + "', '" + req.body.type_of_ppa + "', '" + req.body.travel_from_state + "', '" + req.body.travel_from_city + "', '" + req.body.spaornot + "' )";
 
-  // var sqlquery = "UPDATE info SET accommodation_location = '" + req.body.accommodation_location + "', servicestate = '" + req.body.servicestate + "', name_of_ppa = '" + req.body.name_of_ppa + "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" + req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" + req.body.type_of_ppa + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" + req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city + "', spaornot = '" + req.body.spaornot + "' WHERE email = '" + req.body.email + "' " ;
+  // var sqlquery = "UPDATE info SET accommodation_location = '" + req.body.accommodation_location + "', service_state = '" + req.body.service_state + "', name_of_ppa = '" + req.body.name_of_ppa + "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" + req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" + req.body.type_of_ppa + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" + req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city + "', spaornot = '" + req.body.spaornot + "' WHERE email = '" + req.body.email + "' " ;
 
-  /*[req.body.accommodation_location, req.body.servicestate, req.body.name_of_ppa, req.body.lga, req.body.city_town, req.body.region_street, req.body.stream, req.body.type_of_ppa, req.body.ppa_address, req.body.travel_from_state, req.body.travel_from_city, req.body.spaornot, req.body.email],*/
+  /*[req.body.accommodation_location, req.body.service_state, req.body.name_of_ppa, req.body.lga, req.body.city_town, req.body.region_street, req.body.stream, req.body.type_of_ppa, req.body.ppa_address, req.body.travel_from_state, req.body.travel_from_city, req.body.spaornot, req.body.email],*/
   console.log('\n\nthe req.body for /newprofile', req.body, '\n\n', req.body.statecode);
   // console.log('\n\n', req);
   var sqlquery = "UPDATE info SET accommodation_location = '" + (req.body.accommodation_location ? req.body.accommodation_location : '') +
-    (req.body.ss ? "', servicestate = '" + req.body.ss : '') // if there's service state(i.e. corper changed service state in real life and from front end), insert it.
+    (req.body.ss ? "', service_state = '" + req.body.ss : '') // if there's service state(i.e. corper changed service state in real life and from front end), insert it.
     +
     "', name_of_ppa = '" + req.body.name_of_ppa +
     "', ppa_directions = '" + req.body.ppadirections +
@@ -1815,7 +1815,7 @@ app.post('/profile', bodyParser.urlencoded({
       // todo later...
 
       statecode: req.session.statecode.toUpperCase(),
-      servicestate: req.session.servicestate,
+      service_state: req.session.service_state,
       batch: req.session.batch, */
 
       if (req.body.newstatecode) { // if they are changing statecode to a different state, then their service state in the db should change and their ppa details too should change, tell them to change the ppa details if they don't change it
@@ -2112,7 +2112,7 @@ app.post('/signup', bodyParser.urlencoded({
     return sb == 'A' ? 1 : sb == 'B' ? 2 : sb == 'C' ? 3 : 4; // because we're sure it's gonna be 'D'
   }
 
-  var sqlquery = "INSERT INTO info(email, firstname, middlename, password, lastname, statecode, batch, servicestate, stream) VALUES ('" + req.body.email + "', '" + req.body.firstname + "', '" + req.body.middlename + "', '" + req.body.password + "', '" + req.body.lastname + "', '" + req.body.statecode.toUpperCase() + "', '" + req.body.statecode.slice(3, 6).toUpperCase() + "', '" + theservicestate + "' , '" + getstream(thestream) + "'  )";
+  var sqlquery = "INSERT INTO info(email, firstname, middlename, password, lastname, statecode, batch, service_state, stream) VALUES ('" + req.body.email + "', '" + req.body.firstname + "', '" + req.body.middlename + "', '" + req.body.password + "', '" + req.body.lastname + "', '" + req.body.statecode.toUpperCase() + "', '" + req.body.statecode.slice(3, 6).toUpperCase() + "', '" + theservicestate + "' , '" + getstream(thestream) + "'  )";
   pool.query(sqlquery, function (error, results, fields) {
     console.log('inserted data from: ', results);
     if (error) {
@@ -2134,10 +2134,10 @@ app.post('/signup', bodyParser.urlencoded({
     else if (results.affectedRows === 1) {
       req.session.statecode = req.body.statecode.toUpperCase();
       req.session.loggedin = true;
-      req.session.servicestate = theservicestate;
+      req.session.service_state = theservicestate;
       req.session.batch = req.body.statecode.toUpperCase().slice(3, 6);
       req.session.loggedin = true;
-      req.session.location = req.session.servicestate;
+      req.session.location = req.session.service_state;
 
       main(req.body.email, req.body.firstname, theservicestate).catch(console.error);
 

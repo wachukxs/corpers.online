@@ -11,14 +11,14 @@ module.exports = {
       urls: {
         type: Sequelize.STRING
       },
-      altText: {
+      alt_text: {
         type: Sequelize.STRING
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       }

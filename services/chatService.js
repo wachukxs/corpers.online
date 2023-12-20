@@ -22,7 +22,7 @@ exports.getChatData = async (req, res) => {
     let _all_corp_member_chats = await db.Chat.findAll({
         where: {
             room: {
-                [Op.like]: `%${req.session.corper.statecode}%` // or use req.query.s
+                [Op.like]: `%${req.session.corper.state_code}%` // or use req.query.s
             },
             message: {
                 [Op.not]: null
@@ -32,7 +32,7 @@ exports.getChatData = async (req, res) => {
             ['Chat.id'], ['CorpMember.id'], ['CorpMember.Medium.id'], ['Medium.id'],
             ['Chat.room'],
         ],
-        order: [['createdAt']],
+        order: [['created_at']],
         include: [
             {
                 model: db.CorpMember,
@@ -50,7 +50,7 @@ exports.getChatData = async (req, res) => {
     let _total_num_unread_msg = await db.Chat
         .count({
             where: {
-                message_to: req.session.corper.statecode,
+                message_to: req.session.corper.state_code,
                 // message_sent: false, // should we be using this, or better still, do we need it???
                 read_by_to: false,
                 message: {
@@ -63,7 +63,7 @@ exports.getChatData = async (req, res) => {
     let _all_chats_to_corp_member = await db.Chat.findAll({
         where: {
             message_to: {
-                [Op.eq]: `${req.session.corper.statecode}`, // or use req.query.s
+                [Op.eq]: `${req.session.corper.state_code}`, // or use req.query.s
             },
             // message_sent: {
             //     [Op.is]: false,
@@ -80,7 +80,7 @@ exports.getChatData = async (req, res) => {
     let _all_chats_from_corp_member = await db.Chat.findAll({
         where: {
             message_from: {
-                [Op.eq]: `${req.session.corper.statecode}`, // or use req.query.s
+                [Op.eq]: `${req.session.corper.state_code}`, // or use req.query.s
             },
             // message_sent: {
             //     [Op.is]: false,

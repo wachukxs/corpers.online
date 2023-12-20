@@ -19,9 +19,8 @@ module.exports = {
         references: {
           model: {
             tableName: 'CorpMembers',
-            
           },
-          key: 'statecode'
+          key: 'state_code'
         },
       },
       message_to: {
@@ -31,15 +30,14 @@ module.exports = {
             tableName: 'CorpMembers',
             
           },
-          key: 'statecode'
+          key: 'state_code'
         },
       },
-      mediaId: {
+      media_id: {
         type: Sequelize.INTEGER,
         references: {
           model: {
             tableName: 'Media',
-            
           },
           key: 'id'
         },
@@ -59,11 +57,11 @@ module.exports = {
       message_sent: {
         type: Sequelize.BOOLEAN
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       }

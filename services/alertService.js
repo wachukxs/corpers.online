@@ -38,28 +38,28 @@ exports.checkAccommodation = async (req, res) => {
       where: {
 
         ... (_accommodation_to_find.rent && {
-          maxPrice: {
+          max_price: {
             [Op.gte]: _accommodation_to_find.rent,
           }
         }),
         ... (_accommodation_to_find.roommateRent && {
-          maxPrice: {
+          max_price: {
             [Op.gte]: _accommodation_to_find.roommateRent,
           }
         }),
         ... (_accommodation_to_find.rent && {
-          minPrice: {
+          minimum_price: {
             [Op.lte]: _accommodation_to_find.rent,
           }
         }),
         ... (_accommodation_to_find.roommateRent && {
-          minPrice: {
+          minimum_price: {
             [Op.lte]: _accommodation_to_find.roommateRent,
           }
         }),
         ...(_accommodation_to_find.availableRooms && {
           rooms: { // [Op.regexp] (MySQL/PG only)
-            [Op.regexp]: _accommodation_to_find.availableRooms.replace(/,/g, '|')
+            [Op.regexp]: _accommodation_to_find.availableRooms.toString().replace(/,/g, '|')
           }
         }),
       },
@@ -69,11 +69,11 @@ exports.checkAccommodation = async (req, res) => {
       }]
     })
     // Executing (default): 
-    // SELECT "id", "type", "itemname", "statecode", "minPrice", 
-    // "accommodationType", "maxPrice", "note", "createdAt", 
-    // "updatedAt", "rooms", "locationId" 
-    // FROM "Alerts" AS "Alert" WHERE "Alert"."maxPrice" <= 5780 
-    // AND "Alert"."minPrice" >= 5780 
+    // SELECT "id", "type", "item_name", "state_code", "minimum_price", 
+    // "accommodation_type", "max_price", "note", "created_at", 
+    // "updated_at", "rooms", "locationId" 
+    // FROM "Alerts" AS "Alert" WHERE "Alert"."max_price" <= 5780 
+    // AND "Alert"."minimum_price" >= 5780 
     // AND "Alert"."rooms" ~ '^[Dining room]';
 
     console.log("Found these alerts:\n\n\n", _found_alerts); // .toJSON() is not a function
@@ -82,9 +82,9 @@ exports.checkAccommodation = async (req, res) => {
       for (let index = 0; index < _found_alerts.length; index++) {
         const _alert = _found_alerts[index].dataValues;
 
-        if (_alert.alertByCorper.pushSubscriptionStringified) {
+        if (_alert.alertByCorper.push_subscription_stringified) {
           webpush.sendNotification(
-            _alert.alertByCorper.pushSubscriptionStringified,
+            _alert.alertByCorper.push_subscription_stringified,
             `${_accommodation_to_find.type} at ₦${(_accommodation_to_find.roommateRent ? Intl.NumberFormat().format(_accommodation_to_find.roommateRent) + ' with a roommate.' : Intl.NumberFormat().format(_accommodation_to_find.rent))}`,
             // {}
           ).then((_done) => {
@@ -112,11 +112,11 @@ exports.checkAccommodation = async (req, res) => {
         type: 'accommodation',
         age: 'a few seconds ago',
         id: 4,
-        statecode: 'AB/20A/1233',
-        accommodationType: 'Self contain',
+        state_code: 'AB/20A/1233',
+        accommodation_type: 'Self contain',
         tenure: 'Sublease',
         rentExpireDate: 2021-08-28T00:00:00.000Z,
-        rentRange: 'yearly',
+        rentRange: 'yearly', // should be rentInterval
         rent: 435224,
         accommodationMedia: {
           urls: [
@@ -124,53 +124,53 @@ exports.checkAccommodation = async (req, res) => {
             'https://drive.google.com/uc?id=16VgkCTI8-a4oxj_Bxl13biurSEf_yU_z'
           ],
           id: 39,
-          updatedAt: 2021-07-29T10:22:19.301Z,
-          createdAt: 2021-07-29T10:22:19.301Z,
-          altText: null
+          updated_at: 2021-07-29T10:22:19.301Z,
+          created_at: 2021-07-29T10:22:19.301Z,
+          alt_text: null
         },
-        updatedAt: 2021-07-29T10:22:20.098Z,
-        createdAt: 2021-07-29T10:22:19.300Z,
-        mediaId: 39,
+        updated_at: 2021-07-29T10:22:20.098Z,
+        created_at: 2021-07-29T10:22:19.300Z,
+        media_id: 39,
         roommateRent: null,
         idealRoommate: null,
-        occupantDescription: null,
+        occupant_description: null,
         locationId: 4,
         accommodationByCorper: {
-          timeWithUs: 'a day ago',
-          servicestate: 'ABIA',
+          time_with_us: 'a day ago',
+          service_state: 'ABIA',
           _location: 'ABIA',
-          pushSubscriptionStringified: null,
+          push_subscription_stringified: null,
           id: 1,
           travel_from_city: null,
           travel_from_state: null,
           accommodation_location: null,
           region_street: null,
-          city_town: null,
+          city_or_town: null,
           email: 'a.random@email.com',
           lga: null,
           stream: null,
-          createdAt: 2021-07-28T12:02:29.943Z,
+          created_at: 2021-07-28T12:02:29.943Z,
           batch: null,
-          statecode: 'AB/20A/1233',
-          updatedAt: 2021-07-28T12:02:29.943Z,
-          mediaId: null,
-          ppaId: null,
+          state_code: 'AB/20A/1233',
+          updated_at: 2021-07-28T12:02:29.943Z,
+          media_id: null,
+          ppa_id: null,
           password: 'pass',
-          middlename: '',
-          firstname: 'Udauk',
-          lastname: 'Ossai',
-          wantspaornot: null,
-          accommodationornot: null,
+          middle_name: '',
+          first_name: 'Udauk',
+          last_name: 'Ossai',
+          want_spa_or_not: null,
+          looking_for_accommodation_or_not: null,
           public_profile: null,
           bio: null
         },
         Location: {
           id: 4,
-          mediaId: null,
-          ppaId: null,
+          media_id: null,
+          ppa_id: null,
           accommodationId: 4,
-          createdAt: 2021-07-29T10:22:19.834Z,
-          updatedAt: 2021-07-29T10:22:19.834Z,
+          created_at: 2021-07-29T10:22:19.834Z,
+          updated_at: 2021-07-29T10:22:19.834Z,
           directions: 'Hellooo ...this is a reflection of yourself.',
           address: '2B, Westron, Ajaokuta, Kogi State, Nigeria.',
           CorpMemberId: 1
@@ -206,26 +206,24 @@ exports.checkSale = async (req, res) => {
 
     console.log('sale to find== =>', _sale_to_find);
 
-    console.log("\n\n\ndid reg ex work?", new RegExp(_sale_to_find.itemname
-      .padEnd(_sale_to_find.itemname.length + 3, ')?)')
-      .padStart(_sale_to_find.itemname.length + 3 + 2, '((')));
+    console.log("\n\n\ndid reg ex work?", new RegExp(_sale_to_find.item_name
+      .padEnd(_sale_to_find.item_name.length + 3, ')?)')
+      .padStart(_sale_to_find.item_name.length + 3 + 2, '((')));
 
     let _found_alerts = await db.Alert.findAll({ // is an array
       where: {
-        maxPrice: {
+        max_price: {
           [Op.gte]: _sale_to_find.price,
         },
-        minPrice: {
+        minimum_price: {
           [Op.lte]: _sale_to_find.price,
         },
         [Op.or]: [
-          { itemname: _sale_to_find.itemname }, // hmmm needs more work ...what if it's mis-spelt or sth
+          { item_name: _sale_to_find.item_name }, // hmmm needs more work ...what if it's mis-spelt or sth
           // doing this just because
           {
-            itemname: {
-              [Op.regexp]: _sale_to_find.itemname
-                .padEnd(_sale_to_find.itemname.length + 3, ')?)')
-                .padStart(_sale_to_find.itemname.length + 3 + 2, '((')
+            item_name: {
+              [Op.regexp]: _sale_to_find.item_name.replace(/\s/g, '|')
             }
           }
         ]
@@ -242,10 +240,10 @@ exports.checkSale = async (req, res) => {
       for (let index = 0; index < _found_alerts.length; index++) {
         const _alert = _found_alerts[index].dataValues;
 
-        if (_alert.alertByCorper.pushSubscriptionStringified) {
+        if (_alert.alertByCorper.push_subscription_stringified) {
           webpush.sendNotification(
-            _alert.alertByCorper.pushSubscriptionStringified,
-            `${_sale_to_find.itemname} selling at ₦${Intl.NumberFormat().format(_sale_to_find.price)}`,
+            _alert.alertByCorper.push_subscription_stringified,
+            `${_sale_to_find.item_name} selling at ₦${Intl.NumberFormat().format(_sale_to_find.price)}`,
             // {}
           ).then((_done) => {
             console.log("sent push msg", _done);

@@ -1,5 +1,7 @@
 const fs = require('fs');
 
+const dotenv = require('dotenv'); // better to call first, before using process.env.*
+dotenv.config();
 
 module.exports = {
   development: {

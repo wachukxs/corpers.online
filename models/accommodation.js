@@ -7,14 +7,14 @@ module.exports = (sequelize, DataTypes) => {
   class Accommodation extends Model {
     static getAllActualAttributes() {
       let safeAccommodationAttributes = Object.keys(Accommodation.rawAttributes)
-      safeAccommodationAttributes.splice(safeAccommodationAttributes.indexOf('accommodationId'), 1); // ???
+      safeAccommodationAttributes.splice(safeAccommodationAttributes.indexOf('accommodation_id'), 1); // ???
       
       return safeAccommodationAttributes
     }
 
     static getCreationAttributes() {
       let safeAccommodationAttributes = Object.keys(Accommodation.rawAttributes)
-      safeAccommodationAttributes.splice(safeAccommodationAttributes.indexOf('accommodationId'), 1);
+      safeAccommodationAttributes.splice(safeAccommodationAttributes.indexOf('accommodation_id'), 1);
       safeAccommodationAttributes.splice(safeAccommodationAttributes.indexOf('type'), 1);
       safeAccommodationAttributes.splice(safeAccommodationAttributes.indexOf('age'), 1);
       return safeAccommodationAttributes
@@ -27,16 +27,16 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) { // should have location here too
       // define association here
       Accommodation.belongsTo(models.CorpMember, {
-        targetKey: 'statecode',
-        foreignKey: 'statecode',
+        targetKey: 'state_code',
+        foreignKey: 'state_code',
         as: 'accommodationByCorper'
       })
-      Accommodation.belongsTo(models.Media, { // means Accommodation have a mediaId
-        foreignKey: 'mediaId',
+      Accommodation.belongsTo(models.Media, { // means Accommodation have a media_id
+        foreignKey: 'media_id',
         as: 'accommodationMedia'
       })
       Accommodation.belongsTo(models.Location, { // means Accommodation have a locationId
-        foreignKey: 'locationId'
+        foreignKey: 'location_id'
       })
     }
   };
@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.INTEGER
     },
-    mediaId: { // do not add foreign keys yourself, sequelize will add them for you
+    media_id: { // do not add foreign keys yourself, sequelize will add them for you
       type: DataTypes.INTEGER
     },
     // address: DataTypes.STRING,
@@ -56,7 +56,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.FLOAT,
       allowNull: false,
     },
-    roommateRent: { // should we be adding Naira sign to it ??
+    roommate_rent: { // should we be adding Naira sign to it ??
       type: DataTypes.FLOAT
     },
     _rent: {
@@ -65,44 +65,44 @@ module.exports = (sequelize, DataTypes) => {
         return this.getDataValue('rent') ? Intl.NumberFormat().format(this.getDataValue('rent')) : null;
       }
     },
-    _roommateRent: { // should we be adding Naira sign to it ??
+    _roommate_rent: { // should we be adding Naira sign to it ??
       type: DataTypes.VIRTUAL,
       get() {
-        return this.getDataValue('roommateRent') ? Intl.NumberFormat().format(this.getDataValue('roommateRent')) : null;
+        return this.getDataValue('roommate_rent') ? Intl.NumberFormat().format(this.getDataValue('roommate_rent')) : null;
       }
     },
-    rentRange: {
+    rent_interval: {
       type: DataTypes.ENUM,
       values: ['monthly', 'quarterly', 'yearly'],
       allowNull: false,
     },
-    accommodationType: {
+    accommodation_type: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    availableRooms: {
+    available_rooms: {
       type: DataTypes.STRING,
       get() {
-        return this.getDataValue('availableRooms').split(',');
+        return this.getDataValue('available_rooms').split(',');
       }
     },
     tenure: { // what is tenure for?
       type: DataTypes.STRING,
     },
-    idealRoommate: {
+    ideal_roommate: {
       type: DataTypes.TEXT,
     },
-    roommateRent: {
+    roommate_rent: {
       type: DataTypes.FLOAT,
     },
-    occupantDescription: {
+    occupant_description: {
       type: DataTypes.TEXT,
     },
-    rentExpireDate: { // must be greater than createdAt
+    rent_expire_date: { // must be greater than created_at
       type: DataTypes.DATE,
     },
-    statecode: DataTypes.STRING,
-    locationId: {
+    state_code: DataTypes.STRING,
+    location_id: {
       type:DataTypes.INTEGER
     },
     type: {
@@ -114,16 +114,10 @@ module.exports = (sequelize, DataTypes) => {
         throw new Error('Do not try to set the Accommodation.`type` value!');
       }
     },
-    createdAt: {
-      type: DataTypes.DATE
-    },
-    updatedAt: {
-      type: DataTypes.DATE
-    },
     age: {
       type: DataTypes.VIRTUAL,
       get() {
-        return moment(this.getDataValue('createdAt')).fromNow();
+        return moment(this.getDataValue('created_at')).fromNow();
       },
       set(value) {
         throw new Error('Do not try to set the Accommodation.`age` value!');
@@ -132,6 +126,9 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Accommodation',
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
   });
   // Accommodation.sync({ alter: true })
   return Accommodation;

@@ -247,9 +247,9 @@ auth.verifyJWT, function (req, res) {
     res.set('Content-Type', 'text/html');
 
     // this query runs so we can get the number of unread messages the user has 
-    query.UnreadMessages([req.session.corper.statecode.toUpperCase(), false]).then(result => {
+    query.UnreadMessages([req.session.corper.state_code.toUpperCase(), false]).then(result => {
       res.render('pages/account', {
-        statecode: req.session.corper.statecode.toUpperCase(),
+        state_code: req.session.corper.state_code.toUpperCase(),
         batch: req.params['3'],
         total_num_unread_msg: result,
         ...req.session.corper
@@ -258,13 +258,13 @@ auth.verifyJWT, function (req, res) {
       console.log('why TF?!', reject);
 
       res.render('pages/account', {
-        statecode: req.session.corper.statecode.toUpperCase(),
-        servicestate: req.session.corper.servicestate,
+        state_code: req.session.corper.state_code.toUpperCase(),
+        service_state: req.session.corper.service_state,
         batch: req.params['3'],
         name_of_ppa: req.session.corper.name_of_ppa,
         total_num_unread_msg: 0, // really ??? Zero?
         picture_id: req.session.corper.picture_id, // if there's picture_id // hmmm
-        firstname: req.session.corper.firstname
+        first_name: req.session.corper.first_name
       });
     }).catch((err) => { // we should have this .catch on every query
       console.error('our system should\'ve crashed:', err)
@@ -307,16 +307,16 @@ router.get(['/map', '/maps'], function (req, res) { // try to infer their locati
   res.set('Content-Type', 'text/html');
   query.GetMapData().then(result => {
     res.render('pages/map', {
-      ...(req.session.corper) && {statecode: req.session.corper.statecode}, // we aren't using in the front end yet
-      ...(req.session.corper) && {servicestate: req.session.corper.servicestate}, // we aren't using in the front end yet
+      ...(req.session.corper) && {state_code: req.session.corper.state_code}, // we aren't using in the front end yet
+      ...(req.session.corper) && {service_state: req.session.corper.service_state}, // we aren't using in the front end yet
       mapdata: result.mapdata,
       types: result.types
     });
   }, error => {
     console.log('there was an error getting /map', error); // but render regardless
     res.render('pages/map', {
-      ...(req.session.corper) && {statecode: req.session.corper.statecode}, // we aren't using in the front end yet
-      ...(req.session.corper) && {servicestate: req.session.corper.servicestate}, // we aren't using in the front end yet
+      ...(req.session.corper) && {state_code: req.session.corper.state_code}, // we aren't using in the front end yet
+      ...(req.session.corper) && {service_state: req.session.corper.service_state}, // we aren't using in the front end yet
       mapdata: {},
       types: []
     });
@@ -387,24 +387,24 @@ router.post('/signup', express.urlencoded({
     // implement the hashing of password before saving to the db
     // also when some one signs up, it counts as login time too, so we should include it in usage details table
 
-    // we can find the service state with req.body.statecode.slice(0, 2) which gives the first two letters
+    // we can find the service state with req.body.state_code.slice(0, 2) which gives the first two letters
     query.CorpersSignUp(req.body).then(result => {
       console.log('re:', result);
       req.session.corper = {}
-      req.session.corper.statecode = req.body.statecode.toUpperCase();
+      req.session.corper.state_code = req.body.state_code.toUpperCase();
       // req.session.loggedin = true;
-      req.session.corper.servicestate = result.theservicestate;
-      req.session.corper.batch = req.body.statecode.toUpperCase().slice(3, 6);
-      req.session.corper.location = req.session.corper.servicestate; // really fix this, we should add some other data if we can
+      req.session.corper.service_state = result.theservicestate;
+      req.session.corper.batch = req.body.state_code.toUpperCase().slice(3, 6);
+      req.session.corper.location = req.session.corper.service_state; // really fix this, we should add some other data if we can
 
       // send welcome email
-      helpers.sendSignupWelcomeEmail(req.body.email, req.body.firstname, result.theservicestate)
-      jwt.sign({statecode: req.body.statecode.toUpperCase()}, process.env.SESSION_SECRET, (err, token) => {
+      helpers.sendSignupWelcomeEmail(req.body.email, req.body.first_name, result.theservicestate)
+      jwt.sign({state_code: req.body.state_code.toUpperCase()}, process.env.SESSION_SECRET, (err, token) => {
         if (err) throw err
         else {
           // res.setHeader('Set-Cookie', 'name=value')
           res.cookie('_online', token, cookieOptions)
-          res.status(200).redirect(req.body.statecode.toUpperCase());
+          res.status(200).redirect(req.body.state_code.toUpperCase());
         }
       })
 
@@ -413,7 +413,7 @@ router.post('/signup', express.urlencoded({
       // res.send(error.message) // try this & not redirect
       switch (error.message) {
 
-        case 'duplicate statecode':
+        case 'duplicate state_code':
           res.redirect('/signup?m=ds'); // [m]essage = [d]uplicate [s]tatecode
           break;
 
@@ -421,7 +421,7 @@ router.post('/signup', express.urlencoded({
           res.redirect('/signup?m=de'); // [m]essage = [d]uplicate [e]mail
           break;
 
-        case 'invalid statecode':
+        case 'invalid state_code':
           res.redirect('/signup?m=is') // [m]essage = [i]nvalid [s]tatecode
           break;
 
@@ -451,21 +451,21 @@ router.post('/login', express.urlencoded({ // edited
       result => {
       console.log('we good', process.env.SESSION_SECRET);
       req.session.corper = result.response[0];
-      req.session.corper.location = result.response[0].servicestate + (result.response[0].city_town ? ', ' + result.response[0].city_town : ''); // + (results1[0].region_street ? ', ' + results1[0].region_street : '' )
+      req.session.corper.location = result.response[0].service_state + (result.response[0].city_or_town ? ', ' + result.response[0].city_or_town : ''); // + (results1[0].region_street ? ', ' + results1[0].region_street : '' )
       // req.session.loggedin = true;
 
-      jwt.sign({statecode: req.body.statecode.toUpperCase()}, process.env.SESSION_SECRET, (err, token) => {
+      jwt.sign({state_code: req.body.state_code.toUpperCase()}, process.env.SESSION_SECRET, (err, token) => {
         if (err) throw err
         else {
           // res.setHeader('Set-Cookie', 'name=value')
           res.cookie('_online', token, cookieOptions)
           console.log('we\'re moving', req.session);
           
-          res.status(200).redirect(req.body.statecode.toUpperCase());
+          res.status(200).redirect(req.body.state_code.toUpperCase());
         }
       })
 
-      query.LoginSession([req.body.statecode.toUpperCase(), req.session.id, req.headers["user-agent"]]).then(resolve => {
+      query.LoginSession([req.body.state_code.toUpperCase(), req.session.id, req.headers["user-agent"]]).then(resolve => {
         // console.log('saved login session info', resolve);
       }, reject => {
         // console.log('reject save login session', reject);

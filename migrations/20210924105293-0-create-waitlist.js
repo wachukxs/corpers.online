@@ -11,13 +11,13 @@ module.exports = {
       servingstate: {
         type: Sequelize.STRING,
       },
-      middlename: {
+      middle_name: {
         type: Sequelize.STRING,
       },
-      firstname: {
+      first_name: {
         type: Sequelize.STRING
       },
-      lastname: {
+      last_name: {
         type: Sequelize.STRING
       },
       email: {
@@ -26,11 +26,11 @@ module.exports = {
       comment: {
         type: Sequelize.TEXT
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       },

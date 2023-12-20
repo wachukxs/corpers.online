@@ -8,16 +8,16 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      statecode: {
+      state_code: {
         type: Sequelize.STRING,
       },
-      itemname: {
+      item_name: {
         type: Sequelize.STRING
       },
-      mediaId: {
+      media_id: {
         type: Sequelize.INTEGER,
       },
-      minPrice: {
+      minimum_price: {
         type: Sequelize.INTEGER,
       },
       price: {
@@ -26,11 +26,15 @@ module.exports = {
       text: {
         type: Sequelize.TEXT
       },
-      createdAt: {
+      is_draft: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       }

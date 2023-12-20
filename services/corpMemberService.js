@@ -6,6 +6,9 @@ const auth = require('../helpers/auth')
 const fs = require('fs');
 const ngstates = require('../utilities/ngstates')
 const Busboy = require('busboy');
+
+const chalk = require('chalk');
+
 const path = require('path');
 const _FILENAME = path.basename(__filename);
 
@@ -16,11 +19,12 @@ const _FILENAME = path.basename(__filename);
 let cookieOptions = {
   httpOnly: true, // frontend js can't access
   maxAge: auth.maxAge,
-  // sameSite: 'strict', // https://github.com/expressjs/session/issues/660#issuecomment-514384297
+  sameSite: 'lax',
   // path: '' // until we figure out how to add multiple path
 }
 
 if (process.env.NODE_ENV === 'production') {
+  cookieOptions.sameSite = 'strict',
   cookieOptions.secure = true // localhost, too, won't work if true
 }
 
@@ -33,7 +37,6 @@ exports.create = (req, res) => {
   console.log('hitting', _FILENAME, _FUNCTIONNAME);
 
   console.log('\n\ncorpMember cntrl -- create()', req.body)
-  return 
   // req.body.remember: 'on' // also check if req.body.remember
   return db.CorpMember
     .create(req.body)
@@ -41,10 +44,10 @@ exports.create = (req, res) => {
       console.log('re:', result);
       req.session.corper = result.dataValues // set inside successful jwt signing
       // send welcome email
-      helpers.sendSignupWelcomeEmail(req.body.email, req.body.firstname, result.dataValues.servicestate)
+      helpers.sendSignupWelcomeEmail(req.body.email, req.body.first_name, result.dataValues.service_state)
 
       jwt.sign({
-        statecode: req.body.statecode.toUpperCase(),
+        state_code: req.body.state_code.toUpperCase(),
         email: req.body.email.toLowerCase()
       }, process.env.SESSION_SECRET, (err, token) => {
         if (err) {
@@ -57,7 +60,7 @@ exports.create = (req, res) => {
           // problem here https://stackoverflow.com/questions/49476080/express-session-not-persistent-after-redirect
 
           res.cookie('_online', token, cookieOptions).status(200).json({
-            statecode: req.body.statecode.toUpperCase(),
+            state_code: req.body.state_code.toUpperCase(),
             message: 'OK'
           })
         }
@@ -72,7 +75,7 @@ exports.create = (req, res) => {
       if (error.errors[0].validatorKey == 'not_unique') {
         switch (error.errors[0].path) { // value: 'nwachukwuossai@gmail.com',
 
-          case 'statecode':
+          case 'state_code':
             res.redirect('/signup?m=ds'); // [m]essage = [d]uplicate [s]tatecode
             break;
 
@@ -80,7 +83,7 @@ exports.create = (req, res) => {
             res.redirect('/signup?m=de'); // [m]essage = [d]uplicate [e]mail
             break;
 
-          case 'invalid statecode':
+          case 'invalid state_code':
             res.redirect('/signup?m=is') // [m]essage = [i]nvalid [s]tatecode
             break;
 
@@ -103,13 +106,13 @@ exports.create = (req, res) => {
 }
 
 /**
- * <% var total_num_unread_msg = oldunreadchats.filter((value, index, array) => { return value.message_to == corper.statecode && value.message_sent == 0 }).length ; %>
+ * <% var total_num_unread_msg = oldunreadchats.filter((value, index, array) => { return value.message_to == corper.state_code && value.message_sent == 0 }).length ; %>
  * @param {*} req 
  * @param {*} res 
  * @returns total unread message
  */
-exports.unreadMessges = (req, res) => {
-  const _FUNCTIONNAME = 'unreadMessges'
+exports.unreadMessages = (req, res) => {
+  const _FUNCTIONNAME = 'unreadMessages'
   console.log('hitting', _FILENAME, _FUNCTIONNAME);
 
   console.log('req.params/session', req.session, req.params) // req.path is shorthand for url.parse(req.url).pathname
@@ -117,7 +120,7 @@ exports.unreadMessges = (req, res) => {
   return db.Chat
     .count({
       where: {
-        message_to: req.session.corper.statecode,
+        message_to: req.session.corper.state_code,
         message_sent: false,
         message: {
           [Op.not]: null
@@ -137,7 +140,7 @@ exports.unreadMessges = (req, res) => {
 
       // res.set('Content-Type', 'text/html') // causes ERR_HTTP_HEADERS_SENT
       res.render('pages/account', {
-        statecode: req.session.corper.statecode.toUpperCase(),
+        state_code: req.session.corper.state_code.toUpperCase(),
         batch: req.params['3'],
         total_num_unread_msg: result.dataValues,
         corper: req.session.corper
@@ -147,13 +150,13 @@ exports.unreadMessges = (req, res) => {
 
       // res.set('Content-Type', 'text/html')
       res.render('pages/account', {
-        statecode: req.session.corper.statecode.toUpperCase(),
-        servicestate: req.session.corper.servicestate, // isn't this Duplicated
+        state_code: req.session.corper.state_code.toUpperCase(),
+        service_state: req.session.corper.service_state, // isn't this Duplicated
         batch: req.params['3'],
         name_of_ppa: req.session.corper.name_of_ppa,
         total_num_unread_msg: 0, // ...
         picture_id: req.session.corper.picture_id, // if there's picture_id // hmmm
-        firstname: req.session.corper.firstname
+        first_name: req.session.corper.first_name
       });
     })
     .catch((err) => { // we should have this .catch on every query
@@ -170,21 +173,30 @@ exports.login = (req, res) => {
     where: { // we're gonna use email or state code soon.
       [Op.or]: [ // will use username
         { email: req.body.username.toLowerCase() },
-        { statecode: req.body.username.toUpperCase() },
+        { state_code: req.body.username.toUpperCase() },
       ]
     },
     raw: false, // don't use raw: true, and result.dataValues together // also the link on this comment https://stackoverflow.com/a/60951697
-    attributes: { exclude: ['pushSubscriptionStringified'] }
+    attributes: { exclude: ['push_subscription_stringified'] }
   }).then(
-    result => { // result is null if not statecode or email exists ... also tell when it's statecode or email that doesn't exist
+    (result) => { // result is null if not state_code or email exists ... also tell when it's state_code or email that doesn't exist
 
-      console.log('\n\n\n\nlogin we good');
       if (result && result.dataValues.password === req.body.password) { // password match
-        result.dataValues.password = result.dataValues.password.replace(/[a-zA-Z0-9]/ig, '*') // mask the password (most of it for now)
+        console.log(chalk.bgGreen('login we good'));
+        /**
+         * mask the password
+         * previously with result.dataValues.password.replace(/[a-zA-Z0-9]/ig, '*')
+         * 
+         * But that gives away the length of password, now just '*****'
+         */
+        result.dataValues.password = '*****'
+
+        // remove the id too
+        result.dataValues.id = undefined
         
         req.session.corper = result.dataValues
         jwt.sign({
-          statecode: result.dataValues.statecode,
+          state_code: result.dataValues.state_code,
           email: result.dataValues.email
         }, process.env.SESSION_SECRET, (err, token) => {
           if (err) { // throw err // no throw of errors
@@ -193,7 +205,7 @@ exports.login = (req, res) => {
           } else {
             // res.setHeader('Set-Cookie', 'name=value')
             res.cookie('_online', token, cookieOptions)
-            console.log('Logged In', req.session.corper?.statecode?.toUpperCase());
+            console.log(chalk.bgBlue('Logged In'), req.session.corper?.state_code?.toUpperCase());
             /* req.session.save(function(err) { // hate this
               console.log("saved session");
             }) */
@@ -204,6 +216,8 @@ exports.login = (req, res) => {
           }
         })
       } else if (result && result.dataValues.password !== req.body.password) {
+        console.log(chalk.bgRed('login was bad'));
+
         // TODO: kill what ever cookie was there
         res.status(401).json({
           message: 'Wrong Password',
@@ -235,7 +249,7 @@ exports.getProfile = (req, res) => {
     let jkl = JSON.parse(data);
     // let's hope there's no err
 
-    let jn = req.session.corper.statecode.toUpperCase()
+    let jn = req.session.corper.state_code.toUpperCase()
 
     /**an array of all the local government in the state */
     let lgas = jkl.states[ngstates.states_short.indexOf(jn.slice(0, 2))][ngstates.states_long[ngstates.states_short.indexOf(jn.slice(0, 2))]];
@@ -250,8 +264,8 @@ exports.getProfile = (req, res) => {
 
     db.CorpMember.findOne({
       where: {
-        statecode: {
-          [Op.eq]: req.session.corper.statecode,
+        state_code: {
+          [Op.eq]: req.session.corper.state_code,
         }
       },
       include: [
@@ -261,7 +275,7 @@ exports.getProfile = (req, res) => {
         {
           model: db.Sale,
           order: [
-            ['createdAt', 'ASC']
+            ['created_at', 'ASC']
           ],
           include: [{
             model: db.Media,
@@ -271,7 +285,7 @@ exports.getProfile = (req, res) => {
         {
           model: db.Accommodation,
           order: [
-            ['createdAt', 'ASC']
+            ['created_at', 'ASC']
           ],
           include: [{
             model: db.Location
@@ -295,16 +309,16 @@ exports.getProfile = (req, res) => {
       // .toJSON()
       .then(_corper_sales_accommodations_ppa => {
 
-        // _corper_sales_accommodations_ppa.dataValues.createdAt = _corper_sales_accommodations_ppa.dataValues.createdAt.toString()
-        // _corper_sales_accommodations_ppa.dataValues.updatedAt = _corper_sales_accommodations_ppa.dataValues.updatedAt.toString()
+        // _corper_sales_accommodations_ppa.dataValues.created_at = _corper_sales_accommodations_ppa.dataValues.created_at.toString()
+        // _corper_sales_accommodations_ppa.dataValues.updated_at = _corper_sales_accommodations_ppa.dataValues.updated_at.toString()
 
         console.log("\n\n\n\n\n\ndid we get corp member's Sales n Accommodation n ppa?", _corper_sales_accommodations_ppa);
 
         _info.corper = _corper_sales_accommodations_ppa.dataValues;
         db.PPA.findAll({
           // where: { // how do we get PPAs from only a certain state! and even narrow it down to region
-          //     statecode: { // doesn't exist on PPA model.
-          //         [Op.eq]: `${req.session.corper.statecode.substring(0, 2)}`, // somewhat redundant
+          //     state_code: { // doesn't exist on PPA model.
+          //         [Op.eq]: `${req.session.corper.state_code.substring(0, 2)}`, // somewhat redundant
           //     },
           // },
           include: [{
@@ -354,8 +368,8 @@ exports.getProfile = (req, res) => {
     /*
       query.GetPlacesByTypeInOurDB(req).then(data => {
         info = {
-          // statecode: req.session.corper.statecode.toUpperCase(),
-          // servicestate: req.session.corper.servicestate.toUpperCase(),
+          // state_code: req.session.corper.state_code.toUpperCase(),
+          // service_state: req.session.corper.service_state.toUpperCase(),
           // batch: req.session.corper.batch,
           names_of_ppas: data.names_of_ppas, // array of objects ie names_of_ppas[i].name_of_ppa
           ppa_addresses: data.ppa_addresses,
@@ -374,7 +388,7 @@ exports.getProfile = (req, res) => {
         
         throw reject
       }).then(_info => {
-        query.GetCorperPosts(req.session.corper.statecode.toUpperCase())
+        query.GetCorperPosts(req.session.corper.state_code.toUpperCase())
           .then(val => { // val is an array of two arrays. each of these array contain objects of posts and accomodations
             console.log(' testing', val);
             _info.sales_posts = val[0] // array of objects
@@ -388,8 +402,8 @@ exports.getProfile = (req, res) => {
       }).catch((err) => { // we should have this .catch on every query
         console.error('our system should\'ve crashed:', err)
         info = {
-          // statecode: req.session.corper.statecode.toUpperCase(),
-          // servicestate: req.session.corper.servicestate.toUpperCase(),
+          // state_code: req.session.corper.state_code.toUpperCase(),
+          // service_state: req.session.corper.service_state.toUpperCase(),
           // batch: req.session.corper.batch,
           states: ngstates.states_long,
           lgas: lgas,
@@ -406,6 +420,41 @@ exports.getProfile = (req, res) => {
   })
 }
 
+exports.updateProfile = async (req, res) => {
+  const _FUNCTIONNAME = 'updateProfile'
+  console.log('hitting', _FILENAME, _FUNCTIONNAME);
+
+  console.log('getting', req.body);
+
+  try {
+    const corpMember = await db.CorpMember
+    .findOne({ 
+      where: { state_code: req.session.corper.state_code },
+      /**
+       * removed 'id'
+       * 
+       * causes Error: You attempted to save an instance with no primary key, this is not allowed since it would result in a global update
+       */
+      attributes: {exclude: ['password']}
+    })
+
+    corpMember.set({...req.body})
+
+    await corpMember.save()
+
+    res.status(200).json({
+      message: 'Profile updated',
+      data: corpMember.toJSON()
+    })
+  } catch (error) {
+    console.error(`'ERR in ${_FILENAME} ${_FUNCTIONNAME}:`, error)
+    res.status(501).json({
+      message: 'Hello, an Error occurred.',
+    })
+  }
+
+}
+
 exports.updateProfilePhoto = (req, res) => {
   const _FUNCTIONNAME = 'updateProfilePhoto'
   console.log('hitting', _FILENAME, _FUNCTIONNAME);
@@ -419,7 +468,7 @@ exports.updateProfilePhoto = (req, res) => {
   });
 
   let _profile_data = {
-    statecode: req.session.corper.statecode
+    state_code: req.session.corper.state_code
   };
 
   busboy.on('file', function (fieldname, filestream, filename, transferEncoding, mimetype) {
@@ -497,7 +546,7 @@ exports.updateProfilePhoto = (req, res) => {
           // console.log('thumbnailLink: ', file.data.thumbnailLink);
           req.session.corper.picture_id = file.data.id // or we could add picture_id to _profile_data
 
-          connectionPool.query('UPDATE info SET picture_id = ? WHERE statecode = ?', [file.data.id, req.session.corper.statecode.toUpperCase()], function (error, results, fields) {
+          connectionPool.query('UPDATE info SET picture_id = ? WHERE state_code = ?', [file.data.id, req.session.corper.state_code.toUpperCase()], function (error, results, fields) {
             if (error) throw error;
             else {
               console.log('updated pic')
@@ -530,7 +579,7 @@ exports.updateProfilePhoto = (req, res) => {
       }
       , {
         where: {
-          statecode: req.session.corper.statecode
+          state_code: req.session.corper.state_code
         }
       }
       , {
@@ -541,7 +590,7 @@ exports.updateProfilePhoto = (req, res) => {
     let _corpMemberUpdate = await db.CorpMember.findOne(
       {
         where: {
-          statecode: req.session.corper.statecode
+          state_code: req.session.corper.state_code
         }
       })
 
@@ -629,22 +678,23 @@ exports.updateProfileBio = (req, res) => {
   console.log('hitting', _FILENAME, _FUNCTIONNAME);
 
   db.CorpMember.update({
-    public_profile: req.body.publicProfile,
+    public_profile: req.body.public_profile,
     nickname: req.body.nickname,
     bio: req.body.profile,
   }, {
     where: {
-      statecode: req.session.corper.statecode
-    }
+      state_code: req.session.corper.state_code
+    },
+    returning: true
   }).then((result) => {
     res.status(200).json({
-      message: 'Hello',
+      message: 'Updated profile bio',
       data: result
     })
   }, (err) => {
     console.error(`'ERR in ${_FILENAME} ${_FUNCTIONNAME}:`, err)
     res.status(501).json({
-      message: 'Hello. An Error Occured.',
+      message: 'Hello. An Error Occurred.',
     })
   }).catch((error) => {
     console.error(`'ERR in ${_FILENAME} ${_FUNCTIONNAME}:`, error)
@@ -660,14 +710,14 @@ exports.updateProfileServiceDetails = (req, res) => {
   console.log('hitting', _FILENAME, _FUNCTIONNAME);
 
   db.CorpMember.update({
-    servicestate: req.body.serviceState,
+    service_state: req.body.serviceState,
     lga: req.body.lga,
-    city_town: req.body.cityOrTown,
+    city_or_town: req.body.cityOrTown,
     region_street: req.body.street,
     stream: req.body.stream,
   }, {
     where: {
-      statecode: req.session.corper.statecode
+      state_code: req.session.corper.state_code
     }
   }).then((result) => {
     res.status(200).json({
@@ -677,7 +727,7 @@ exports.updateProfileServiceDetails = (req, res) => {
   }, (err) => {
     console.error(`'ERR in ${_FILENAME} ${_FUNCTIONNAME}:`, err)
     res.status(501).json({
-      message: 'Hello. An Error Occured.',
+      message: 'Hello. An Error Occurred.',
     })
   }).catch((error) => {
     console.error(`'ERR in ${_FILENAME} ${_FUNCTIONNAME}:`, error)
@@ -693,13 +743,14 @@ exports.updateProfilePpaDetails = (req, res) => {
   console.log('hitting', _FILENAME, _FUNCTIONNAME);
 
   db.CorpMember.update({
-    public_profile: req.body.publicProfile,
+    public_profile: req.body.public_profile,
     nickname: req.body.nickname,
     bio: req.body.profile,
   }, {
     where: {
-      statecode: req.session.corper.statecode
-    }
+      state_code: req.session.corper.state_code
+    },
+    returning: true
   }).then((result) => {
     res.status(200).json({
       message: 'Hello',
@@ -708,7 +759,7 @@ exports.updateProfilePpaDetails = (req, res) => {
   }, (err) => {
     console.error(`'ERR in ${_FILENAME} ${_FUNCTIONNAME}:`, err)
     res.status(501).json({
-      message: 'Hello. An Error Occured.',
+      message: 'Hello. An Error Occurred.',
     })
   }).catch((error) => {
     console.error(`'ERR in ${_FILENAME} ${_FUNCTIONNAME}:`, error)
@@ -724,13 +775,14 @@ exports.updateProfileOtherDetails = (req, res) => {
   console.log('hitting', _FILENAME, _FUNCTIONNAME);
 
   db.CorpMember.update({
-    public_profile: req.body.publicProfile,
+    public_profile: req.body.public_profile,
     nickname: req.body.nickname,
     bio: req.body.profile,
   }, {
     where: {
-      statecode: req.session.corper.statecode
-    }
+      state_code: req.session.corper.state_code
+    },
+    returning: true
   }).then((result) => {
     res.status(200).json({
       message: 'Hello',
@@ -739,7 +791,7 @@ exports.updateProfileOtherDetails = (req, res) => {
   }, (err) => {
     console.error(`'ERR in ${_FILENAME} ${_FUNCTIONNAME}:`, err)
     res.status(501).json({
-      message: 'Hello. An Error Occured.',
+      message: 'Hello. An Error Occurred.',
     })
   }).catch((error) => {
     console.error(`'ERR in ${_FILENAME} ${_FUNCTIONNAME}:`, error)
@@ -768,15 +820,12 @@ exports.savePushSubscription = async (req, res) => { // Busboy doesn't support j
 
   let corpMemberUpdate = await db.CorpMember.update(
     {
-      pushSubscriptionStringified: req.body
+      push_subscription_stringified: req.body
     }
     , {
       where: {
-        statecode: req.session.corper.statecode
+        state_code: req.session.corper.state_code
       }
-    }
-    , {
-      // returning: true
     }
   )
 
@@ -821,7 +870,7 @@ exports.createAlert = (req, res) => {
   });
 
   let _alert_data = {
-    statecode: req.session.corper.statecode,
+    state_code: req.session.corper.state_code,
     rooms: []
   };
 
@@ -832,30 +881,30 @@ exports.createAlert = (req, res) => {
         _alert_data['rooms'].push(val)
         break;
       case 'alert-accommodation-min-price':
-        _alert_data['minPrice'] = val;
+        _alert_data['minimum_price'] = val;
         break;
       case 'alert-accommodation-max-price':
-        _alert_data['maxPrice'] = val;
+        _alert_data['max_price'] = val;
         break;
       case 'alert-accommodation-type':
-        _alert_data['accommodationType'] = val;
+        _alert_data['accommodation_type'] = val;
         break;
       // for sale
       case 'alert-sale-item-name':
-        _alert_data['itemname'] = val;
+        _alert_data['item_name'] = val;
         break;
       case 'alert-sale-min-price':
-        _alert_data['minPrice'] = val;
+        _alert_data['minimum_price'] = val;
         break;
       case 'alert-sale-max-price':
-        _alert_data['maxPrice'] = val;
+        _alert_data['max_price'] = val;
         break;
 
       // for both ?? [on the finish event, we'll check to see if all the accommodation input were filled, if yes, then create accommodation alert. Can do same for sales too. Can happen for both.]
       case 'type':
         _alert_data['type'] = val;
         break;
-      default: // for things like statecode
+      default: // for things like state_code
         _alert_data[fieldname] = val;
         break;
     }
@@ -907,17 +956,17 @@ exports.getPosts = (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   db.Sale.findAll({ // also add PPA
     where: {
-      itemname: {
+      item_name: {
         [Op.substring]: req.query.q.substring(1), // hmmm...  // remove first letter
       },
       ... (req.query.s && {
-        statecode: {
+        state_code: {
           [Op.substring]: req.query.s.substring(0, 2),
         }
       })
     },
     order: [
-      ['createdAt', 'ASC']
+      ['created_at', 'ASC']
     ],
     include: [
       {
@@ -938,7 +987,7 @@ exports.getPosts = (req, res) => {
         where: {
           [Op.or]: [
             {
-              accommodationType: {
+              accommodation_type: {
                 [Op.substring]: req.query.q,
               }
             },
@@ -946,13 +995,13 @@ exports.getPosts = (req, res) => {
           ],
 
           ... (req.query.s && {
-            statecode: {
+            state_code: {
               [Op.substring]: req.query.s.substring(0, 2),
             }
           })
         },
         order: [
-          ['createdAt', 'ASC']
+          ['created_at', 'ASC']
         ],
         include: [
           {
@@ -973,7 +1022,7 @@ exports.getPosts = (req, res) => {
         console.log("\n\n\n\n\n\ndid we get corp member's Accommodation?", _accommodations);
         // combine both ?? sort by
         let _sales_accommodations = _sales.concat(_accommodations);
-        _sales_accommodations.sort((firstEl, secondEl) => { firstEl.createdAt - secondEl.createdAt });
+        _sales_accommodations.sort((firstEl, secondEl) => { firstEl.created_at - secondEl.created_at });
 
         console.log("\n\n\n\n\n\ndid we all searching +?", _sales_accommodations);
         // will def change this later:
@@ -989,16 +1038,16 @@ exports.getPosts = (req, res) => {
         for (let index = 0; index < _sales_accommodations.length; index++) {
 
           let _post = _sales_accommodations[index]
-          /* if (thisisit.data[ngstates.states_long[(ngstates.states_short.indexOf(ele.statecode.substring(0,2)))]]) {
-            thisisit.data[ngstates.states_long[(ngstates.states_short.indexOf(ele.statecode.substring(0,2)))]].push(ele)
+          /* if (thisisit.data[ngstates.states_long[(ngstates.states_short.indexOf(ele.state_code.substring(0,2)))]]) {
+            thisisit.data[ngstates.states_long[(ngstates.states_short.indexOf(ele.state_code.substring(0,2)))]].push(ele)
           } else {
-            thisisit.data[ngstates.states_long[(ngstates.states_short.indexOf(ele.statecode.substring(0,2)))]] = [ele]
+            thisisit.data[ngstates.states_long[(ngstates.states_short.indexOf(ele.state_code.substring(0,2)))]] = [ele]
           } */
 
-          if (ngstates.states_long[(ngstates.states_short.indexOf(_post.statecode.substring(0, 2)))] in thisisit.data) {
-            thisisit.data[ngstates.states_long[(ngstates.states_short.indexOf(_post.statecode.substring(0, 2)))]].push(_post)
+          if (ngstates.states_long[(ngstates.states_short.indexOf(_post.state_code.substring(0, 2)))] in thisisit.data) {
+            thisisit.data[ngstates.states_long[(ngstates.states_short.indexOf(_post.state_code.substring(0, 2)))]].push(_post)
           } else {
-            thisisit.data[ngstates.states_long[(ngstates.states_short.indexOf(_post.statecode.substring(0, 2)))]] = [_post]
+            thisisit.data[ngstates.states_long[(ngstates.states_short.indexOf(_post.state_code.substring(0, 2)))]] = [_post]
           }
 
         }
@@ -1039,7 +1088,6 @@ exports.getPosts = (req, res) => {
 
 }
 
-
 exports.searchPosts = async (req, res) => {
   const _FUNCTIONNAME = 'updateProfilePhoto'
   console.log('hitting', _FILENAME, _FUNCTIONNAME);
@@ -1056,7 +1104,7 @@ exports.searchPosts = async (req, res) => {
   let _sales = await db.Sale.findAll()
   let _location_ppas = await db.Location.findAll({
     where: {
-      ppaId: {
+      ppa_id: {
         [Op.not]: null
       }
     }
@@ -1091,7 +1139,7 @@ exports.searchPosts = async (req, res) => {
     result._location_ppa = await db.Location.findOne({
       where: {
         id: req.query.id,
-        ppaId: {
+        ppa_id: {
           [Op.not]: null
         }
       },

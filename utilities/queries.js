@@ -11,7 +11,7 @@ const saltRounds = 5;
 
 exports.DeleteSale = async (updateData) => {
     let re = new Promise((resolve, reject) => {
-        let sqlquery = 'DELETE FROM posts WHERE post_time = ? AND statecode = ?';
+        let sqlquery = 'DELETE FROM posts WHERE post_time = ? AND state_code = ?';
         db.sequelize.query(sqlquery, updateData, function (error, result, fields) {
             if (error) {
                 reject(error)
@@ -26,7 +26,7 @@ exports.DeleteSale = async (updateData) => {
 
 exports.DeleteAccommodation = async (updateData) => {
     let re = new Promise((resolve, reject) => {
-        let sqlquery = 'DELETE FROM accommodations WHERE post_time = ? AND statecode = ?';
+        let sqlquery = 'DELETE FROM accommodations WHERE post_time = ? AND state_code = ?';
         db.sequelize.query(sqlquery, updateData, function (error, result, fields) {
             if (error) {
                 reject(error)
@@ -77,10 +77,10 @@ exports.UpdateAccommodation = async (updateData) => {
  * how many of the post are they currently chatting about (to hopefully eventually sell them) - show option to resume the chat with who they're chatting with
  * give them option to edit the posts they've made, or even delete them.
  */
-exports.GetCorperPosts = async (statecode) => {
+exports.GetCorperPosts = async (state_code) => {
     let re = await new Promise((resolve, reject) => {
-        let sqlquery = "SELECT * from posts WHERE statecode = ?; SELECT * FROM `accommodations` WHERE statecode = ?";
-        db.sequelize.query(sqlquery, [statecode, statecode], function (error, result, fields) {
+        let sqlquery = "SELECT * from posts WHERE state_code = ?; SELECT * FROM `accommodations` WHERE state_code = ?";
+        db.sequelize.query(sqlquery, [state_code, state_code], function (error, result, fields) {
             if (error) {
                 reject(error)
             } else {
@@ -94,7 +94,7 @@ exports.GetCorperPosts = async (statecode) => {
 
 exports.CorpersInNG = async () => {
     let re = await new Promise((resolve, reject) => {
-        let sqlquery = "SELECT bio, firstname, lastname, statecode, dateofreg, picture_id FROM info WHERE public_profile = 1"; //  AND bio != '' // make sure to select corpers with thier bio filled out, and want a public_profile [=1]
+        let sqlquery = "SELECT bio, first_name, last_name, state_code, dateofreg, picture_id FROM info WHERE public_profile = 1"; //  AND bio != '' // make sure to select corpers with thier bio filled out, and want a public_profile [=1]
         db.sequelize.query(sqlquery, function (error, result, fields) {
             if (error) {
                 reject(error)
@@ -112,7 +112,7 @@ exports.CorpersInNG = async () => {
 
 exports.CorpersInState = async (state) => {
     let re = await new Promise((resolve, reject) => {
-        let sqlquery = "SELECT bio, firstname, lastname, statecode, dateofreg, picture_id FROM info WHERE servicestate = ? AND public_profile = 1"; //  AND bio != '' // make sure to select corpers with thier bio filled out, and want a public_profile [=1]
+        let sqlquery = "SELECT bio, first_name, last_name, state_code, dateofreg, picture_id FROM info WHERE service_state = ? AND public_profile = 1"; //  AND bio != '' // make sure to select corpers with thier bio filled out, and want a public_profile [=1]
         db.sequelize.query(sqlquery, [state], function (error, result, fields) {
             if (error) {
                 reject(error)
@@ -130,46 +130,46 @@ exports.CorpersInState = async (state) => {
 /**
  *
  * function to handle signup of corpers
- * @param signupData object CONTAINS email, firstname, middlename, password, lastname, statecode, batch, servicestate, stream.
- * servicestate and statecode are derived
+ * @param signupData object CONTAINS email, first_name, middle_name, password, last_name, state_code, batch, service_state, stream.
+ * service_state and state_code are derived
  * @type function
 */
 exports.CorpersSignUp = async (signupData) => {
 
     console.log('sign up data', signupData)
 
-    let theservicestate = ngstates.states_long[ngstates.states_short.indexOf(signupData.statecode.trim().slice(0, 2).toUpperCase())];
+    let theservicestate = ngstates.states_long[ngstates.states_short.indexOf(signupData.state_code.trim().slice(0, 2).toUpperCase())];
 
     // we don't need stream, do we? can be inferred! same as batch!
-    let thestream = signupData.statecode.trim().slice(5, 6).toUpperCase();
+    let thestream = signupData.state_code.trim().slice(5, 6).toUpperCase();
 
     function getstream(sb) {
         return sb == 'A' ? 1 : sb == 'B' ? 2 : sb == 'C' ? 3 : 4; // because we're sure it's gonna be 'D'... are we? ...sure?
     }
 
     // 'chuks'.replace(/^[a-z]/i, (s) => {return s.toUpperCase()} ) // makes 'chuks' => 'Chuks'
-    signupData.lastname = signupData.lastname.trim().replace(/^[a-z]/i, (s) => { return s.toUpperCase() });
-    signupData.middlename = signupData.middlename.trim().replace(/^[a-z]/i, (s) => { return s.toUpperCase() });
-    signupData.firstname = signupData.firstname.trim().replace(/^[a-z]/i, (s) => { return s.toUpperCase() });
+    signupData.last_name = signupData.last_name.trim().replace(/^[a-z]/i, (s) => { return s.toUpperCase() });
+    signupData.middle_name = signupData.middle_name.trim().replace(/^[a-z]/i, (s) => { return s.toUpperCase() });
+    signupData.first_name = signupData.first_name.trim().replace(/^[a-z]/i, (s) => { return s.toUpperCase() });
 
-    signupData.servicestate = theservicestate;
+    signupData.service_state = theservicestate;
     signupData.stream = getstream(thestream);
-    signupData.statecode = signupData.statecode.trim().toUpperCase(); // convert statecode to uppercase, very important!
-    // signupData.batch = signupData.statecode.slice(3, 6).toUpperCase(); // we don't need batch, can be inferred from statecode
+    signupData.state_code = signupData.state_code.trim().toUpperCase(); // convert state_code to uppercase, very important!
+    // signupData.batch = signupData.state_code.slice(3, 6).toUpperCase(); // we don't need batch, can be inferred from state_code
 
-    // let sqlquery = "INSERT INTO info(email, firstname, middlename, password, lastname, statecode, batch, servicestate, stream) VALUES ('" + signupData.email + "', '" + signupData.firstname + "', '" + signupData.middlename + "', '" + signupData.password + "', '" + signupData.lastname + "', '" + signupData.statecode.toUpperCase() + "', '" + signupData.statecode.slice(3, 6).toUpperCase() + "', '" + theservicestate + "' , '" + getstream(thestream) + "'  )";
+    // let sqlquery = "INSERT INTO info(email, first_name, middle_name, password, last_name, state_code, batch, service_state, stream) VALUES ('" + signupData.email + "', '" + signupData.first_name + "', '" + signupData.middle_name + "', '" + signupData.password + "', '" + signupData.last_name + "', '" + signupData.state_code.toUpperCase() + "', '" + signupData.state_code.slice(3, 6).toUpperCase() + "', '" + theservicestate + "' , '" + getstream(thestream) + "'  )";
     /**[re]sponse for this funtion CorpersSignUp() */
     let re = await new Promise((resolve, reject) => {
         /**[r]esponse */
         let r;
 
-        /**statecode validation regex */
+        /**state_code validation regex */
         const statecode_regex = /^(ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/\d\d[abcACB]\/[0-9]{4}$/gi;
-        /**check if statecode is valid */
-        const valid_statecode = signupData.statecode.match(statecode_regex);
+        /**check if state_code is valid */
+        const valid_statecode = signupData.state_code.match(statecode_regex);
 
         if (valid_statecode === null) {
-            reject({ message: 'invalid statecode' })
+            reject({ message: 'invalid state_code' })
         } else {
             bcrypt.genSalt(saltRounds, function(err, salt) {
                 if (err) {
@@ -191,11 +191,11 @@ exports.CorpersSignUp = async (signupData) => {
                                 if (error) {
                                     console.log('the error code:', error.code, error.sqlMessage)
                                     switch (error.code) { // do more here
-                                        case 'ER_DUP_ENTRY': // ER_DUP_ENTRY if a statecode or email exists already
-                                            if (error.sqlMessage.includes(signupData.statecode.toUpperCase())) { // Duplicate entry 'TR/19A/1234' for key 'PRIMARY'
+                                        case 'ER_DUP_ENTRY': // ER_DUP_ENTRY if a state_code or email exists already
+                                            if (error.sqlMessage.includes(signupData.state_code.toUpperCase())) { // Duplicate entry 'TR/19A/1234' for key 'PRIMARY'
                                                 // res.redirect('/signup?m=ds'); // [m]essage = [d]uplicate [s]tatecode
                                                 r = {
-                                                    message: 'duplicate statecode'
+                                                    message: 'duplicate state_code'
                                                 };
                                             } else if (error.sqlMessage.includes(signupData.email)) { // Duplicate entry 'uyu@yud.eww' for key 'email'
                                                 // res.redirect('/signup?m=de'); // [m]essage = [d]uplicate [e]mail
@@ -217,7 +217,7 @@ exports.CorpersSignUp = async (signupData) => {
                                     reject(r);
                                 } else if (results.affectedRows === 1) { // "else if" is very important
                                     console.log('inserted data result: ', results);
-                                    // helpers.sendSignupWelcomeEmail(signupData.email, signupData.firstname, theservicestate).catch(console.error);
+                                    // helpers.sendSignupWelcomeEmail(signupData.email, signupData.first_name, theservicestate).catch(console.error);
                                     r = {
                                         message: true,
                                         theservicestate: theservicestate
@@ -239,10 +239,10 @@ exports.CorpersSignUp = async (signupData) => {
     return re;
 }
 
-exports.AutoLogin = async (statecode) => {
+exports.AutoLogin = async (state_code) => {
     let re = await new Promise((resolve, reject) => {
-        let sqlquery = "SELECT * FROM info WHERE statecode = ?";
-        let autologinquery = db.sequelize.query(sqlquery, [statecode], function (error, result, fields) {
+        let sqlquery = "SELECT * FROM info WHERE state_code = ?";
+        let autologinquery = db.sequelize.query(sqlquery, [state_code], function (error, result, fields) {
             if (error) {
                 reject(error)
             } else if (result.length === 1) {
@@ -258,10 +258,10 @@ exports.AutoLogin = async (statecode) => {
 
 exports.CorpersLogin = async (data) => {
     let re = await new Promise((resolve, reject) => { // don't select password
-        let sqlquery = "SELECT * FROM info WHERE statecode = ?";
+        let sqlquery = "SELECT * FROM info WHERE state_code = ?";
         // .toUpperCase() is crucial
         let retries = 2;
-        let loginQuery = db.sequelize.query(sqlquery, [data.statecode.toUpperCase()], function (error, result, fields) {
+        let loginQuery = db.sequelize.query(sqlquery, [data.state_code.toUpperCase()], function (error, result, fields) {
             if (error) {
                 console.error('the error code:', error.code)
                 switch (error.code) { // do more here
@@ -292,18 +292,18 @@ exports.CorpersLogin = async (data) => {
 
                 reject({ message: 'backend error' })
             } else if (helpers.isEmpty(result)) {
-                console.log('logging in, empty. user/statecode does not exist');
-                reject({ message: 'sign up' }) // tell them they need to sign up or statecode is wrong cause it doesn't exist
+                console.log('logging in, empty. user/state_code does not exist');
+                reject({ message: 'sign up' }) // tell them they need to sign up or state_code is wrong cause it doesn't exist
             } else if (result.length === 1) {
                 console.log('Is login result be empty?', result.length > 0 ? "No." : "Yes!");
                 // console.log('selected data from db, logging In...', results1); // error sometimes, maybe when there's no db conn: ...
-                console.log('logging in, NOT empty. user/statecode DOES exist');
+                console.log('logging in, NOT empty. user/state_code DOES exist');
                 // for passwords that haven't been hashed...
                 if (result[0].salt === '' && result[0].password === data.password) {
                     bcrypt.genSalt(saltRounds, function(err, salt) {
                         bcrypt.hash(data.password, salt, function(err, hash) {
                             // Store hash in your password DB. Basically update db
-                            let q = "UPDATE info SET password = '" + hash + "', salt = '" + salt + "' WHERE statecode = '" + data.statecode.toUpperCase() + "'";
+                            let q = "UPDATE info SET password = '" + hash + "', salt = '" + salt + "' WHERE state_code = '" + data.state_code.toUpperCase() + "'";
                             db.sequelize.query(q, function (err, rslts, flds) {
                                 if (err) reject(err)
                                 else if (rslts.changedRows === 1) { // when we've saved it, the corper can now logged in
@@ -339,7 +339,7 @@ exports.CorpersLogin = async (data) => {
 exports.LoginSession = async (loginData) => {
     let re = await new Promise((resolve, reject) => {
         // insert login time and session id into db for usage details
-        db.sequelize.query("INSERT INTO traces (statecode, session_id, user_agent) VALUES (?, ?, ?)", loginData, function (error2, results2, fields2) {
+        db.sequelize.query("INSERT INTO traces (state_code, session_id, user_agent) VALUES (?, ?, ?)", loginData, function (error2, results2, fields2) {
             if (error2) reject({ message: false })
             else if (results2.affectedRows === 1) {
                 resolve({ message: true })
@@ -351,7 +351,7 @@ exports.LoginSession = async (loginData) => {
 }
 
 /**calculate the number of unread messages a corper has when they log in
- * @param corpersData array, contains statecode and false
+ * @param corpersData array, contains state_code and false
  * @type funtion
  */
 exports.UnreadMessages = async (corpersData) => {
@@ -381,20 +381,20 @@ exports.FetchPostsForTimeLine = async (timeLineInfo) => {
 
     let re = new Promise((resolve, reject) => {
         /**there's much work on this section maybe, just to make sure sql sees and calculates the value as they should (or NOT ????) */
-        let getpostsquery = "SELECT info.firstname, info.picture_id, posts.itemname, posts.statecode, posts.type, posts.text, posts.media, posts.price, posts.location, posts.input_time, posts.post_time\
-         FROM info RIGHT JOIN posts ON info.statecode = posts.statecode \
-         WHERE posts.statecode LIKE '%" + timeLineInfo.statecode_substr + "%'" + (timeLineInfo.last_post_time !== null ? ' \
+        let getpostsquery = "SELECT info.first_name, info.picture_id, posts.item_name, posts.state_code, posts.type, posts.text, posts.media, posts.price, posts.location, posts.input_time, posts.post_time\
+         FROM info RIGHT JOIN posts ON info.state_code = posts.state_code \
+         WHERE posts.state_code LIKE '%" + timeLineInfo.statecode_substr + "%'" + (timeLineInfo.last_post_time !== null ? ' \
          AND UNIX_TIMESTAMP(posts.input_time) > UNIX_TIMESTAMP(' + timeLineInfo.last_post_time + ')" \
          ' : '' ) + " ORDER by posts.input_time ASC" +
-            "; SELECT info.firstname, info.picture_id, accommodations.statecode, accommodations.type, accommodations.price, accommodations.rooms, accommodations.rentrange, accommodations.streetname, accommodations.address, accommodations.media, accommodations.tenure, accommodations.expire, accommodations.roommate_type, accommodations.roommate_you, accommodations.directions, accommodations.post_location, accommodations.input_time, accommodations.post_time, accommodations.acc_geodata \
-            FROM info RIGHT JOIN accommodations ON info.statecode = accommodations.statecode \
-            WHERE accommodations.statecode LIKE '%" + timeLineInfo.statecode_substr + "%'" + (timeLineInfo.last_accommodation_time !== null ? ' \
+            "; SELECT info.first_name, info.picture_id, accommodations.state_code, accommodations.type, accommodations.price, accommodations.rooms, accommodations.rentrange, accommodations.streetname, accommodations.address, accommodations.media, accommodations.tenure, accommodations.expire, accommodations.roommate_type, accommodations.roommate_you, accommodations.directions, accommodations.post_location, accommodations.input_time, accommodations.post_time, accommodations.acc_geodata \
+            FROM info RIGHT JOIN accommodations ON info.state_code = accommodations.state_code \
+            WHERE accommodations.state_code LIKE '%" + timeLineInfo.statecode_substr + "%'" + (timeLineInfo.last_accommodation_time !== null ? ' \
             AND UNIX_TIMESTAMP(accommodations.input_time) > UNIX_TIMESTAMP(' + timeLineInfo.last_accommodation_time + ')" \
             ' : ' ') + " ORDER BY accommodations.input_time ASC";
 
         //  console.log(getpostsquery)
         /*
-        SELECT * FROM posts WHERE statecode LIKE '%DT%' AND post_time > "null" ORDER by posts.post_time ASC; SELECT * FROM accommodations WHERE expire > NOW() AND statecode LIKE '%DT%' AND input_time > "null" ORDER by accommodations.input_time ASC
+        SELECT * FROM posts WHERE state_code LIKE '%DT%' AND post_time > "null" ORDER by posts.post_time ASC; SELECT * FROM accommodations WHERE expire > NOW() AND state_code LIKE '%DT%' AND input_time > "null" ORDER by accommodations.input_time ASC
          */
         db.sequelize.query(getpostsquery, function (error, results, fields) {
             if (error) reject(error)
@@ -508,7 +508,7 @@ exports.InsertRowInPostsTable = async (postData) => {
 
 exports.GetFirstAndLastNameWithStatecode = async (data) => {
     let re = await new Promise((resolve, reject) => {
-        db.sequelize.query("SELECT firstname, lastname FROM info WHERE statecode = '" + data.statecode + "'", function (error, results, fields) { // bring the results in ascending order, rewrite query using mysql-npm special queries
+        db.sequelize.query("SELECT first_name, last_name FROM info WHERE state_code = '" + data.state_code + "'", function (error, results, fields) { // bring the results in ascending order, rewrite query using mysql-npm special queries
 
             if (error) reject(error)
             else if (!helpers.isEmpty(results)) {
@@ -524,9 +524,9 @@ exports.GetFirstAndLastNameWithStatecode = async (data) => {
     return re;
 }
 
-exports.GetStatecodeChatRooms = async (statecode) => {
+exports.GetStatecodeChatRooms = async (state_code) => {
     let re = await new Promise((resolve, reject) => {
-        db.sequelize.query("SELECT DISTINCT room FROM chats WHERE room LIKE '%" + statecode + "%' AND message IS NOT NULL", function (error, results, fields) {
+        db.sequelize.query("SELECT DISTINCT room FROM chats WHERE room LIKE '%" + state_code + "%' AND message IS NOT NULL", function (error, results, fields) {
 
             if (error) reject(error);
             else if (!helpers.isEmpty(results)) { // an array of objects with the columns as keys
@@ -609,7 +609,7 @@ exports.GetMapData = async () => {
         // what about name of the ppa ? this way of selecting might prove inefficient when we have large data set from all the states meanwhile this corper just need data from within a particular state.
         // also select ppa_directions from info and it should be like a reveal, corpers would click 'read directions' and it'll show them
         db.sequelize.query("SELECT ppa_address, ppa_geodata, type_of_ppa FROM info WHERE ppa_address != '' AND ppa_geodata != '' AND type_of_ppa != '' ; \
-        SELECT ppa_geodata, name_of_ppa, ppa_address, lga, region_street, type_of_ppa, city_town FROM info WHERE ppa_geodata != '' ; \
+        SELECT ppa_geodata, name_of_ppa, ppa_address, lga, region_street, type_of_ppa, city_or_town FROM info WHERE ppa_geodata != '' ; \
         SELECT DISTINCT type_of_ppa FROM info WHERE type_of_ppa != '' ", function (error, results, fields) { // bring the results in ascending order
             // we shouldn't be rejecting with empty data
             // let's either put listoftypesofpas in front end
@@ -719,29 +719,29 @@ exports.GetChatData = async (req) => {
 
             // ALSO SELECT OLDMESSAGES THAT ARE NOT SENT... THEN COUNT THEM... 
             if (req.query.posts.type == 'accommodation') {
-                query = "SELECT * FROM accommodations WHERE expire > NOW() AND statecode = '" + req.query.posts.who + "' AND input_time = '" + moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss') + "' ; "
+                query = "SELECT * FROM accommodations WHERE expire > NOW() AND state_code = '" + req.query.posts.who + "' AND input_time = '" + moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss') + "' ; "
                     // + "SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL ;"
                     +
-                    "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;"
+                    "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.first_name AS sender_firstname, info.last_name AS sender_lastname FROM chats, info WHERE info.state_code = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;"
                     // + "SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL AND message_sent = false ;";
                     +
                     "SELECT * FROM chats WHERE message_to = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
                     "SELECT * FROM chats WHERE message_from = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
-                    "SELECT firstname, lastname FROM info WHERE statecode = '" + req.query.posts.who.toUpperCase() + "' ;";
+                    "SELECT first_name, last_name FROM info WHERE state_code = '" + req.query.posts.who.toUpperCase() + "' ;";
 
             } else if (req.query.posts.type == 'sale') { // we will only do escrow payments for products sale
-                query = "SELECT * FROM posts WHERE statecode = '" + req.query.posts.who + "' AND post_time = '" + req.query.posts.when + "' ;"
+                query = "SELECT * FROM posts WHERE state_code = '" + req.query.posts.who + "' AND post_time = '" + req.query.posts.when + "' ;"
                     // + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL ;"
                     +
-                    "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;"
+                    "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.first_name AS sender_firstname, info.last_name AS sender_lastname FROM chats, info WHERE info.state_code = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;"
                     // + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL AND message_sent = false ;";
                     +
                     "SELECT * FROM chats WHERE message_to = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
-                    "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS recipient_firstname, info.lastname AS recipient_lastname FROM chats, info WHERE info.statecode = chats.message_to AND message_from = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
-                    "SELECT firstname, lastname FROM info WHERE statecode = '" + req.query.posts.who.toUpperCase() + "' ;";
+                    "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.first_name AS recipient_firstname, info.last_name AS recipient_lastname FROM chats, info WHERE info.state_code = chats.message_to AND message_from = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
+                    "SELECT first_name, last_name FROM info WHERE state_code = '" + req.query.posts.who.toUpperCase() + "' ;";
 
             }
-            /**SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%AB/17B/1234%' AND chats.message IS NOT NULL   */
+            /**SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.first_name AS sender_firstname, info.last_name AS sender_lastname FROM chats, info WHERE info.state_code = chats.message_from AND chats.room LIKE '%AB/17B/1234%' AND chats.message IS NOT NULL   */
 
             db.sequelize.query(query, function (error, results, fields) {
 
@@ -754,14 +754,14 @@ exports.GetChatData = async (req) => {
                     // then send it to the chat page of the involved parties so they are remainded of what they want to buy
                     console.log('nameeessssssss', results[4]);
                     resolve({
-                        statecode: req.session.corper.statecode.toUpperCase(),
+                        state_code: req.session.corper.state_code.toUpperCase(),
                         statecode2: req.query.s,
-                        servicestate: req.session.corper.servicestate,
+                        service_state: req.session.corper.service_state,
                         batch: req.session.corper.batch,
                         name_of_ppa: req.session.corper.name_of_ppa,
                         postdetails: (helpers.isEmpty(results[0]) ? null : results[0]), // tell user the post no longer exists, maybe it was bought or something, we should delete it if it was bought, we hope not to use this function
                         newchat: {
-                            statecode: req.query.posts.who.toUpperCase(),
+                            state_code: req.query.posts.who.toUpperCase(),
                             names: results[4]
                         },
                         posttime: req.query.posts.when,
@@ -781,9 +781,9 @@ exports.GetChatData = async (req) => {
         } else {
             console.error('we should be getting here')
             
-            // console.log('wanna chat', req.session.corper.statecode, req.query.s);
+            // console.log('wanna chat', req.session.corper.state_code, req.query.s);
             let query = // "SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL;"
-                "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.firstname AS sender_firstname, info.lastname AS sender_lastname FROM chats, info WHERE info.statecode = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;" +
+                "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.first_name AS sender_firstname, info.last_name AS sender_lastname FROM chats, info WHERE info.state_code = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;" +
                 "SELECT * FROM chats WHERE message_to = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
                 "SELECT * FROM chats WHERE message_from = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;";
             db.sequelize.query(query, function (error, results, fields) {
@@ -796,9 +796,9 @@ exports.GetChatData = async (req) => {
 
                     // then send it to the chat page of the involved parties so they are remainded of what they want to buy
                     resolve({ // having it named account.2 returns error cannot find module '2'
-                        statecode: req.session.corper.statecode.toUpperCase(),
+                        state_code: req.session.corper.state_code.toUpperCase(),
                         statecode2: req.query.s,
-                        servicestate: req.session.corper.servicestate,
+                        service_state: req.session.corper.service_state,
                         // batch: req.session.corper.batch,
                         name_of_ppa: req.session.corper.name_of_ppa,
                         oldchats: results[0], // leave it like this!!
@@ -893,19 +893,19 @@ exports.AddPlace = async (data) => {
 
 exports.UpdateProfile = async (_profile_data) => {
     let re = await new Promise((resolve, reject) => {
-// cater for fields we already have, so that we don't touch them eg. servicestate
-    // UPDATE 'info' SET 'firstname'=[value-1],'lastname'=[value-2],'accommodation_location'=[value-3],'servicestate'=[value-4],'batch'=[value-5],'name_of_ppa'=[value-6],'statecode'=[value-7],'email'=[value-8],'middlename'=[value-9],'password'=[value-10],'phone'=[value-11],'dateofreg'=[value-12],'lga'=[value-13],'city_town'=[value-14],'region_street'=[value-15],'stream'=[value-16],'type_of_ppa'=[value-17],'ppa_address'=[value-18],'travel_from_state'=[value-19],'travel_from_city'=[value-20],'spaornot'=[value-21] WHERE email = req.body.email
-    // UPDATE info SET 'accommodation_location'=req.body.accommodation_location,'servicestate'=req.body.servicestate,'name_of_ppa'=[value-6],'lga'=req.body.lga,'city_town'=req.body.city_town,'region_street'=req.body.region_street,'stream'=req.body.stream,'type_of_ppa'=req.body.type_of_ppa,'ppa_address'=req.body.ppa_address,'travel_from_state'=req.body.travel_from_state,'travel_from_city'=req.body.travel_from_city,'spaornot'=req.body.spaornot WHERE email = req.body.email
-    // let sqlquery = "INSERT INTO info(servicestate, lga, city_town, region_street, stream, accommodation_location, type_of_ppa, travel_from_state, travel_from_city) VALUES ('" + req.body.servicestate + "', '" + req.body.lga + "', '" + req.body.city_town + "', '" + req.body.region_street + "', '" + req.body.stream + "', '" + req.body.accommodation_location + "', '" + req.body.type_of_ppa + "', '" + req.body.travel_from_state + "', '" + req.body.travel_from_city + "', '" + req.body.spaornot + "' )";
+// cater for fields we already have, so that we don't touch them eg. service_state
+    // UPDATE 'info' SET 'first_name'=[value-1],'last_name'=[value-2],'accommodation_location'=[value-3],'service_state'=[value-4],'batch'=[value-5],'name_of_ppa'=[value-6],'state_code'=[value-7],'email'=[value-8],'middle_name'=[value-9],'password'=[value-10],'phone'=[value-11],'dateofreg'=[value-12],'lga'=[value-13],'city_or_town'=[value-14],'region_street'=[value-15],'stream'=[value-16],'type_of_ppa'=[value-17],'ppa_address'=[value-18],'travel_from_state'=[value-19],'travel_from_city'=[value-20],'spaornot'=[value-21] WHERE email = req.body.email
+    // UPDATE info SET 'accommodation_location'=req.body.accommodation_location,'service_state'=req.body.service_state,'name_of_ppa'=[value-6],'lga'=req.body.lga,'city_or_town'=req.body.city_or_town,'region_street'=req.body.region_street,'stream'=req.body.stream,'type_of_ppa'=req.body.type_of_ppa,'ppa_address'=req.body.ppa_address,'travel_from_state'=req.body.travel_from_state,'travel_from_city'=req.body.travel_from_city,'spaornot'=req.body.spaornot WHERE email = req.body.email
+    // let sqlquery = "INSERT INTO info(service_state, lga, city_or_town, region_street, stream, accommodation_location, type_of_ppa, travel_from_state, travel_from_city) VALUES ('" + req.body.service_state + "', '" + req.body.lga + "', '" + req.body.city_or_town + "', '" + req.body.region_street + "', '" + req.body.stream + "', '" + req.body.accommodation_location + "', '" + req.body.type_of_ppa + "', '" + req.body.travel_from_state + "', '" + req.body.travel_from_city + "', '" + req.body.spaornot + "' )";
 
-    // let sqlquery = "UPDATE info SET accommodation_location = '" + req.body.accommodation_location + "', servicestate = '" + req.body.servicestate + "', name_of_ppa = '" + req.body.name_of_ppa + "', lga = '" + req.body.lga + "', city_town = '" + req.body.city_town + "', region_street = '" + req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" + req.body.type_of_ppa + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" + req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city + "', spaornot = '" + req.body.spaornot + "' WHERE email = '" + req.body.email + "' " ;
+    // let sqlquery = "UPDATE info SET accommodation_location = '" + req.body.accommodation_location + "', service_state = '" + req.body.service_state + "', name_of_ppa = '" + req.body.name_of_ppa + "', lga = '" + req.body.lga + "', city_or_town = '" + req.body.city_or_town + "', region_street = '" + req.body.region_street + "',   stream = '" + req.body.stream + "' , type_of_ppa = '" + req.body.type_of_ppa + "', ppa_address = '" + req.body.ppa_address + "', travel_from_state = '" + req.body.travel_from_state + "', travel_from_city = '" + req.body.travel_from_city + "', spaornot = '" + req.body.spaornot + "' WHERE email = '" + req.body.email + "' " ;
 
-    /*[req.body.accommodation_location, req.body.servicestate, req.body.name_of_ppa, req.body.lga, req.body.city_town, req.body.region_street, req.body.stream, req.body.type_of_ppa, req.body.ppa_address, req.body.travel_from_state, req.body.travel_from_city, req.body.spaornot, req.body.email],*/
+    /*[req.body.accommodation_location, req.body.service_state, req.body.name_of_ppa, req.body.lga, req.body.city_or_town, req.body.region_street, req.body.stream, req.body.type_of_ppa, req.body.ppa_address, req.body.travel_from_state, req.body.travel_from_city, req.body.spaornot, req.body.email],*/
     // console.log('\nthe form body for /profile', _profile_data);
     /**
      * the _profile_data for /profile [Object: null prototype] {
         lga: 'Aba North',
-        city_town: '',
+        city_or_town: '',
         region_street: '',
         stream: '',
         newstatecode: '',
@@ -917,21 +917,21 @@ exports.UpdateProfile = async (_profile_data) => {
         travel_from_state: 'Abia',
         travel_from_city: 'Ibadan',
         accommodation_location: '',
-        wantspaornot: 'yes',
+        want_spa_or_not: 'yes',
         paymentMethod: 'on',
         bio: 'Okay',
         profile_pic: ''
         }
      */
     let sqlquery = "UPDATE info SET accommodation_location = " + db.sequelize.escape(_profile_data.accommodation_location) +
-      (_profile_data.servicestate ? ", servicestate = " + db.sequelize.escape(_profile_data.servicestate) : '') // if there's service state(i.e. corper changed service state in real life and from front end), insert it.
+      (_profile_data.service_state ? ", service_state = " + db.sequelize.escape(_profile_data.service_state) : '') // if there's service state(i.e. corper changed service state in real life and from front end), insert it.
       +
       ", name_of_ppa = " + db.sequelize.escape(_profile_data.name_of_ppa) +
       ", ppa_directions = " + db.sequelize.escape(_profile_data.ppa_directions) +
       ", bio = " + db.sequelize.escape(_profile_data.bio) +
       ", public_profile = " + db.sequelize.escape(_profile_data.public_profile) +
       ", lga = " + db.sequelize.escape(_profile_data.lga) +
-      ", city_town = " + db.sequelize.escape(_profile_data.city_town) +
+      ", city_or_town = " + db.sequelize.escape(_profile_data.city_or_town) +
       ", region_street = " +  db.sequelize.escape(_profile_data.region_street) +
       ", stream = " + db.sequelize.escape(_profile_data.stream) +
       ", type_of_ppa = " + db.sequelize.escape(_profile_data.type_of_ppa) +
@@ -939,10 +939,10 @@ exports.UpdateProfile = async (_profile_data) => {
       ", ppa_address = " + db.sequelize.escape(_profile_data.ppa_address) +
       ", travel_from_state = " + db.sequelize.escape(_profile_data.travel_from_state) +
       ", travel_from_city = " + db.sequelize.escape(_profile_data.travel_from_city) +
-      (_profile_data.newstatecode ? ", statecode = " + db.sequelize.escape(_profile_data.newstatecode.toUpperCase()) : '') + // if there's a new statecode
-      ", accommodationornot = " +  db.sequelize.escape(_profile_data.accommodationornot) +
-      ", wantspaornot = " + db.sequelize.escape(_profile_data.wantspaornot) +
-      " WHERE statecode = " + db.sequelize.escape(_profile_data.statecode.toUpperCase()) ; // always change state code to uppercase, that's how it is in the db
+      (_profile_data.newstatecode ? ", state_code = " + db.sequelize.escape(_profile_data.newstatecode.toUpperCase()) : '') + // if there's a new state_code
+      ", looking_for_accommodation_or_not = " +  db.sequelize.escape(_profile_data.looking_for_accommodation_or_not) +
+      ", want_spa_or_not = " + db.sequelize.escape(_profile_data.want_spa_or_not) +
+      " WHERE state_code = " + db.sequelize.escape(_profile_data.state_code.toUpperCase()) ; // always change state code to uppercase, that's how it is in the db
 
 
     db.sequelize.query(sqlquery, function (error, results, fields) {
@@ -957,18 +957,18 @@ exports.UpdateProfile = async (_profile_data) => {
             /* 
             // todo later...
     
-            statecode: req.session.corper.statecode.toUpperCase(),
-            servicestate: req.session.corper.servicestate,
+            state_code: req.session.corper.state_code.toUpperCase(),
+            service_state: req.session.corper.service_state,
             batch: req.session.corper.batch, */
 
-            if (_profile_data.newstatecode) { // if they are changing statecode to a different state, then their service state in the db should change and their ppa details too should change, tell them to change the ppa details if they don't change it
-            // change statecode in other places too
-            // this works because rooms only have one instance for every two corpers or statecode, so there's no DD/17B/7778-AB/17B/2334 and AB/17B/2334-DD/17B/7778 only one of it, same reason why there's no LIMIT 1 in the SELECT statement in REPLACE function
-            let updatequery = "UPDATE chats SET room = (SELECT REPLACE( ( SELECT DISTINCT room WHERE room LIKE '%" + _profile_data.statecode.toUpperCase() + "%' ) ,'" + _profile_data.statecode.toUpperCase() + "','" + _profile_data.newstatecode.toUpperCase() + "')) ; " +
-                " UPDATE chats SET message_from = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE message_from = '" + _profile_data.statecode.toUpperCase() + "' ; " +
-                " UPDATE chats SET message_to = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE message_to = '" + _profile_data.statecode.toUpperCase() + "' ;" +
-                " UPDATE posts SET statecode = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE statecode = '" + _profile_data.statecode.toUpperCase() + "' ; " +
-                " UPDATE accommodations SET statecode = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE statecode = '" + _profile_data.statecode.toUpperCase() + "' ";
+            if (_profile_data.newstatecode) { // if they are changing state_code to a different state, then their service state in the db should change and their ppa details too should change, tell them to change the ppa details if they don't change it
+            // change state_code in other places too
+            // this works because rooms only have one instance for every two corpers or state_code, so there's no DD/17B/7778-AB/17B/2334 and AB/17B/2334-DD/17B/7778 only one of it, same reason why there's no LIMIT 1 in the SELECT statement in REPLACE function
+            let updatequery = "UPDATE chats SET room = (SELECT REPLACE( ( SELECT DISTINCT room WHERE room LIKE '%" + _profile_data.state_code.toUpperCase() + "%' ) ,'" + _profile_data.state_code.toUpperCase() + "','" + _profile_data.newstatecode.toUpperCase() + "')) ; " +
+                " UPDATE chats SET message_from = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE message_from = '" + _profile_data.state_code.toUpperCase() + "' ; " +
+                " UPDATE chats SET message_to = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE message_to = '" + _profile_data.state_code.toUpperCase() + "' ;" +
+                " UPDATE posts SET state_code = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE state_code = '" + _profile_data.state_code.toUpperCase() + "' ; " +
+                " UPDATE accommodations SET state_code = '" + _profile_data.newstatecode.toUpperCase() + "' WHERE state_code = '" + _profile_data.state_code.toUpperCase() + "' ";
             db.sequelize.query(updatequery, function (error, results, fields) {
                 if (error) reject(error)
                 // connected!
@@ -979,11 +979,11 @@ exports.UpdateProfile = async (_profile_data) => {
                     || results[3].affectedRows > 0 
                     || results[4].affectedRows > 0
                     ) {
-                console.log('updated statecode ', results);
+                console.log('updated state_code ', results);
                 // then status code is good
                 console.log('we\'re really good with the update\t', results)
 
-                // then change the session statecode
+                // then change the session state_code
                     resolve(_profile_data.newstatecode.toUpperCase());
                 } else {
                 console.log('we\'re bad with the update') // we should find out what went wrong
@@ -1010,7 +1010,7 @@ exports.UpdateProfile = async (_profile_data) => {
                 // we should redirect to somewhere and not just block the whole system!!!!!!!!!!
                 }
             });
-            // should we save every change of statecode that ever occured ?
+            // should we save every change of state_code that ever occured ?
             // SELECT room FROM `chats` WHERE message_from = 'AB/17B/1234' or message_to = 'AB/17B/1234'
 
             // UPDATE `chats` SET `room`=[value-1],`message_from`=[value-3],`message_to`=[value-4] WHERE message_from = 'AB/17B/1234' or message_to = 'AB/17B/1234'
@@ -1030,12 +1030,12 @@ exports.UpdateProfile = async (_profile_data) => {
 
 
             } else { // if no newstatecode
-            // res.status(200).redirect(req.session.corper.statecode.toUpperCase() /* + '?e=y' */); // [e]dit=[y]es|[n]o
-            resolve(_profile_data.statecode.toUpperCase())
+            // res.status(200).redirect(req.session.corper.state_code.toUpperCase() /* + '?e=y' */); // [e]dit=[y]es|[n]o
+            resolve(_profile_data.state_code.toUpperCase())
             }
         } else { // everything went well, but it was only the profile pic that was updated, not text
             // reject('no row changed in update')
-            resolve(_profile_data.statecode.toUpperCase())
+            resolve(_profile_data.state_code.toUpperCase())
             // we need to optimize this, because before the pic is uploaded and updated, our server must have redirected
         }
     });
@@ -1140,7 +1140,7 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
 
             });
         } else if (req.query.rr) { // if it's an accomodation
-            // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
+            // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.state_code
             db.sequelize.query(mustRunQuery + "SELECT * FROM accommodations WHERE expire > NOW() AND rentrange = '" + req.query.rr + "' AND post_time = '" + req.query.pt + "' ; SELECT * FROM posts WHERE type = 'sale';", function (error, results, fields) {
 
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
@@ -1217,7 +1217,7 @@ exports.DistinctNotNullDataFromPPAs = async (req) => {
             })
 
         } else if (req.query.pt) { // for getting sales items
-            db.sequelize.query(mustRunQuery + "SELECT * FROM posts WHERE type = 'sale'; SELECT * FROM posts WHERE statecode = ? AND post_time = ?",Object.values(req.query), function (error, results, fields) {
+            db.sequelize.query(mustRunQuery + "SELECT * FROM posts WHERE type = 'sale'; SELECT * FROM posts WHERE state_code = ? AND post_time = ?",Object.values(req.query), function (error, results, fields) {
 
                 if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
                   reject(error);
@@ -1282,20 +1282,20 @@ exports.GetPosts = async (data) => { // we're meant to be saving every search! p
     // maybe change the ORDER BYs since we're using post_time now =---
     if (data.query.s) { // they're searching a state // isn't even working ...
         q = "SELECT * FROM accommodations \
-        WHERE expire > NOW() AND statecode LIKE '" + data.query.s.substring(0, 2) + "%' \
+        WHERE expire > NOW() AND state_code LIKE '" + data.query.s.substring(0, 2) + "%' \
         ORDER BY post_time DESC LIMIT 55; SELECT *, '' as password \
-        FROM info WHERE ppa_address != '' AND statecode LIKE '" + data.query.s.substring(0, 2) + "%' ;\
-        SELECT * FROM posts WHERE statecode LIKE '" + data.query.s.substring(0, 2) + "%';";
+        FROM info WHERE ppa_address != '' AND state_code LIKE '" + data.query.s.substring(0, 2) + "%' ;\
+        SELECT * FROM posts WHERE state_code LIKE '" + data.query.s.substring(0, 2) + "%';";
     } else {
         for (let index = 0; index < 36/* ngstates.states_short.length */; index++) {
         const element = ngstates.states_short[index];
         q += "SELECT * FROM accommodations \
-        WHERE expire > NOW() AND statecode LIKE '" + element + "%' ORDER BY post_time DESC LIMIT 55; \
+        WHERE expire > NOW() AND state_code LIKE '" + element + "%' ORDER BY post_time DESC LIMIT 55; \
         SELECT *, '' as password FROM info \
-        WHERE ppa_address != '' AND statecode LIKE '" + element + "%' ;\
-        SELECT * FROM posts WHERE statecode LIKE '" + element + "%' ;"; // the trailing ';' is very important
+        WHERE ppa_address != '' AND state_code LIKE '" + element + "%' ;\
+        SELECT * FROM posts WHERE state_code LIKE '" + element + "%' ;"; // the trailing ';' is very important
         }
-        // let q = "SELECT streetname, type, input_time, statecode, price, rentrange FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_town FROM info WHERE ppa_address != ''";
+        // let q = "SELECT streetname, type, input_time, state_code, price, rentrange FROM accommodations ORDER BY input_time DESC LIMIT 55; SELECT name_of_ppa, ppa_address, type_of_ppa, city_or_town FROM info WHERE ppa_address != ''";
     }
 
   // console.log('search sql query ', q)
@@ -1354,11 +1354,11 @@ exports.GetPosts = async (data) => { // we're meant to be saving every search! p
 
 exports.GetPlacesByTypeInOurDB = async (req) => {
     let re = await new Promise((resolve, reject) => {
-    // use the ones from their service state // AND servicestate = '" + req.session.corper.servicestate + "'
+    // use the ones from their service state // AND service_state = '" + req.session.corper.service_state + "'
     db.sequelize.query("SELECT name_of_ppa FROM info WHERE name_of_ppa != '';\
-      SELECT ppa_address from info WHERE ppa_address != '' AND servicestate = '" + req.session.corper.servicestate + "';\
-      SELECT city_town FROM info WHERE city_town != '' AND servicestate = '" + req.session.corper.servicestate + "';\
-      SELECT region_street FROM info WHERE region_street != '' AND servicestate = '" + req.session.corper.servicestate + "'", function (error2, results2, fields2) {
+      SELECT ppa_address from info WHERE ppa_address != '' AND service_state = '" + req.session.corper.service_state + "';\
+      SELECT city_or_town FROM info WHERE city_or_town != '' AND service_state = '" + req.session.corper.service_state + "';\
+      SELECT region_street FROM info WHERE region_street != '' AND service_state = '" + req.session.corper.service_state + "'", function (error2, results2, fields2) {
 
         if (error2) reject(error2)
         else {
@@ -1383,7 +1383,7 @@ exports.SearchNOPs = async (req) => {
         // also if we don't have the geo data for a school, we can try searching else where for it...
         // also we should track where the search is from coming from
     
-        // use the ones from their service state // AND servicestate = '" + req.session.corper.servicestate + "'
+        // use the ones from their service state // AND service_state = '" + req.session.corper.service_state + "'
         db.sequelize.query("SELECT name_of_ppa, ppa_address, type_of_ppa, ppa_geodata FROM info WHERE name_of_ppa = '" + req.query.nop + "'", function (error, results, fields) {  // bring the results in ascending order
 
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
@@ -1436,11 +1436,11 @@ exports.SearchNOPs = async (req) => {
       
             ppa_details = {};
       
-            if (req.session.corper.statecode) {
-              ppa_details.user.statecode = req.session.corper.statecode.toUpperCase();
+            if (req.session.corper.state_code) {
+              ppa_details.user.state_code = req.session.corper.state_code.toUpperCase();
             }
-            if (req.session.corper.servicestate) {
-              ppa_details.user.servicestate = req.session.corper.servicestate;
+            if (req.session.corper.service_state) {
+              ppa_details.user.service_state = req.session.corper.service_state;
             }
             if (req.session.corper.batch) {
               ppa_details.user.batch = req.session.corper.batch;
@@ -1461,7 +1461,7 @@ exports.SearchNOPs = async (req) => {
 
 exports.SearchAcc = async (req) => { // doing nothing, really
     let re = await new Promise((resolve, reject) => {
-        // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.statecode
+        // req.query.it=input_time + req.query.sn=item.streetname + req.query.sc=item.state_code
         db.sequelize.query("SELECT * FROM accommodations WHERE expire > NOW() AND rentrange = '" + req.query.rr + "' AND post_time = '" + req.query.pt + "'", function (error, results, fields) {
         if (error) reject(error)
         else {
@@ -1517,7 +1517,7 @@ exports.GetSales = async () => {
 
 exports.GetAllSalesAndOneSale = async (req_query) => {
     let re = await new Promise((resolve, reject) => {
-        db.sequelize.query("SELECT * FROM posts WHERE type = 'sale'; SELECT * FROM posts WHERE statecode = ? AND post_time = ?",Object.values(req_query), function (error, results, fields) {
+        db.sequelize.query("SELECT * FROM posts WHERE type = 'sale'; SELECT * FROM posts WHERE state_code = ? AND post_time = ?",Object.values(req_query), function (error, results, fields) {
 
             if (error) { // gracefully handle error e.g. ECONNRESET || ETIMEDOUT || PROTOCOL_CONNECTION_LOST, in this case re-execute the query or connect again, act approprately
               reject(error);

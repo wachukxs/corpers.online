@@ -13,12 +13,12 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Sale.belongsTo(models.CorpMember, {
-        targetKey: 'statecode',
-        foreignKey: 'statecode',
+        targetKey: 'state_code',
+        foreignKey: 'state_code',
         as: 'saleByCorper'
       })
-      Sale.belongsTo(models.Media, { // means Sale have a mediaId
-        foreignKey: 'mediaId',
+      Sale.belongsTo(models.Media, { // means Sale have a media_id
+        foreignKey: 'media_id',
         as: 'saleMedia'
       })
     }
@@ -30,23 +30,29 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.INTEGER
     },
-    statecode: {
+    state_code: {
       type:DataTypes.STRING,
       references: {
-        model: 'CorpMember',
-        key: 'statecode'
+        model: 'CorpMembers', // added 's'. The exact Table name should be here.
+        key: 'state_code'
       }
     }, // need it ?
-    itemname: {
+    item_name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    minPrice: {
+    minimum_price: {
       type: DataTypes.INTEGER,
+      set(value) {
+        this.setDataValue('minimum_price', parseInt(value));
+      }
     },
     price: {
       type: DataTypes.FLOAT,
       allowNull: false,
+      set(value) {
+        this.setDataValue('price', parseInt(value));
+      }
     },
     _price: {
       type: DataTypes.VIRTUAL,
@@ -55,22 +61,22 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     text: DataTypes.TEXT,
-    mediaId: {
+    media_id: {
       type:DataTypes.INTEGER
     },
     _age: {
       type: DataTypes.VIRTUAL,
       get() {
-        return moment(this.getDataValue('createdAt')).fromNow();
+        return moment(this.getDataValue('created_at')).fromNow();
       },
       set(value) {
         throw new Error('Do not try to set the Sale.`age` value!');
       }
     },
-    lastUpdatedAge: { // do we need this ? // uhmmm maybe for when they change price, plus we know if it's still available and how fresh it is since the corp member(original poster) is still interacting with it
+    last_updated_age: { // do we need this ? // uhmmm maybe for when they change price, plus we know if it's still available and how fresh it is since the corp member(original poster) is still interacting with it
       type: DataTypes.VIRTUAL,
       get() {
-        return moment(this.getDataValue('updatedAt')).fromNow();
+        return moment(this.getDataValue('updated_at')).fromNow();
       },
       set(value) {
         throw new Error('Do not try to set the `last_updated_age` value!');
@@ -85,15 +91,12 @@ module.exports = (sequelize, DataTypes) => {
         throw new Error('Do not try to set the Sale.`type` value!');
       }
     },
-    createdAt: {
-      type: DataTypes.DATE
-    },
-    updatedAt: {
-      type: DataTypes.DATE
-    }
   }, {
     sequelize,
     modelName: 'Sale',
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
   });
   // Sale.sync({ alter: true })
   return Sale;

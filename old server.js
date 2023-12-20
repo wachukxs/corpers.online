@@ -128,7 +128,7 @@ app.post('/signup', function(req, res){
   //global.db = db;
 
   // insert statment
-  var sql = "INSERT INTO info (lastname, firstname, email, password, statecode) VALUES ('"+ req.body.lastname +"','"+ req.body.firstname +"','"+ req.body.email +"','"+ req.body.password +"','"+ req.body.statecode +"')";
+  var sql = "INSERT INTO info (last_name, first_name, email, password, state_code) VALUES ('"+ req.body.last_name +"','"+ req.body.first_name +"','"+ req.body.email +"','"+ req.body.password +"','"+ req.body.state_code +"')";
 
   db.query(sql, function (error, results, fields) {
 
@@ -177,7 +177,7 @@ app.post('/login', function(req, res, /*handleRedirect*/){
       //if data exists:
       //res.sendFile(__dirname + '/user.html');
 
-   }); //the second para is called projection, it just means that it returns only the statecode
+   }); //the second para is called projection, it just means that it returns only the state_code
     console.log('one in!');
   });
   */
@@ -260,11 +260,11 @@ io.of('/signup').on('connection', function (socket) {// when a new user is in th
       if (err) throw err;
       var dbo = db.db("corpersonline");
       var d = { 
-        firstname: data.firstname, 
-        lastname: data.lastname, 
+        first_name: data.first_name, 
+        last_name: data.last_name, 
         email: data.email, 
         password: data.password, 
-        statecode: data.statecode 
+        state_code: data.state_code 
       };
       dbo.collection("corpers").insertOne(d, function(err, res) {
         if (err) {
