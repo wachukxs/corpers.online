@@ -23,16 +23,10 @@ module.exports = {
       media_id: {
         type: Sequelize.INTEGER,
       },
-      time: {
-        type: Sequelize.DATE
-      },
       read_by_to: {
         type: Sequelize.BOOLEAN
       },
       time_read: {
-        type: Sequelize.DATE
-      },
-      _time: {
         type: Sequelize.DATE
       },
       message_sent: {

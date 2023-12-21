@@ -22,9 +22,10 @@ module.exports = (sequelize, DataTypes) => {
         as: 'alertByCorper'
       });
 
-      Alert.belongsTo(models.Location, { // means PPA have a locationId
-        foreignKey: 'location_id'
-      })
+      // Why do we need this?
+      // Alert.belongsTo(models.Location, {
+      //   foreignKey: 'location_id'
+      // })
     }
   };
   Alert.init({
@@ -35,25 +36,26 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     },
     type: {
-      type:DataTypes.STRING
+      type: DataTypes.STRING
     },
     item_name: {
-        type:DataTypes.STRING
+      type: DataTypes.STRING
     },
     state_code: {
-      type:DataTypes.STRING
+      type: DataTypes.STRING
     },
     minimum_price: { // should we move to attaching currency symbol from the back end ?
-      type:DataTypes.INTEGER
+      type: DataTypes.INTEGER
     },
+    // We should do the enum.
     accommodation_type: {
-        type: DataTypes.STRING,
+      type: DataTypes.STRING,
     },
     max_price: {
-        type:DataTypes.INTEGER
+      type: DataTypes.INTEGER
     },
     note: {
-        type:DataTypes.TEXT
+      type: DataTypes.TEXT
     },
     rooms: {
         type: DataTypes.STRING,
@@ -62,7 +64,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         set(value) {
           if (!value) {
-            this.setDataValue('rooms', null); // for when value is ''
+            this.setDataValue('rooms', null); // for when value is '' // we won't need this...
           } else {
             this.setDataValue('rooms', value);
           }
@@ -74,7 +76,14 @@ module.exports = (sequelize, DataTypes) => {
     //     return moment().add(30, 'days').toDate();
     //   },
     // },
-    location_id: DataTypes.INTEGER, // TODO: include location as a metric ...so we filter people leaving close to you
+    /**
+     * Not sure why this is here!
+     * 
+     * "TODO: include location as a metric ...so we filter people leaving close to you"
+     */
+    location_id: {
+      type: DataTypes.INTEGER
+    },
   }, {
     sequelize,
     modelName: 'Alert',

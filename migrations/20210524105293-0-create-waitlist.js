@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      servingstate: {
+      serving_state: {
         type: Sequelize.STRING,
       },
       middle_name: {

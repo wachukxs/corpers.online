@@ -772,11 +772,15 @@ router.post('/oldaccommodations', auth.verifyJWT, /* upload.array('roomsmedia', 
   busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
     console.log('Field [' + fieldname + ']: value: ' + inspect(val));
     // this if block is an hot fix
-    if (fieldname === 'rooms') {
-      _text[fieldname].push(val)
-    } else {
-      _text[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
+    if (val && val !== 'null') {
+      if (fieldname === 'rooms') {
+        // do we need to save rooms differently??
+        _text[fieldname].push(val)
+      } else {
+        _text[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
+      }
     }
+    
     console.warn('fielddname Truncated:', fieldnameTruncated, valTruncated, transferEncoding, mimetype);
   });
 

@@ -59,17 +59,18 @@ module.exports.verifyJWT = (req, res, next) => {
             } else {
 
                 /**
-                 * HOW COME PASSWORDS AREN"T hashed
+                 * HOW COME PASSWORDS AREN'T hashed
                  */
                 // console.log(Object.keys(db.PPA.rawAttributes)); // here lies a problem
                 console.log('decoded', decodedToken);
+                
                 db.CorpMember.findOne({
                     where: { state_code: decodedToken.state_code.toUpperCase() },
                     // include: [{ all: true }],
                     include: [ // why is it looking for ppa_id in PPA model ?? cause of bug in sequelize
                         db.Media,
                         {
-                            model: db.PPA,
+                            model: db.PPA, // using db.PPA makes it look for table 'ppas' which causes an error.
                             attributes: db.PPA.getAllActualAttributes() // hot fix (problem highlighted in ./models/ppa.js) -- > should create a PR to fix it ... related to https://github.com/sequelize/sequelize/issues/13309
                         },
                     ],
@@ -88,7 +89,7 @@ module.exports.verifyJWT = (req, res, next) => {
 
                     }, reject => {
 
-                        console.log('auth autologin catching this err because:', reject);
+                        console.log('auth auto login reject, this err because:', reject);
                         res.sendStatus(502)
 
                     }).catch(reason => {

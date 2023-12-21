@@ -1,66 +1,51 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Locations', {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER
+    await queryInterface.addConstraint('Locations', {
+      type: 'FOREIGN KEY',
+      name: 'loc_m_id_with_med_id_ccv',
+      fields: ['media_id'],
+      references: {
+        table: 'Media',
+        field: 'id'
       },
-      directions: {
-        type: Sequelize.TEXT
+    })
+
+    await queryInterface.addConstraint('Locations', {
+      type: 'FOREIGN KEY',
+      name: 'loc_ppa_p_id_with_ppa_id_xyz',
+      fields: ['ppa_id'],
+      references: {
+        table: 'PPA',
+        field: 'id'
       },
-      created_at: {
-        allowNull: false,
-        type: Sequelize.DATE
+    })
+
+    await queryInterface.addConstraint('Locations', {
+      type: 'FOREIGN KEY',
+      name: 'loc_acc_id_with_ppa_id_xyz',
+      fields: ['accommodation_id'],
+      references: {
+        table: 'Accommodation',
+        field: 'id'
       },
-      media_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: {
-            tableName: 'Media',
-          },
-          key: 'id'
-        },
+    })
+
+    await queryInterface.addConstraint('Locations', {
+      type: 'FOREIGN KEY',
+      name: 'loc_c_m_id_with_cm_id_bdt',
+      fields: ['corp_member_id'],
+      references: {
+        table: 'CorpMembers',
+        field: 'id'
       },
-      updated_at: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      address: {
-        type: Sequelize.STRING
-      },
-      ppa_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: {
-            tableName: 'PPA',
-          },
-          key: 'id'
-        },
-      },
-      accommodation_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: {
-            tableName: 'Accommodation',
-          },
-          key: 'id'
-        },
-      },
-      corp_member_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: {
-            tableName: 'CorpMembers',
-          },
-          key: 'id'
-        },
-      },
-    });
+    })
+
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Locations');
+    await queryInterface.removeConstraint('Locations', 'loc_m_id_with_med_id_ccv');
+    await queryInterface.removeConstraint('Locations', 'loc_acc_id_with_ppa_id_xyz');
+    await queryInterface.removeConstraint('Locations', 'loc_acc_id_with_ppa_id_xyz');
+    await queryInterface.removeConstraint('Locations', 'loc_c_m_id_with_cm_id_bdt'); 
   }
 };

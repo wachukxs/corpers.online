@@ -1,109 +1,41 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Accommodation', {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER
+    await queryInterface.addConstraint('Accommodation', {
+      type: 'FOREIGN KEY',
+      name: 'acc_l_id_with_loc_id',
+      fields: ['location_id'],
+      references: {
+        table: 'Locations',
+        field: 'id'
       },
-      // address: {
-      //   type: Sequelize.STRING
-      // },
-      // directions: {
-      //   type: Sequelize.TEXT
-      // },
-      rent: {
-        type: Sequelize.FLOAT
+    })
+
+    await queryInterface.addConstraint('Accommodation', {
+      type: 'FOREIGN KEY',
+      name: 'acc_m_id_with_media_id',
+      fields: ['media_id'],
+      references: {
+        table: 'Media',
+        field: 'id'
       },
-      roommate_rent: {
-        type: Sequelize.FLOAT
+    })
+
+    await queryInterface.addConstraint('Accommodation', {
+      type: 'FOREIGN KEY',
+      name: 'acc_st_code_with_corp_sc',
+      fields: ['state_code'],
+      references: {
+        table: 'CorpMembers',
+        field: 'state_code'
       },
-      media_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: {
-            tableName: 'Media',
-          },
-          key: 'id'
-        },
-      },
-      location_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: {
-            tableName: 'Locations',
-          },
-          key: 'id'
-        },
-      },
-      rent_interval: {
-        type: Sequelize.ENUM,
-        values: ['monthly', 'quarterly', 'yearly']
-      },
-      accommodation_type: {
-        type: Sequelize.STRING,
-      },
-      available_rooms: {
-        type: Sequelize.STRING,
-      },
-      tenure: {
-        type: Sequelize.STRING,
-      },
-      ideal_roommate: {
-        type: Sequelize.TEXT,
-      },
-      roommate_rent: {
-        type: Sequelize.FLOAT,
-      },
-      occupant_description: {
-        type: Sequelize.TEXT,
-      },
-      rent_expire_date: {
-        type: Sequelize.DATE,
-      },
-      state_code: {
-        type: Sequelize.STRING,
-        references: {
-          model: {
-            tableName: 'CorpMembers',
-            
-          },
-          key: 'state_code'
-        },
-      },
-      is_draft: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
-      },
-      created_at: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updated_at: {
-        allowNull: false,
-        type: Sequelize.DATE
-      }
     }).catch(err => {
       console.error("111 catching this\n\n\n", err);
     });
   },
   down: async (queryInterface, Sequelize) => {
-
-    // https://github.com/sequelize/sequelize/issues/2554#issuecomment-365383347
-    await queryInterface.removeColumn('Accommodation', 'rentInterval').catch(err => {console.error('caught down 1', err);});
-    await queryInterface.sequelize.query('DROP TYPE "enum_Accommodation_rentInterval";').catch(err => {console.error('caught down 1', err);});
-    await queryInterface.dropTable('Accommodation');
-    /**
-     * To prevent error: (node:10501) UnhandledPromiseRejectionWarning: SequelizeDatabaseError: type "enum_Accommodation_rentInterval" already exists
-     * 1. https://stackoverflow.com/questions/60898055/unhandled-rejection-sequelizedatabaseerror-type-enum-already-exists
-     * 2. https://stackoverflow.com/questions/45437924/drop-and-create-enum-with-sequelize-correctly
-     */
-    // await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_Accommodation_rentInterval";');
-
-    // https://github.com/sequelize/sequelize/issues/2554
-    // await queryInterface.dropAllEnums();
-
+    await queryInterface.removeConstraint('Accommodation', 'acc_l_id_with_loc_id');
+    await queryInterface.removeConstraint('Accommodation', 'acc_m_id_with_media_id');
+    await queryInterface.removeConstraint('Accommodation', 'acc_st_code_with_corp_sc');
   }
 };

@@ -34,22 +34,29 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.INTEGER
     },
-    room: DataTypes.STRING,
+    room: {
+      type: DataTypes.STRING
+    },
     message: DataTypes.TEXT,
     message_from: DataTypes.STRING,
     message_to: DataTypes.STRING,
     media_id: {
       type:DataTypes.INTEGER
     },
-    time: {
-      type: DataTypes.DATE
-    },
     read_by_to: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
     },
     time_read: DataTypes.DATE,
-    _time: DataTypes.DATE,
+    _time_read: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return moment(this.getDataValue('time_read')).fromNow();
+      },
+      set(value) {
+        throw new Error('Do not try to set the Chat.`_time_read` value!');
+      }
+    },
     message_sent: {
       type: DataTypes.BOOLEAN,
       defaultValue: false

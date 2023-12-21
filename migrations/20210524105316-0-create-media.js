@@ -8,6 +8,15 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      sale_id: {
+        type: Sequelize.INTEGER
+      },
+      location_id: {
+        type: Sequelize.INTEGER
+      },
+      accommodation_id: {
+        type: Sequelize.INTEGER
+      },
       urls: {
         type: Sequelize.STRING
       },

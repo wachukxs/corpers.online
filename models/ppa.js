@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       })
       // PPA is source, CorpMember is target (foreign Key is in CorpMember)
       // creates ppa_id in CorpMember
-      PPA.hasMany(models.CorpMember, { // means ppa_id is the forigen key in CorpMember, referencing primary key id in PPA
+      PPA.hasMany(models.CorpMember, { // means ppa_id is the foreign key in CorpMember, referencing primary key id in PPA
         foreignKey: 'ppa_id', // leaving as PPId causes bug
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE'
@@ -51,6 +51,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'PPA',
+    tableName: 'PPA',
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',

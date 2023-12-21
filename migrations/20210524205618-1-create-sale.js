@@ -1,59 +1,29 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Sales', {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER
+    await queryInterface.addConstraint('Sales', {
+      type: 'FOREIGN KEY',
+      name: 'sale_m_id_with_media_id_wxc',
+      fields: ['media_id'],
+      references: {
+        table: 'Media',
+        field: 'id'
       },
-      state_code: {
-        type: Sequelize.STRING,
-        references: {
-          model: {
-            tableName: 'CorpMembers',
-          },
-          key: 'state_code'
-        },
+    })
+
+    await queryInterface.addConstraint('Sales', {
+      type: 'FOREIGN KEY',
+      name: 'sales_c_m_id_with_cm_id_fdk',
+      fields: ['state_code'],
+      references: {
+        table: 'CorpMembers',
+        field: 'state_code'
       },
-      media_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: {
-            tableName: 'Media',
-            
-          },
-          key: 'id'
-        },
-      },
-      item_name: {
-        type: Sequelize.STRING
-      },
-      minimum_price: {
-        type: Sequelize.INTEGER,
-      },
-      price: {
-        type: Sequelize.FLOAT
-      },
-      text: {
-        type: Sequelize.TEXT
-      },
-      is_draft: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
-      },
-      created_at: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updated_at: {
-        allowNull: false,
-        type: Sequelize.DATE
-      }
-    });
+    })
+
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Sales');
+    await queryInterface.removeConstraint('Sales', 'sale_m_id_with_media_id_wxc');
+    await queryInterface.removeConstraint('Sales', 'sales_c_m_id_with_cm_id_fdk');
   }
 };

@@ -144,12 +144,17 @@ exports.create = (req, res, next) => {
     });
 
     busboy.on('field', function handleSalesFields(fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+      /**
+       * would skip 0s, but we don't need zeros
+       * 
+       * null gets converted to string. So (val !== 'null') is a hotfix
+       */
+      if (val && val !== 'null') {
+        _text[fieldname] = val; // seems inspect() adds double quote to the value
+      }
       console.log('Field [' + fieldname + ']: value: ' + inspect(val));
       console.log('raw value:', val);
 
-      if (val !== null || val !== undefined) {
-        _text[fieldname] = val; // seems inspect() adds double quote to the value
-      }
 
       // should we do like we did for accommodation ?? ...yess , we'll check too
 

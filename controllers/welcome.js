@@ -200,7 +200,10 @@ router.post('/careers', function (req, res) { // work with us
     console.log('Field [' + fieldname + ']: value: ' + inspect(val));
     // this if block is an hot fix
    
-      _text[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
+    if (val && val !== 'null') {
+      _text[fieldname] = val;
+    }
+    // seems inspect() adds double quote to the value
     
     console.warn('fielddname Truncated:', fieldnameTruncated, valTruncated, transferEncoding, mimetype);
   });
