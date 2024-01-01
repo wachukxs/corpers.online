@@ -117,8 +117,12 @@ if (app.get("env") === "production") {
 // set morgan to log info about our requests for development use.
 app.use(morgan(morganFormat));
 
-// use cors
-let allowedOrigins = ["https://corpers.online", "https://corpers.ng", "https://corpers.com.ng"];
+/**
+ * use cors
+ * 
+ * Used regex for our live domain because it's shorter. As opposed to listing 6 similar domains.
+ */
+let allowedOrigins = [/https\:\/\/(www\.)?corpers\.(ng|online|com\.ng)/]; // our live domains.
 if (app.get("env") !== "production") {
   // process.env.NODE_ENV
   allowedOrigins = allowedOrigins.concat([
