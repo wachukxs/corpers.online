@@ -118,7 +118,7 @@ if (app.get("env") === "production") {
 app.use(morgan(morganFormat));
 
 // use cors
-let allowedOrigins = ["https://corpers.online", "http://localhost:4006"];
+let allowedOrigins = ["https://corpers.online", "https://corpers.ng", "https://corpers.com.ng"];
 if (app.get("env") !== "production") {
   // process.env.NODE_ENV
   allowedOrigins = allowedOrigins.concat([
