@@ -122,7 +122,7 @@ app.use(morgan(morganFormat));
  * 
  * Used regex for our live domain because it's shorter. As opposed to listing 6 similar domains.
  */
-let allowedOrigins = [/https\:\/\/(www\.)?corpers\.(ng|online|com\.ng)/]; // our live domains.
+let allowedOrigins = [/https\:\/\/(www\.)?corpers\.(ng|online|com\.ng)/,]; // our live domains.
 if (app.get("env") !== "production") {
   // process.env.NODE_ENV
   allowedOrigins = allowedOrigins.concat([

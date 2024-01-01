@@ -92,12 +92,15 @@ module.exports = (sequelize, DataTypes) => {
     },
     travel_from_city: DataTypes.STRING,
     travel_from_state: DataTypes.STRING,
-    accommodation_location: DataTypes.STRING, // needs to change!! put in location model
+    accommodation_location: DataTypes.STRING, // TODO: needs to change!! put in location model
     region_street: DataTypes.STRING,
     city_or_town: DataTypes.STRING,
     email: {
       type:DataTypes.STRING,
       unique: 'email',
+      validate: {
+        isEmail: true
+      },
       set(value) {
         this.setDataValue('email', value.toLowerCase());
       }
