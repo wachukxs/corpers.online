@@ -13,9 +13,15 @@
     "swagger-autogen": "node ./swagger.js",
     "migrate-db": "node_modules/.bin/sequelize db:migrate",
     "seed-db": "node_modules/.bin/sequelize db:seed:all",
+    "seed:undo": "node_modules/.bin/sequelize db:seed:undo",
+    "seed:undo:all": "node_modules/.bin/sequelize db:seed:undo:all",
     "migrate:up": "node_modules/.bin/sequelize db:migrate",
     "migrate:undo": "node_modules/.bin/sequelize db:migrate:undo",
     "migrate:undo:all": "node_modules/.bin/sequelize db:migrate:undo:all"
+  },
+  "engines": {
+    "yarn": "1.x",
+    "node": "18.x"
   },
   "keywords": [
     "corpers",
@@ -35,6 +41,7 @@
   },
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/local-auth": "^3.0.0",
     "bcrypt": "5.0.0",
     "body-parser": "^1.19.0",
     "busboy": "^0.3.1",

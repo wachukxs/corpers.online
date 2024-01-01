@@ -1,1 +1,1 @@
-web: node index.js
+web: web: yarn run seed:undo:all --env=$NODE_ENV && yarn run migrate:undo:all --env=$NODE_ENV && yarn run migrate-db --env=$NODE_ENV && yarn run seed-db --env=$NODE_ENV && yarn run start

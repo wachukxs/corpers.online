@@ -27,3 +27,7 @@ firstly for the people in khaki, then for the green and white people, then for a
 ## Some wants
 * Would [knowing when a form is auto filled](https://material.angular.io/cdk/text-field/overview) ever be useful to us?
 * Using AI to [Auto identify images](https://aihub.cloud.google.com/p/products%2F150687a7-cb7c-4066-899d-ebfbc0aac5d3)?
+
+
+## Interesting Map ideas
+* [What3Words](https://what3words.com/)
