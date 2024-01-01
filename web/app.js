@@ -87,7 +87,7 @@ const knexSessionStore = new KnexSessionStore({
   knex,
   sidfieldname: "sessionId",
   createtable: true,
-  tablename: "_Sessions", // wanna make it _Sessions || Sessions// optional. Defaults to 'sessions' // tip: don't use 'Session' ...it's for connect-sequelize-store
+  tablename: "_Sessions", // Defaults to 'sessions' // Note: don't use 'Session' ...it's for connect-sequelize-store
 });
 
 let expressSessionOptions = {
