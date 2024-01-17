@@ -1,7 +1,13 @@
 const fs = require('fs');
 const path = require('path');
+const { authenticate } = require('@google-cloud/local-auth');
 const _FILENAME = path.basename(__filename);
-// apparently, path is relative to ./index.js
+/**
+ * COMMENT 58:
+ * 
+ * apparently, path is relative to ./index.js
+ * TODO: Use absolute path?
+ */
 
 // https://developers.google.com/drive/api/v3/quickstart/nodejs
 // https://stackoverflow.com/q/54166810
@@ -12,18 +18,20 @@ const {
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/drive'];
-// const SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly'];
 
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
-const TOKEN_PATH = './google/token.json'; // LINE 3 COMMENT
+const TOKEN_PATH = './google/token.json'; // COMMENT 58
 
 // Load client secrets from a local file.
-fs.readFile('./google/credentials.json', (err, content) => { // LINE 3 COMMENT
-  if (err) return console.log('Error loading client secret file:', err); // have fallback here.
+fs.readFile('./google/credentials.json', (err, content) => { // COMMENT 58
+  if (err) {
+    console.log('Error loading client secret file:', err);
+    return // have fallback here.
+  }
 
-  console.log('GOT GGLE CRED')
+  console.log('read GGLE CRED')
 
   const credentials = JSON.parse(content)
 
@@ -35,10 +43,9 @@ fs.readFile('./google/credentials.json', (err, content) => { // LINE 3 COMMENT
   const oAuth2Client = new google.auth.OAuth2(
     client_id, client_secret, redirect_uris[0]);
 
-
   // Check if we have previously stored a token.
   fs.readFile(TOKEN_PATH, (err, token) => {
-    if (err) return getAccessToken(oAuth2Client);
+    if (err) return // getAccessToken(oAuth2Client); TODO: uncomment to activate google
     oAuth2Client.setCredentials(JSON.parse(token));
 
     const drive = google.drive({ version: 'v3', auth: oAuth2Client });
@@ -77,5 +84,5 @@ function getAccessToken(oAuth2Client) {
     });
   });
 }
-
+// 4%2F0AfJohXlJmY-A5m1OUrt6BJiOEXuDYwvcOeSBQC0FMq3nBqr_ZiOg-ntpsifR8Am-Qla6HQ
 // LINE 44

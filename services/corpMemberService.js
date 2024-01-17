@@ -17,14 +17,13 @@ const _FILENAME = path.basename(__filename);
  * 
  * */
 let cookieOptions = {
-  httpOnly: true, // frontend js can't access
+  httpOnly: true, // so frontend js can't access
   maxAge: auth.maxAge,
-  sameSite: 'lax',
+  sameSite: 'none',
   // path: '' // until we figure out how to add multiple path
 }
 
 if (process.env.NODE_ENV === 'production') {
-  cookieOptions.sameSite = 'strict',
   cookieOptions.secure = true // localhost, too, won't work if true
 }
 

@@ -2,7 +2,6 @@ const db = require('../models');
 const moment = require('moment');
 const Busboy = require('busboy');
 const helpers = require('../utilities/helpers');
-const ggle = require('../helpers/uploadgdrive');
 const ngstates = require('../utilities/ngstates');
 const bcrypt = require('bcrypt');
 const saltRounds = 5;
