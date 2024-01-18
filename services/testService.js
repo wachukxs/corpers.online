@@ -28,6 +28,7 @@ exports.all = (req, res) => {
   const _FUNCTIONNAME = 'all'
   console.log('hitting', _FILENAME, _FUNCTIONNAME);
 
+  return res.json([])
   return db.Test
     .findAll()
     .then(_tests => res.status(200).send(_tests))

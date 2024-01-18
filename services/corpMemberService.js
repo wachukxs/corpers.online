@@ -30,6 +30,7 @@ if (process.env.NODE_ENV === 'production') {
 
 /**
  * Insert new data for a corp member in our database
+ * // also register??
  */
 exports.create = (req, res) => {
   const _FUNCTIONNAME = 'create'
@@ -168,27 +169,44 @@ exports.login = (req, res) => {
   const _FUNCTIONNAME = 'login'
   console.log('hitting', _FILENAME, _FUNCTIONNAME);
 
-  return db.CorpMember.findOne({
+  db.CorpMember.findOne({
     where: { // we're gonna use email or state code soon.
       [Op.or]: [ // will use username
         { email: req.body.username.toLowerCase() },
         { state_code: req.body.username.toUpperCase() },
       ]
     },
-    raw: false, // don't use raw: true, and result.dataValues together // also the link on this comment https://stackoverflow.com/a/60951697
     attributes: { exclude: ['push_subscription_stringified'] }
   }).then(
     (result) => { // result is null if not state_code or email exists ... also tell when it's state_code or email that doesn't exist
 
-      if (result && result.dataValues.password === req.body.password) { // password match
+      console.log('found corper', result)
+      if (!result) {
+        // TODO: kill what ever cookie was there
+        return res.status(401).json({
+          message: 'Account not found. Please sign up.',
+          error: null
+        })
+      }
+
+      if (result.dataValues.password !== req.body.password) {
+        console.log(chalk.bgRed('login was bad'));
+
+        // TODO: kill what ever cookie was there
+        res.status(401).json({
+          message: 'Wrong Password',
+          error: ''
+        })
+      }
+
+      // password match
+      if (result?.dataValues?.password === req.body?.password) {
         console.log(chalk.bgGreen('login we good'));
         /**
-         * mask the password
-         * previously with result.dataValues.password.replace(/[a-zA-Z0-9]/ig, '*')
-         * 
-         * But that gives away the length of password, now just '*****'
+         * mask the password.
+         * Replace with fixed string so we don't show length of password
          */
-        result.dataValues.password = '*****'
+        result.dataValues.password = '*****' // TODO: maybe use funny string combo
 
         // remove the id too
         result.dataValues.id = undefined
@@ -200,33 +218,20 @@ exports.login = (req, res) => {
         }, process.env.SESSION_SECRET, (err, token) => {
           if (err) { // throw err // no throw of errors
             console.error(err)
-            res.sendStatus(500)
+            return res.sendStatus(500)
           } else {
-            // res.setHeader('Set-Cookie', 'name=value')
+            res.setHeader('Authorization', `Bearer ${token}`)
+            
             res.cookie('_online', token, cookieOptions)
             console.log(chalk.bgBlue('Logged In'), req.session.corper?.state_code?.toUpperCase());
             /* req.session.save(function(err) { // hate this
               console.log("saved session");
             }) */
-            res.status(200).json({
+            return res.status(200).json({
               message: 'Nice!',
               data: result
             })
           }
-        })
-      } else if (result && result.dataValues.password !== req.body.password) {
-        console.log(chalk.bgRed('login was bad'));
-
-        // TODO: kill what ever cookie was there
-        res.status(401).json({
-          message: 'Wrong Password',
-          error: ''
-        })
-      } else if (!result) {
-        // TODO: kill what ever cookie was there
-        res.status(401).json({
-          message: 'Account not found. Please sign up.',
-          error: ''
         })
       }
 

@@ -17,7 +17,7 @@ let yearrange = '(' + (years - 1).toString() + '|' + years.toString() + ')'; // 
 // let route = '/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm))/:year_batch((' + '([0-9][0-9])' + '([abcACB])))/:lastfour(([0-9]{4}))'
 router.get('/unread-messages', auth.verifyJWT, corpMemberService.unreadMessages);
 
-router.post('/login', /* express.urlencoded({ extended: true }) */ express.json(), corpMemberService.login)
+router.post('/login', express.urlencoded({ extended: true }), express.json(), dataValidation.corpMemberLogin, corpMemberService.login)
 
 router.get('/login', function (req, res) {
     res.set('Content-Type', 'text/html');

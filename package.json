@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified... yet\" && exit 1",
     "start:dev:true": "DEV=true nodemon  --ignore '*.json' --exec 'node ./swagger.js && node --trace-warnings --unhandled-rejections=warn ./index.js'",
-    "start:dev": "nodemon --exec 'node ./swagger.js && node --trace-warnings --unhandled-rejections=warn ./index.js'",
+    "start:dev": "nodemon --ignore '*.json' --exec 'node ./swagger.js && node --trace-warnings --unhandled-rejections=warn ./index.js'",
     "start:trace-io": "nodemon --trace-sync-io --trace-warnings --unhandled-rejections=warn ./index.js",
     "start": "node ./swagger.js && node --trace-warnings --unhandled-rejections=warn ./index.js",
     "swagger-autogen": "node ./swagger.js",

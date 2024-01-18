@@ -45,24 +45,23 @@ module.exports.verifyJWT = (req, res, next) => {
     // console.log('Signed Cookies: ', req.signedCookies)
     console.log('for corper', req.session?.corper?.state_code);
 
+    console.log('coming from', req.path);
+
     // TODO: check the format of state_code
     if (req.session?.corper && req.session?.corper?.state_code) {
         next()
     } else if (req.cookies?._online) {
-        console.log('coming from', req.path);
+        
         // console.log('\n\n req.session.corper is', req.session);
         // we could also use req.cookies, but req.signedCookies is just an extra layer of security
         jwt.verify(req.cookies._online, process.env.SESSION_SECRET, function (err, decodedToken) {
+            console.log('verifying token')
             if (err) {
                 console.error('err verifying cookie', err);
                 res.sendStatus(502)
             } else {
 
-                /**
-                 * HOW COME PASSWORDS AREN'T hashed
-                 */
-                // console.log(Object.keys(db.PPA.rawAttributes)); // here lies a problem
-                console.log('decoded', decodedToken);
+                console.log('decoded token data', decodedToken);
                 
                 db.CorpMember.findOne({
                     where: { state_code: decodedToken.state_code.toUpperCase() },
@@ -71,7 +70,7 @@ module.exports.verifyJWT = (req, res, next) => {
                         db.Media,
                         {
                             model: db.PPA, // using db.PPA makes it look for table 'ppas' which causes an error.
-                            attributes: db.PPA.getAllActualAttributes() // hot fix (problem highlighted in ./models/ppa.js) -- > should create a PR to fix it ... related to https://github.com/sequelize/sequelize/issues/13309
+                            attributes: db.PPA.getAllActualAttributes() // hot fix (problem highlighted in ./models/ppa.js) --> should create a PR to fix it ... related to https://github.com/sequelize/sequelize/issues/13309
                         },
                     ],
                     attributes: db.CorpMember.getSafeAttributes()
@@ -98,7 +97,13 @@ module.exports.verifyJWT = (req, res, next) => {
                     })
             }
         })
-    } else {
+    } else if (req.headers['Authorization']) { // TODO: this needs work.
+        const authHeader = req.headers['Authorization']
+        const token = authHeader && authHeader.split(' ')[1]
+
+        if (token == null) return res.sendStatus(401)
+    }
+    else {
         res.sendStatus(401)
     }
 }

@@ -78,7 +78,6 @@ module.exports.corpMemberLogin = (req, res, next) => {
             .max(70)
             .required(),
         password: Joi.string().required(),
-
     })
 
     const { error, value } = waitListSchema.validate(req.body);

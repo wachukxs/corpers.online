@@ -11,7 +11,7 @@ router.get('/test', function (req, res) {
     })
 });
 
-router.get('/test/all', testService.all);
+router.get('/test/all', auth.verifyJWT, testService.all);
 
 // https://stackoverflow.com/a/24330353/9259701
 router.post('/test/sth', auth.verifyJWT, express.urlencoded({extended: false}), testService.create);
