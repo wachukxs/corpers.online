@@ -6,6 +6,7 @@ const socket = require('../sockets/routes')
 const ngplaces = require('../utilities/ngstates')
 inspect = require('util').inspect;
 const path = require('path');
+const { uploadFile } = require('../helpers/ftp-upload');
 const _FILENAME = path.basename(__filename);
 
 
@@ -47,8 +48,15 @@ exports.create = (req, res, next) => {
     let uploadPromise = [];
     let get = true;
 
-    busboy.on('file', function handleSalesFiles(fieldname, filestream, filename, transferEncoding, mimetype) {
+    busboy.on('file', async function handleSalesFiles(fieldname, filestream, filename, transferEncoding, mimetype) {
 
+      
+      /**
+       * FTP upload only works if you use here. Before the event listeners.
+       */
+      const _url = await uploadFile(filestream, filename)
+
+      console.log('WHAT UPLOADED', _url)
       // there's also 'limit' and 'error' events https://www.codota.com/code/javascript/functions/busboy/Busboy/on
       filestream.on('limit', function () {
         console.error('the file was too large... nope');
@@ -61,7 +69,7 @@ exports.create = (req, res, next) => {
         // how should we send a response if one of the files/file is invalid [too big or not an accepted file type]?
       });
 
-      if (filename !== '' && !helpers.acceptedfiles.includes(mimetype)) { // if mimetype is '' or undefined, it passes
+      if (filename && !helpers.acceptedfiles.includes(mimetype)) { // if mimetype is '' or undefined, it passes
         console.log('we don\'t accept non-image files... nope');
         get = false;
         // don't listen to the data event
@@ -83,7 +91,7 @@ exports.create = (req, res, next) => {
       });
 
       filestream.on('end', function (err) {
-        // if we listend for 'file', even if there's no file, we still come here
+        // if we listened for 'file', even if there's no file, we still come here
         // so we're checking if it's empty before doing anything.
         /* console.log('readabe?///// ?', filestream.read()) // filestram.read() is always null ... */
 
@@ -91,53 +99,23 @@ exports.create = (req, res, next) => {
         if (err) { console.log('err in busboy file end', err); }
       });
 
+      filestream.on('close', () => {
+        console.log(`File [${filename}] done`);
+      });
 
       // this is not a good method
 
       /**One thing you might be able to try is to read 0 bytes from the stream first and see if you get the appropriate 'end' event or not (perhaps on the next tick) */
-      if (filename != '' && helpers.acceptedfiles.includes(mimetype)) { // filename: 1848-1844-1-PB.pdf, encoding: 7bit, mimetype: application/pdf
-        /* let obj = {
-            filestream: file_stream,
-            mimetype: mimetype,
-            filename: filename
-        }; */
-        // let _id = authorize(JSON.parse(cred_content), uploadFile, obj)
+      if (filename && helpers.acceptedfiles.includes(mimetype)) { // filename: 1848-1844-1-PB.pdf, encoding: 7bit, mimetype: application/pdf
 
-        let fileMetadata = {
-          'name': filename, // Date.now() + 'test.jpg',
-          parents: [process.env.CO_TEST_GDRIVE]
-        };
-        let media = {
-          mimeType: mimetype,
-          body: filestream
-        };
+        /**
+         * Google Drive upload can work in here.
+         */
+        // ggle.uploadFile(filestream, filename)
 
-        const up = ggle.drive.files.create({
-          resource: fileMetadata,
-          media: media,
-          fields: 'id',
-        }).then(
-          function (file) {
 
-            // maybe send the upload progress to front end with sockets? https://github.com/googleapis/google-api-nodejs-client/blob/7ed5454834b534e2972746b28d0a1e4f332dce47/samples/drive/upload.js#L41
-
-            // console.log('upload File Id: ', file.data.id); // save to db
-            // console.log('File: ', file);
-            _media.push(file.data.id)
-
-          }, function (err) {
-            // Handle error
-            console.error(err);
-          }
-        ).catch(function (err) {
-          console.error('some other error ??', err)
-        }).finally(() => {
-          // console.log('upload finally')
-        });
-        uploadPromise.push(up)
       }
 
-      // https://stackoverflow.com/questions/26859563/node-stream-data-from-busboy-to-google-drive
       // https://stackoverflow.com/a/26859673/9259701
       filestream.resume() // must always be last in this callback else server HANGS
 

@@ -86,3 +86,43 @@ function getAccessToken(oAuth2Client) {
 }
 // 4%2F0AfJohXlJmY-A5m1OUrt6BJiOEXuDYwvcOeSBQC0FMq3nBqr_ZiOg-ntpsifR8Am-Qla6HQ
 // LINE 44
+
+exports.uploadFile = async (streamOrFileData, fileName) => {
+  let fileMetadata = {
+    'name': fileName, // Date.now() + 'test.jpg',
+    parents: [process.env.CO_PPICS_GDRIVE]
+  };
+  let media = {
+    mimeType: mimetype,
+    body: streamOrFileData
+  };
+  const up = ggle.drive.files.create({
+    resource: fileMetadata,
+    media: media,
+    fields: 'id, thumbnailLink',
+  }).then(
+    function (file) {
+
+      // maybe send the upload progress to front end with sockets? https://github.com/googleapis/google-api-nodejs-client/blob/7ed5454834b534e2972746b28d0a1e4f332dce47/samples/drive/upload.js#L41
+
+      // console.log('upload File Id: ', file.data.id); // save to db
+      // console.log('thumbnailLink: ', file.data.thumbnailLink);
+      req.session.corper.picture_id = file.data.id // or we could add picture_id to _profile_data
+
+      connectionPool.query('UPDATE info SET picture_id = ? WHERE state_code = ?', [file.data.id, req.session.corper.state_code.toUpperCase()], function (error, results, fields) {
+        if (error) throw error;
+        else {
+          console.log('updated pic')
+        }
+      });
+
+    }, function (err) {
+      // Handle error
+      console.error(err);
+    }
+  ).catch(function (err) {
+    console.error('some other error ??', err)
+  }).finally(() => {
+    // console.log('upload finally block')
+  });
+};
