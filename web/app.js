@@ -123,12 +123,13 @@ app.use(morgan(morganFormat));
  * Used regex for our live domain because it's shorter. As opposed to listing 6 similar domains.
  */
 let allowedOrigins = [/https\:\/\/(www\.)?corpers\.(ng|online|com\.ng)/,]; // our live domains.
+console.log('where are we?', app.get("env"));
 if (app.get("env") !== "production") {
   // process.env.NODE_ENV
-  allowedOrigins = allowedOrigins.concat([
+  allowedOrigins = [
     /http\:\/\/localhost(\:\d{3,5})?/,
     /http\:\/\/192\.168\.\d{1,3}\.\d{1,3}(\:\d{3,5})?/,
-  ]);
+  ];
 }
 app.use(
   cors({

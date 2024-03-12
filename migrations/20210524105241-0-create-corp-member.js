@@ -61,9 +61,6 @@ module.exports = {
       email: {
         type: Sequelize.STRING
       },
-      media_id: {
-        type: Sequelize.INTEGER,
-      },
       push_subscription_stringified: {
         type: Sequelize.TEXT
       },

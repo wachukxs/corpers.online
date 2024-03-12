@@ -14,9 +14,6 @@ module.exports = {
       type_of_ppa: {
         type: Sequelize.STRING
       },
-      media_id: {
-        type: Sequelize.INTEGER,
-      },
       location_id: {
         type: Sequelize.INTEGER
       },

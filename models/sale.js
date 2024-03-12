@@ -13,13 +13,11 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Sale.belongsTo(models.CorpMember, {
-        targetKey: 'state_code',
-        foreignKey: 'state_code',
-        as: 'saleByCorper'
+        foreignKey: 'corp_member_id',
       })
-      Sale.belongsTo(models.Media, { // means Sale have a media_id
-        foreignKey: 'media_id',
-        as: 'saleMedia'
+      Sale.hasMany(models.Media, {
+        foreignKey: 'sale_id',
+        // as: 'saleMedia'
       })
     }
   };
@@ -30,11 +28,11 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.INTEGER
     },
-    state_code: {
+    corp_member_id: {
       type:DataTypes.STRING,
       references: {
         model: 'CorpMembers', // added 's'. The exact Table name should be here.
-        key: 'state_code'
+        key: 'id'
       }
     }, // need it ?
     item_name: {
@@ -61,9 +59,6 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     text: DataTypes.TEXT,
-    media_id: {
-      type:DataTypes.INTEGER
-    },
     _age: {
       type: DataTypes.VIRTUAL,
       get() {

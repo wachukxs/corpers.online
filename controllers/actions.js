@@ -225,7 +225,7 @@ router.post('/contact', function (req, res) {
     });
     let _feedback_data = {}
 
-    busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+    busboy.on('field', function (fieldname, val, info) {
       console.log('Field [' + fieldname + ']: value: ' + inspect(val));
       
       _feedback_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
@@ -233,7 +233,7 @@ router.post('/contact', function (req, res) {
     });
 
 
-    busboy.on('finish', async function () {
+    busboy.on('close', async function () {
       query.GiveFeedback(_feedback_data).then(result => {
         res.sendStatus(200);
       }, reject => {
@@ -455,15 +455,15 @@ router.post('/oldprofile', auth.verifyJWT, /* bodyParser.urlencoded({
 
   });
 
-  busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+  busboy.on('field', function (fieldname, val, info) {
     // console.log('Field [' + fieldname + ']: value: ' + inspect(val));
     
     _profile_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
     
-    console.warn(fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype);
+    console.warn('busboy fieldw info', info);
   });
 
-  busboy.on('finish', async function () {
+  busboy.on('close', async function () {
     // console.log('we done?')
     query.UpdateProfile(_profile_data).then(result => { // result is the state_code
       
@@ -500,7 +500,7 @@ router.post('/oldupdateaccommodation', auth.verifyJWT, function (req, res) {
 
   _accommodation_data = {}
   _accommodation_data.rooms = []; // hot fix
-  busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+  busboy.on('field', function (fieldname, val, info) {
     // console.log('Field [' + fieldname + ']: value: ' + inspect(val));
     
     if (fieldname === 'rooms') {
@@ -508,10 +508,9 @@ router.post('/oldupdateaccommodation', auth.verifyJWT, function (req, res) {
     } else {
       _accommodation_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
     }
-    console.warn(fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype);
   });
 
-  busboy.on('finish', async function () {
+  busboy.on('close', async function () {
     // console.log('we done?')
     query.UpdateAccommodation(_accommodation_data)
     
@@ -541,15 +540,14 @@ router.post('/oldupdatesale', auth.verifyJWT, function (req, res) {
   });
 
   _sale_data = {}
-  busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+  busboy.on('field', function (fieldname, val, info) {
     // console.log('Field [' + fieldname + ']: value: ' + inspect(val));
     
     _sale_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
     
-    console.warn(fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype);
   });
 
-  busboy.on('finish', async function () {
+  busboy.on('close', async function () {
     // console.log('we done?')
     query.UpdateSale(_sale_data).then(result => {
       res.sendStatus(200);
@@ -575,15 +573,14 @@ router.post('/olddeleteaccommodation', auth.verifyJWT, function (req, res) {
   });
 
   _accommodation_data = {}
-  busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+  busboy.on('field', function (fieldname, val, info) {
     // console.log('Field [' + fieldname + ']: value: ' + inspect(val));
     
     _accommodation_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
     
-    console.warn(fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype);
   });
 
-  busboy.on('finish', async function () {
+  busboy.on('close', async function () {
     // console.log('we done?')
     query.DeleteAccommodation([_accommodation_data.post_time, req.session.corper.state_code.toUpperCase()]).then(result => {
       res.sendStatus(200);
@@ -610,15 +607,14 @@ router.post('/deletesale', auth.verifyJWT, function (req, res) {
   });
 
   _sale_data = {}
-  busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+  busboy.on('field', function (fieldname, val, info) {
     // console.log('Field [' + fieldname + ']: value: ' + inspect(val));
     
     _sale_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
     
-    console.warn(fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype);
   });
 
-  busboy.on('finish', async function () {
+  busboy.on('close', async function () {
     // console.log('we done?')
     query.DeleteSale([_sale_data.post_time, req.session.corper.state_code.toUpperCase()]).then(result => {
       res.sendStatus(200);
@@ -769,7 +765,7 @@ router.post('/oldaccommodations', auth.verifyJWT, /* upload.array('roomsmedia', 
 
   });
 
-  busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+  busboy.on('field', function (fieldname, val, info) {
     console.log('Field [' + fieldname + ']: value: ' + inspect(val));
     // this if block is an hot fix
     if (val && val !== 'null') {
@@ -781,12 +777,12 @@ router.post('/oldaccommodations', auth.verifyJWT, /* upload.array('roomsmedia', 
       }
     }
     
-    console.warn('fielddname Truncated:', fieldnameTruncated, valTruncated, transferEncoding, mimetype);
+    console.warn('field info:', info);
   });
 
   // answer this question: https://stackoverflow.com/questions/26859563/node-stream-data-from-busboy-to-google-drive
 
-  busboy.on('finish', async function () {
+  busboy.on('close', async function () {
     console.log('Done parsing form!', _text, _media);
     /**should we rename the names of file?
      * rename/change the file name appropriately // Date.now() part of name + get what's in the pic + file extension

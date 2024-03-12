@@ -2,16 +2,6 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
 
-    await queryInterface.addConstraint('Sales', {
-      type: 'FOREIGN KEY',
-      name: 'corp_id_with_media_id_cqp',
-      fields: ['media_id'],
-      references: {
-        table: 'Media',
-        field: 'id'
-      },
-    })
-
     await queryInterface.addConstraint('CorpMembers', {
       type: 'FOREIGN KEY',
       name: 'corp_p_id_with_ppa_id_bcm',
@@ -20,11 +10,12 @@ module.exports = {
         table: 'PPA',
         field: 'id'
       },
+      onDelete: 'SET NULL',
+      onUpdate: 'CASCADE'
     })
 
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.removeConstraint('Sales', 'corp_id_with_media_id_cqp');
-    await queryInterface.removeConstraint('Sales', 'corp_p_id_with_ppa_id_bcm');
+    await queryInterface.removeConstraint('CorpMembers', 'corp_p_id_with_ppa_id_bcm');
   }
 };

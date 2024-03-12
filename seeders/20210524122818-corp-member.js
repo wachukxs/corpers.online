@@ -55,7 +55,7 @@ module.exports = {
         "CorpMembers",
         {
           id: {
-            [Op.or]: [1, 2],
+            [Op.in]: [1, 2],
           },
         },
         {}

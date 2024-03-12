@@ -6,10 +6,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified... yet\" && exit 1",
-    "start:dev:true": "DEV=true nodemon  --ignore '*.json' --exec 'node ./swagger.js && node --trace-warnings --unhandled-rejections=warn ./index.js'",
-    "start:dev": "nodemon --ignore '*.json' --exec 'node ./swagger.js && node --trace-warnings --unhandled-rejections=warn ./index.js'",
+    "dev:true": "DEV=true nodemon --exec 'node ./swagger.js && node --trace-warnings --unhandled-rejections=warn ./index.js'",
+    "dev": "nodemon --exec 'node ./swagger.js && node --trace-warnings --unhandled-rejections=warn ./index.js'",
     "start:trace-io": "nodemon --trace-sync-io --trace-warnings --unhandled-rejections=warn ./index.js",
     "start": "node ./swagger.js && node --trace-warnings --unhandled-rejections=warn ./index.js",
+    "restart": "yarn run seed:undo:all && yarn run migrate:undo:all && yarn run migrate-db && yarn run seed-db && yarn run dev",
     "swagger-autogen": "node ./swagger.js",
     "migrate-db": "npx sequelize-cli db:migrate",
     "seed-db": "npx sequelize-cli db:seed:all",
@@ -45,7 +46,7 @@
     "basic-ftp": "^5.0.4",
     "bcrypt": "5.0.0",
     "body-parser": "^1.19.0",
-    "busboy": "^0.3.1",
+    "busboy": "^1.6.0",
     "connect-session-knex": "^2.1.0",
     "connect-session-sequelize": "^7.1.1",
     "cookie-parser": "1.4.5",
@@ -74,13 +75,14 @@
     "pug": "^2.0.4",
     "sequelize": "^6.6.2",
     "sequelize-cli": "^6.2.0",
-    "socket.io": "^2.3.0",
+    "socket.io": "^4.7.4",
     "swagger-autogen": "^2.22.0",
     "swagger-ui-express": "^4.6.0",
     "web-push": "^3.4.5"
   },
   "eslintConfig": {},
   "nodemonConfig": {
+    "verbose": true,
     "ignore": [
       "migrations/*",
       "old models/*",
@@ -88,8 +90,11 @@
       "js/*",
       "index2.js",
       "/sw.js",
-      "/serviceWorkerNotification.js"
-    ]
+      "/serviceWorkerNotification.js",
+      "*.json",
+      "node_modules/**/node_modules"
+    ],
+    "ext": ".js"
   },
   "devDependencies": {
     "@types/socket.io": "^3.0.2"

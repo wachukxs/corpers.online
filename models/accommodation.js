@@ -27,16 +27,13 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) { // should have location here too
       // define association here
       Accommodation.belongsTo(models.CorpMember, {
-        targetKey: 'state_code',
-        foreignKey: 'state_code',
-        as: 'accommodationByCorper'
+        foreignKey: 'corp_member_id',
       })
-      Accommodation.belongsTo(models.Media, { // means Accommodation have a media_id
-        foreignKey: 'media_id',
-        as: 'accommodationMedia'
+      Accommodation.hasMany(models.Media, { // means Media has accommodation_id
+        foreignKey: 'accommodation_id',
       })
-      Accommodation.belongsTo(models.Location, { // means Accommodation have a locationId
-        foreignKey: 'location_id'
+      Accommodation.hasOne(models.Location, {
+        foreignKey: 'accommodation_id', // TODO: add accommodation_id to Location
       })
     }
   };
@@ -45,9 +42,6 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
-      type: DataTypes.INTEGER
-    },
-    media_id: { // do not add foreign keys yourself, sequelize will add them for you
       type: DataTypes.INTEGER
     },
     // address: DataTypes.STRING,
@@ -101,7 +95,9 @@ module.exports = (sequelize, DataTypes) => {
     rent_expire_date: { // must be greater than created_at
       type: DataTypes.DATE,
     },
-    state_code: DataTypes.STRING,
+    corp_member_id: {
+      type: DataTypes.STRING
+    },
     location_id: {
       type:DataTypes.INTEGER
     },

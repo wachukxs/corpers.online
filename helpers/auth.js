@@ -62,12 +62,19 @@ module.exports.verifyJWT = (req, res, next) => {
             } else {
 
                 console.log('decoded token data', decodedToken);
-                
                 db.CorpMember.findOne({
                     where: { state_code: decodedToken.state_code.toUpperCase() },
                     // include: [{ all: true }],
                     include: [ // why is it looking for ppa_id in PPA model ?? cause of bug in sequelize
-                        db.Media,
+                        {
+                            /**
+                             * Sequelize bug
+                             * If you only include Media; it'll pluralize it for you
+                             * even if you froze table name., and you can't change it here
+                             */
+                            model: db.sequelize.models.Media,
+                            as: 'Media'
+                        },
                         {
                             model: db.PPA, // using db.PPA makes it look for table 'ppas' which causes an error.
                             attributes: db.PPA.getAllActualAttributes() // hot fix (problem highlighted in ./models/ppa.js) --> should create a PR to fix it ... related to https://github.com/sequelize/sequelize/issues/13309

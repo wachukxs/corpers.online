@@ -11,23 +11,29 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Media.hasOne(models.Sale, { // means Sale has media_id
-        foreignKey: 'media_id'
+      Media.belongsTo(models.Sale, {
+        foreignKey: 'sale_id'
       });
-      Media.hasOne(models.Accommodation, {
-        foreignKey: 'media_id'
+      Media.belongsTo(models.Accommodation, {
+        foreignKey: 'accommodation_id'
       });
-      Media.hasOne(models.CorpMember, {
-        foreignKey: 'media_id'
+      Media.belongsTo(models.CorpMember, {
+        foreignKey: 'corp_member_id',
       });
-      Media.hasOne(models.PPA, {
-        foreignKey: 'media_id'
+      /**
+       * Media can't belong to a PPA.
+       * It can only belong to a Location.
+       * But what if we have a PPA without a location.
+       * Pictures and videos of that PPA should be able to be added.
+       */
+      Media.belongsTo(models.PPA, {
+        foreignKey: 'ppa_id'
       });
-      Media.hasOne(models.Chat, {
-        foreignKey: 'media_id'
+      Media.belongsTo(models.Chat, {
+        foreignKey: 'chat_id'
       });
-      Media.hasOne(models.Location, {
-        foreignKey: 'media_id'
+      Media.belongsTo(models.Location, {
+        foreignKey: 'location_id'
       });
     }
   };
@@ -41,7 +47,22 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.INTEGER
     },
-    // TODO: should URLs be like a table on it's own??
+    ppa_id: {
+      type:DataTypes.INTEGER
+    },
+    accommodation_id: {
+      type:DataTypes.INTEGER
+    },
+    corp_member_id: {
+      type:DataTypes.INTEGER
+    },
+    chat_id: {
+      type:DataTypes.INTEGER
+    },
+    location_id: {
+      type:DataTypes.INTEGER
+    },
+    // TODO: rename column to 'url' // and in other places where it's used
     urls: {
       type:DataTypes.STRING,
     /**
@@ -51,18 +72,19 @@ module.exports = (sequelize, DataTypes) => {
             'https://drive.google.com/uc?id=dajsfalsjfalsflas_9289js'
         ]
       */
-      get() {
-        const rawValue = this.getDataValue('urls');
-        return rawValue ? rawValue.split(',').map(x => {
-            return new URL(`/uc?id=${x}`, "https://drive.google.com").toString()
-        }) : null;
-      }
+      // get() {
+      //   const rawValue = this.getDataValue('urls');
+      //   return rawValue ? rawValue.split(',').map(x => {
+      //       return new URL(`/uc?id=${x}`, "https://drive.google.com").toString()
+      //   }) : null;
+      // }
     },
     alt_text: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Media',
     timestamps: true,
+    freezeTableName: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
   });

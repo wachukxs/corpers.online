@@ -65,7 +65,7 @@ exports.checkAccommodation = async (req, res) => {
       },
       include: [{
         model: db.CorpMember,
-        as: 'alertByCorper'
+        // as: 'alertByCorper'
       }]
     })
     // Executing (default): 
@@ -82,6 +82,7 @@ exports.checkAccommodation = async (req, res) => {
       for (let index = 0; index < _found_alerts.length; index++) {
         const _alert = _found_alerts[index].dataValues;
 
+        // TODO: this will break; we no longer use alertByCorper!
         if (_alert.alertByCorper.push_subscription_stringified) {
           webpush.sendNotification(
             _alert.alertByCorper.push_subscription_stringified,
@@ -230,7 +231,6 @@ exports.checkSale = async (req, res) => {
       },
       include: [{
         model: db.CorpMember,
-        as: 'alertByCorper'
       }]
     })
 
@@ -240,6 +240,7 @@ exports.checkSale = async (req, res) => {
       for (let index = 0; index < _found_alerts.length; index++) {
         const _alert = _found_alerts[index].dataValues;
 
+        // TODO: this would crash, we no longer use alertByCorper
         if (_alert.alertByCorper.push_subscription_stringified) {
           webpush.sendNotification(
             _alert.alertByCorper.push_subscription_stringified,

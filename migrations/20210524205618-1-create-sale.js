@@ -14,10 +14,10 @@ module.exports = {
     await queryInterface.addConstraint('Sales', {
       type: 'FOREIGN KEY',
       name: 'sales_c_m_id_with_cm_id_fdk',
-      fields: ['state_code'],
+      fields: ['corp_member_id'],
       references: {
         table: 'CorpMembers',
-        field: 'state_code'
+        field: 'id'
       },
     })
 

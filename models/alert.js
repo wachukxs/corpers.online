@@ -17,15 +17,9 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Alert.belongsTo(models.CorpMember, {
-        targetKey: 'state_code',
-        foreignKey: 'state_code',
-        as: 'alertByCorper'
+        foreignKey: 'corp_member_id',
+        // as: 'alertByCorper'
       });
-
-      // Why do we need this?
-      // Alert.belongsTo(models.Location, {
-      //   foreignKey: 'location_id'
-      // })
     }
   };
   Alert.init({
@@ -41,8 +35,8 @@ module.exports = (sequelize, DataTypes) => {
     item_name: {
       type: DataTypes.STRING
     },
-    state_code: {
-      type: DataTypes.STRING
+    corp_member_id: {
+      type: DataTypes.INTEGER
     },
     minimum_price: { // should we move to attaching currency symbol from the back end ?
       type: DataTypes.INTEGER

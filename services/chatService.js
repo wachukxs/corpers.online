@@ -96,7 +96,7 @@ exports.getChatData = async (req, res) => {
         _item_to_chat_about = await db.Sale.findByPk(req.query.posts.id, {
             include: {
                 model: db.CorpMember,
-                as: 'saleByCorper'
+                // as: 'saleByCorper'
             }
         })
     } else if (req.query.posts && req.query.posts.type == 'accommodation') {

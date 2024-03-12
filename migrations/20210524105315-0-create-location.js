@@ -11,9 +11,6 @@ module.exports = {
       directions: {
         type: Sequelize.TEXT
       },
-      media_id: {
-        type: Sequelize.INTEGER,
-      },
       address: {
         type: Sequelize.STRING
       },

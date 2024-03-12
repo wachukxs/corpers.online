@@ -196,7 +196,7 @@ router.post('/careers', function (req, res) { // work with us
   });
 
 
-  busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+  busboy.on('field', function (fieldname, val, info) {
     console.log('Field [' + fieldname + ']: value: ' + inspect(val));
     // this if block is an hot fix
    
@@ -205,10 +205,9 @@ router.post('/careers', function (req, res) { // work with us
     }
     // seems inspect() adds double quote to the value
     
-    console.warn('fielddname Truncated:', fieldnameTruncated, valTruncated, transferEncoding, mimetype);
   });
 
-  busboy.on('finish', async function () {
+  busboy.on('close', async function () {
     console.log('Done parsing form!', _text, _media);
     
     if (!helpers.isEmpty(_text) && !helpers.isEmpty(uploadPromise)) {
@@ -338,14 +337,14 @@ router.post('/subscribe', function (req, res) {
   });
   let _sub_data = {}
 
-  busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+  busboy.on('field', function (fieldname, val, info) {
     console.log('Field [' + fieldname + ']: value: ' + inspect(val));
     
     _sub_data[fieldname] = val; // inspect(val); // seems inspect() adds double quote to the value
     
   });
 
-  busboy.on('finish', async function () {
+  busboy.on('close', async function () {
     // console.log('the sublist', _sub_data);
 
     query.SubscribeToEmailUpdates(_sub_data).then(result => {

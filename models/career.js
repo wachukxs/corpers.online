@@ -25,9 +25,6 @@ module.exports = (sequelize, DataTypes) => {
     message: DataTypes.TEXT,
     message_from: DataTypes.STRING,
     message_to: DataTypes.STRING,
-    media_id: {
-      type:DataTypes.INTEGER
-    },
     time: {
       type: DataTypes.DATE
     },

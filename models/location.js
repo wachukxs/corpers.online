@@ -15,16 +15,16 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Location.belongsTo(models.Media, { // means Location have a media_id
-        foreignKey: 'media_id'
+      Location.hasMany(models.Media, {
+        foreignKey: 'location_id'
       })
-      Location.hasOne(models.PPA, { // means Location has ppa_id
+      Location.belongsTo(models.PPA, { // means Location has ppa_id
         foreignKey: 'ppa_id',
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE',
       });
-      Location.hasOne(models.Accommodation, { // means Location has accommodationId
-        foreignKey: 'accommodation_id',
+      Location.hasOne(models.Accommodation, {
+        foreignKey: 'location_id',
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE',
       });
@@ -36,9 +36,6 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       primaryKey: true,
       type: DataTypes.INTEGER
-    },
-    media_id: {
-      type:DataTypes.INTEGER
     },
     ppa_id: {
       type:DataTypes.INTEGER

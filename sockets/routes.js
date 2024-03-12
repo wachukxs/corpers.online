@@ -9,31 +9,121 @@ const { Op } = require("sequelize");
 const io = require('socket.io')();
 // find a more authentic way to calculate the numbers of corpers online using io(/user) --so even if they duplicate pages, it won't double count
 
-io.of('/').on('connection', (socket) => {
-    socket.on('hi', (msg) => {
-        io.emit('hi', `from server: ${msg}`);
+/**
+ * can do without the `.of('/')`
+ */
+io
+.of('/')
+.on('connection', (socket) => {
+    console.log('got a socket connection /', socket.id)
+    socket.on('hi', (msg, fn) => {
+        console.log('got a socket hi msg /')
+
+        fn({message: 'back from the moon'})
+        socket.emit('hi', `from server socket: ${msg}`);
     });
+
+    socket.on('broadcast_message', (msg, fn) => {
+        console.log('got a socket bm msg /')
+        fn({message: 'back from the moon'})
+        
+        io.emit('broadcast_message', `from server main: ${msg}`);
+    });
+
+    socket.emit('hi', `hiyaaaa from server socket:`);
+
+    socket.emit('broadcast_message', `wad up from server socket:`);
+
+    io.emit('hi', `hiyaaaa from server io:`);
+
+    io.emit('broadcast_message', `from server io: someone joined`);
+
     socket.on('disconnect', () => {
+        console.log('lost a socket connection /')
     });
 });
 
-// change all "iouser" to "io.of('/user')" ...?
-const iouser = io.of('/corp-member').on('connection', (socket) => { // when a new user is in the TIMELINE
-    console.log('New connection on /corp-member.');
-    socket.on('hi', (msg) => {
-        io.emit('hi', `from server: ${msg}`);
-    });
-    // let's do this first cause socket.handshake.query comes as sting ... will fix later
-    socket.handshake.query.corper = JSON.parse(socket.handshake.query.corper)
+const ioCorpMember = io.of('/corp-member')
 
-    // join State room
-    socket.join(socket.handshake.query.state_code.substring(0, 2));
-    console.log('how many:', `total connection on all sockets ${io.sockets.clients.length}`, `& from timeline ${iouser.clients.length}`);
+ioCorpMember.on('connection', (socket) => { // when a new user is in the TIMELINE
+    console.log('New connection on /corp-member.');
+
+    socket.on('broadcast_message', (data, fn) => {
+        console.log(socket.client.id + ' sent boardcast mesage on /corp-member to everyone.');
+
+        // data.age = moment(data.post_time).fromNow();
+
+        // if there are images in the post user boardcasted, before we save them to db, convert to string with double spaces ( '  ' ) between each image
+        /* if (data.images) {
+
+            var q = '';
+            var l = data.images.length;
+            data.images.forEach(function (item, index, array) {
+                // console.log(item, index);
+                q = l === index + 1 ? q.concat(item) : q.concat(item + '  ');
+
+                // save each image
+                console.log('checking', item.slice(item.indexOf(':') + 1, item.indexOf(';'))); // map picture won't save because they aren't in dataURL format
+                query.InsertRowInMediaTable({
+                    post_time: data.post_time , 
+                    media: item, 
+                    media_type: item.slice(item.indexOf(':') + 1, item.indexOf(';'))
+                })
+                
+            });
+
+        } */
+
+        /* query.InsertRowInPostsTable({
+            sender: data.sender , 
+            state_code: data.state_code, 
+            type: (data.type ? data.type : ""), 
+            text: data.text, 
+            media: (data.images ? q : ""), 
+            price: data.price, 
+            location: data.location, 
+            post_time: data.post_time 
+        }).then(result => {
+            socket.in(socket.handshake.query.state_code.substring(0, 2)).emit('boardcast message', {
+                to: 'be received by everyoneELSE',
+                post: [data] // should be an array
+            });
+        }, reject => {
+            console.log('failed to insert row in post table', reject);
+        }).catch(reason => {
+            console.log('error - insert row in post table');
+
+        }) */
+        // save to db --put picture in different columns
+        // increse packet size for media (pixs and vids)
+        // & when using pool.escape(data.text), there's no need for the enclosing single quotes incase the user has ' or any funny characters
+        
+
+        // this function will run in the client to show/acknowledge the server has gotten the message.
+        // fn(data?.post_time);
+    });
+
+    socket.on('hi', (msg) => {
+        socket.emit('hi', `from server: ${msg} /cm`);
+    });
+    socket.emit('hi', `from server 453: /cm`);
+
+    ioCorpMember.emit('hi', `from server 000: /cm`);
+
+    
+    // let's do this first cause socket.handshake.query comes as sting ... will fix later
+    // socket.handshake.query.corper = JSON.parse(socket.handshake.query.corper)
+
+    // // join State room
+    // socket.join(socket.handshake.query.state_code.substring(0, 2));
+    // console.log('how many:', `total connection on all sockets ${io.sockets.clients.length}`, `& from timeline ${ioCorpMember.clients.length}`);
+    
     socket.on('ferret', (asf, name, fn) => {
         // this funtion will run in the client to show/acknowledge the server has gotten the message.
         // so we can like tell the client a message has been recorded, seen, or sent.
         fn('woot ' + name + asf);
     });
+
     socket.emit('callback', {
         this: 'is the call back'
     });
@@ -42,8 +132,8 @@ const iouser = io.of('/corp-member').on('connection', (socket) => { // when a ne
     // console.log('well', socket.handshake.query.last_post, isEmpty(socket.handshake.query.last_post) );
 
     // doesn't work as expected, needs an OS PR
-    iouser.emit('corpersCount', { // https://stackoverflow.com/a/59495277
-        count:  socket.server.engine.clientsCount // iouser.server.engine.clientsCount // io.engine.clientsCount
+    ioCorpMember.emit('corpers_count', { // https://stackoverflow.com/a/59495277
+        count:  socket.server.engine.clientsCount // ioCorpMember.server.engine.clientsCount // io.engine.clientsCount
     });
 
     // find a way to work with cookies in socket.request.headers object for loggining in users again
@@ -59,10 +149,7 @@ const iouser = io.of('/corp-member').on('connection', (socket) => { // when a ne
     // posts currently in user's time line is socket.handshake.query.[p|a]utl.split(',')
     // console.log('socket.handshake.query', typeof socket.handshake.query, socket.handshake.query.sutl)
 
-    let sUTL = socket.handshake.query.sutl.split(',');
-    let aUTL = socket.handshake.query.autl.split(',');
-    
-    console.log('\nwhat is last in TL ? ', aUTL, sUTL);
+
     // console.log('socket.handshake.query.sutl after', typeof sUTL, aUTL)
     
     // console.log('socket query parameter(s) [user timeline]\n', 'acc:' + aUTL.length, ' posts:' + sUTL.length); // if either equals 1, then user timeline is empty
@@ -78,31 +165,11 @@ const iouser = io.of('/corp-member').on('connection', (socket) => { // when a ne
     // ways to convert from js format to sql format
     
     
-    // https://stackoverflow.com/a/22573495
-    let aUTLlast = aUTL.slice(-1)[0] !== '' ? aUTL.slice(-1)[0] : null;
-    let sUTLlast = sUTL.slice(-1)[0] !== '' ? sUTL.slice(-1)[0] : null;
-    try { // this try-catch block isn't necessary, just for testing I guess // ...
-        if (aUTLlast) {
-            let d, e;
-            console.log('the time', aUTL, new Date(aUTLlast));
-            d = new Date(aUTLlast).toISOString().slice(0, 19).replace('T', ' '); // or use moment.js library
-
-            // moment is better because it makes it exactly as it was, the other just uses string manipulation and it's always an hour behind original time
-            e = moment(new Date(aUTLlast)).format('YYYY-MM-DD HH:mm:ss');
-            console.log('the time', d, e);
-        }
-    } catch (error) { // sUTLlast/aUTLlast must be null then
-        console.log('err => ', error);
-    }
     // remember to check if the query to know if the time is actually greater than or less
     // console.log(e, 'time causing the ish', aUTL[aUTL.length - 1], sUTL[sUTL.length - 1]); // when timeline is empty, e is "Invalid Date"
 
     // we stopped using sender column from posts table, so it's null !
-    console.log('time line info =>', {
-        statecode_substr: socket.handshake.query.state_code.substring(0, 2),
-        last_sale_time: sUTLlast,
-        last_accommodation_time: aUTLlast
-    });
+
 
     /* db.CorpMember.findAll({ // TODO: also add PPA
         where: {
@@ -167,111 +234,6 @@ const iouser = io.of('/corp-member').on('connection', (socket) => { // when a ne
         });
     }) */
 
-    db.Sale.findAll({ // TODO: also add PPA
-        where: {
-            state_code: {
-                [Op.like]: `%${socket.handshake.query.state_code.substring(0, 2)}%`,
-            },
-            ... (sUTLlast && {
-                created_at: {
-                    [Op.gt]: sUTLlast,
-                }
-            })
-        },
-        order: [
-            ['created_at', 'ASC']
-        ],
-        include: [
-            {
-                model: db.Media,
-                as: 'saleMedia',
-                
-            },
-            {
-                model: db.CorpMember,
-                as: 'saleByCorper',
-                attributes: db.CorpMember.getSafeAttributes()
-            }
-        ]
-    })
-    .then(_sales => {
-        // console.log("\n\n\n\n\n\ndid we get corp member's Sales?", _sales);
-        db.Accommodation.findAll({ // TODO: also add PPA
-            where: {
-                state_code: {
-                    [Op.like]: `%${socket.handshake.query.state_code.substring(0, 2)}%`,
-                },
-                ... (aUTLlast && {
-                    created_at: {
-                        [Op.gt]: aUTLlast,
-                    }
-                })
-            },
-            order: [
-                ['created_at', 'ASC']
-            ],
-            include: [
-                {
-                    model: db.Media,
-                    as: 'accommodationMedia',
-                },
-                {
-                    model: db.CorpMember,
-                    as: 'accommodationByCorper',
-                    attributes: db.CorpMember.getSafeAttributes(), // isn't bringing the other _location & service state
-                },
-                {
-                    model: db.Location,
-                }
-            ],
-            attributes: db.Accommodation.getAllActualAttributes()
-        }).then(_accommodations => {
-            // console.log("\n\n\n\n\n\ndid we get corp member's Accommodation?", _accommodations);
-            // combine both ?? sort by
-            let _sales_accommodations = _sales.concat(_accommodations);
-            _sales_accommodations.sort((firstEl, secondEl) => { firstEl.creeatedAt - secondEl.creeatedAt });
-            
-            console.log("\n\n\n\n\n\ndid we all +?", _sales_accommodations);
-            socket.emit('boardcast message', {
-                to: 'be received by everyoneELSE',
-                post: _sales_accommodations
-            });
-    
-        }, (reject) => {
-            socket.emit('boardcast message', {
-                to: 'be received by everyoneELSE',
-                post: []
-            });
-            console.error('uhmmmm not good', reject);
-            console.log('emitting empty posts, first user or the tl is empty')
-        }).catch(reject => {
-            console.error('is this the error ?', reject);
-    
-            // right ?? ?? we can't just not send anything ...
-            socket.emit('boardcast message', {
-                to: 'be received by everyoneELSE',
-                post: []
-            });
-        })
-
-        
-
-    }, (reject) => {
-        socket.emit('boardcast message', {
-            to: 'be received by everyoneELSE',
-            post: []
-        });
-        console.error('uhmmmm not good', reject);
-        console.log('emitting empty posts, first user or the tl is empty')
-    }).catch(reject => {
-        console.error('is this the error ?', reject);
-
-        // right ?? ?? we can't just not send anything ...
-        socket.emit('boardcast message', {
-            to: 'be received by everyoneELSE',
-            post: []
-        });
-    })
 
     /* query.FetchPostsForTimeLine({
         statecode_substr: socket.handshake.query.state_code.substring(0, 2),
@@ -300,71 +262,16 @@ const iouser = io.of('/corp-member').on('connection', (socket) => { // when a ne
         
     }) */
 
-
-    socket.on('boardcast message', (data, fn) => {
-        console.log(socket.client.id + ' sent boardcast mesage on /user to everyone.');
-
-        data.age = moment(data.post_time).fromNow();
-
-        // if there are images in the post user boardcasted, before we save them to db, convert to string with double spaces ( '  ' ) between each image
-        if (data.images) {
-
-            var q = '';
-            var l = data.images.length;
-            data.images.forEach(function (item, index, array) {
-                // console.log(item, index);
-                q = l === index + 1 ? q.concat(item) : q.concat(item + '  ');
-
-                // save each image
-                console.log('checking', item.slice(item.indexOf(':') + 1, item.indexOf(';'))); // map picture won't save because they aren't in dataURL format
-                query.InsertRowInMediaTable({
-                    post_time: data.post_time , 
-                    media: item, 
-                    media_type: item.slice(item.indexOf(':') + 1, item.indexOf(';'))
-                })
-                
-            });
-
-        }
-
-        query.InsertRowInPostsTable({
-            sender: data.sender , 
-            state_code: data.state_code, 
-            type: (data.type ? data.type : ""), 
-            text: data.text, 
-            media: (data.images ? q : ""), 
-            price: data.price, 
-            location: data.location, 
-            post_time: data.post_time 
-        }).then(result => {
-            socket.in(socket.handshake.query.state_code.substring(0, 2)).emit('boardcast message', {
-                to: 'be received by everyoneELSE',
-                post: [data] // should be an array
-            });
-        }, reject => {
-            console.log('failed to insert row in post table', reject);
-        }).catch(reason => {
-            console.log('error - insert row in post table');
-
-        })
-        // save to db --put picture in different columns
-        // increse packet size for media (pixs and vids)
-        // & when using pool.escape(data.text), there's no need for the enclosing single quotes incase the user has ' or any funny characters
-        
-
-        // this funtion will run in the client to show/acknowledge the server has gotten the message.
-        fn(data.post_time);
-    });
-
     socket.on('disconnect', function () {
-        iouser.emit('corpersCount', {
-            count: Object.keys(iouser.connected).length
+        console.log('lost a connection on /corp-member');
+        ioCorpMember.emit('corpers_count', {
+            count: 'sth', // Object.keys(ioCorpMember.connected).length
         }); // todo the disconnected socket should boardcast, let's not waste things and time abeg
     });
 
 });
 
-const iochat = io.of('/chat').on('connection', function (socket) {
+const ioChat = io.of('/chat').on('connection', function (socket) {
 
     // let's do this first cause socket.handshake.query comes as sting ... will fix later
     socket.handshake.query.corper = JSON.parse(socket.handshake.query.corper)
@@ -372,7 +279,7 @@ const iochat = io.of('/chat').on('connection', function (socket) {
         // get user details... we should have middleware to handle this
 
         // immediately join all the rooms presently online they are involved in, someone wants to chat with you
-        var everyRoomOnline = Object.keys(iochat.adapter.rooms)
+        var everyRoomOnline = Object.keys(ioChat.adapter.rooms)
 
         console.log('everyRoomOnline: ', everyRoomOnline);
 
@@ -529,27 +436,27 @@ const iochat = io.of('/chat').on('connection', function (socket) {
                 m.it = msg;
                 ;
 
-                var everyRoomOnline = Object.keys(iochat.adapter.rooms)
+                var everyRoomOnline = Object.keys(ioChat.adapter.rooms)
                 // ON EVERY MESSAGE, WE CAN ITERATE THROUGH ALL THE CONNECTED ROOMS AND IF A ROOM CONTAINS BOTH THE .TO AND .FROM, WE SEND TO THAT ROOM BUT THIS METHOD IS INEFFICIENT, IF THE ROOM ISN'T ALREADY EXISTING, CREATE IT AND JOIN, ELSE JUST ONLY JOIN
                 // console.log('\n\n\n\nevery online room', everyRoomOnline)
 
                 //// in the IFs statements, check if the receipient sockets are online too before sending!!!
 
-                var c_online = corperonline(msg.to, iochat);
+                var c_online = corperonline(msg.to, ioChat);
                 //[TODO]// check if they are both in the room before sending to the room. [DONE]
 
                 // THE TWO IF STATEMENTS HAVE THE SAME LOGIC BUT DIFFERENT IMPLMENTATION
 
-                if (iochat.adapter.rooms[socket.handshake.query.corper.state_code + '-' + msg.to] && c_online) {
+                if (ioChat.adapter.rooms[socket.handshake.query.corper.state_code + '-' + msg.to] && c_online) {
                     // In the array!
                     var room = socket.handshake.query.corper.state_code + '-' + msg.to;
-                    console.log('is in room ?', iochat.adapter.rooms[room].sockets[socket.id]);
-                    if (!iochat.adapter.rooms[room].sockets[socket.id]) { // if the sending socket is NOT in the room
+                    console.log('is in room ?', ioChat.adapter.rooms[room].sockets[socket.id]);
+                    if (!ioChat.adapter.rooms[room].sockets[socket.id]) { // if the sending socket is NOT in the room
 
                     }
 
-                    if (!iochat.adapter.rooms[room].sockets[c_online]) {
-                        iochat.sockets[c_online].join(room, () => {
+                    if (!ioChat.adapter.rooms[room].sockets[c_online]) {
+                        ioChat.sockets[c_online].join(room, () => {
                             console.log(msg.to, "wasn't in", room, "just joined")
                         })
                     }
@@ -559,16 +466,16 @@ const iochat = io.of('/chat').on('connection', function (socket) {
                         m.sent = true;
                     });
                     console.log('\n\ngot close to deliver ? 001', !m.sent)
-                } else if (iochat.adapter.rooms[msg.to + '-' + socket.handshake.query.corper.state_code] && c_online) {
+                } else if (ioChat.adapter.rooms[msg.to + '-' + socket.handshake.query.corper.state_code] && c_online) {
                     // In the array!
-                    console.log(socket.id, 'what ??????', c_online) // iochat.sockets[c_online].id
+                    console.log(socket.id, 'what ??????', c_online) // ioChat.sockets[c_online].id
                     var room = msg.to + '-' + socket.handshake.query.corper.state_code;
 
-                    console.log('are in room ? sender = ', iochat.adapter.rooms[room].sockets[socket.id], 'receipent =', iochat.adapter.rooms[room].sockets[c_online]);
-                    if (iochat.adapter.rooms[room].sockets[socket.id] && iochat.adapter.rooms[room].sockets[c_online]) { // if they are both online and in the room
+                    console.log('are in room ? sender = ', ioChat.adapter.rooms[room].sockets[socket.id], 'receipent =', ioChat.adapter.rooms[room].sockets[c_online]);
+                    if (ioChat.adapter.rooms[room].sockets[socket.id] && ioChat.adapter.rooms[room].sockets[c_online]) { // if they are both online and in the room
                         socket.to(room).broadcast.emit('message', m);
                     } else {
-                        iochat.sockets[c_online].join(room, () => {
+                        ioChat.sockets[c_online].join(room, () => {
                             socket.join(room, () => {
                                 socket.to(room).broadcast.emit('message', m);
                                 m.sent = true;
@@ -584,7 +491,7 @@ const iochat = io.of('/chat').on('connection', function (socket) {
                     var room = socket.handshake.query.corper.state_code + '-' + msg.to;
 
                     if (c_online) {
-                        iochat.sockets[c_online].join(room, () => {
+                        ioChat.sockets[c_online].join(room, () => {
                             socket.join(room, () => {
                                 socket.to(room).broadcast.emit('message', m);
                                 m.sent = true;
@@ -593,11 +500,11 @@ const iochat = io.of('/chat').on('connection', function (socket) {
                     } else { // they must be offline
                         console.log('\n\ndid not deliver', !m.sent)
                         // emit an incremented number of unread message to other necessary pages, after inserting to database
-                        var socket_id = corperonline(msg.to, iouser)
-                        // console.log('akkkhhhh', iouser)
+                        var socket_id = corperonline(msg.to, ioCorpMember)
+                        // console.log('akkkhhhh', ioCorpMember)
                         if (socket_id) {
                             console.log('\n\nfound socket', socket_id)
-                            iouser.to(socket_id).emit('totalunreadmsg', 1)
+                            ioCorpMember.to(socket_id).emit('totalunreadmsg', 1)
                         }
                         m.sent = false;
                     }
@@ -676,7 +583,7 @@ const iochat = io.of('/chat').on('connection', function (socket) {
         // io.sockets.in(room).emit('message', 'what is going on, party people?'); // room is something unique. sockets.room
 
         //everyone, including self, in /chat will get it
-        iochat.emit('hi!', {
+        ioChat.emit('hi!', {
             test: 'from chat',
             '/chat': 'will get, it ?'
         });

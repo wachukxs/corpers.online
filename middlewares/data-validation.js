@@ -10,16 +10,19 @@ module.exports.joinWaitListDataValidation = (req, res, next) => {
 
     const waitListSchema = Joi.object({
         first_name: Joi.string()
+            .label('First name')
             .min(2)
             .max(70)
             .required(),
         email: Joi.string()
+            .label('Email')
             .email({ minDomainSegments: 2 }).required(),
-        servingstate: Joi.string()
+        serving_state: Joi.string()
+            .label('Serving state')
             .required(),
-        comment: Joi.string().allow(''),
-        last_name: Joi.string().allow(''),
-        middle_name: Joi.string().allow(''),
+        comment: Joi.string().label('Comment').allow(''),
+        last_name: Joi.string().label('Last name').allow(''),
+        middle_name: Joi.string().label('Middle name').allow(''),
     })
 
     const { error, value } = waitListSchema.validate(req.body);

@@ -284,7 +284,7 @@ exports.getProfile = (req, res) => {
           ],
           include: [{
             model: db.Media,
-            as: 'saleMedia'
+            // as: 'saleMedia'
           }],
         },
         {
@@ -575,7 +575,7 @@ exports.updateProfilePhoto = (req, res) => {
 
   });
 
-  busboy.on('finish', async function () {
+  busboy.on('close', async function () {
     console.log('we done parsing form, now updating', _profile_data)
 
     let corpMemberUpdate = await db.CorpMember.update(
@@ -879,7 +879,7 @@ exports.createAlert = (req, res) => {
     rooms: []
   };
 
-  busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+  busboy.on('field', function (fieldname, val, info) {
     switch (fieldname) {
       // for accommodation
       case 'alert-accommodation-rooms':
@@ -914,10 +914,9 @@ exports.createAlert = (req, res) => {
         break;
     }
 
-    console.warn(fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype);
   });
 
-  busboy.on('finish', function () {
+  busboy.on('close', function () {
     _alert_data.rooms = _alert_data.rooms.toString()
     console.log("alert data", _alert_data);
 
@@ -976,12 +975,12 @@ exports.getPosts = (req, res) => {
     include: [
       {
         model: db.Media,
-        as: 'saleMedia',
+        // as: 'saleMedia',
 
       },
       {
         model: db.CorpMember,
-        as: 'saleByCorper',
+        // as: 'saleByCorper',
         attributes: db.CorpMember.getSafeAttributes()
       }
     ]
@@ -1137,7 +1136,7 @@ exports.searchPosts = async (req, res) => {
       },
       include: [{
         model: db.Media,
-        as: 'saleMedia'
+        // as: 'saleMedia'
       }],
     })
   } else if (req.query.type == 'location') { // a location that is a ppa
@@ -1174,14 +1173,23 @@ exports.joinWaitList = (req, res) => {
       // console.log('re:', result);
 
       res.status(200).send({
-        message: "We got that. Thanks for joining our waitlist"
+        message: "We got that. Thanks for joining our wait list"
       })
 
     }, error => {
       console.error(`ERR in ${_FILENAME} ${_FUNCTIONNAME}:`, error)
-      res.status(500).send({
+      if (error.name === 'SequelizeUniqueConstraintError') {
+        const firstSequelizeErr = error.errors?.[0]
+        if (firstSequelizeErr?.type === 'unique violation' && firstSequelizeErr?.path === 'email') {
+          return res.status(400).send({
+            message: "We had an error, that can be fixed.",
+            error: "Seems you already joined our wait list with that email. You must be eager!"
+          })
+        }
+      }
+      res.status(400).send({
         message: "We had an error, that can be fixed.",
-        error: error.errors[0]
+        error: error.errors?.[0]
       })
 
     }).catch(reason => {
@@ -1202,7 +1210,7 @@ exports.getAllUsers = (req, res) => {
       data: results
     })
   }, error => {
-    res.status(500).send({
+    res.status(400).send({
       message: "We had an error, that can be fixed."
     })
   }).catch(reason => {

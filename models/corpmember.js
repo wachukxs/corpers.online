@@ -58,22 +58,23 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: 'CASCADE'
       })
 
-      CorpMember.hasMany(models.Chat, {
-        foreignKey: 'message_from',
-        sourceKey: 'state_code',
-        onDelete: 'SET NULL',
-        onUpdate: 'CASCADE'
-      })
+      // CorpMember.hasMany(models.Chat, {
+      //   foreignKey: 'message_from',
+      //   sourceKey: 'state_code',
+      //   onDelete: 'SET NULL',
+      //   onUpdate: 'CASCADE'
+      // })
 
-      CorpMember.hasMany(models.Chat, {
-        foreignKey: 'message_to',
-        sourceKey: 'state_code',
-        onDelete: 'SET NULL',
-        onUpdate: 'CASCADE'
-      })
+      // CorpMember.hasMany(models.Chat, {
+      //   foreignKey: 'message_to',
+      //   sourceKey: 'state_code',
+      //   onDelete: 'SET NULL',
+      //   onUpdate: 'CASCADE'
+      // })
       
-      CorpMember.belongsTo(models.Media, { // This creates the `media_id` foreign key in CorpMember.
-        foreignKey: 'media_id',
+      CorpMember.hasOne(models.Media, {
+        foreignKey: 'corp_member_id', // TODO: put corp_member_id in Media
+        as: 'Media'
       })
 
       // Still need to work exactly how this will work.
@@ -150,9 +151,6 @@ module.exports = (sequelize, DataTypes) => {
         // throw new Error('Do not try to set the CorpMember.`location` value!');
       }
     },
-    media_id: {
-      type: DataTypes.INTEGER
-    },
     push_subscription_stringified: {
         type: DataTypes.TEXT,
         get() {
@@ -177,7 +175,10 @@ module.exports = (sequelize, DataTypes) => {
           this.setDataValue('push_subscription_stringified', JSON.stringify(value));
         }
     },
-    ppa_id: DataTypes.INTEGER,
+    ppa_id: {
+      type: DataTypes.INTEGER,
+      // TODO: declare link to PPA
+    },
     password: DataTypes.STRING,
     middle_name: DataTypes.STRING,
     first_name: DataTypes.STRING,

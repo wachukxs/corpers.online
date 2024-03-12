@@ -23,10 +23,7 @@ module.exports = {
       roommate_rent: {
         type: Sequelize.FLOAT
       },
-      state_code: {
-        type: Sequelize.STRING,
-      },
-      media_id: {
+      corp_member_id: {
         type: Sequelize.INTEGER,
       },
       accommodation_type: {
@@ -73,8 +70,14 @@ module.exports = {
   down: async (queryInterface, Sequelize) => {
 
     // https://github.com/sequelize/sequelize/issues/2554#issuecomment-365383347
-    await queryInterface.removeColumn('Accommodation', 'rent_interval').catch(err => {console.error('caught down 1', err);});
-    await queryInterface.sequelize.query('DROP TYPE "enum_Accommodation_rentInterval";').catch(err => {console.error('caught down 1', err);});
+    // await queryInterface.removeColumn('Accommodation', 'rent_interval')
+    //   .catch(err => {
+    //     console.error('caught down 1', err)
+    //   });
+    // await queryInterface.sequelize.query('DROP TYPE "enum_Accommodation_rentInterval";')
+    //   .catch(err => {
+    //     console.error('caught down 1', err)
+    //   });
     await queryInterface.dropTable('Accommodation');
     /**
      * To prevent error: (node:10501) UnhandledPromiseRejectionWarning: SequelizeDatabaseError: type "enum_Accommodation_rentInterval" already exists

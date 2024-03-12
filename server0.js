@@ -2073,7 +2073,7 @@ app.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
 
   // answer this question: https://stackoverflow.com/questions/26859563/node-stream-data-from-busboy-to-google-drive
 
-  busboy.on('finish', function () {
+  busboy.on('close', function () {
     console.log('Done parsing form!', _text, _media);
     // res.writeHead(303, { Connection: 'close', Location: '/' });
     // res.end();

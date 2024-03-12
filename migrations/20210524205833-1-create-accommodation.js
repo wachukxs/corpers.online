@@ -13,29 +13,18 @@ module.exports = {
 
     await queryInterface.addConstraint('Accommodation', {
       type: 'FOREIGN KEY',
-      name: 'acc_m_id_with_media_id',
-      fields: ['media_id'],
-      references: {
-        table: 'Media',
-        field: 'id'
-      },
-    })
-
-    await queryInterface.addConstraint('Accommodation', {
-      type: 'FOREIGN KEY',
-      name: 'acc_st_code_with_corp_sc',
-      fields: ['state_code'],
+      name: 'acc_cm_id_with_corp_id',
+      fields: ['corp_member_id'],
       references: {
         table: 'CorpMembers',
-        field: 'state_code'
+        field: 'id'
       },
-    }).catch(err => {
-      console.error("111 catching this\n\n\n", err);
-    });
+      onDelete: 'SET NULL',
+      onUpdate: 'CASCADE'
+    })
   },
   down: async (queryInterface, Sequelize) => {
     await queryInterface.removeConstraint('Accommodation', 'acc_l_id_with_loc_id');
-    await queryInterface.removeConstraint('Accommodation', 'acc_m_id_with_media_id');
-    await queryInterface.removeConstraint('Accommodation', 'acc_st_code_with_corp_sc');
+    await queryInterface.removeConstraint('Accommodation', 'acc_cm_id_with_corp_id');
   }
 };

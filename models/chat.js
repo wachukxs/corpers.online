@@ -12,19 +12,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Chat.belongsTo(models.Media, { // means Chat have a media_id
-        foreignKey: 'media_id'
+      Chat.hasMany(models.Media, {
+        foreignKey: 'chat_id'
       })
 
-      Chat.belongsTo(models.CorpMember, {
-        foreignKey: 'message_to',
-        targetKey: 'state_code'
-      })
-
-      Chat.belongsTo(models.CorpMember, {
-        foreignKey: 'message_from',
-        targetKey: 'state_code'
-      })
     }
   };
   Chat.init({
@@ -38,10 +29,19 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING
     },
     message: DataTypes.TEXT,
-    message_from: DataTypes.STRING,
-    message_to: DataTypes.STRING,
-    media_id: {
-      type:DataTypes.INTEGER
+    message_from: {
+      type: DataTypes.STRING,
+      references: {
+        model: 'CorpMembers',
+        key: 'state_code'
+      }
+    },
+    message_to: {
+      type: DataTypes.STRING,
+      references: {
+        model: 'CorpMembers',
+        key: 'state_code'
+      }
     },
     read_by_to: {
       type: DataTypes.BOOLEAN,

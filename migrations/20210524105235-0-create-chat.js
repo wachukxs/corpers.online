@@ -20,9 +20,6 @@ module.exports = {
       message_to: {
         type: Sequelize.STRING,
       },
-      media_id: {
-        type: Sequelize.INTEGER,
-      },
       read_by_to: {
         type: Sequelize.BOOLEAN
       },

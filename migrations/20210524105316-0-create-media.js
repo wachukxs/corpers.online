@@ -14,6 +14,15 @@ module.exports = {
       location_id: {
         type: Sequelize.INTEGER
       },
+      corp_member_id: {
+        type: Sequelize.INTEGER
+      },
+      chat_id: {
+        type: Sequelize.INTEGER
+      },
+      ppa_id: {
+        type: Sequelize.INTEGER
+      },
       accommodation_id: {
         type: Sequelize.INTEGER
       },

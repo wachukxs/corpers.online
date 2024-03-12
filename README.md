@@ -1,5 +1,5 @@
-# a tool
-firstly for the people in khaki, then for the green and white people, then for all others.
+# A tool
+Firstly for the people in khaki, then for the green and white people, then for all others.
 
 ## On Security
 * https://owasp.org/www-project-top-ten/
@@ -10,7 +10,7 @@ firstly for the people in khaki, then for the green and white people, then for a
 * Remove config/config.json and config.js from git history and repo
 * Get a list of API best practices we need to follow.
   * Like using /api/v2/ etc.
-* footer and header should be their own pages and automatically embedded.
+* ~~footer and header should be their own pages and automatically embedded.~~ 🚫
 * Show that an item is HOT by showing how many conversation is going on about the sale of it
 * maybe resize profile images with image processing libraries.
 * alerts for when corp members post certain items for sales or accommodation specs for rent
@@ -27,7 +27,12 @@ firstly for the people in khaki, then for the green and white people, then for a
 ## Some wants
 * Would [knowing when a form is auto filled](https://material.angular.io/cdk/text-field/overview) ever be useful to us?
 * Using AI to [Auto identify images](https://aihub.cloud.google.com/p/products%2F150687a7-cb7c-4066-899d-ebfbc0aac5d3)?
+* Use [winston](https://github.com/winstonjs/winston) as logger
 
 
-## Interesting Map ideas
+## Interesting Map ideas and similar platforms.
 * [What3Words](https://what3words.com/)
+* Spot a home; [how it works](https://www.spotahome.com/how-it-works)
+* Spacest.com's [how it works](https://spacest.com/how-works)
+* Housing [Anywhere](https://housinganywhere.com/)
+* EU's HOME [project](https://www.thehomeproject.eu/)

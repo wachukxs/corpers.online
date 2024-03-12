@@ -1,6 +1,6 @@
 const db = require('../models')
 const helpers = require('../utilities/helpers')
-const Busboy = require('busboy');
+const busboy = require('busboy');
 const ggle = require('../helpers/uploadgdrive');
 const socket = require('../sockets/routes')
 const ngplaces = require('../utilities/ngstates')
@@ -8,7 +8,9 @@ inspect = require('util').inspect;
 const path = require('path');
 const { uploadFile } = require('../helpers/ftp-upload');
 const _FILENAME = path.basename(__filename);
-
+const fs = require('fs');
+const ftp = require("basic-ftp");
+const crypto = require("crypto");
 
 exports.deleteSale = (req, res) => {
   const _FUNCTIONNAME = 'updateProfilePhoto'
@@ -31,33 +33,64 @@ exports.deleteSale = (req, res) => {
  * @param {*} next 
  * @returns http status code
  */
-exports.create = (req, res, next) => {
+exports.create = async (req, res, next) => {
   const _FUNCTIONNAME = 'create'
   console.log('hitting', _FILENAME, _FUNCTIONNAME);
 
   try {
-    const busboy = new Busboy({
+    const _busboy = busboy({
       headers: req.headers,
       limits: { // set fields, fieldSize, and fieldNameSize later (security)
         files: 12, // don't upload more than 12 media files
         fileSize: 20 * 1024 * 1024 // 6MB
       }
     });
+    /**
+     * @type string[]
+     */
     let _media = []; // good, because we re-initialize on new post
     let _text = {};
     let uploadPromise = [];
     let get = true;
 
-    busboy.on('file', async function handleSalesFiles(fieldname, filestream, filename, transferEncoding, mimetype) {
+    const client = new ftp.Client();
+    // client.ftp.verbose = true; // maybe only set on prod?
+
+    const ftpOptions = {
+      host: process.env.FTP_SERVER,
+      user: process.env.FTP_USERNAME,
+      password: process.env.FTP_PASSWORD,
+      secure: process.env.NODE_ENV === "production",
+    };
+    if (client.closed) {
+      await client.access(ftpOptions);
+    }
+
+    _busboy.on('file', async function handleSalesFiles(fieldname, filestream, info) {
+      
+      // filename, transferEncoding, mimetype
+      const { filename, encoding, mimeType } = info;
+
+      const fileExtension = filename.split('.').pop();
+
+      const new_file_name = crypto.randomBytes(20).toString('hex') + `.${fileExtension}`;
+
+      const saveTo = path.join('./randoms', `busboy-uploads`, new_file_name);
+      filestream.pipe(fs.createWriteStream(saveTo)).on('close', (err) => {
+        console.log('done writing file!!!');
+      })
+      console.log('got a file', filename);
 
       
       /**
        * FTP upload only works if you use here. Before the event listeners.
        */
-      const _url = await uploadFile(filestream, filename)
+      // const _url = await uploadFile(filestream, filename)
+    
+      _media.push(new_file_name)
 
-      console.log('WHAT UPLOADED', _url)
-      // there's also 'limit' and 'error' events https://www.codota.com/code/javascript/functions/busboy/Busboy/on
+
+      // there's also 'limit' and 'error' events https://www.codota.com/code/javascript/functions/busboy/busboy/on
       filestream.on('limit', function () {
         console.error('the file was too large... nope');
         get = false;
@@ -69,7 +102,7 @@ exports.create = (req, res, next) => {
         // how should we send a response if one of the files/file is invalid [too big or not an accepted file type]?
       });
 
-      if (filename && !helpers.acceptedfiles.includes(mimetype)) { // if mimetype is '' or undefined, it passes
+      if (filename && !helpers.acceptedfiles.includes(mimeType)) { // if mimetype is '' or undefined, it passes
         console.log('we don\'t accept non-image files... nope');
         get = false;
         // don't listen to the data event
@@ -106,7 +139,7 @@ exports.create = (req, res, next) => {
       // this is not a good method
 
       /**One thing you might be able to try is to read 0 bytes from the stream first and see if you get the appropriate 'end' event or not (perhaps on the next tick) */
-      if (filename && helpers.acceptedfiles.includes(mimetype)) { // filename: 1848-1844-1-PB.pdf, encoding: 7bit, mimetype: application/pdf
+      if (filename && helpers.acceptedfiles.includes(mimeType)) { // filename: 1848-1844-1-PB.pdf, encoding: 7bit, mimetype: application/pdf
 
         /**
          * Google Drive upload can work in here.
@@ -121,7 +154,7 @@ exports.create = (req, res, next) => {
 
     });
 
-    busboy.on('field', function handleSalesFields(fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+    _busboy.on('field', function handleSalesFields(fieldname, val, info) {
       /**
        * would skip 0s, but we don't need zeros
        * 
@@ -136,12 +169,12 @@ exports.create = (req, res, next) => {
 
       // should we do like we did for accommodation ?? ...yess , we'll check too
 
-      console.warn('fielddname Truncated:', fieldnameTruncated, valTruncated, transferEncoding, mimetype);
+      console.warn('fielddname info:', info);
     });
 
     // answer this question: https://stackoverflow.com/questions/26859563/node-stream-data-from-busboy-to-google-drive
 
-    busboy.on('finish', async function doneHandlingSalesFieldsAndFiles() {
+    _busboy.on('close', async function doneHandlingSalesFieldsAndFiles() {
       console.log('\nDone parsing form!', _text, _media);
       // res.writeHead(303, { Connection: 'close', Location: '/' });
       // res.end();
@@ -188,30 +221,42 @@ exports.create = (req, res, next) => {
       })
       console.log(f, "\n\n\n\n ===??++++ ///", jkl); */
 
-      _sale_to_save = await db.Sale.create({
-        state_code: req.session.corper.state_code,
+      let new_sale = {
+        corp_member_id: req.session.corper.id,
         text: _text.text,
         item_name: _text.item_name,
         price: _text.price,
-        ...(_text?.minimum_price && {minimum_price: parseInt(_text.minimum_price),}),
+      }
+      if (_text?.minimum_price) {
+        new_sale.minimum_price = parseInt(_text.minimum_price)
+      }
+      if (_media.length > 0) {
+        // Upload all the files.
+        let __m = []
+        for (let index = 0; index < _media.length; index++) {
+          const element = _media[index];
 
-        // only add saleMedia if _media.length > 0
-        ...(_media.length > 0 && {saleMedia: {
-          urls: _media.toString(),
-          // alt_text: '', // add later
-        }})
-      }, { // TODO: only include this conditionally. Or seems we already do, just confirm
-        include: [
-          {
-            model: db.Media,
-            as: 'saleMedia',
-          },
-          {
-            model: db.CorpMember,
-            as: 'saleByCorper',
-            attributes: db.CorpMember.getSafeAttributes() // { exclude: ['push_subscription_stringified', 'password'] }
-          }
-        ]
+          const tem_path = './randoms/busboy-uploads/' + element
+          const _url = await uploadFile(tem_path, element)
+          __m.push(_url)
+          console.log('processed upload', _url);
+
+          // delete the recently uploaded file from (temp) disk
+          fs.unlink(tem_path, (err) => {
+            if (err) console.error('err deleting file', err);
+            console.log(tem_path, 'was deleted');
+          });
+        }
+        
+        new_sale.Media = __m.map(e => ({urls: e}))
+        // TODO: add alt_text later
+        // TODO: delete the uploaded files from memory
+      }
+      /**
+       * Can only include Media cause it was created along side it.
+       */
+      _sale_to_save = await db.Sale.create(new_sale, {
+        include: [{model: db.Media}]
       });
 
       if (uploadPromise.length) {
@@ -226,8 +271,8 @@ exports.create = (req, res, next) => {
         let _media_to_send = await _sale_to_save.getSaleMedia()
 
         // well, no need for media here
-        _sale_to_save.saleByCorper = await _sale_to_save.getSaleByCorper(); // role eyes ...fix this for sequelize ... it should auto do it ...
-        _sale_to_save.dataValues.saleByCorper = await _sale_to_save.getSaleByCorper();
+        // _sale_to_save.saleByCorper = await _sale_to_save.getSaleByCorper(); // role eyes ...fix this for sequelize ... it should auto do it ...
+        // _sale_to_save.dataValues.saleByCorper = await _sale_to_save.getSaleByCorper();
 
 
         console.log("\n\n then the media", _media_to_send);
@@ -260,7 +305,7 @@ exports.create = (req, res, next) => {
 
     // handle post request, add data to database... do more
 
-    req.pipe(busboy)
+    req.pipe(_busboy)
   } catch (error) {
     console.log('Error in', _FILENAME, _FUNCTIONNAME);
     console.error(error)
@@ -274,7 +319,7 @@ exports.update = (req, res) => {
   const _FUNCTIONNAME = 'update'
   console.log('hitting', _FILENAME, _FUNCTIONNAME);
 
-  const busboy = new Busboy({
+  const _busboy = busboy({
     headers: req.headers,
     limits: { // set fields, fieldSize, and fieldNameSize later (security)
       files: 12, // don't upload more than 12 media files
@@ -283,15 +328,15 @@ exports.update = (req, res) => {
   });
 
   _sale_data = {}
-  busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype) {
+  _busboy.on('field', function (fieldname, val, info) {
     // console.log('Field [' + fieldname + ']: value: ' + inspect(val));
 
     _sale_data[fieldname] = inspect(val); // seems inspect() adds double quote to the value
 
-    console.warn(fieldname, val, fieldnameTruncated, valTruncated, transferEncoding, mimetype);
+    console.warn(fieldname, val, info);
   });
 
-  busboy.on('finish', async function () {
+  _busboy.on('close', async function () {
     console.log('updating sale')
     db.Sale.update({
       ..._sale_data
@@ -312,6 +357,6 @@ exports.update = (req, res) => {
       })
   })
 
-  return req.pipe(busboy)
+  return req.pipe(_busboy)
 }
 

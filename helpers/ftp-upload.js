@@ -23,7 +23,7 @@ async function init() {
   client.close();
 }
 
-init()
+// init() // don't think we need this (here)
 
 exports.uploadFile = async (streamOrFileData, fileNameOrExtension) => {
   // check if ftp connection is still open.
@@ -40,5 +40,5 @@ exports.uploadFile = async (streamOrFileData, fileNameOrExtension) => {
   const file_name = crypto.randomBytes(20).toString('hex') + `.${fileExtension}`;
   await client.uploadFrom(streamOrFileData, file_name).finally(() => client.close());
 
-  return `${process.env.FTP_UPLOAD_PATH}/${file_name}`;ß
+  return `${process.env.FTP_UPLOAD_PATH}/${file_name}`;
 };

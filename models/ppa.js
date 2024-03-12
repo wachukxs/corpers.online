@@ -18,16 +18,16 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       
-      PPA.belongsTo(models.Media, { // means PPA have a media_id
-        foreignKey: 'media_id'
+      PPA.hasMany(models.Media, {
+        foreignKey: 'ppa_id'
       })
-      PPA.belongsTo(models.Location, { // means PPA have a locationId
-        foreignKey: 'location_id'
+      PPA.hasOne(models.Location, {
+        foreignKey: 'ppa_id'
       })
       // PPA is source, CorpMember is target (foreign Key is in CorpMember)
       // creates ppa_id in CorpMember
-      PPA.hasMany(models.CorpMember, { // means ppa_id is the foreign key in CorpMember, referencing primary key id in PPA
-        foreignKey: 'ppa_id', // leaving as PPId causes bug
+      PPA.hasMany(models.CorpMember, {
+        foreignKey: 'ppa_id', // (leaving as PPId causes bug: TODO???)
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE'
       })
@@ -41,9 +41,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     },
     name: DataTypes.STRING,
-    media_id: {
-      type:DataTypes.INTEGER
-    },
     location_id: { // TODO: specify that this references Location table
       type:DataTypes.INTEGER
     },
@@ -51,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'PPA',
-    tableName: 'PPA',
+    tableName: 'PPA', // or freeze the table name
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
