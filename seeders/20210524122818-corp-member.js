@@ -51,15 +51,18 @@ module.exports = {
      */
 
     try {
-      await queryInterface.bulkDelete(
-        "CorpMembers",
-        {
-          id: {
-            [Op.in]: [1, 2],
+      const corp_members_table_exists = await queryInterface.tableExists('CorpMembers')
+      if (corp_members_table_exists) {
+        await queryInterface.bulkDelete(
+          "CorpMembers",
+          {
+            id: {
+              [Op.in]: [1, 2],
+            },
           },
-        },
-        {}
-      );
+          {}
+        );
+      }
     } catch (error) {
       console.error("Did not seed(down)", __filename, error);
     }
