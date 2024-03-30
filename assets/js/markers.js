@@ -1,1 +1,0 @@
-// use this js file to handle everything custom markers
