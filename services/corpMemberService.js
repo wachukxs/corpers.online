@@ -46,6 +46,7 @@ exports.create = (req, res) => {
       // send welcome email
       helpers.sendSignupWelcomeEmail(req.body.email, req.body.first_name, result.dataValues.service_state)
 
+      // TODO: should expire and we should have a refresh token
       jwt.sign({
         state_code: req.body.state_code.toUpperCase(),
         email: req.body.email.toLowerCase()
@@ -180,7 +181,7 @@ exports.login = (req, res) => {
   }).then(
     (result) => { // result is null if not state_code or email exists ... also tell when it's state_code or email that doesn't exist
 
-      console.log('found corper', result)
+      console.log('found corper', result.id)
       if (!result) {
         // TODO: kill what ever cookie was there
         return res.status(401).json({
@@ -193,6 +194,7 @@ exports.login = (req, res) => {
         console.log(chalk.bgRed('login was bad'));
 
         // TODO: kill what ever cookie was there
+        console.log('cookies', req.cookies);
         res.status(401).json({
           message: 'Wrong Password',
           error: ''
@@ -203,30 +205,24 @@ exports.login = (req, res) => {
       if (result?.dataValues?.password === req.body?.password) {
         console.log(chalk.bgGreen('login we good'));
         /**
-         * mask the password.
-         * Replace with fixed string so we don't show length of password
+         * delete the password and id.
+         * (won't work without the .dataValues)
          */
-        result.dataValues.password = '*****' // TODO: maybe use funny string combo
-
-        // remove the id too
-        result.dataValues.id = undefined
+        delete result.dataValues.password
+        delete result.dataValues.id
         
-        req.session.corper = result.dataValues
+        req.session.corper = result
         jwt.sign({
-          state_code: result.dataValues.state_code,
-          email: result.dataValues.email
+          state_code: result.state_code,
+          email: result.email
         }, process.env.SESSION_SECRET, (err, token) => {
           if (err) { // throw err // no throw of errors
             console.error(err)
             return res.sendStatus(500)
           } else {
-            res.setHeader('Authorization', `Bearer ${token}`)
-            
             res.cookie('_online', token, cookieOptions)
             console.log(chalk.bgBlue('Logged In'), req.session.corper?.state_code?.toUpperCase());
-            /* req.session.save(function(err) { // hate this
-              console.log("saved session");
-            }) */
+
             return res.status(200).json({
               message: 'Nice!',
               data: result,
@@ -464,7 +460,7 @@ exports.updateProfilePhoto = (req, res) => {
   const _FUNCTIONNAME = 'updateProfilePhoto'
   console.log('hitting', _FILENAME, _FUNCTIONNAME);
 
-  const busboy = new Busboy({
+  const busboy = Busboy({
     headers: req.headers,
     limits: { // set fields, fieldSize, and fieldNameSize later (security)
       files: 12, // don't upload more than 12 media files
@@ -648,6 +644,7 @@ exports.updateProfilePhoto = (req, res) => {
 
       }
     } else {
+      // should we call ppaService directly here? To avoid code duplication. Also can't we write this better??
       let _ppaUpdate = await db.PPA.create({
         name: _profile_data.name_of_ppa,
         type_of_ppa: _profile_data.type_of_ppa
@@ -866,7 +863,7 @@ exports.createAlert = (req, res) => {
   const _FUNCTIONNAME = 'updateProfilePhoto'
   console.log('hitting', _FILENAME, _FUNCTIONNAME);
 
-  const busboy = new Busboy({
+  const busboy = Busboy({
     headers: req.headers,
     limits: { // set fields, fieldSize, and fieldNameSize later (security)
       files: 12, // don't upload more than 12 media files

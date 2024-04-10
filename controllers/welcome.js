@@ -114,7 +114,7 @@ router.get('/careers', function (req, res) { // work with us
 
 router.post('/careers', function (req, res) { // work with us
   console.log('work with us');
-  const busboy = new Busboy({
+  const busboy = Busboy({
     headers: req.headers,
     limits: { // set fields, fieldSize, and fieldNameSize later (security)
       files: 12, // don't upload more than 12 media files
@@ -332,7 +332,7 @@ router.get(['/map', '/maps'], function (req, res) { // try to infer their locati
 // edited
 // make a custom middleware where we just use busboy to get the form inputs
 router.post('/subscribe', function (req, res) {
-  const busboy = new Busboy({
+  const busboy = Busboy({
     headers: req.headers,
   });
   let _sub_data = {}

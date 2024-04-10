@@ -33,7 +33,7 @@ module.exports.verifyToken = (req, res, next) => {
  * next() to continue execution
  * 
  * @description
- * a middleware to verify jwt cookies in req object, to further authenticate users(corpers). use to protect routes
+ * a middleware to verify jwt cookies in req object, to further authenticate users. used to protect routes
  */
 module.exports.verifyJWT = (req, res, next) => {
     const _FUNCTIONNAME = 'verifyJWT'
@@ -60,55 +60,27 @@ module.exports.verifyJWT = (req, res, next) => {
                 console.error('err verifying cookie', err);
                 res.sendStatus(502)
             } else {
-
                 console.log('decoded token data', decodedToken);
-                db.CorpMember.findOne({
-                    where: { state_code: decodedToken.state_code.toUpperCase() },
-                    // include: [{ all: true }],
-                    include: [ // why is it looking for ppa_id in PPA model ?? cause of bug in sequelize
-                        {
-                            /**
-                             * Sequelize bug
-                             * If you only include Media; it'll pluralize it for you
-                             * even if you froze table name., and you can't change it here
-                             */
-                            model: db.sequelize.models.Media,
-                            as: 'Media'
-                        },
-                        {
-                            model: db.PPA, // using db.PPA makes it look for table 'ppas' which causes an error.
-                            attributes: db.PPA.getAllActualAttributes() // hot fix (problem highlighted in ./models/ppa.js) --> should create a PR to fix it ... related to https://github.com/sequelize/sequelize/issues/13309
-                        },
-                    ],
-                    attributes: db.CorpMember.getSafeAttributes()
-                })
-                    // query.AutoLogin(decodedToken.state_code)
-                    .then(result => {
-                        // console.log('corper result object', result);
-                        if (result) { // sometimes, it's null ...but why though ? // on sign up it's null ...
-                            req.session.corper = result.dataValues;
-                            next()
-                        } else {
-                            res.sendStatus(502)
-                            console.error('Could not find corper')
-                        }
-
-                    }, reject => {
-
-                        console.log('auth auto login reject, this err because:', reject);
-                        res.sendStatus(502)
-
-                    }).catch(reason => {
-                        console.log('auth auto login catching this err because:', reason);
-                        res.sendStatus(502)
-                    })
+                next()
             }
         })
     } else if (req.headers['Authorization']) { // TODO: this needs work.
         const authHeader = req.headers['Authorization']
         const token = authHeader && authHeader.split(' ')[1]
 
-        if (token == null) return res.sendStatus(401)
+        if (!token) {
+            return res.sendStatus(401)
+        }
+        jwt.verify(token, process.env.SESSION_SECRET, function (err, decodedToken) {
+            console.log('verifying token')
+            if (err) {
+                console.error('err verifying bearer token', err);
+                res.sendStatus(502)
+            } else {
+                console.log('decoded token data', decodedToken);
+                next()
+            }
+        })
     }
     else {
         res.sendStatus(401)
@@ -149,14 +121,14 @@ module.exports.checkJWT = (req, res, next) => {
                 /**
                  * TODO: remove query . auto loagin
                  */
-                query.AutoLogin(decodedToken.state_code).then(result => {
+                query.AutoLogin(decodedToken.state_code).then((result) => {
                     console.info('\n\n\n\ninnnnn')
                     req.session.corper = result.response[0];
 
                     next()
-                }, reject => {
+                }, (reject) => {
                     res.sendStatus(502)
-                }).catch(reason => {
+                }).catch((reason) => {
                     res.sendStatus(502)
                 })
             }
@@ -166,8 +138,10 @@ module.exports.checkJWT = (req, res, next) => {
     }
 }
 
-/**a constant signifying 365 days in miliseconds, used to determine how long our JWT would last */
-module.exports.maxAge = 365 * (1000 * 60 * 60 * 24) // days * (1 sec * 60 secs * 60 minutes * 24 hours) // valid for 365 days
+/**
+ * a constant signifying the days in milliseconds, used to determine how long our JWT would last
+ */
+module.exports.maxAge = 7 * (1000 * 60 * 60 * 24) // days * (1 sec * 60 secs * 60 minutes * 24 hours)
 
 /**
  * 
@@ -187,4 +161,53 @@ module.exports.createJWT = (state_code) => {
     return jwt.sign({ state_code }, process.env.SESSION_SECRET, {
         expiresIn: this.maxAge
     })
+}
+
+/**
+ * Refresh tokens?? Do we ever need this?
+ * Unused method
+ * Might delete later
+ */
+module.exports.refreshToken = () => {
+    
+    db.CorpMember.findOne({
+        where: { state_code: decodedToken.state_code.toUpperCase() },
+        // include: [{ all: true }],
+        include: [ // why is it looking for ppa_id in PPA model ?? cause of bug in sequelize
+            {
+                /**
+                 * Sequelize bug
+                 * If you only include Media; it'll pluralize it for you
+                 * even if you froze table name., and you can't change it here
+                 */
+                model: db.sequelize.models.Media,
+                as: 'Media'
+            },
+            {
+                model: db.PPA, // using db.PPA makes it look for table 'ppas' which causes an error.
+                attributes: db.PPA.getAllActualAttributes() // hot fix (problem highlighted in ./models/ppa.js) --> should create a PR to fix it ... related to https://github.com/sequelize/sequelize/issues/13309
+            },
+        ],
+        attributes: db.CorpMember.getSafeAttributes()
+    })
+        // query.AutoLogin(decodedToken.state_code)
+        .then((result) => {
+            // console.log('corper result object', result);
+            if (result) { // sometimes, it's null ...but why though ? // on sign up it's null ...
+                req.session.corper = result.dataValues;
+                next()
+            } else {
+                res.sendStatus(502)
+                console.error('Could not find corper')
+            }
+
+        }, (reject) => {
+
+            console.log('auth auto login reject, this err because:', reject);
+            res.sendStatus(502)
+
+        }).catch(reason => {
+            console.log('auth auto login catching this err because:', reason);
+            res.sendStatus(502)
+        })
 }

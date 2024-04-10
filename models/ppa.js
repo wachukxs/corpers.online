@@ -40,11 +40,19 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.INTEGER
     },
-    name: DataTypes.STRING,
+    name: {
+      type: DataTypes.STRING, 
+      allowNull: false
+    },
     location_id: { // TODO: specify that this references Location table
       type:DataTypes.INTEGER
     },
-    type_of_ppa: DataTypes.STRING
+    type_of_ppa: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      comment: "The category of the ppa", // should it be an enum?
+    }, // should be category?
+    // should we included added by field?
   }, {
     sequelize,
     modelName: 'PPA',

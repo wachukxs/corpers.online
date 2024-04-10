@@ -1922,7 +1922,7 @@ app.post('/addplace', upload.none(), function (req, res) {
 app.post('/posts', /* upload.array('see', 12), */ function (req, res, next) {
   // console.log('req.method', req.method)
   // console.log('req.headers', req.headers)
-  var busboy = new Busboy({
+  var busboy = Busboy({
     headers: req.headers
   });
   var _media = []; // good, because we re-initialize on new post

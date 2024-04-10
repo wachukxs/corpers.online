@@ -1,4 +1,6 @@
 "use strict";
+const path = require('path');
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -912,6 +914,9 @@ module.exports = {
 
         // console.log("_state", _state);
       }
+    } else {
+      const _FILENAME = path.basename(__filename);
+      console.error("DID NOT RUN MIRGATION FOR", _FILENAME);
     }
   },
   async down(queryInterface, Sequelize) {

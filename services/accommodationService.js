@@ -53,7 +53,7 @@ exports.create = (req, res, next) => {
   console.log("hitting", _FILENAME, _FUNCTIONNAME);
 
   try {
-    const busboy = new Busboy({
+    const busboy = Busboy({
       headers: req.headers,
       limits: {
         // set fields, fieldSize, and fieldNameSize later (security)
@@ -437,7 +437,7 @@ exports.create = (req, res, next) => {
 exports.update = (req, res) => {
   const _FUNCTIONNAME = "update";
   console.log("hitting", _FILENAME, _FUNCTIONNAME);
-  const busboy = new Busboy({
+  const busboy = Busboy({
     headers: req.headers,
     limits: {
       // set fields, fieldSize, and fieldNameSize later (security)

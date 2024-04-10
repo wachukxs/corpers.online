@@ -220,7 +220,7 @@ router.post('/sayhi', /* bodyParser.urlencoded({
 
 
 router.post('/contact', function (req, res) {
-    const busboy = new Busboy({
+    const busboy = Busboy({
       headers: req.headers,
     });
     let _feedback_data = {}
@@ -344,7 +344,7 @@ router.get('/oldprofile', auth.verifyJWT, function (req, res) {
 router.post('/oldprofile', auth.verifyJWT, /* bodyParser.urlencoded({
   extended: true
 }), */ function (req, res) {
-  const busboy = new Busboy({
+  const busboy = Busboy({
     headers: req.headers,
     limits: { // set fields, fieldSize, and fieldNameSize later (security)
       files: 12, // don't upload more than 12 media files
@@ -490,7 +490,7 @@ router.post('/oldprofile', auth.verifyJWT, /* bodyParser.urlencoded({
 });
 
 router.post('/oldupdateaccommodation', auth.verifyJWT, function (req, res) {
-  const busboy = new Busboy({
+  const busboy = Busboy({
     headers: req.headers,
     limits: { // set fields, fieldSize, and fieldNameSize later (security)
       files: 12, // don't upload more than 12 media files
@@ -531,7 +531,7 @@ router.post('/oldupdateaccommodation', auth.verifyJWT, function (req, res) {
 })
 
 router.post('/oldupdatesale', auth.verifyJWT, function (req, res) {
-  const busboy = new Busboy({
+  const busboy = Busboy({
     headers: req.headers,
     limits: { // set fields, fieldSize, and fieldNameSize later (security)
       files: 12, // don't upload more than 12 media files
@@ -564,7 +564,7 @@ router.post('/oldupdatesale', auth.verifyJWT, function (req, res) {
 })
 
 router.post('/olddeleteaccommodation', auth.verifyJWT, function (req, res) {
-  const busboy = new Busboy({
+  const busboy = Busboy({
     headers: req.headers,
     limits: { // set fields, fieldSize, and fieldNameSize later (security)
       files: 12, // don't upload more than 12 media files
@@ -598,7 +598,7 @@ router.post('/olddeleteaccommodation', auth.verifyJWT, function (req, res) {
 
 /* 
 router.post('/deletesale', auth.verifyJWT, function (req, res) {
-  const busboy = new Busboy({
+  const busboy = Busboy({
     headers: req.headers,
     limits: { // set fields, fieldSize, and fieldNameSize later (security)
       files: 12, // don't upload more than 12 media files
@@ -651,7 +651,7 @@ router.post('/addplace', upload.none(), function (req, res) {
 
 router.post('/oldaccommodations', auth.verifyJWT, /* upload.array('roomsmedia', 12), */ function (req, res) {
 
-  const busboy = new Busboy({
+  const busboy = Busboy({
     headers: req.headers,
     limits: { // set fields, fieldSize, and fieldNameSize later (security)
       files: 12, // don't upload more than 12 media files
