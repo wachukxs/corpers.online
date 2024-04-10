@@ -15,6 +15,8 @@ module.exports = {
       },
       state_id: {
         type: Sequelize.INTEGER,
+
+        // adding reference here, instead of in a separate file, is an exception
         references: {
           model: "States",
           key: "id",

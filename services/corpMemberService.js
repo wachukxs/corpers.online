@@ -831,20 +831,6 @@ exports.savePushSubscription = async (req, res) => { // Busboy doesn't support j
     }
   )
 
-
-
-  try {
-    const __model = db.CorpMember
-    for (let assoc of Object.keys(__model.associations)) {
-      for (let accessor of Object.keys(__model.associations[assoc].accessors)) {
-        console.log(__model.name + '.' + __model.associations[assoc].accessors[accessor] + '()');
-      }
-    }
-
-  } catch (error) {
-    console.error('trying to get assocs', error);
-  }
-
   // checking if it updated:
   if (corpMemberUpdate && corpMemberUpdate[0] > 0) { // object [ 1 ]
     res.sendStatus(200) // sending a 'Created' response ... not 200 OK response

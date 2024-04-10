@@ -16,9 +16,6 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      location_id: {
-        type: Sequelize.INTEGER
-      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE

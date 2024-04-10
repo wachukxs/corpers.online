@@ -260,13 +260,6 @@ exports.create = async (req, res, next) => {
       });
 
       if (uploadPromise.length) {
-        // https://stackoverflow.com/a/55113682/9259701 & https://github.com/sequelize/sequelize/issues/4970#issuecomment-161712562
-        const __model = db.Sale
-        for (let assoc of Object.keys(__model.associations)) {
-          for (let accessor of Object.keys(__model.associations[assoc].accessors)) {
-            console.log(__model.name + '.' + __model.associations[assoc].accessors[accessor] + '()');
-          }
-        }
 
         let _media_to_send = await _sale_to_save.getSaleMedia()
 

@@ -233,21 +233,7 @@ exports.create = (req, res, next) => {
 
       _text.availableRooms = _text.availableRooms.toString(); // so we can save ... may optimize later
 
-      console.log(db.CorpMember.getSafeAttributes());
-
-      const __model = db.Accommodation;
-      for (let assoc of Object.keys(__model.associations)) {
-        for (let accessor of Object.keys(
-          __model.associations[assoc].accessors
-        )) {
-          console.log(
-            __model.name +
-              "." +
-              __model.associations[assoc].accessors[accessor] +
-              "()"
-          );
-        }
-      }
+      console.log('CorpMember.getSafeAttributes', db.CorpMember.getSafeAttributes());
 
       let _accommodation_to_save;
       if (!helpers.isEmpty(_text) && helpers.isEmpty(uploadPromise)) {

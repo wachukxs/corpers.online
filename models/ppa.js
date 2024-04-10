@@ -47,9 +47,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING, 
       allowNull: false
     },
-    location_id: { // TODO: specify that this references Location table
-      type:DataTypes.INTEGER
-    },
     type_of_ppa: {
       type: DataTypes.STRING,
       allowNull: false,

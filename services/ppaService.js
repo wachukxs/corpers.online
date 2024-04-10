@@ -65,8 +65,6 @@ exports.getNigerianStateLGAs = (req, res) => {
 };
 
 exports.addPPA = (req, res) => {
-  console.log("what is body:", req.body);
-
   try {
     const busboy = Busboy({
       headers: req.headers,
@@ -97,36 +95,28 @@ exports.addPPA = (req, res) => {
     busboy.on("finish", async function doneHandlePpaFieldsAndFiles() {
       console.log("Done parsing form!", _text, "\n\n media", _media);
 
-      const __model = db.PPA;
-      for (let assoc of Object.keys(__model.associations)) {
-        for (let accessor of Object.keys(
-          __model.associations[assoc].accessors
-        )) {
-          console.log(
-            __model.name +
-              "." +
-              __model.associations[assoc].accessors[accessor] +
-              "()"
-          );
-        }
-      }
+      // todo: Do validation here.
 
-      db.PPA.create({
-        name: _text.name,
-        type_of_ppa: _text.category,
-      })
-        .then(
-          async (ppa) => {
-            const _lo = await db.Location.create({
+      db.PPA.create(
+        {
+          name: _text.name,
+          type_of_ppa: _text.category,
+          Locations: [
+            {
               address: _text.address,
               state_lga_id: _text.state_lga_id,
-              state_id: _text.state_id
-            });
-
-            ppa.setLocation(_lo)
-
-            // remove the id
-            delete ppa.dataValues.id;
+              state_id: _text.state_id,
+            },
+          ],
+        },
+        {
+          include: [ { association: 'Locations'} ],
+        }
+      )
+        .then(
+          async (ppa) => {
+            // remove the ppa id
+            // delete ppa.dataValues.id; // maybe not
             res.json({ ppa });
           },
           (reject) => {
@@ -137,7 +127,7 @@ exports.addPPA = (req, res) => {
         )
         .catch((reason) => {
           console.log("why did you fail?", reason);
-          res.status(403).json(null);
+          res.status(403).json({});
         });
     });
 
