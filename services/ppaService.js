@@ -84,34 +84,18 @@ exports.addPPA = (req, res) => {
       function handlePpaFields(
         fieldname,
         val,
-        fieldnameTruncated,
-        valTruncated,
-        transferEncoding,
-        mimetype
+        { nameTruncated, valueTruncated, encoding, mimeType }
       ) {
         console.log("Field [" + fieldname + "]: value: " + val);
         // this if block is an hot fix
         if (val && val !== "null") {
           _text[fieldname] = val;
         }
-
-        console.warn(
-          "fielddname Truncated:",
-          fieldnameTruncated,
-          valTruncated,
-          transferEncoding,
-          mimetype
-        );
       }
     );
 
     busboy.on("finish", async function doneHandlePpaFieldsAndFiles() {
-      console.log(
-        "Done parsing form!",
-        _text,
-        "\n\n media",
-        _media,
-      );
+      console.log("Done parsing form!", _text, "\n\n media", _media);
 
       const __model = db.PPA;
       for (let assoc of Object.keys(__model.associations)) {
@@ -127,18 +111,23 @@ exports.addPPA = (req, res) => {
         }
       }
 
-      db.PPA.create(
-        {
-          name: _text.name,
-          type_of_ppa: _text.category,
-        },
-        {
-          returning: db.PPA.getAllActualAttributes(),
-        }
-      )
+      db.PPA.create({
+        name: _text.name,
+        type_of_ppa: _text.category,
+      })
         .then(
-          (result) => {
-            res.json({ result });
+          async (ppa) => {
+            const _lo = await db.Location.create({
+              address: _text.address,
+              state_lga_id: _text.state_lga_id,
+              state_id: _text.state_id
+            });
+
+            ppa.setLocation(_lo)
+
+            // remove the id
+            delete ppa.dataValues.id;
+            res.json({ ppa });
           },
           (reject) => {
             // very bad
@@ -156,6 +145,6 @@ exports.addPPA = (req, res) => {
     return req.pipe(busboy);
   } catch (error) {
     console.log("what error?", error);
-            res.status(403).json({});
+    res.status(403).json({});
   }
 };

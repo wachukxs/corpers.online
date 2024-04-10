@@ -10,15 +10,15 @@
     "dev": "nodemon --exec 'node ./swagger.js && node --trace-warnings --unhandled-rejections=warn ./index.js'",
     "start:trace-io": "nodemon --trace-sync-io --trace-warnings --unhandled-rejections=warn ./index.js",
     "start": "node ./swagger.js && node --trace-warnings --unhandled-rejections=warn ./index.js",
-    "restart": "yarn run seed:undo:all && yarn run migrate:undo:all && yarn run migrate-db && yarn run seed-db && yarn run dev",
+    "restart": "yarn run seed:down:all && yarn run migrate:down:all && yarn run migrate:up && yarn run seed:up:all && yarn run dev",
     "swagger-autogen": "node ./swagger.js",
-    "migrate-db": "npx sequelize-cli db:migrate",
-    "seed-db": "npx sequelize-cli db:seed:all",
-    "seed:undo": "npx sequelize-cli db:seed:undo",
-    "seed:undo:all": "npx sequelize-cli db:seed:undo:all",
+    "seed:up": "npx sequelize-cli db:seed",
+    "seed:up:all": "npx sequelize-cli db:seed:all",
+    "seed:down": "npx sequelize-cli db:seed:undo",
+    "seed:down:all": "npx sequelize-cli db:seed:undo:all",
     "migrate:up": "npx sequelize-cli db:migrate",
-    "migrate:undo": "npx sequelize-cli db:migrate:undo",
-    "migrate:undo:all": "npx sequelize-cli db:migrate:undo:all"
+    "migrate:down": "npx sequelize-cli db:migrate:undo",
+    "migrate:down:all": "npx sequelize-cli db:migrate:undo:all"
   },
   "engines": {
     "yarn": "1.x",

@@ -18,13 +18,15 @@ module.exports = (sequelize, DataTypes) => {
       Location.hasMany(models.Media, {
         foreignKey: 'location_id'
       })
+
       Location.belongsTo(models.PPA, { // means Location has ppa_id
         foreignKey: 'ppa_id',
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE',
       });
-      Location.hasOne(models.Accommodation, {
-        foreignKey: 'location_id',
+
+      Location.belongsTo(models.Accommodation, {
+        foreignKey: 'accommodation_id',
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE',
       });
@@ -38,10 +40,18 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     },
     ppa_id: {
-      type:DataTypes.INTEGER
+      type:DataTypes.INTEGER,
+      references: {
+        model: 'PPA',
+        key: 'id'
+      }
     },
     accommodation_id: {
-      type:DataTypes.INTEGER
+      type:DataTypes.INTEGER,
+      references: {
+        model: 'Accommodations',
+        key: 'id'
+      }
     },
     type: {
       type: DataTypes.VIRTUAL,
@@ -52,8 +62,28 @@ module.exports = (sequelize, DataTypes) => {
         throw new Error('Do not try to set the Location.`type` value!');
       }
     },
-    directions: DataTypes.TEXT,
-    address: DataTypes.STRING,
+    directions: {
+      type: DataTypes.TEXT, // TODO: There could be a lot of directions (from different places)
+    },
+    address: {
+      type: DataTypes.STRING
+    },
+    state_lga_id: {
+      type: DataTypes.STRING,
+      comment: "Optional",
+      references: {
+        model: 'StateLGAs',
+        key: 'id'
+      }
+    },
+    state_id: {
+      type: DataTypes.STRING,
+      comment: "Optional",
+      references: {
+        model: 'States',
+        key: 'id'
+      }
+    },
     corp_member_id: {
       type: DataTypes.INTEGER,
       references: {

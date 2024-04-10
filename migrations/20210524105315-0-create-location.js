@@ -17,6 +17,12 @@ module.exports = {
       ppa_id: {
         type: Sequelize.INTEGER,
       },
+      state_id: {
+        type: Sequelize.INTEGER
+      },
+      state_lga_id: {
+        type: Sequelize.INTEGER,
+      },
       accommodation_id: {
         type: Sequelize.INTEGER,
       },

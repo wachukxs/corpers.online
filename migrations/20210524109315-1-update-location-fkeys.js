@@ -25,9 +25,29 @@ module.exports = {
     await queryInterface.addConstraint('Locations', {
       type: 'FOREIGN KEY',
       name: 'loc_c_m_id_with_cm_id_bdt',
-      fields: ['corp_member_id'], // TODO: should be state_code (actually, no.)
+      fields: ['corp_member_id'], // TODO: should be state_code (actually, no. state_code can change)
       references: {
         table: 'CorpMembers',
+        field: 'id'
+      },
+    })
+
+    await queryInterface.addConstraint('Locations', {
+      type: 'FOREIGN KEY',
+      name: 'state_id_with_ppa_id_dnn',
+      fields: ['state_id'],
+      references: {
+        table: 'States',
+        field: 'id'
+      },
+    })
+
+    await queryInterface.addConstraint('Locations', {
+      type: 'FOREIGN KEY',
+      name: 'st_lga_id_with_ppa_id_ffd',
+      fields: ['state_lga_id'],
+      references: {
+        table: 'StateLGAs',
         field: 'id'
       },
     })

@@ -1,34 +1,18 @@
 'use strict';
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
-    // Step 1: Create table.
-    await queryInterface.createTable('States', {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER
-      },
-      name: {
-        type: Sequelize.STRING
-      },
-      short_name: {
-        type: Sequelize.STRING
-      },
-      created_at: {
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('CURRENT_TIMESTAMP'), // Sequelize.DataTypes.NOW, // 'CURRENT_TIMESTAMP', // Sequelize.NOW, // DataTypes.NOW
-      },
-      updated_at: {
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('CURRENT_TIMESTAMP'), // Sequelize.DataTypes.NOW, // 'CURRENT_TIMESTAMP', // Sequelize.NOW, // DataTypes.NOW
-      }
-    });
+  async up (queryInterface, Sequelize) {
+    /**
+     * Add seed commands here.
+     *
+     * Example:
+     * await queryInterface.bulkInsert('People', [{
+     *   name: 'John Doe',
+     *   isBetaMember: false
+     * }], {});
+    */
 
-    // Step 2: Insert data.
     /**
      * an array of the NYSC abbreviation standard of all the states in nigeria
      */
@@ -43,7 +27,15 @@ module.exports = {
 
     await queryInterface.bulkInsert("States", insertData);
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('States');
+
+  async down (queryInterface, Sequelize) {
+    /**
+     * Add commands to revert seed here.
+     *
+     * Example:
+     * await queryInterface.bulkDelete('People', null, {});
+     */
+
+    await queryInterface.bulkDelete("States", null)
   }
 };

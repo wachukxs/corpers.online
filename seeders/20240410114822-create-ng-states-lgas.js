@@ -1,39 +1,20 @@
-"use strict";
-const path = require('path');
+'use strict';
+const path = require("path");
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("StateLGAs", {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER,
-      },
-      name: {
-        type: Sequelize.STRING,
-      },
-      state_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: "States",
-          key: "id",
-        },
-      },
-      created_at: {
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.fn("CURRENT_TIMESTAMP"),
-      },
-      updated_at: {
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.fn("CURRENT_TIMESTAMP"),
-      },
-    });
+  async up (queryInterface, Sequelize) {
+    /**
+     * Add seed commands here.
+     *
+     * Example:
+     * await queryInterface.bulkInsert('People', [{
+     *   name: 'John Doe',
+     *   isBetaMember: false
+     * }], {});
+    */
 
-    // Insert data
+        // Insert data
     // Incredible resource https://gist.github.com/chrisidakwo/4ba3a4f03afc442305021be4ca67738e
 
     const statesTableExists = await queryInterface.tableExists("States");
@@ -919,7 +900,15 @@ module.exports = {
       console.error("DID NOT RUN MIRGATION FOR", _FILENAME);
     }
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("StateLGAs");
-  },
+
+  async down (queryInterface, Sequelize) {
+    /**
+     * Add commands to revert seed here.
+     *
+     * Example:
+     * await queryInterface.bulkDelete('People', null, {});
+     */
+
+    await queryInterface.bulkDelete("StateLGAs", null)
+  }
 };

@@ -29,9 +29,11 @@ module.exports = (sequelize, DataTypes) => {
       Accommodation.belongsTo(models.CorpMember, {
         foreignKey: 'corp_member_id',
       })
+
       Accommodation.hasMany(models.Media, { // means Media has accommodation_id
         foreignKey: 'accommodation_id',
       })
+      
       Accommodation.hasOne(models.Location, {
         foreignKey: 'accommodation_id', // TODO: add accommodation_id to Location
       })

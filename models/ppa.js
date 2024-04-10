@@ -21,9 +21,12 @@ module.exports = (sequelize, DataTypes) => {
       PPA.hasMany(models.Media, {
         foreignKey: 'ppa_id'
       })
-      PPA.hasOne(models.Location, {
+
+      // TODO: A PPA can have multiple addresses/location.
+      PPA.hasMany(models.Location, {
         foreignKey: 'ppa_id'
       })
+
       // PPA is source, CorpMember is target (foreign Key is in CorpMember)
       // creates ppa_id in CorpMember
       PPA.hasMany(models.CorpMember, {

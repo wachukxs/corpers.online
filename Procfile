@@ -1,1 +1,1 @@
-web: yarn run seed:undo:all --env=$NODE_ENV && yarn run migrate:undo:all --env=$NODE_ENV && yarn run migrate-db --env=$NODE_ENV && yarn run seed-db --env=$NODE_ENV && yarn run start
+web: yarn run seed:down:all --env=$NODE_ENV && yarn run migrate:down:all --env=$NODE_ENV && yarn run migrate:up --env=$NODE_ENV && yarn run seed:up:all --env=$NODE_ENV && yarn run start

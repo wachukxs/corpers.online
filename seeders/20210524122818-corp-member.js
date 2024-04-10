@@ -1,5 +1,6 @@
 "use strict";
 const { Op } = require("sequelize");
+const { sequelize } = require("../models");
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -15,7 +16,7 @@ module.exports = {
     try {
       await queryInterface.bulkInsert("CorpMembers", [
         {
-          id: 1,
+          id: sequelize.literal("DEFAULT"), // idea from: https://stackoverflow.com/a/66086144/9259701
           last_name: "Obafemi",
           middle_name: null,
           first_name: "Musa",
@@ -26,7 +27,7 @@ module.exports = {
           updated_at: new Date(),
         },
         {
-          id: 2,
+          id: sequelize.literal("DEFAULT"),
           last_name: "King",
           middle_name: null,
           first_name: "George",
@@ -56,9 +57,13 @@ module.exports = {
         await queryInterface.bulkDelete(
           "CorpMembers",
           {
-            id: {
-              [Op.in]: [1, 2],
-            },
+            // delete by email cause there's no absolute guarantee id will always be 1 & 2
+            // id: {
+            //   [Op.in]: [1, 2],
+            // },
+            email: {
+              [Op.in]: ["name@site.com", "chuks@email.com"]
+            }
           },
           {}
         );
