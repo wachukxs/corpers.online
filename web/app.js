@@ -27,7 +27,7 @@ const blogRoutes = require("../controllers/blog");
 
 const corpMemberRoutes = require("../controllers/corpMembers");
 const saleRoutes = require("../controllers/sale");
-const accommodationRoutes = require("../controllers/accommodations");
+const locationRoutes = require("../controllers/location");
 const chatRoutes = require("../controllers/chats");
 
 const testRoutes = require("../controllers/test");
@@ -158,7 +158,7 @@ app.use(cookieParser(process.env.SESSION_SECRET));
 // app.use('/sw.js', express.static('./sw.js'));
 
 // TODO: uncomment when we are ready for swagger and done removing redirects
-// app.use('(/api/v1.0)?', [actionsRoutes, byeRoutes, welcomeRoutes, blogRoutes, corpMemberRoutes, saleRoutes, accommodationRoutes, chatRoutes]);
+// app.use('(/api/v1.0)?', [actionsRoutes, byeRoutes, welcomeRoutes, blogRoutes, corpMemberRoutes, saleRoutes, locationRoutes, chatRoutes]);
 
 app.use("/api/v1.0", [
   actionsRoutes,
@@ -167,7 +167,7 @@ app.use("/api/v1.0", [
   blogRoutes,
   corpMemberRoutes,
   saleRoutes,
-  accommodationRoutes,
+  locationRoutes,
   chatRoutes,
 ]);
 
