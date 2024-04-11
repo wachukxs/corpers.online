@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       States.hasMany(models.StateLGA, {
         foreignKey: 'state_id'
       });
+
     }
   }
   States.init({
@@ -29,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'States',
     timestamps: true,
+    underscored: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
   });

@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
       StateLGA.belongsTo(models.States, {
         foreignKey: 'state_id'
       });
+
+      StateLGA.hasMany(models.Location, {
+        foreignKey: 'state_lga_id'
+      });
     }
   }
   StateLGA.init({
@@ -34,7 +38,9 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'StateLGA',
+    tableName: 'StateLGAs',
     timestamps: true,
+    underscored: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
   });

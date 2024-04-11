@@ -85,9 +85,9 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Media',
     timestamps: true,
     freezeTableName: true,
+    underscored: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
   });
-  // Media.sync({ alter: true })
   return Media;
 };

@@ -19,4 +19,6 @@ router.get('/ng-states/:stateId/lgas', auth.verifyJWT, ppaService.getNigerianSta
 
 router.post('/ppa', auth.verifyJWT, ppaService.addPPA)
 
+router.get('/ppas', auth.verifyJWT, ppaService.getAllPPAs)
+
 module.exports = router;

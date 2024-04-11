@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      
+
       Location.hasMany(models.Media, {
         foreignKey: 'location_id'
       })
@@ -31,6 +31,10 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE',
       });
+
+      Location.belongsTo(models.StateLGA, {
+        foreignKey: 'state_lga_id'
+      })
     }
   };
   Location.init({
@@ -47,6 +51,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
+    // TODO: We should also save coordinates of a location
     accommodation_id: {
       type:DataTypes.INTEGER,
       references: {
@@ -77,14 +82,6 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
-    state_id: {
-      type: DataTypes.STRING,
-      comment: "Optional",
-      references: {
-        model: 'States',
-        key: 'id'
-      }
-    },
     corp_member_id: {
       type: DataTypes.INTEGER,
       references: {
@@ -95,10 +92,10 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Location',
+    underscored: true,
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
   });
-  // Location.sync({ alter: true })
   return Location;
 };

@@ -58,10 +58,10 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'PPA',
     tableName: 'PPA', // or freeze the table name
     timestamps: true,
+    underscored: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
   });
-  // PPA.sync({ alter: true })
   return PPA;
 };
 

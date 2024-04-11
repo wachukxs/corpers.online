@@ -36,18 +36,10 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'WaitList',
     timestamps: true,
+    underscored: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
   });
-  /* WaitList.sync({ alter: true })
-  .then((_done) => {
-    console.log(`Done syncing ${WaitList.tableName}`);
-  }, (_err) => {
-    console.error(`err syncing ${WaitList.tableName}:\n\n`, _err);
-  })
-  .catch(_reason => {
-    console.error(`caught this error while syncing ${WaitList.tableName} table:\n\n`, _reason);
-  }) */
   
   return WaitList;
 };

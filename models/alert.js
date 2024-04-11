@@ -82,9 +82,9 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Alert',
     timestamps: true,
+    underscored: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
   });
-  // Alert.sync({ alter: true })
   return Alert;
 };

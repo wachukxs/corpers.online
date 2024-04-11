@@ -105,22 +105,19 @@ exports.addPPA = (req, res) => {
             {
               address: _text.address,
               state_lga_id: _text.state_lga_id,
-              state_id: _text.state_id,
             },
           ],
         },
         {
-          include: [ { association: 'Locations'} ],
+          include: [{ association: "Locations" }],
         }
       )
         .then(
           async (ppa) => {
             // remove the ppa id
-            // delete ppa.dataValues.id; // maybe not
             res.json({ ppa });
           },
           (reject) => {
-            // very bad
             console.log("what error?", reject);
             res.status(403).json({});
           }
@@ -137,4 +134,34 @@ exports.addPPA = (req, res) => {
     console.log("what error?", error);
     res.status(403).json({});
   }
+};
+
+exports.getAllPPAs = (req, res) => {
+  const _FUNCTIONNAME = "getAllPPAs";
+  console.log("hitting", _FILENAME, _FUNCTIONNAME);
+
+  return db.PPA.findAll({
+    include: [
+      {
+        model: db.Location,
+        include: [{ model: db.StateLGA, include: [{ model: db.States },] }],
+      },
+    ],
+  })
+    .then(
+      (ppas) => {
+        // console.log("re:", states);
+        res.send({
+          ppas,
+        });
+      },
+      (error) => {
+        console.error(_FUNCTIONNAME, "error happened", error);
+        res.sendStatus(500);
+      }
+    )
+    .catch((reason) => {
+      console.error("catching this err because:", reason);
+      res.sendStatus(500);
+    });
 };

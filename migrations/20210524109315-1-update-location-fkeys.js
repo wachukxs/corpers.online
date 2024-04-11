@@ -32,15 +32,6 @@ module.exports = {
       },
     })
 
-    await queryInterface.addConstraint('Locations', {
-      type: 'FOREIGN KEY',
-      name: 'state_id_with_ppa_id_dnn',
-      fields: ['state_id'],
-      references: {
-        table: 'States',
-        field: 'id'
-      },
-    })
 
     await queryInterface.addConstraint('Locations', {
       type: 'FOREIGN KEY',
@@ -56,6 +47,7 @@ module.exports = {
   down: async (queryInterface, Sequelize) => {
     await queryInterface.removeConstraint('Locations', 'loc_ppa_p_id_with_ppa_id_ddt');
     await queryInterface.removeConstraint('Locations', 'loc_acc_id_with_ppa_id_xyz');
-    await queryInterface.removeConstraint('Locations', 'loc_c_m_id_with_cm_id_bdt'); 
+    await queryInterface.removeConstraint('Locations', 'loc_c_m_id_with_cm_id_bdt');
+    await queryInterface.removeConstraint('Locations', 'st_lga_id_with_ppa_id_ffd');
   }
 };

@@ -74,9 +74,9 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Chat',
     timestamps: true,
+    underscored: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
   });
-  // Chat.sync({ alter: true })
   return Chat;
 };

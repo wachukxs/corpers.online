@@ -194,6 +194,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'CorpMember',
     timestamps: true,
+    underscored: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
     hooks: { // used to add virtual fields to dataValues object
@@ -223,16 +224,6 @@ module.exports = (sequelize, DataTypes) => {
       },
     }
   });
-  /* CorpMember.sync({ force: true })
-  .then((_done) => {
-    console.log(`Done syncing ${CorpMember.tableName}`);
-  }, (_err) => {
-    console.error(`err syncing ${CorpMember.tableName}:\n\n`, _err);
-  })
-  .catch(_reason => {
-    // catches .VIRTUAL data type when altering db
-    console.error(`caught this error while syncing ${CorpMember.tableName} table:\n\n`, _reason);
-  }) */
   return CorpMember;
 };
 

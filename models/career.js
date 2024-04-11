@@ -51,10 +51,10 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Career',
     timestamps: true,
+    underscored: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
     // comment: 'What are we using this for again?'
   });
-  // Career.sync({ alter: true })
   return Career;
 };

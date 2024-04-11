@@ -125,9 +125,9 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Accommodation',
     timestamps: true,
+    underscored: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
   });
-  // Accommodation.sync({ alter: true })
   return Accommodation;
 };
