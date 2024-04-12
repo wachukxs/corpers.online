@@ -10,9 +10,11 @@ module.exports = {
       },
       corp_member_id: {
         type: Sequelize.INTEGER,
+        allowNull: false,
       },
       item_name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       media_id: {
         type: Sequelize.INTEGER,
@@ -21,7 +23,8 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       price: {
-        type: Sequelize.FLOAT
+        type: Sequelize.FLOAT,
+        allowNull: false,
       },
       text: {
         type: Sequelize.TEXT

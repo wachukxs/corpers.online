@@ -28,7 +28,10 @@ module.exports = (sequelize, DataTypes) => {
     room: {
       type: DataTypes.STRING
     },
-    message: DataTypes.TEXT,
+    message: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
     message_from: {
       type: DataTypes.STRING,
       references: { // TODO: should reference the id.
