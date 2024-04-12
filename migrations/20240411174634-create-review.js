@@ -21,7 +21,8 @@ module.exports = {
         type: Sequelize.TEXT
       },
       star_rating: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        comment: "Rating out of 5"
       },
       ppa_id: {
         type: Sequelize.INTEGER,

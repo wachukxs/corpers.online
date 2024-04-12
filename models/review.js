@@ -22,8 +22,13 @@ module.exports = (sequelize, DataTypes) => {
       },
       allowNull: false
     },
-    comment: DataTypes.TEXT,
-    star_rating: DataTypes.INTEGER,
+    comment: {
+      type: DataTypes.TEXT
+    },
+    star_rating: {
+      type: DataTypes.INTEGER,
+      comment: "Rating out of 5"
+    },
     ppa_id: {
       type: DataTypes.INTEGER,
       references: {
