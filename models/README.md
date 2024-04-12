@@ -18,3 +18,6 @@ for (let assoc of Object.keys(__model.associations)) {
   }
 }
 ```
+
+TODO
+* Use transactions to run migrations as show in the [sample code](https://sequelize.org/docs/v6/other-topics/migrations/).

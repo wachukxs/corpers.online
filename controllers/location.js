@@ -21,4 +21,6 @@ router.post('/ppa', auth.verifyJWT, ppaService.addPPA)
 
 router.get('/ppas', auth.verifyJWT, ppaService.getAllPPAs)
 
+router.post('/ppa/review', auth.verifyJWT, express.json(), ppaService.addReviewToPPA)
+
 module.exports = router;

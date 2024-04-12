@@ -54,7 +54,11 @@ module.exports = (sequelize, DataTypes) => {
       type:DataTypes.INTEGER
     },
     corp_member_id: {
-      type:DataTypes.INTEGER
+      type:DataTypes.INTEGER,
+      references: {
+        model: 'CorpMembers',
+        key: 'id'
+      }
     },
     chat_id: {
       type:DataTypes.INTEGER

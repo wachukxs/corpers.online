@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
     message: DataTypes.TEXT,
     message_from: {
       type: DataTypes.STRING,
-      references: {
+      references: { // TODO: should reference the id.
         model: 'CorpMembers',
         key: 'state_code'
       }

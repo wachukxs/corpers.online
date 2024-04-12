@@ -98,7 +98,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
     },
     corp_member_id: {
-      type: DataTypes.STRING
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'CorpMembers',
+        key: 'id'
+      }
     },
     location_id: {
       type:DataTypes.INTEGER

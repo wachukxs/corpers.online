@@ -165,3 +165,37 @@ exports.getAllPPAs = (req, res) => {
       res.sendStatus(500);
     });
 };
+
+exports.addReviewToPPA = (req, res) => {
+  try {
+    const _FUNCTIONNAME = "addReviewToPPA";
+    console.log("hitting", _FILENAME, _FUNCTIONNAME);
+      // todo: Do validation here.
+
+      console.log('corper id', req.session.corper);
+      db.Review.create(
+        {
+          corp_member_id: req.session.corper.id,
+          comment: req.body.comment,
+          star_rating: req.body.star_rating,
+          ppa_id: req.body.ppa_id
+        },
+      )
+        .then(
+          async (review) => {
+            res.json({ review });
+          },
+          (reject) => {
+            console.log("what error?", reject);
+            res.status(403).json({});
+          }
+        )
+        .catch((reason) => {
+          console.log("why did you fail?", reason);
+          res.status(403).json({});
+        });
+  } catch (error) {
+    console.log("what error?", error);
+    res.status(403).json({});
+  }
+};

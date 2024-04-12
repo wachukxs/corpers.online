@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
     corp_member_id: {
       type:DataTypes.STRING,
       references: {
-        model: 'CorpMembers', // added 's'. The exact Table name should be here.
+        model: 'CorpMembers',
         key: 'id'
       }
     }, // need it ?

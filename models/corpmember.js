@@ -193,6 +193,7 @@ module.exports = (sequelize, DataTypes) => {
     comment: "Corp Member Table - For everything we can store about corp members",
     sequelize,
     modelName: 'CorpMember',
+    tableName: 'CorpMembers',
     timestamps: true,
     underscored: true,
     createdAt: 'created_at',

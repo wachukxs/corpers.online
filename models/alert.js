@@ -36,7 +36,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING
     },
     corp_member_id: {
-      type: DataTypes.INTEGER
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'CorpMembers',
+        key: 'id'
+      }
     },
     minimum_price: { // should we move to attaching currency symbol from the back end ?
       type: DataTypes.INTEGER

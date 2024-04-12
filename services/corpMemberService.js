@@ -49,7 +49,8 @@ exports.create = (req, res) => {
       // TODO: should expire and we should have a refresh token
       jwt.sign({
         state_code: req.body.state_code.toUpperCase(),
-        email: req.body.email.toLowerCase()
+        email: req.body.email.toLowerCase(),
+        corp_member_id: result.id
       }, process.env.SESSION_SECRET, (err, token) => {
         if (err) {
           console.error('sign up err', err)
@@ -204,18 +205,20 @@ exports.login = (req, res) => {
       // password match
       if (result?.dataValues?.password === req.body?.password) {
         console.log(chalk.bgGreen('login we good'));
+        
+        req.session.corper = result
+        jwt.sign({
+          state_code: result.state_code,
+          email: result.email,
+          corp_member_id: result.id
+        }, process.env.SESSION_SECRET, (err, token) => {
         /**
          * delete the password and id.
          * (won't work without the .dataValues)
          */
         delete result.dataValues.password
-        delete result.dataValues.id
-        
-        req.session.corper = result
-        jwt.sign({
-          state_code: result.state_code,
-          email: result.email
-        }, process.env.SESSION_SECRET, (err, token) => {
+        // delete result.dataValues.id // (maybe) not delete this, it deletes from session too
+          
           if (err) { // throw err // no throw of errors
             console.error(err)
             return res.sendStatus(500)
