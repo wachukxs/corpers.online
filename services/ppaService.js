@@ -208,6 +208,7 @@ exports.searchPPAs = (req, res) => {
 
   const { searchText } = req.body;
 
+  // TODO: Convert both to lowercase.
   db.PPA.findAll({
     where: {
       [Op.or]: [
@@ -221,14 +222,26 @@ exports.searchPPAs = (req, res) => {
             [Op.like]: `%${searchText}%`,
           },
         },
+        // docs: https://sequelize.org/docs/v6/advanced-association-concepts/eager-loading/#complex-where-clauses-at-the-top-level
+        {
+          "$Locations.address$": {
+            [Op.like]: `%${searchText}%`
+          }
+        }
       ],
     },
     include: [
       {
         model: db.Media,
+        attributes: {
+          exclude: ['accommodation_id', 'chat_id', 'corp_member_id', 'sale_id']
+        }
       },
       {
         model: db.Location,
+        attributes: {
+          exclude: ['accommodation_id', 'corp_member_id']
+        }
       },
     ],
   })
