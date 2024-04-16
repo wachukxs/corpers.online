@@ -199,3 +199,14 @@ exports.addReviewToPPA = (req, res) => {
     res.status(403).json({});
   }
 };
+
+/**
+ * This is a temporary service method.
+ * @param {*} req 
+ * @param {*} res 
+ */
+exports.searchPPAs = (req, res) => {
+  console.log('searching', req.body);
+  
+  res.sendStatus(200)
+}

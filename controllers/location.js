@@ -19,7 +19,12 @@ router.get('/ng-states/:stateId/lgas', auth.verifyJWT, ppaService.getNigerianSta
 
 router.post('/ppa', auth.verifyJWT, ppaService.addPPA)
 
-router.get('/ppas', auth.verifyJWT, ppaService.getAllPPAs)
+/**
+ * You don't need to be logged in to view PPAs
+ */
+router.get('/ppas', ppaService.getAllPPAs)
+
+router.post('/ppas/search', express.json(), ppaService.searchPPAs)
 
 router.post('/ppa/review', auth.verifyJWT, express.json(), ppaService.addReviewToPPA)
 
