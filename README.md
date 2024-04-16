@@ -8,6 +8,7 @@ Firstly for the people in khaki, then for the green and white people, then for a
 
 ## Roadmap and TODOs
 * Remove config/config.json and config.js from git history and repo
+* Have color coded logs/log messages.
 * Get a list of API best practices we need to follow.
   * Like using /api/v2/ etc.
 * ~~footer and header should be their own pages and automatically embedded.~~ 🚫

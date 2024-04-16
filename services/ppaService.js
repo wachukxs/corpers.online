@@ -144,7 +144,7 @@ exports.getAllPPAs = (req, res) => {
     include: [
       {
         model: db.Location,
-        include: [{ model: db.StateLGA, include: [{ model: db.States },] }],
+        include: [{ model: db.StateLGA, include: [{ model: db.States }] }],
       },
     ],
   })
@@ -170,30 +170,28 @@ exports.addReviewToPPA = (req, res) => {
   try {
     const _FUNCTIONNAME = "addReviewToPPA";
     console.log("hitting", _FILENAME, _FUNCTIONNAME);
-      // todo: Do validation here.
+    // todo: Do validation here.
 
-      console.log('corper id', req.session.corper);
-      db.Review.create(
-        {
-          corp_member_id: req.session.corper.id,
-          comment: req.body.comment,
-          star_rating: req.body.star_rating,
-          ppa_id: req.body.ppa_id
+    console.log("corper id", req.session.corper);
+    db.Review.create({
+      corp_member_id: req.session.corper.id,
+      comment: req.body.comment,
+      star_rating: req.body.star_rating,
+      ppa_id: req.body.ppa_id,
+    })
+      .then(
+        async (review) => {
+          res.json({ review });
         },
-      )
-        .then(
-          async (review) => {
-            res.json({ review });
-          },
-          (reject) => {
-            console.log("what error?", reject);
-            res.status(403).json({});
-          }
-        )
-        .catch((reason) => {
-          console.log("why did you fail?", reason);
+        (reject) => {
+          console.log("what error?", reject);
           res.status(403).json({});
-        });
+        }
+      )
+      .catch((reason) => {
+        console.log("why did you fail?", reason);
+        res.status(403).json({});
+      });
   } catch (error) {
     console.log("what error?", error);
     res.status(403).json({});
@@ -202,11 +200,51 @@ exports.addReviewToPPA = (req, res) => {
 
 /**
  * This is a temporary service method.
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 exports.searchPPAs = (req, res) => {
-  console.log('searching', req.body);
-  
-  res.sendStatus(200)
-}
+  console.log("searching", req.body);
+
+  const { searchText } = req.body;
+
+  db.PPA.findAll({
+    where: {
+      [Op.or]: [
+        {
+          name: {
+            [Op.like]: `%${searchText}%`,
+          },
+        },
+        {
+          type_of_ppa: {
+            [Op.like]: `%${searchText}%`,
+          },
+        },
+      ],
+    },
+    include: [
+      {
+        model: db.Media,
+      },
+      {
+        model: db.Location,
+      },
+    ],
+  })
+    .then(
+      (ppas) => {
+        console.log("\"%s\" search term yielded %d results!", searchText, ppas?.length);
+
+        res.json({ ppas });
+      },
+      (reject) => {
+        res.status(500).json();
+        console.error("uhmmmm not good", reject);
+      }
+    )
+    .catch((reject) => {
+      console.error("is this the error ?", reject);
+      res.status(500).json();
+    });
+};

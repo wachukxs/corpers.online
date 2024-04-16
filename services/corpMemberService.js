@@ -962,7 +962,6 @@ exports.getPosts = (req, res) => {
       {
         model: db.Media,
         // as: 'saleMedia',
-
       },
       {
         model: db.CorpMember,
