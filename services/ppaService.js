@@ -150,7 +150,6 @@ exports.getAllPPAs = (req, res) => {
   })
     .then(
       (ppas) => {
-        // console.log("re:", states);
         res.send({
           ppas,
         });
@@ -225,39 +224,64 @@ exports.searchPPAs = (req, res) => {
         // docs: https://sequelize.org/docs/v6/advanced-association-concepts/eager-loading/#complex-where-clauses-at-the-top-level
         {
           "$Locations.address$": {
-            [Op.like]: `%${searchText}%`
-          }
-        }
+            [Op.like]: `%${searchText}%`,
+          },
+        },
       ],
     },
     include: [
       {
         model: db.Media,
         attributes: {
-          exclude: ['accommodation_id', 'chat_id', 'corp_member_id', 'sale_id']
-        }
+          exclude: [
+            "accommodation_id",
+            "chat_id",
+            "corp_member_id",
+            "sale_id",
+            "location_id",
+          ],
+        },
       },
       {
         model: db.Location,
         attributes: {
-          exclude: ['accommodation_id', 'corp_member_id']
-        }
+          exclude: ["accommodation_id", "corp_member_id"],
+        },
+        // This included Media might be redundant, but the case for it is if this location have Media that the PPA doesn't have.
+        include: [
+          {
+            model: db.Media,
+            attributes: {
+              exclude: [
+                "accommodation_id",
+                "chat_id",
+                "corp_member_id",
+                "sale_id",
+                "location_id",
+              ],
+            },
+          },
+        ],
       },
     ],
   })
     .then(
       (ppas) => {
-        console.log("\"%s\" search term yielded %d results!", searchText, ppas?.length);
+        console.log(
+          '"%s" search term yielded %d results!',
+          searchText,
+          ppas?.length
+        );
 
         res.json({ ppas });
       },
       (reject) => {
-        res.status(500).json();
+        res.status(500).json({});
         console.error("uhmmmm not good", reject);
       }
     )
     .catch((reject) => {
       console.error("is this the error ?", reject);
-      res.status(500).json();
+      res.status(500).json({});
     });
 };
