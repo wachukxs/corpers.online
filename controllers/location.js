@@ -14,18 +14,21 @@ router.post('/accommodations', auth.verifyJWT, /* upload.array('see', 12), expre
 
 router.post('/updateaccommodation', auth.verifyJWT, accommodationService.update) // do alerts here too
 
-router.get('/ng-states', auth.verifyJWT, ppaService.getNigerianStates)
-router.get('/ng-states/:stateId/lgas', auth.verifyJWT, ppaService.getNigerianStateLGAs)
-
 router.post('/ppa', auth.verifyJWT, ppaService.addPPA)
+router.post('/ppa/review', auth.verifyJWT, express.json(), ppaService.addReviewToPPA)
 
 /**
  * You don't need to be logged in to view PPAs
+ * Or list states & LGAs
+ * 
+ * GROUP UNAUTHENTICATED ROUTES TOGETHER!
+ * For easy identification
  */
 router.get('/ppas', ppaService.getAllPPAs)
 
 router.post('/ppas/search', express.json(), ppaService.searchPPAs)
+router.get('/ng-states', ppaService.getNigerianStates)
+router.get('/ng-states/:stateId/lgas', ppaService.getNigerianStateLGAs)
 
-router.post('/ppa/review', auth.verifyJWT, express.json(), ppaService.addReviewToPPA)
 
 module.exports = router;

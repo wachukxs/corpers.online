@@ -1173,67 +1173,6 @@
         }
       }
     },
-    "/api/v1.0/ng-states": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          },
-          "502": {
-            "description": "Bad Gateway"
-          }
-        }
-      }
-    },
-    "/api/v1.0/ng-states/{stateId}/lgas": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "stateId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "Authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          },
-          "502": {
-            "description": "Bad Gateway"
-          }
-        }
-      }
-    },
     "/api/v1.0/ppa": {
       "post": {
         "description": "",
@@ -1242,6 +1181,50 @@
             "name": "Authorization",
             "in": "header",
             "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "502": {
+            "description": "Bad Gateway"
+          }
+        }
+      }
+    },
+    "/api/v1.0/ppa/review": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "comment": {
+                  "example": "any"
+                },
+                "star_rating": {
+                  "example": "any"
+                },
+                "ppa_id": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -1300,46 +1283,39 @@
         }
       }
     },
-    "/api/v1.0/ppa/review": {
-      "post": {
+    "/api/v1.0/ng-states": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1.0/ng-states/{stateId}/lgas": {
+      "get": {
         "description": "",
         "parameters": [
           {
-            "name": "Authorization",
-            "in": "header",
+            "name": "stateId",
+            "in": "path",
+            "required": true,
             "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "comment": {
-                  "example": "any"
-                },
-                "star_rating": {
-                  "example": "any"
-                },
-                "ppa_id": {
-                  "example": "any"
-                }
-              }
-            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
           },
-          "401": {
-            "description": "Unauthorized"
+          "400": {
+            "description": "Bad Request"
           },
-          "403": {
-            "description": "Forbidden"
-          },
-          "502": {
-            "description": "Bad Gateway"
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
