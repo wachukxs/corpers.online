@@ -169,9 +169,9 @@ exports.addReviewToPPA = (req, res) => {
   try {
     const _FUNCTIONNAME = "addReviewToPPA";
     console.log("hitting", _FILENAME, _FUNCTIONNAME);
-    // todo: Do validation here.
+    // TODO: Do validation here.
 
-    console.log("corper id", req.session.corper);
+    console.log("corper id", req.session?.corper?.id);
     db.Review.create({
       corp_member_id: req.session.corper.id,
       comment: req.body.comment,
