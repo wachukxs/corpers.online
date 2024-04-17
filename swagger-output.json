@@ -1243,19 +1243,6 @@
         }
       }
     },
-    "/api/v1.0/ppas": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
     "/api/v1.0/ppas/search": {
       "post": {
         "description": "",
@@ -1273,6 +1260,19 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1.0/ppas": {
+      "get": {
+        "description": "",
         "responses": {
           "200": {
             "description": "OK"

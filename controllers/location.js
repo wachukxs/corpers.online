@@ -24,9 +24,8 @@ router.post('/ppa/review', auth.verifyJWT, express.json(), ppaService.addReviewT
  * GROUP UNAUTHENTICATED ROUTES TOGETHER!
  * For easy identification
  */
-router.get('/ppas', ppaService.getAllPPAs)
-
 router.post('/ppas/search', express.json(), ppaService.searchPPAs)
+router.get('/ppas', ppaService.getAllPPAs)
 router.get('/ng-states', ppaService.getNigerianStates)
 router.get('/ng-states/:stateId/lgas', ppaService.getNigerianStateLGAs)
 
