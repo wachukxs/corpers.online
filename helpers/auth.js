@@ -5,6 +5,18 @@ const helpers = require("../utilities/helpers");
 const path = require("path");
 const _FILENAME = path.basename(__filename);
 
+/**
+ * function to query corp member details used to populate session.corper object.
+ * @param {string} email 
+ * @returns CorpMember
+ */
+const getCorpMemberDetails = (email) => {
+  return db.CorpMember.findOne({
+    where: { email },
+    attributes: db.CorpMember.getSafeAttributes(),
+  });
+};
+
 // FORMAT OF TOKEN
 // Authorization: Bearer <access_token>
 module.exports.verifyToken = (req, res, next) => {
@@ -64,8 +76,28 @@ module.exports.verifyJWT = (req, res, next) => {
           res.status(502).json();
         } else {
           console.log("decoded token data", decodedToken);
-          // TODO: Populate the session object.
-          next();
+          // Populate the session object.
+          getCorpMemberDetails(decodedToken.email)
+            .then(
+              (result) => {
+                if (result) {
+                  req.session.corper = result;
+                  next();
+                } else {
+                  console.error("Could not find corper");
+                  res.status(401).json();
+                }
+              },
+              (reject) => {
+                console.log(_FUNCTIONNAME, "reject this err because:", reject);
+                res.status(502).json();
+              }
+            )
+            .catch((reason) => {
+              console.log(_FUNCTIONNAME, "catching this err because:", reason);
+              // TODO: maybe send response type based on request Accept header.
+              res.status(502).json();
+            });
         }
       }
     );
@@ -85,10 +117,7 @@ module.exports.verifyJWT = (req, res, next) => {
       } else {
         console.log("decoded token data", decodedToken);
         // Populate the session object.
-        db.CorpMember.findOne({
-          where: { email: decodedToken.email },
-          attributes: db.CorpMember.getSafeAttributes(),
-        })
+        getCorpMemberDetails(decodedToken.email)
           .then(
             (result) => {
               if (result) {
@@ -96,11 +125,11 @@ module.exports.verifyJWT = (req, res, next) => {
                 next();
               } else {
                 console.error("Could not find corper");
-                res.status(502).json();
+                res.status(401).json();
               }
             },
             (reject) => {
-              console.log("auth auto login reject, this err because:", reject);
+              console.log(_FUNCTIONNAME, "reject this err because:", reject);
               res.status(502).json();
             }
           )
@@ -118,6 +147,8 @@ module.exports.verifyJWT = (req, res, next) => {
 
 /**
  *
+ * Not in use in the mean-time. Might be depreciated later.
+ *
  * @param {object} req
  * http req object
  * @param {object} res
@@ -126,7 +157,7 @@ module.exports.verifyJWT = (req, res, next) => {
  * next() to continue execution
  *
  * @description
- * middleware to check jwt cookies in req object, to provide better servies to corpers.
+ * middleware to check jwt cookies in req object, to provide better services to corpers.
  * In pages like /search, helping to pre-populate corper object
  */
 module.exports.checkJWT = (req, res, next) => {
@@ -208,6 +239,9 @@ module.exports.createJWT = (state_code) => {
  * Might delete later
  */
 module.exports.refreshToken = () => {
+  const _FUNCTIONNAME = "refreshToken";
+  console.log("hitting", _FILENAME, _FUNCTIONNAME);
+  
   db.CorpMember.findOne({
     where: { state_code: decodedToken.state_code.toUpperCase() },
     // include: [{ all: true }],
