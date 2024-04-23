@@ -64,7 +64,7 @@ router.get('/allstateslgas', function (req, res) {
   res.set('Content-Type', 'application/json');
   fs.readFile('places.json', (err, data) => {
     if (err) {
-      res.sendStatus(500)
+      res.status(500).json(null)
     } else {
       let jkl = JSON.parse(data);
       // let's hope there's no err
@@ -78,9 +78,9 @@ router.get('/allppas', function (req, res) {
   query.AllPPAs().then(result => {
     res.send(result);
   }, reject => {
-    res.sendStatus(500);
+    res.status(500).json(null);
   }).catch(error => {
-    res.sendStatus(500);
+    res.status(500).json(null);
   })
 
 });
@@ -107,10 +107,10 @@ router.get('/oldsearch', auth.checkJWT, function (req, res) {
     res.render('pages/search', result)
   }, reject => {
     console.info(reject)
-    res.sendStatus(500);
+    res.status(500).json(null);
   }).catch(error => {
     console.error('/search', error)
-    res.sendStatus(500);
+    res.status(500).json(null);
   })
 
 });
@@ -203,15 +203,12 @@ router.post('/sayhi', /* bodyParser.urlencoded({
 }), */ function (req, res) {
     console.log('the message', req.body);
     if (helpers.isEmpty(req.body.message)) {
-      // console.log('empty');
-      res.sendStatus(406); // returns Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
-      // res.render('pages/404');
+      res.status(406).json(null);
     } else {
-      // console.log('NOT empthy');
       pool.query("INSERT INTO feedbacks ( message ) VALUES (" + pool.escape(req.body.message) + ")", function (error, results, fields) {
         if (error) throw error;
         else if (results.affectedRows === 1) {
-          res.sendStatus(200);
+          res.status(200).json(null);
         }
       });
 
@@ -235,11 +232,11 @@ router.post('/contact', function (req, res) {
 
     busboy.on('close', async function () {
       query.GiveFeedback(_feedback_data).then(result => {
-        res.sendStatus(200);
+        res.status(200).json(null);
       }, reject => {
-        res.sendStatus(500);
+        res.status(500).json(null);
       }).catch(error => {
-        res.sendStatus(500);
+        res.status(500).json(null);
       })
 
      })
@@ -252,7 +249,7 @@ router.post('/contact', function (req, res) {
       if (error) throw error;
 
       if (results.affectedRows === 1) {
-        res.sendStatus(200);
+        res.status(200).json(null);
       }
     }); */
 });
@@ -263,9 +260,9 @@ router.get('/oldposts', auth.verifyJWT, function (req, res) {
   query.GetPosts(req).then(result => {
     res.status(200).send(result);
   }, reject => {
-    res.sendStatus(500);
+    res.status(500).json(null);
   }).catch(error => {
-    res.sendStatus(500);
+    res.status(500).json(null);
   })
   // res.status(200).send({ data: ["ghfc ty", "rewfhb iwre", "hblg er ieur\n\nthat apostrophe", "The happening place in Abia is NCCF!", "Well and NACC too. But NCCF would Never die!!!", "dsaf df asd", "5u96y j94938\nfdsig eor\n\ndfsnhgu es9rgre\n\ndsigj90e9re", "gfh r", "gejge rniog eoigrioerge ", "gf er rg erg", "fdg erei sug serugeis gr  \n\n\n\n\nThis", "test df gf byyyyyyyyy mee", "Okay. ", "This is it. And yep.", "I could sing. ... Oh"] });
 });
@@ -517,13 +514,13 @@ router.post('/oldupdateaccommodation', auth.verifyJWT, function (req, res) {
     .then(result => {
       
       console.log('updated accommodation', result);
-      res.sendStatus(200);
+      res.status(200).json(null);
     }, reject => {
       console.error('update acc reject what happened?', reject)
-      res.sendStatus(500);
+      res.status(500).json(null);
     }).catch((err) => { // we should have this .catch on every query
       console.error('update acc, our system should\'ve crashed:', err)
-      res.sendStatus(502) // we should tell you an error occured
+      res.status(502).json(null) // we should tell you an error occured
     })
    })
 
@@ -550,13 +547,13 @@ router.post('/oldupdatesale', auth.verifyJWT, function (req, res) {
   busboy.on('close', async function () {
     // console.log('we done?')
     query.UpdateSale(_sale_data).then(result => {
-      res.sendStatus(200);
+      res.status(200).json(null);
     }, reject => {
       console.error('update sale what happened?', reject)
-      res.sendStatus(500); // [e]dit=[y]es|[n]o
+      res.status(500).json(null); // [e]dit=[y]es|[n]o
     }).catch((err) => { // we should have this .catch on every query
       console.error('our system should\'ve crashed:', err)
-      res.sendStatus(502) // we should tell you an error occured
+      res.status(502).json(null) // we should tell you an error occured
     })
    })
 
@@ -583,13 +580,13 @@ router.post('/olddeleteaccommodation', auth.verifyJWT, function (req, res) {
   busboy.on('close', async function () {
     // console.log('we done?')
     query.DeleteAccommodation([_accommodation_data.post_time, req.session.corper.state_code.toUpperCase()]).then(result => {
-      res.sendStatus(200);
+      res.status(200).json(null);
     }, reject => {
       console.error('delete acc what happened?', reject)
-      res.sendStatus(500); // [e]dit=[y]es|[n]o
+      res.status(500).json(null); // [e]dit=[y]es|[n]o
     }).catch((err) => { // we should have this .catch on every query
       console.error('our system should\'ve crashed:', err)
-      res.sendStatus(502) // we should tell you an error occured
+      res.status(502).json(null) // we should tell you an error occured
     })
    })
 
@@ -617,13 +614,13 @@ router.post('/deletesale', auth.verifyJWT, function (req, res) {
   busboy.on('close', async function () {
     // console.log('we done?')
     query.DeleteSale([_sale_data.post_time, req.session.corper.state_code.toUpperCase()]).then(result => {
-      res.sendStatus(200);
+      res.status(200).json(null);
     }, reject => {
       console.error('delete sale what happened?', reject)
-      res.sendStatus(500); // [e]dit=[y]es|[n]o
+      res.status(500).json(null); // [e]dit=[y]es|[n]o
     }).catch((err) => { // we should have this .catch on every query
       console.error('our system should\'ve crashed:', err)
-      res.sendStatus(502) // we should tell you an error occured
+      res.status(502).json(null) // we should tell you an error occured
     })
    })
 
@@ -638,10 +635,10 @@ router.post('/addplace', upload.none(), function (req, res) {
     query.AddPlace(req.body).then(result => {
       res.status(200).send('OK');
     }, reject => {
-      res.sendStatus(500);
+      res.status(500).json(null);
     }).catch(reason => {
       // we hope we never get here
-      res.sendStatus(500)
+      res.status(500).json(null)
     })
   } else {
     // send empty response feedback
@@ -818,7 +815,7 @@ router.post('/oldaccommodations', auth.verifyJWT, /* upload.array('roomsmedia', 
       }
       query.InsertRowInAccommodationsTable(acc_data).then(resolve => {
         // then status code is good
-        res.sendStatus(200);
+        res.status(200).json(null);
   
         // console.log('me before you', moment(Number(_text.post_time)).fromNow(), _text.post_time);
   
@@ -847,10 +844,10 @@ router.post('/oldaccommodations', auth.verifyJWT, /* upload.array('roomsmedia', 
           }
         });
       }, reject => {
-        res.sendStatus(500);
+        res.status(500).json(null);
       }).catch((reason) => {
         console.error('what happened?', reason)
-        res.sendStatus(500)
+        res.status(500).json(null)
       })
 
     } else if (!helpers.isEmpty(_text) && !helpers.isEmpty(uploadPromise)) {
@@ -874,7 +871,7 @@ router.post('/oldaccommodations', auth.verifyJWT, /* upload.array('roomsmedia', 
         roommate_you: (_text.roommate_you ? _text.roommate_you : ''),
         roommate_type: (_text.roommate_type ? _text.roommate_type : '')
       }).then(result => {
-        res.sendStatus(200);
+        res.status(200).json(null);
 
         console.log('me before you', moment(Number(_text.post_time)).fromNow(), _text.post_time);
         console.log('price', _text.price);
@@ -905,10 +902,10 @@ router.post('/oldaccommodations', auth.verifyJWT, /* upload.array('roomsmedia', 
         });
       }, reject => { // give proper feedback based on error
         console.log('insert row didn\'t work', reject);
-        res.sendStatus(500);
+        res.status(500).json(null);
       }).catch(reason => {
         console.log('insert row failed', reason);
-        res.sendStatus(500)
+        res.status(500).json(null)
       })
 
     }
@@ -981,7 +978,7 @@ router.post('/oldaccommodations', auth.verifyJWT, /* upload.array('roomsmedia', 
               post_time: req.body.post_time,
               acc_geodata: (req.body.acc_geodata ? req.body.acc_geodata : '')
             }).then(result => {
-              res.sendStatus(200);
+              res.status(200).json(null);
 
               console.log('me before you', moment(Number(req.body.post_time)).fromNow(), req.body.post_time);
               console.log('price', req.body.price);
@@ -1007,10 +1004,10 @@ router.post('/oldaccommodations', auth.verifyJWT, /* upload.array('roomsmedia', 
                 }
               });
             }, reject => {
-              res.sendStatus(500);
+              res.status(500).json(null);
             }).catch(reason => {
               console.log('insert row failed', reason);
-              res.sendStatus(500)
+              res.status(500).json(null)
             })
 
 
@@ -1048,7 +1045,7 @@ router.post('/oldaccommodations', auth.verifyJWT, /* upload.array('roomsmedia', 
       acc_geodata: (req.body.acc_geodata ? req.body.acc_geodata : '')
     }).then(resolve => {
       // then status code is good
-      res.sendStatus(200);
+      res.status(200).json(null);
 
       console.log('me before you', moment(Number(req.body.post_time)).fromNow(), req.body.post_time);
 
@@ -1074,32 +1071,13 @@ router.post('/oldaccommodations', auth.verifyJWT, /* upload.array('roomsmedia', 
         }
       });
     }, reject => {
-      res.sendStatus(500);
+      res.status(500).json(null);
     }).catch((reason) => {
-      res.sendStatus(500);
+      res.status(500).json(null);
     })
 
 
   }
-  // ----------------------------------------------- delete this later. not yet, until we so if else for when there are no files.
-  /* pool.query("INSERT INTO accommodations( state_code, streetname, type, price, media, rentrange, rooms, address, tenure, expire) VALUES ('" +
-    req.session.corper.state_code + "', '" + req.body.streetname + "', '" + req.body.accommodationtype + "', '" + req.body.price + "', '" +
-    arraymedia + "', '" + req.body.rentrange + "', '" + req.body.rooms + "','" + req.body.address + "','" + req.body.tenure + "','" + (req.body.expiredate ? req.body.expiredate : '') +
-    "')", function (error, results, fields) {
- 
-    if (error) {
-      res.sendStatus(404); // handle here effectively, the server should not crash for whatsoever reason!. HANDLE ALL ERROR EFFECTIVELY! We tryna run a business
-      throw error;
-    }
- 
-    if (results.affectedRows === 1) {
-      console.info('saved post to db successfully');
-      res.sendStatus(200);
-      // socket.of('/user').emit('boardcast message', { to: 'be received by everyoneELSE', post: data });
-    }
-  }); */
-
-
 })
 
 module.exports = router;

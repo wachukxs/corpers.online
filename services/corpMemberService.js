@@ -221,7 +221,7 @@ exports.login = (req, res) => {
           
           if (err) { // throw err // no throw of errors
             console.error(err)
-            return res.sendStatus(500)
+            return res.status(500).json(null)
           } else {
             res.cookie('_online', token, cookieOptions)
             console.log(chalk.bgBlue('Logged In'), req.session.corper?.state_code?.toUpperCase());
@@ -237,11 +237,11 @@ exports.login = (req, res) => {
 
     }, reject => {
       console.error('login err', reject)
-      res.sendStatus(500)
+      res.status(500).json(null)
 
     }).catch(reason => {
       console.error('login err', reason)
-      res.sendStatus(500)
+      res.status(500).json(null)
     })
 }
 
@@ -295,7 +295,6 @@ exports.getProfile = (req, res) => {
             model: db.Location
           }, {
             model: db.Media,
-            as: 'accommodationMedia'
           }],
           attributes: db.Accommodation.getAllActualAttributes()
         },
@@ -670,7 +669,7 @@ exports.updateProfilePhoto = (req, res) => {
       console.log('updated ppa profile', __ppaUpdate);
     }
 
-    res.sendStatus(201) // sending a 'Created' response ... not 200 OK response
+    res.status(201).json(null)
 
   })
 
@@ -836,9 +835,9 @@ exports.savePushSubscription = async (req, res) => { // Busboy doesn't support j
 
   // checking if it updated:
   if (corpMemberUpdate && corpMemberUpdate[0] > 0) { // object [ 1 ]
-    res.sendStatus(200) // sending a 'Created' response ... not 200 OK response
+    res.status(200).json(null) // sending a 'Created' response ... not 200 OK response
   } else {
-    res.sendStatus(500)
+    res.status(500).json(null)
   }
   console.log('did push sub update?', typeof corpMemberUpdate, corpMemberUpdate);
 
@@ -911,22 +910,19 @@ exports.createAlert = (req, res) => {
       .then(result => {
         console.log('_alert_data re:', result);
 
-        res.sendStatus(201)
+        res.status(201).json(null)
 
       }, error => {
         console.error('alert creation() error happened', error);
         console.error('alert error happened', error.errors[0], error.fields);
 
-        res.sendStatus(501)
+        res.status(501).json(null)
       }).catch(reason => {
         console.error('catching this alert err because:', reason);
-        res.sendStatus(501)
+        res.status(501).json(null)
       });
 
-
   });
-
-
 
   return req.pipe(busboy)
 }
@@ -995,7 +991,6 @@ exports.getPosts = (req, res) => {
         include: [
           {
             model: db.Media,
-            as: 'accommodationMedia',
           },
           {
             model: db.CorpMember,
@@ -1048,27 +1043,27 @@ exports.getPosts = (req, res) => {
           .send(thisisit)
 
       }, (reject) => {
-        res.sendStatus(500)
+        res.status(500).json(null)
         console.error('uhmmmm not good', reject);
         console.log('emitting empty posts, first user or the tl is empty')
       }).catch(reject => {
         console.error('is this the error ?', reject);
 
         // right ?? ?? we can't just not send anything ...
-        res.sendStatus(500)
+        res.status(500).json(null)
       })
 
 
 
     }, (reject) => {
-      res.sendStatus(500)
+      res.status(500).json(null)
       console.error('uhmmmm not good', reject);
       console.log('emitting empty posts, first user or the tl is empty')
     }).catch(reject => {
       console.error('is this the error ?', reject);
 
       // right ?? ?? we can't just not send anything ...
-      res.sendStatus(500)
+      res.status(500).json(null)
     })
 
 
@@ -1086,7 +1081,6 @@ exports.searchPosts = async (req, res) => {
       model: db.Location
     }, {
       model: db.Media,
-      as: 'accommodationMedia'
     }],
     attributes: db.Accommodation.getAllActualAttributes() // this is a hot fix
   })
@@ -1110,7 +1104,6 @@ exports.searchPosts = async (req, res) => {
         model: db.Location
       }, {
         model: db.Media,
-        as: 'accommodationMedia'
       }],
       attributes: db.Accommodation.getAllActualAttributes() // why is `accommodationId` be looked for in the query 
     })

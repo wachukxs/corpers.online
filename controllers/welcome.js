@@ -215,7 +215,7 @@ router.post('/careers', function (req, res) { // work with us
       await Promise.all(uploadPromise);
 
       query.InsertRowInCareersTable(_text).then(result => {
-        res.sendStatus(200);
+        res.status(200).json(null);
 
         console.log('got an application', _text);
 
@@ -223,10 +223,10 @@ router.post('/careers', function (req, res) { // work with us
         
       }, reject => { // give proper feedback based on error
         console.log('insert row didn\'t work', reject);
-        res.sendStatus(500);
+        res.status(500).json(null);
       }).catch(reason => {
         console.log('insert row failed', reason);
-        res.sendStatus(500)
+        res.status(500).json(null)
       })
 
     }

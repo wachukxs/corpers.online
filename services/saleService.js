@@ -54,49 +54,38 @@ exports.create = async (req, res, next) => {
     let uploadPromise = [];
     let get = true;
 
-    const client = new ftp.Client();
-    // client.ftp.verbose = true; // maybe only set on prod?
-
-    const ftpOptions = {
-      host: process.env.FTP_SERVER,
-      user: process.env.FTP_USERNAME,
-      password: process.env.FTP_PASSWORD,
-      secure: process.env.NODE_ENV === "production",
-    };
-    if (client.closed) {
-      await client.access(ftpOptions);
-    }
-
     _busboy.on(
       "file",
-      async function handleSalesFiles(fieldname, filestream, info) {
-        // filename, transferEncoding, mimetype
-        const { filename, encoding, mimeType } = info;
+      async function handleSalesFiles(fieldName, fileStream, info) {
+        const { filename, transferEncoding, mimeType } = info;
 
         const fileExtension = filename.split(".").pop();
 
         const new_file_name =
           crypto.randomBytes(20).toString("hex") + `.${fileExtension}`;
 
-        const saveTo = path.join("./randoms", `busboy-uploads`, new_file_name);
-        filestream.pipe(fs.createWriteStream(saveTo)).on("close", (err) => {
+        const saveTo = path.join(process.env.TEMP_UPLOAD_PATH, new_file_name);
+        console.log('using saveTo', saveTo);
+        fileStream.pipe(fs.createWriteStream(saveTo)).on("close", (err) => {
           console.log("done writing file!!!");
+
+          // TODO: upload here??
         });
         console.log("got a file", filename);
 
         /**
          * FTP upload only works if you use here. Before the event listeners.
          */
-        // const _url = await uploadFile(filestream, filename)
+        // const _url = await uploadFile(fileStream, filename)
 
         _media.push(new_file_name);
 
         // there's also 'limit' and 'error' events https://www.codota.com/code/javascript/functions/busboy/busboy/on
-        filestream.on("limit", function () {
+        fileStream.on("limit", function () {
           console.error("the file was too large... nope");
           get = false;
           // don't listen to the data event anymore
-          /* filestream.off('data', (data) => { // doesn't work
+          /* fileStream.off('data', (data) => { // doesn't work
           console.log('should do nothing. what\'s data?', data)
         }) */
 
@@ -108,33 +97,30 @@ exports.create = async (req, res, next) => {
           console.log("we don't accept non-image files... nope");
           get = false;
           // don't listen to the data event
-          /* filestream.off('data', (data) => { // DOESN'T WORK!!!
-          console.log('should do nothing. what\'s data?', data)
-        }) */
         }
 
-        /* filestream.on('readable', (what) => { // don't do this, unless, MABYE filestream.read() is called in the callback
+        /* fileStream.on('readable', (what) => { // don't do this, unless, MABYE fileStream.read() is called in the callback
           console.log('\ncurious what happens here\n', what)
         }) */
 
-        filestream.on("data", function (data) {
+        fileStream.on("data", function (data) {
           if (!get) {
           }
-          console.log("File [" + fieldname + "] got " + data.length + " bytes");
+          console.log("File [" + fieldName + "] got " + data.length + " bytes");
         });
 
-        filestream.on("end", function (err) {
+        fileStream.on("end", function (err) {
           // if we listened for 'file', even if there's no file, we still come here
           // so we're checking if it's empty before doing anything.
-          /* console.log('readabe?///// ?', filestream.read()) // filestram.read() is always null ... */
+          /* console.log('readabe?///// ?', fileStream.read()) // filestram.read() is always null ... */
 
-          console.log("File [" + fieldname + "] Finished. Got " + "bytes");
+          console.log("File [" + fieldName + "] Finished. Got " + "bytes");
           if (err) {
             console.log("err in busboy file end", err);
           }
         });
 
-        filestream.on("close", () => {
+        fileStream.on("close", () => {
           console.log(`File [${filename}] done`);
         });
 
@@ -151,24 +137,24 @@ exports.create = async (req, res, next) => {
           /**
            * Google Drive upload can work in here.
            */
-          // ggle.uploadFile(filestream, filename)
+          // ggle.uploadFile(fileStream, filename)
         }
 
         // https://stackoverflow.com/a/26859673/9259701
-        filestream.resume(); // must always be last in this callback else server HANGS
+        fileStream.resume(); // must always be last in this callback else server HANGS
       }
     );
 
-    _busboy.on("field", function handleSalesFields(fieldname, val, info) {
+    _busboy.on("field", function handleSalesFields(fieldName, val, info) {
       /**
        * would skip 0s, but we don't need zeros
        *
        * null gets converted to string. So (val !== 'null') is a hotfix
        */
       if (val && val !== "null") {
-        _text[fieldname] = val; // seems inspect() adds double quote to the value
+        _text[fieldName] = val; // seems inspect() adds double quote to the value
       }
-      console.log("Field [" + fieldname + "]: value: " + inspect(val));
+      console.log("Field [" + fieldName + "]: value: " + inspect(val));
       console.log("raw value:", val);
 
       // should we do like we did for accommodation ?? ...yess , we'll check too
@@ -231,7 +217,7 @@ exports.create = async (req, res, next) => {
         for (let index = 0; index < _media.length; index++) {
           const element = _media[index];
 
-          const tem_path = "./randoms/busboy-uploads/" + element;
+          const tem_path = path.join(process.env.TEMP_UPLOAD_PATH, element);
           const _url = await uploadFile(tem_path, element);
           __m.push(_url);
           console.log("processed upload", _url);
@@ -245,7 +231,6 @@ exports.create = async (req, res, next) => {
 
         new_sale.Media = __m.map((e) => ({ urls: e }));
         // TODO: add alt_text later
-        // TODO: delete the uploaded files from memory
       }
       /**
        * Can only include Media cause it was created along side it.
@@ -264,7 +249,7 @@ exports.create = async (req, res, next) => {
         console.log("\n\n then the media", _media_to_send);
       }
 
-      res.status(200).json({ data: _sale_to_save }); // for test // [will revert to] res.sendStatus(200);
+      res.status(200).json({ data: _sale_to_save }); // for test // [will revert to] res.status(200).json(null);
       console.log("\n\n\n\nafter saving post\n\n:", _sale_to_save);
       // once it saves in db them emit to other users
       socket
@@ -298,7 +283,7 @@ exports.create = async (req, res, next) => {
   } catch (error) {
     console.log("Error in", _FILENAME, _FUNCTIONNAME);
     console.error(error);
-    res.sendStatus(500);
+    res.status(500).json(null);
   }
 };
 
@@ -316,12 +301,12 @@ exports.update = (req, res) => {
   });
 
   _sale_data = {};
-  _busboy.on("field", function (fieldname, val, info) {
-    // console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+  _busboy.on("field", function (fieldName, val, info) {
+    // console.log('Field [' + fieldName + ']: value: ' + inspect(val));
 
-    _sale_data[fieldname] = inspect(val); // seems inspect() adds double quote to the value
+    _sale_data[fieldName] = inspect(val); // seems inspect() adds double quote to the value
 
-    console.warn(fieldname, val, info);
+    console.warn(fieldName, val, info);
   });
 
   _busboy.on("close", async function () {
@@ -339,11 +324,11 @@ exports.update = (req, res) => {
       .then(
         (result) => {
           console.log("sale update", result);
-          res.sendStatus(200);
+          res.status(200).json(null);
         },
         (reject) => {
           console.error("update sale reject err what happened?", reject);
-          res.sendStatus(500); // [e]dit=[y]es|[n]o
+          res.status(500).json(null); // [e]dit=[y]es|[n]o
         }
       )
       .catch((err) => {
@@ -352,7 +337,7 @@ exports.update = (req, res) => {
           "update sales cath err our system should've crashed:",
           err
         );
-        res.sendStatus(502); // we should tell you an error occured
+        res.status(502).json(null); // we should tell you an error occured
       });
   });
 

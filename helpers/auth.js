@@ -25,7 +25,7 @@ module.exports.verifyToken = (req, res, next) => {
   // check that bearer is not undefined
   if (!bearerHeader) {
     // if no authorization header is present.
-    res.status(403).json(); // we should change this later to a message or sth
+    res.status(403).json(null); // we should change this later to a message or sth
   } else {
     bearer = bearerHeader.split(" ");
     bearerToken = bearer[1];
@@ -73,7 +73,7 @@ module.exports.verifyJWT = (req, res, next) => {
         console.log("verifying token");
         if (err) {
           console.error("err verifying cookie", err);
-          res.status(502).json();
+          res.status(502).json(null);
         } else {
           console.log("decoded token data", decodedToken);
           // Populate the session object.
@@ -85,18 +85,18 @@ module.exports.verifyJWT = (req, res, next) => {
                   next();
                 } else {
                   console.error("Could not find corper");
-                  res.status(401).json();
+                  res.status(401).json(null);
                 }
               },
               (reject) => {
                 console.log(_FUNCTIONNAME, "reject this err because:", reject);
-                res.status(502).json();
+                res.status(502).json(null);
               }
             )
             .catch((reason) => {
               console.log(_FUNCTIONNAME, "catching this err because:", reason);
               // TODO: maybe send response type based on request Accept header.
-              res.status(502).json();
+              res.status(502).json(null);
             });
         }
       }
@@ -107,13 +107,13 @@ module.exports.verifyJWT = (req, res, next) => {
     const token = authHeader && authHeader.split(" ")[1];
 
     if (!token) {
-      return res.status(401).json();
+      return res.status(401).json(null);
     }
     jwt.verify(token, process.env.SESSION_SECRET, function (err, decodedToken) {
       console.log("verifying token");
       if (err) {
         console.error("err verifying bearer token", err);
-        res.status(502).json();
+        res.status(502).json(null);
       } else {
         console.log("decoded token data", decodedToken);
         // Populate the session object.
@@ -125,23 +125,23 @@ module.exports.verifyJWT = (req, res, next) => {
                 next();
               } else {
                 console.error("Could not find corper");
-                res.status(401).json();
+                res.status(401).json(null);
               }
             },
             (reject) => {
               console.log(_FUNCTIONNAME, "reject this err because:", reject);
-              res.status(502).json();
+              res.status(502).json(null);
             }
           )
           .catch((reason) => {
             console.log("auth auto login catching this err because:", reason);
             // TODO: maybe send response type based on request Accept header.
-            res.status(502).json();
+            res.status(502).json(null);
           });
       }
     });
   } else {
-    res.status(401).json();
+    res.status(401).json(null);
   }
 };
 
@@ -179,7 +179,7 @@ module.exports.checkJWT = (req, res, next) => {
       function (err, decodedToken) {
         console.info("\n\nveriffyiinnng");
         if (err) {
-          res.status(502).json();
+          res.status(502).json(null);
         } else {
           /**
            * TODO: remove query . auto loagin
@@ -194,11 +194,11 @@ module.exports.checkJWT = (req, res, next) => {
                 next();
               },
               (reject) => {
-                res.status(502).json();
+                res.status(502).json(null);
               }
             )
             .catch((reason) => {
-              res.status(502).json();
+              res.status(502).json(null);
             });
         }
       }
@@ -273,16 +273,16 @@ module.exports.refreshToken = () => {
           next();
         } else {
           console.error("Could not find corper");
-          res.status(502).json();
+          res.status(502).json(null);
         }
       },
       (reject) => {
         console.log("auth auto login reject, this err because:", reject);
-        res.status(502).json();
+        res.status(502).json(null);
       }
     )
     .catch((reason) => {
       console.log("auth auto login catching this err because:", reason);
-      res.status(502).json();
+      res.status(502).json(null);
     });
 };

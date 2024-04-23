@@ -262,11 +262,10 @@ exports.create = (req, res, next) => {
               include: [
                 {
                   model: db.Media,
-                  as: "accommodationMedia", // ideally we shouldn't do this ...but sequlize says we must ...will create an OS PR for it
                 },
                 {
                   model: db.CorpMember,
-                  as: "accommodationByCorper",
+                  // as: "accommodationByCorper",
                   attributes: db.CorpMember.getSafeAttributes(),
                 },
               ],
@@ -284,7 +283,7 @@ exports.create = (req, res, next) => {
             await _accommodation_to_save.getAccommodationByCorper(); // (await _accommodation_to_save.getAccommodationByCorper()).toJSON() works too
 
           // then status code is good
-          res.sendStatus(200);
+          res.status(200).json(null);
 
           console.log(
             "what acc we are now sedning to front end",
@@ -299,7 +298,7 @@ exports.create = (req, res, next) => {
           });
         } catch (error) {
           console.error("errr5", error);
-          res.sendStatus(504);
+          res.status(504).json(null);
         }
       } else if (!helpers.isEmpty(_text) && !helpers.isEmpty(uploadPromise)) {
         try {
@@ -317,7 +316,7 @@ exports.create = (req, res, next) => {
               state_code: req.session.corper.state_code,
               ..._text,
               ...(_media.length > 0 && {
-                accommodationMedia: {
+                Media: {
                   urls: _media.toString(),
                   // alt_text: '', // add later
                 },
@@ -331,7 +330,6 @@ exports.create = (req, res, next) => {
               include: [
                 {
                   model: db.Media,
-                  as: "accommodationMedia", // ideally we shouldn't do this ...but sequlize says we must ... maybe ... might create an OS PR for it
                 },
                 {
                   model: db.CorpMember,
@@ -378,7 +376,7 @@ exports.create = (req, res, next) => {
           _accommodation_to_save.dataValues.Location =
             await _accommodation_to_save.getLocation();
 
-          res.sendStatus(200);
+          res.status(200).json(null);
 
           console.log(
             "what acc we are sedning",
@@ -395,7 +393,7 @@ exports.create = (req, res, next) => {
           });
         } catch (error) {
           console.error("errr777", error);
-          res.sendStatus(504);
+          res.status(504).json(null);
         }
       }
 
@@ -409,7 +407,7 @@ exports.create = (req, res, next) => {
   } catch (error) {
     console.log("Error in", _FILENAME, _FUNCTIONNAME);
     console.error(error);
-    res.sendStatus(500);
+    res.status(500).json(null);
   }
 };
 
@@ -481,17 +479,17 @@ exports.update = (req, res) => {
       .then(
         (result) => {
           console.log("updated accommodation", result);
-          res.sendStatus(200);
+          res.status(200).json(null);
         },
         (reject) => {
           console.error("update acc reject what happened?", reject);
-          res.sendStatus(500);
+          res.status(500).json(null);
         }
       )
       .catch((err) => {
         // we should have this .catch on every query
         console.error("update acc, our system should've crashed:", err);
-        res.sendStatus(502); // we should tell you an error occured
+        res.status(502).json(null); // we should tell you an error occured
       });
   });
 

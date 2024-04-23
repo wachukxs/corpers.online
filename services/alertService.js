@@ -119,7 +119,7 @@ exports.checkAccommodation = async (req, res) => {
         rentExpireDate: 2021-08-28T00:00:00.000Z,
         rentRange: 'yearly', // should be rentInterval
         rent: 435224,
-        accommodationMedia: {
+        Media: {
           urls: [
             'https://drive.google.com/uc?id=160b5hxRXfalRBdZgmGPiiXs8v32Uuk0x',
             'https://drive.google.com/uc?id=16VgkCTI8-a4oxj_Bxl13biurSEf_yU_z'

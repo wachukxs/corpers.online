@@ -12,6 +12,7 @@ const ftpOptions = {
   password: process.env.FTP_PASSWORD,
   secure: process.env.NODE_ENV === "production",
 };
+
 async function init() {
   try {
     await client.access(ftpOptions);

@@ -23,12 +23,12 @@ exports.getNigerianStates = (req, res) => {
       },
       (error) => {
         console.error(_FUNCTIONNAME, "error happened", error);
-        res.sendStatus(500);
+        res.status(500).json(null);
       }
     )
     .catch((reason) => {
       console.error("catching this err because:", reason);
-      res.sendStatus(500);
+      res.status(500).json(null);
     });
 };
 
@@ -37,7 +37,7 @@ exports.getNigerianStateLGAs = (req, res) => {
   console.log("hitting", _FILENAME, _FUNCTIONNAME);
 
   if (!req.params?.stateId) {
-    res.sendStatus(400); // missing param
+    res.status(400).json({message: "Missing state param"});
   }
 
   return db.StateLGA.findAll({
@@ -55,12 +55,12 @@ exports.getNigerianStateLGAs = (req, res) => {
       },
       (error) => {
         console.error("getNigerianStateLGAs() error happened", error);
-        res.sendStatus(500);
+        res.status(500).json(null);
       }
     )
     .catch((reason) => {
       console.error("catching this err because:", reason);
-      res.sendStatus(500);
+      res.status(500).json(null);
     });
 };
 
@@ -156,12 +156,12 @@ exports.getAllPPAs = (req, res) => {
       },
       (error) => {
         console.error(_FUNCTIONNAME, "error happened", error);
-        res.sendStatus(500);
+        res.status(500).json(null);
       }
     )
     .catch((reason) => {
       console.error("catching this err because:", reason);
-      res.sendStatus(500);
+      res.status(500).json(null);
     });
 };
 

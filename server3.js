@@ -1719,7 +1719,7 @@ app.post('/profile', bodyParser.urlencoded({ extended: true/* , type: 'applicati
       } else { // if no newstatecode
         res.status(200).redirect(req.session.state_code.toUpperCase() /* + '?e=y' */); // [e]dit=[y]es|[n]o
       }
-      // res.sendStatus(200);
+      // res.status(200).json(null);
     } else {
       // res.sendStatus(500);
       res.status(500).redirect('/newprofile' + '?e=n'); // [e]dit=[y]es|[n]o
@@ -1802,7 +1802,7 @@ app.post('/posts', upload.array('see', 12), function (req, res, next) {
                     // connected!
                     if (results.affectedRows === 1) {
                       // then status code is good
-                      res.sendStatus(200);
+                      res.status(200).json(null);
 
                       // once it saves in db them emit to other users
                       iouser.to(req.session.state_code.substring(0, 2)).emit('boardcast message', {
@@ -1949,7 +1949,7 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
               // connected!
               if (results.affectedRows === 1) {
                 // then status code is good
-                res.sendStatus(200);
+                res.status(200).json(null);
 
                 console.log('me before you', moment(Number(req.body.post_time)).fromNow(), req.body.post_time);
                 console.log('price', req.body.price);
@@ -2008,7 +2008,7 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
               // connected!
               if (results.affectedRows === 1) {
                 // then status code is good
-                res.sendStatus(200);
+                res.status(200).json(null);
 
                 console.log('me before you', moment(Number(req.body.post_time)).fromNow(), req.body.post_time);
                 console.log('price', req.body.price);
@@ -2051,7 +2051,7 @@ app.post('/accommodations', upload.array('roomsmedia', 12), function (req, res) 
     }
     if (results.affectedRows === 1) {
       console.info('saved post to db successfully');
-      res.sendStatus(200);
+      res.status(200).json(null);
       // iouser.emit('boardcast message', { to: 'be received by everyoneELSE', post: data });
     }
   }); */
