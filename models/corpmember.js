@@ -126,7 +126,12 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
       set(value) { // not needed here??
         this.setDataValue('state_code', value.toUpperCase());
-      }
+      },
+      validate: {
+        notNull: {
+          msg: 'State code cannot be empty',
+        },
+      },
     },
     /**
      * virtual fields aren't ideal because they are not enumerable fields

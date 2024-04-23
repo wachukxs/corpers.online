@@ -45,12 +45,22 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: {
       type: DataTypes.STRING, 
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'Name of PPA cannot be empty',
+        },
+      },
     },
     type_of_ppa: {
       type: DataTypes.STRING,
       allowNull: false,
       comment: "The category of the ppa", // should it be an enum?
+      validate: {
+        notNull: {
+          msg: 'PPA type cannot be empty',
+        },
+      },
     }, // should be category?
     // should we included added by field?
   }, {

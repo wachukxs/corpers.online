@@ -51,6 +51,11 @@ module.exports = (sequelize, DataTypes) => {
     rent: {
       type: DataTypes.FLOAT,
       allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'Rent cannot be empty',
+        },
+      },
     },
     roommate_rent: { // should we be adding Naira sign to it ??
       type: DataTypes.FLOAT
@@ -71,10 +76,20 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.ENUM,
       values: ['monthly', 'quarterly', 'yearly'],
       allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'Rent interval cannot be empty',
+        },
+      },
     },
     accommodation_type: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'Accommodation type cannot be empty',
+        },
+      },
     },
     available_rooms: {
       type: DataTypes.STRING,

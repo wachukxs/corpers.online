@@ -35,10 +35,20 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       },
       allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'Corp member sale is by cannot be empty',
+        },
+      },
     }, // need it ?
     item_name: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'Sale item name cannot be empty',
+        },
+      },
     },
     minimum_price: {
       type: DataTypes.INTEGER,
@@ -51,7 +61,12 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       set(value) {
         this.setDataValue('price', parseInt(value));
-      }
+      },
+      validate: {
+        notNull: {
+          msg: 'Sale item price cannot be empty',
+        },
+      },
     },
     _price: {
       type: DataTypes.VIRTUAL,

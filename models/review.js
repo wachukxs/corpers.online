@@ -35,7 +35,12 @@ module.exports = (sequelize, DataTypes) => {
         model: 'PPA',
         key: 'id'
       },
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'PPA review is for cannot be empty',
+        },
+      },
     }
   }, {
     sequelize,

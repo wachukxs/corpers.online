@@ -3,9 +3,9 @@ const helpers = require("../utilities/helpers");
 const Busboy = require("busboy");
 const ggle = require("../helpers/uploadgdrive");
 const socket = require("../sockets/routes");
-const ngplaces = require("../utilities/ngstates");
 const auth = require("../helpers/auth");
 const path = require("path");
+const { ValidationError } = require("sequelize");
 const _FILENAME = path.basename(__filename);
 
 // these are repeating in other services, they should be global.
@@ -297,8 +297,21 @@ exports.create = (req, res, next) => {
             post: [_accommodation_to_save.toJSON()],
           });
         } catch (error) {
-          console.error("errr5", error);
-          res.status(504).json(null);
+          console.error("errr5", error.errors);
+          /**
+           * Custom error message: https://sequelize.org/docs/v6/core-concepts/validations-and-constraints/#allownull-interaction-with-other-validators
+           * Using (error?.errors?.[0]?.message) if it's sequelize validation error
+           * TODO: We could also send all the errors in a single string.
+           * 
+           * TODO: This should be the de facto
+           */
+
+          if (error instanceof ValidationError) { // Sequelize error
+            return res.status(504).json({message: error?.errors?.[0]?.message});
+          }
+
+          res.status(504).json(null)
+          
         }
       } else if (!helpers.isEmpty(_text) && !helpers.isEmpty(uploadPromise)) {
         try {
