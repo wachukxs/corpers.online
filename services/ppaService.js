@@ -1,9 +1,10 @@
 const { Op } = require("sequelize");
 const db = require("../models");
 const Busboy = require("busboy");
-
+const crypto = require("crypto");
 const chalk = require("chalk");
-
+const fs = require("fs");
+const { uploadFile } = require("../helpers/ftp-upload");
 const path = require("path");
 const _FILENAME = path.basename(__filename);
 
@@ -92,24 +93,126 @@ exports.addPPA = (req, res) => {
       }
     );
 
+    busboy.on(
+      "file",
+      async function handleSalesFiles(fieldName, fileStream, info) {
+        const { filename, transferEncoding, mimeType } = info;
+
+        const fileExtension = filename.split(".").pop();
+
+        const new_file_name =
+          crypto.randomBytes(20).toString("hex") + `.${fileExtension}`;
+
+        const saveTo = path.join(process.env.TEMP_UPLOAD_PATH, new_file_name);
+        console.log('using saveTo', saveTo);
+        fileStream.pipe(fs.createWriteStream(saveTo)).on("close", (err) => {
+          console.log("done writing file!!!");
+
+          // TODO: upload here??
+        });
+        console.log("got a file", filename);
+
+        /**
+         * FTP upload only works if you use here. Before the event listeners.
+         */
+        // const _url = await uploadFile(fileStream, filename)
+
+        _media.push(new_file_name);
+
+        // there's also 'limit' and 'error' events https://www.codota.com/code/javascript/functions/busboy/busboy/on
+        fileStream.on("limit", function () {
+          console.error("the file was too large... nope");
+          get = false;
+          // don't listen to the data event anymore
+          /* fileStream.off('data', (data) => { // doesn't work
+          console.log('should do nothing. what\'s data?', data)
+        }) */
+
+          // how should we send a response if one of the files/file is invalid [too big or not an accepted file type]?
+        });
+
+        /* fileStream.on('readable', (what) => { // don't do this, unless, MABYE fileStream.read() is called in the callback
+          console.log('\ncurious what happens here\n', what)
+        }) */
+
+        fileStream.on("end", function (err) {
+          // if we listened for 'file', even if there's no file, we still come here
+          // so we're checking if it's empty before doing anything.
+          /* console.log('readabe?///// ?', fileStream.read()) // filestram.read() is always null ... */
+
+          console.log("File [" + fieldName + "] Finished. Got " + "bytes");
+          if (err) {
+            console.log("err in busboy file end", err);
+          }
+        });
+
+        fileStream.on("close", () => {
+          console.log(`File [${filename}] done`);
+        });
+
+        // this is not a good method
+
+        /**
+         * One thing you might be able to try is
+         * to read 0 bytes from the stream first
+         * and see if you get the appropriate 'end' event
+         * or not (perhaps on the next tick)
+         * */
+        if (filename) {
+          // filename: 1848-1844-1-PB.pdf, encoding: 7bit, mimetype: application/pdf
+          /**
+           * Google Drive upload can work in here.
+           */
+          // ggle.uploadFile(fileStream, filename)
+        }
+
+        // https://stackoverflow.com/a/26859673/9259701
+        fileStream.resume(); // must always be last in this callback else server HANGS
+      }
+    );
+
     busboy.on("finish", async function doneHandlePpaFieldsAndFiles() {
       console.log("Done parsing form!", _text, "\n\n media", _media);
 
       // todo: Do validation here.
 
+      let _new_ppa = {
+        name: _text.name,
+        type_of_ppa: _text.category,
+        Locations: [
+          {
+            address: _text.address,
+            state_lga_id: _text.state_lga_id,
+          },
+        ],
+      }
+
+      if (_media.length > 0) {
+        // Upload all the files.
+        let __m = [];
+        for (let index = 0; index < _media.length; index++) {
+          const element = _media[index];
+
+          const tem_path = path.join(process.env.TEMP_UPLOAD_PATH, element);
+          const _url = await uploadFile(tem_path, element);
+          __m.push(_url);
+          console.log("processed upload", _url);
+
+          // delete the recently uploaded file from (temp) disk
+          fs.unlink(tem_path, (err) => {
+            if (err) console.error("err deleting file", err);
+            console.log(tem_path, "was deleted");
+          });
+        }
+
+        _new_ppa.Media = __m.map((e) => ({ urls: e }));
+        // TODO: add alt_text later
+      }
+
       db.PPA.create(
+        _new_ppa,
         {
-          name: _text.name,
-          type_of_ppa: _text.category,
-          Locations: [
-            {
-              address: _text.address,
-              state_lga_id: _text.state_lga_id,
-            },
-          ],
-        },
-        {
-          include: [{ association: "Locations" }],
+          include: [{ association: "Locations" }, { association: "Media" }],
         }
       )
         .then(
@@ -145,6 +248,9 @@ exports.getAllPPAs = (req, res) => {
       {
         model: db.Location,
         include: [{ model: db.StateLGA, include: [{ model: db.States }] }],
+      },
+      {
+        model: db.Media, // TODO: exclude other foreign key if they're null
       },
     ],
   })

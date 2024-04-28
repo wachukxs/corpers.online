@@ -4,6 +4,12 @@ const nodemailer = require('nodemailer');
 
 exports.acceptedfiles = ['image/gif', 'image/jpeg', 'image/png', 'image/tiff', 'image/vnd.wap.wbmp', 'image/x-icon', 'image/x-jng', 'image/x-ms-bmp', 'image/svg+xml', 'image/webp', 'video/3gpp', 'video/mpeg', 'video/mp4', 'video/x-msvideo', 'video/x-ms-wmv', 'video/x-ms-asf', 'video/x-mng', 'video/x-flv', 'video/quicktime'];
 
+/**
+ * Soon to be depreciated
+ * TODO: replace with validation method from sequelize.
+ * @param {any} data 
+ * @returns boolean
+ */
 exports.isEmpty = function (data) {
     if (typeof data === 'object') {
         if (JSON.stringify(data) === '{}' || JSON.stringify(data) === '[]') {
@@ -24,7 +30,7 @@ exports.isEmpty = function (data) {
     }
 };
 
-exports.statecodeFormat = /^(ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/\d\d[abcACB]\/\d\d\d\d$/gi; // still fix this
+exports.stateCodeFormat = /^(ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/\d\d[abcACB]\/\d\d\d\d$/gi; // still fix this
 
 /**
  * function to send email after successful registration

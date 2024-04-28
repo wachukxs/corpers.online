@@ -103,12 +103,6 @@ exports.create = async (req, res, next) => {
           console.log('\ncurious what happens here\n', what)
         }) */
 
-        fileStream.on("data", function (data) {
-          if (!get) {
-          }
-          console.log("File [" + fieldName + "] got " + data.length + " bytes");
-        });
-
         fileStream.on("end", function (err) {
           // if we listened for 'file', even if there's no file, we still come here
           // so we're checking if it's empty before doing anything.

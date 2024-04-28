@@ -7,6 +7,9 @@ const auth = require("../helpers/auth");
 const path = require("path");
 const { ValidationError } = require("sequelize");
 const _FILENAME = path.basename(__filename);
+const crypto = require("crypto");
+const fs = require("fs");
+const { uploadFile } = require("../helpers/ftp-upload");
 
 // these are repeating in other services, they should be global.
 /**
@@ -102,17 +105,10 @@ exports.create = (req, res, next) => {
         console.log('\ncurious what happens here\n', what)
       }) */
 
-        filestream.on("data", function (data) {
-          if (!get) {
-            // ?? why?
-          }
-          console.log("File [" + fieldname + "] got " + data.length + " bytes");
-        });
-
         filestream.on("end", function (err) {
-          // if we listend for 'file', even if there's no file, we still come here
+          // if we listened for 'file', even if there's no file, we still come here
           // so we're checking if it's empty before doing anything.
-          /* console.log('readabe?///// ?', filestream.read()) // filestram.read() is always null ... */
+          /* console.log('readable?///// ?', filestream.read()) // filestream.read() is always null ... */
 
           console.log("File [" + fieldname + "] Finished. Got " + "bytes");
           if (err) {
