@@ -248,7 +248,7 @@ exports.getAllPPAs = (req, res) => {
     include: [
       {
         model: db.Location,
-        include: [{ model: db.StateLGA, include: [{ model: db.States }] }],
+        include: [{ model: db.StateLGA }, { model: db.States }],
       },
       {
         model: db.Media, // TODO: exclude other foreign key if they're null
