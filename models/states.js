@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'state_id'
       });
 
+      States.hasMany(models.Location, {
+        foreignKey: 'state_id'
+      });
+
     }
   }
   States.init({

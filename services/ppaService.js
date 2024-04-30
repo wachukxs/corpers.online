@@ -37,8 +37,8 @@ exports.getNigerianStateLGAs = (req, res) => {
   const _FUNCTIONNAME = "getNigerianStateLGAs";
   console.log("hitting", _FILENAME, _FUNCTIONNAME);
 
-  if (!req.params?.stateId) {
-    res.status(400).json({message: "Missing state param"});
+  if (!req.params?.stateId || isNaN(parseInt(req.params?.stateId))) {
+    res.status(400).json({ message: "Missing state param" });
   }
 
   return db.StateLGA.findAll({
@@ -104,7 +104,7 @@ exports.addPPA = (req, res) => {
           crypto.randomBytes(20).toString("hex") + `.${fileExtension}`;
 
         const saveTo = path.join(process.env.TEMP_UPLOAD_PATH, new_file_name);
-        console.log('using saveTo', saveTo);
+        console.log("using saveTo", saveTo);
         fileStream.pipe(fs.createWriteStream(saveTo)).on("close", (err) => {
           console.log("done writing file!!!");
 
@@ -186,7 +186,7 @@ exports.addPPA = (req, res) => {
             state_id: _text.state_id,
           },
         ],
-      }
+      };
 
       if (_media.length > 0) {
         // Upload all the files.
@@ -210,12 +210,9 @@ exports.addPPA = (req, res) => {
         // TODO: add alt_text later
       }
 
-      db.PPA.create(
-        _new_ppa,
-        {
-          include: [{ association: "Locations" }, { association: "Media" }],
-        }
-      )
+      db.PPA.create(_new_ppa, {
+        include: [{ association: "Locations" }, { association: "Media" }],
+      })
         .then(
           async (ppa) => {
             // remove the ppa id
@@ -251,7 +248,17 @@ exports.getAllPPAs = (req, res) => {
         include: [{ model: db.StateLGA }, { model: db.States }],
       },
       {
-        model: db.Media, // TODO: exclude other foreign key if they're null
+        model: db.Media,
+        // exclude other foreign keys since they're null
+        attributes: {
+          exclude: [
+            "chat_id",
+            "accommodation_id",
+            "sale_id",
+            "corp_member_id",
+            "location_id",
+          ],
+        },
       },
     ],
   })

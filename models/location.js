@@ -35,6 +35,10 @@ module.exports = (sequelize, DataTypes) => {
       Location.belongsTo(models.StateLGA, {
         foreignKey: 'state_lga_id'
       })
+
+      Location.belongsTo(models.States, {
+        foreignKey: 'state_id'
+      })
     }
   };
   Location.init({
