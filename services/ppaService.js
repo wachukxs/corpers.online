@@ -183,6 +183,7 @@ exports.addPPA = (req, res) => {
           {
             address: _text.address,
             state_lga_id: _text.state_lga_id,
+            state_id: _text.state_id,
           },
         ],
       }
@@ -205,7 +206,7 @@ exports.addPPA = (req, res) => {
           });
         }
 
-        _new_ppa.Media = __m.map((e) => ({ urls: e }));
+        _new_ppa.Media = __m.map((e) => ({ url: e }));
         // TODO: add alt_text later
       }
 

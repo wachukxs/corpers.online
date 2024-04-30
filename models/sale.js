@@ -17,7 +17,6 @@ module.exports = (sequelize, DataTypes) => {
       })
       Sale.hasMany(models.Media, {
         foreignKey: 'sale_id',
-        // as: 'saleMedia'
       })
     }
   };

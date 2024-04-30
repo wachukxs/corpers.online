@@ -48,10 +48,25 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     },
     ppa_id: {
-      type:DataTypes.INTEGER
+      type:DataTypes.INTEGER,
+      references: {
+        table: 'PPA',
+        field: 'id'
+      },
     },
     accommodation_id: {
-      type:DataTypes.INTEGER
+      type:DataTypes.INTEGER,
+      references: {
+        table: 'Accommodation',
+        field: 'id'
+      },
+    },
+    sale_id: {
+      type:DataTypes.INTEGER,
+      references: {
+        table: 'Sales',
+        field: 'id'
+      },
     },
     corp_member_id: {
       type:DataTypes.INTEGER,
@@ -61,23 +76,24 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     chat_id: {
-      type:DataTypes.INTEGER
+      type:DataTypes.INTEGER,
+      references: {
+        table: 'Chats',
+        field: 'id'
+      },
     },
     location_id: {
-      type:DataTypes.INTEGER
+      type:DataTypes.INTEGER,
+      references: {
+        table: 'Locations',
+        field: 'id'
+      },
     },
     // TODO: rename column to 'url' // and in other places where it's used
-    urls: {
+    url: {
       type:DataTypes.STRING,
-    /**
-     * takes in 'dslfjakdla29_ljadskfjask, dajsfalsjfalsflas_9289js'
-     * @returns [
-            'https://drive.google.com/uc?id=dslfjakdla29_ljadskfjask',
-            'https://drive.google.com/uc?id=dajsfalsjfalsflas_9289js'
-        ]
-      */
       // get() {
-      //   const rawValue = this.getDataValue('urls');
+      //   const rawValue = this.getDataValue('url');
       //   return rawValue ? rawValue.split(',').map(x => {
       //       return new URL(`/uc?id=${x}`, "https://drive.google.com").toString()
       //   }) : null;

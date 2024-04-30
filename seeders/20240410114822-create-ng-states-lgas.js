@@ -14,7 +14,7 @@ module.exports = {
      * }], {});
     */
 
-        // Insert data
+    // Insert data
     // Incredible resource https://gist.github.com/chrisidakwo/4ba3a4f03afc442305021be4ca67738e
 
     const statesTableExists = await queryInterface.tableExists("States");

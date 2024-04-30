@@ -324,9 +324,10 @@ exports.create = (req, res, next) => {
             {
               state_code: req.session.corper.state_code,
               ..._text,
+              // TODO: Refactor this code.
               ...(_media.length > 0 && {
                 Media: {
-                  urls: _media.toString(),
+                  url: _media.toString(),
                   // alt_text: '', // add later
                 },
               }),

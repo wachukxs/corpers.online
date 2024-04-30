@@ -173,7 +173,7 @@ exports.create = async (req, res, next) => {
       // https://github.com/sequelize/sequelize/issues/3807
 
       /* const _media_to_save = await db.Media.create({
-        urls: (_media.length > 0 ? _media.toString() : _text.mapimage ? _text.mapimage : ''), // deal with mapimage later
+        url: (_media.length > 0 ? _media.toString() : _text.mapimage ? _text.mapimage : ''), // deal with mapimage later
         // alt_text: '', // add later
       });
       const _sale_to_save = await db.Sale.create({

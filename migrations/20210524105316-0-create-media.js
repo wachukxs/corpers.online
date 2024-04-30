@@ -26,7 +26,7 @@ module.exports = {
       accommodation_id: {
         type: Sequelize.INTEGER
       },
-      urls: {
+      url: {
         type: Sequelize.STRING
       },
       alt_text: {

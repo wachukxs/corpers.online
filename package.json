@@ -2,7 +2,7 @@
   "name": "corpers-online",
   "version": "1.0.2",
   "private": true,
-  "description": "for corpers by corpers (desc. needs to change. lol.)",
+  "description": "for corpers by corpers",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified... yet\" && exit 1",
@@ -11,6 +11,7 @@
     "start:trace-io": "nodemon --trace-sync-io --trace-warnings --unhandled-rejections=warn ./index.js",
     "start": "node ./swagger.js && node --trace-warnings --unhandled-rejections=warn ./index.js",
     "restart": "yarn run seed:down:all && yarn run migrate:down:all && yarn run migrate:up && yarn run seed:up:all && yarn run dev",
+    "soft-restart": "yarn run migrate:up && yarn run seed:up:all && yarn run dev",
     "swagger-autogen": "node ./swagger.js",
     "seed:up": "npx sequelize-cli db:seed",
     "seed:up:all": "npx sequelize-cli db:seed:all",
