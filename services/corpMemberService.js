@@ -1142,6 +1142,13 @@ exports.searchPosts = async (req, res) => {
   res.render('pages/search', result)
 }
 
+exports.hi = (req, res) => {
+  const _FUNCTIONNAME = 'hi'
+  console.log('hitting', _FILENAME, _FUNCTIONNAME);
+
+  res.status(200).json({message: 'Hey there. Welcome!'})
+}
+
 exports.joinWaitList = (req, res) => {
   const _FUNCTIONNAME = 'joinWaitList'
   console.log('hitting', _FILENAME, _FUNCTIONNAME);
@@ -1150,7 +1157,7 @@ exports.joinWaitList = (req, res) => {
     .then(result => {
       // console.log('re:', result);
 
-      res.status(200).send({
+      res.status(200).json({
         message: "We got that. Thanks for joining our wait list"
       })
 
@@ -1159,13 +1166,13 @@ exports.joinWaitList = (req, res) => {
       if (error.name === 'SequelizeUniqueConstraintError') {
         const firstSequelizeErr = error.errors?.[0]
         if (firstSequelizeErr?.type === 'unique violation' && firstSequelizeErr?.path === 'email') {
-          return res.status(400).send({
+          return res.status(400).json({
             message: "We had an error, that can be fixed.",
             error: "Seems you already joined our wait list with that email. You must be eager!"
           })
         }
       }
-      res.status(400).send({
+      res.status(400).json({
         message: "We had an error, that can be fixed.",
         error: error.errors?.[0]
       })

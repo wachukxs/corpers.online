@@ -49,5 +49,7 @@ router.get('/search', auth.checkJWT, corpMemberService.searchPosts);
 
 router.post('/join-waitlist', express.json(), dataValidation.joinWaitListDataValidation, corpMemberService.joinWaitList)
 
+router.get('/hi', corpMemberService.hi)
+
 
 module.exports = router;
