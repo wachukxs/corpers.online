@@ -994,6 +994,16 @@
         }
       }
     },
+    "/api/v1.0/hi": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/v1.0/sale": {
       "delete": {
         "description": "",

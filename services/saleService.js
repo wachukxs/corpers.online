@@ -2,14 +2,12 @@ const db = require("../models");
 const helpers = require("../utilities/helpers");
 const busboy = require("busboy");
 const ggle = require("../helpers/uploadgdrive");
-const socket = require("../sockets/routes");
-const ngplaces = require("../utilities/ngstates");
+const { io, IOEventNames } = require("../sockets/routes");
 inspect = require("util").inspect;
 const path = require("path");
 const { uploadFile } = require("../helpers/ftp-upload");
 const _FILENAME = path.basename(__filename);
 const fs = require("fs");
-const ftp = require("basic-ftp");
 const crypto = require("crypto");
 
 exports.deleteSale = (req, res) => {
@@ -223,11 +221,11 @@ exports.create = async (req, res, next) => {
           });
         }
 
-        new_sale.Media = __m.map((e) => ({ urls: e }));
+        new_sale.Media = __m.map((e) => ({ url: e }));
         // TODO: add alt_text later
       }
       /**
-       * Can only include Media cause it was created along side it.
+       * NOTE: Can only include Media cause it was created along side it.
        */
       _sale_to_save = await db.Sale.create(new_sale, {
         include: [{ model: db.Media }],
@@ -236,35 +234,27 @@ exports.create = async (req, res, next) => {
       if (uploadPromise.length) {
         let _media_to_send = await _sale_to_save.getSaleMedia();
 
-        // well, no need for media here
-        // _sale_to_save.saleByCorper = await _sale_to_save.getSaleByCorper(); // role eyes ...fix this for sequelize ... it should auto do it ...
-        // _sale_to_save.dataValues.saleByCorper = await _sale_to_save.getSaleByCorper();
-
         console.log("\n\n then the media", _media_to_send);
       }
 
-      res.status(200).json({ data: _sale_to_save }); // for test // [will revert to] res.status(200).json(null);
-      console.log("\n\n\n\nafter saving post\n\n:", _sale_to_save);
-      // once it saves in db them emit to other users
-      socket
-        .of("/corp-member")
+      const __sale_to_save = _sale_to_save.toJSON()
+
+      // TODO: try to move this into a hook, populate _sale_to_save itself.
+      __sale_to_save.CorpMember = await _sale_to_save.getCorpMember?.({
+        attributes: db.CorpMember.getPublicAttributes()
+      })
+
+      // TODO: No need to send the _sale_to_save data back in the response, they'll eventually get it via websockets. We can also save on response size data.
+      res.status(200).json({ data: __sale_to_save }); // for test // [will revert to] res.status(200).json(null);
+      // console.log("\n\n\n\nafter saving post\n\n:", _sale_to_save);
+
+      // once it saves in db then emit to other users
+      io
+        .of("/")
         .to(req.session.corper.state_code.substring(0, 2))
-        .emit("boardcast message", {
+        .emit(IOEventNames.BROADCAST_MESSAGE, {
           to: "be received by everyone else",
-          post: [_sale_to_save.toJSON()],
-          /* {
-            state_code: req.session.corper.state_code,
-            location: req.session.corper.location,
-            media: false,
-            post_time: _text.post_time,
-            type: _text.type,
-            mapdata: (_text.mapimage ? _text.mapimage : ''),
-            text: _text.text,
-            item_name: _text.item_name,
-            price: (_text.price ? _text.price : ''),
-            first_name: _text.first_name,
-            picture_id: req.session.corper.picture_id
-          } */
+          post: [__sale_to_save],
         });
 
       req._sale_to_save = _sale_to_save; // for the next middleware (Alerts Service)

@@ -89,15 +89,9 @@ module.exports = (sequelize, DataTypes) => {
         field: 'id'
       },
     },
-    // TODO: rename column to 'url' // and in other places where it's used
     url: {
       type:DataTypes.STRING,
-      // get() {
-      //   const rawValue = this.getDataValue('url');
-      //   return rawValue ? rawValue.split(',').map(x => {
-      //       return new URL(`/uc?id=${x}`, "https://drive.google.com").toString()
-      //   }) : null;
-      // }
+      allowNull: false,
     },
     alt_text: DataTypes.STRING,
   }, {

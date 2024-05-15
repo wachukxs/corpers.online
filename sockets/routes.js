@@ -10,45 +10,125 @@ const io = require('socket.io')();
 // find a more authentic way to calculate the numbers of corpers online using io(/user) --so even if they duplicate pages, it won't double count
 
 /**
+ * Should be same on FE.
+ */
+const IOEventNames = {
+    HI: "hi",
+    NEW_SALE: "new_sale",
+    NEW_ACCOMMODATION: "new_accommodation",
+    BROADCAST_MESSAGE: "broadcast_message",
+    CONNECT: "connect",
+    CONNECTION: "connection",
+    DISCONNECT: "disconnect",
+}
+
+/**
+ * Should be same on FE.
+ */
+const IOEventRoutes = {
+    BASE: "/",
+    CHAT: "/chat",
+    MAP: "/map",
+}
+
+/**
  * can do without the `.of('/')`
  */
 io
-.of('/')
-.on('connection', (socket) => {
+.of(IOEventRoutes.BASE)
+.on(IOEventNames.CONNECTION, async (socket) => {
     console.log('got a socket connection /', socket.id)
-    socket.on('hi', (msg, fn) => {
-        console.log('got a socket hi msg /')
+    
+    // Join their state room.
+    if (socket.handshake.query?.state_code) {
+        socket.join(socket.handshake.query.state_code.substring(0, 2))
+    }
+    
+    socket.on(IOEventNames.HI, (msg, fn) => {
+        console.log('got a socket hi msg /. total sockets', io.sockets.clients.length)
 
         fn({message: 'back from the moon'})
-        socket.emit('hi', `from server socket: ${msg}`);
+        socket.emit(IOEventNames.HI, `from server socket: ${msg}`);
     });
 
-    socket.on('broadcast_message', (msg, fn) => {
+    socket.on(IOEventNames.BROADCAST_MESSAGE, (msg, fn) => {
         console.log('got a socket bm msg /')
         fn({message: 'back from the moon'})
         
-        io.emit('broadcast_message', `from server main: ${msg}`);
+        io.emit(IOEventNames.BROADCAST_MESSAGE, `from server main: ${msg}`);
     });
 
-    socket.emit('hi', `hiyaaaa from server socket:`);
+    socket.emit(IOEventNames.HI, `hiyaaaa from server socket:`);
 
-    socket.emit('broadcast_message', `wad up from server socket:`);
+    // TODO: fetch all the sales.
+    // socket.emit(IOEventNames.BROADCAST_MESSAGE, []);
 
-    io.emit('hi', `hiyaaaa from server io:`);
+    io.emit(IOEventNames.HI, `hiyaaaa from server io:`);
 
-    io.emit('broadcast_message', `from server io: someone joined`);
+    if (socket.handshake.query.state_code) {
+        db.Sale.findAll({
+            /**
+             * TODO:OSS This next line is a hot fix. Sales doesn't have state_code column, but it's included in the query.
+             */
+            attributes: { exclude: ['state_code'] },
+            
+            // This OR the nested where in include.
+            // where: {
+            //     "$CorpMember.state_code$": {
+            //         [Op.substring]: socket.handshake.query.state_code.substring(0, 2),
+            //     }
+            // },
+            order: [
+                ['created_at', 'ASC']
+            ],
+            include: [
+                {
+                    model: db.Media,
+                },
+                {
+                    model: db.CorpMember,
+                    attributes: db.CorpMember.getPublicAttributes(),
+                    where: {
+                        state_code: {
+                            [Op.substring]: socket.handshake.query.state_code.substring(0, 2),
+                        }
+                    }
+                }
+            ]
+        }).then((_sales) => {
+            io.emit(IOEventNames.BROADCAST_MESSAGE, {
+                to: "be received by one",
+                post: _sales,
+              });
+        }, (err) => {
+            console.log('ERRRR', err);
+        })
+    }
+
+
+    socket.on('ferret', (asf, name, fn) => {
+        // this funtion will run in the client to show/acknowledge the server has gotten the message.
+        // so we can like tell the client a message has been recorded, seen, or sent.
+        fn('woot ' + name + asf);
+    });
+
+    socket.emit('callback', {
+        this: 'is the call back'
+    });
 
     socket.on('disconnect', () => {
+        // TODO: maybe also emit total count of corp members online
         console.log('lost a socket connection /')
     });
 });
 
-const ioCorpMember = io.of('/corp-member')
+// TODO: Depreciate after fully implementing / route
+const ioCorpMember = io.of(IOEventRoutes.CORP_MEMBER)
 
-ioCorpMember.on('connection', (socket) => { // when a new user is in the TIMELINE
+ioCorpMember.on(IOEventNames.CONNECTION, (socket) => { // when a new user is in the TIMELINE
     console.log('New connection on /corp-member.');
 
-    socket.on('broadcast_message', (data, fn) => {
+    socket.on(IOEventNames.BROADCAST_MESSAGE, (data, fn) => {
         console.log(socket.client.id + ' sent boardcast mesage on /corp-member to everyone.');
 
         // data.age = moment(data.post_time).fromNow();
@@ -103,175 +183,21 @@ ioCorpMember.on('connection', (socket) => { // when a new user is in the TIMELIN
         // fn(data?.post_time);
     });
 
-    socket.on('hi', (msg) => {
-        socket.emit('hi', `from server: ${msg} /cm`);
+    socket.on(IOEventNames.HI, (msg) => {
+        socket.emit(IOEventNames.HI, `from server: ${msg} /cm`);
     });
-    socket.emit('hi', `from server 453: /cm`);
+    socket.emit(IOEventNames.HI, `from server 453: /cm`);
 
-    ioCorpMember.emit('hi', `from server 000: /cm`);
-
-    
-    // let's do this first cause socket.handshake.query comes as sting ... will fix later
-    // socket.handshake.query.corper = JSON.parse(socket.handshake.query.corper)
-
-    // // join State room
-    // socket.join(socket.handshake.query.state_code.substring(0, 2));
-    // console.log('how many:', `total connection on all sockets ${io.sockets.clients.length}`, `& from timeline ${ioCorpMember.clients.length}`);
-    
-    socket.on('ferret', (asf, name, fn) => {
-        // this funtion will run in the client to show/acknowledge the server has gotten the message.
-        // so we can like tell the client a message has been recorded, seen, or sent.
-        fn('woot ' + name + asf);
-    });
-
-    socket.emit('callback', {
-        this: 'is the call back'
-    });
-
-    // find a way so if the server restarts (maybe because of updates and changes to this file) and the user happens to be in this URL log the user out of this url
-    // console.log('well', socket.handshake.query.last_post, isEmpty(socket.handshake.query.last_post) );
-
-    // doesn't work as expected, needs an OS PR
-    ioCorpMember.emit('corpers_count', { // https://stackoverflow.com/a/59495277
-        count:  socket.server.engine.clientsCount // ioCorpMember.server.engine.clientsCount // io.engine.clientsCount
-    });
-
-    // find a way to work with cookies in socket.request.headers object for loggining in users again
-
-    // logot out time SELECT TIMESTAMPDIFF(MINUTE , session_usage_details.login_time , session_usage_details.logout_time) AS time
-
-    //-------- optimize by running the two seperate queries (above & below) in parallel later
-
-    // when any user connects, send them (previous) posts in the db before now (that isn't in their timeline)
-    // find a way to handle images and videos
-    /** sender, state_code, type, text, price, location, post_time, input_time */
-
-    // posts currently in user's time line is socket.handshake.query.[p|a]utl.split(',')
-    // console.log('socket.handshake.query', typeof socket.handshake.query, socket.handshake.query.sutl)
-
-
-    // console.log('socket.handshake.query.sutl after', typeof sUTL, aUTL)
-    
-    // console.log('socket query parameter(s) [user timeline]\n', 'acc:' + aUTL.length, ' posts:' + sUTL.length); // if either equals 1, then user timeline is empty
-
-    // SELECT * FROM posts WHERE post_time > 1545439085610 ORDER BY posts.post_time ASC (selects posts newer than 1545439085610 | or posts after 1545439085610)
-
-    // right now, this query selects newer posts always | ''.split(',') returns a query with length 1 where the first elemeent is an empty string
-
-    // ordering by ASC starts from oldest, so the first result is the oldest post and the newer ones is the last and that's what corpers see first
-
-    // so we're selecting posts newer than the ones currently in the user's timeline. or the server closed the connection error
-
-    // ways to convert from js format to sql format
-    
-    
-    // remember to check if the query to know if the time is actually greater than or less
-    // console.log(e, 'time causing the ish', aUTL[aUTL.length - 1], sUTL[sUTL.length - 1]); // when timeline is empty, e is "Invalid Date"
-
-    // we stopped using sender column from posts table, so it's null !
-
-
-    /* db.CorpMember.findAll({ // TODO: also add PPA
-        where: {
-            state_code: {
-                [Op.like]: `%${socket.handshake.query.state_code.substring(0, 2)}%`,
-            }
-        },
-        include: [{ // how can we specify this can be empty if possible
-            model: db.Sale,
-            where: {
-                state_code: {
-                    [Op.like]: `%${socket.handshake.query.state_code.substring(0, 2)}%`, // somewhat redundant
-                },
-                ... (sUTLlast && {
-                    created_at: {
-                        [Op.gt]: sUTLlast,
-                }})
-            },
-            order: [
-                ['created_at', 'ASC']
-            ]
-        },
-        {
-            model: db.Accommodation,
-            where: {
-                state_code: {
-                    [Op.like]: `%${socket.handshake.query.state_code.substring(0, 2)}%`, // somewhat redundant
-                },
-                ... (sUTLlast && {
-                    created_at: {
-                        [Op.gt]: sUTLlast,
-                }})
-            },
-            order: [
-                ['created_at', 'ASC']
-            ]
-        }]
-    })
-    // .toJSON()
-    .then(_sales_accommodations => {
-        // console.log("\n\n\n\n\n\ndid we get corp member's Sales n Accommodation?", _sales_accommodations);
-        
-        socket.emit('boardcast message', {
-            to: 'be received by everyoneELSE',
-            post: _sales_accommodations
-        });
-
-    }, (reject) => {
-        socket.emit('boardcast message', {
-            to: 'be received by everyoneELSE',
-            post: []
-        });
-        console.error('uhmmmm not good', reject);
-        console.log('emitting empty posts, first user or the tl is empty')
-    }).catch(reject => {
-        console.error('is this the error ?', reject);
-
-        // right ?? ?? we can't just not send anything ...
-        socket.emit('boardcast message', {
-            to: 'be received by everyoneELSE',
-            post: []
-        });
-    }) */
-
-
-    /* query.FetchPostsForTimeLine({
-        statecode_substr: socket.handshake.query.state_code.substring(0, 2),
-        last_sale_time: sUTLlast,
-        last_accommodation_time: aUTLlast
-    }).then((allposts_results) => {
-        Object.entries(allposts_results).forEach(
-            ([key, value]) => {
-
-                // console.log('acc v:', value);
-                socket.emit('boardcast message', {
-                    to: 'be received by everyoneELSE',
-                    post: value // should be an array
-                });
-
-            }
-        );
-    }, (reject) => {
-        socket.emit('boardcast message', {
-            to: 'be received by everyoneELSE',
-            post: []
-        });
-        console.log('emitting empty posts, first user or the tl is empty');
-    }).catch((reason) => {
-        console.log('FetchPostForTimeLine failed');
-        
-    }) */
+    ioCorpMember.emit(IOEventNames.HI, `from server 000: /cm`);
 
     socket.on('disconnect', function () {
         console.log('lost a connection on /corp-member');
-        ioCorpMember.emit('corpers_count', {
-            count: 'sth', // Object.keys(ioCorpMember.connected).length
-        }); // todo the disconnected socket should boardcast, let's not waste things and time abeg
     });
 
 });
 
-const ioChat = io.of('/chat').on('connection', function (socket) {
+const ioChat = io.of(IOEventRoutes.CHAT)
+ioChat.on(IOEventNames.CONNECTION, function (socket) {
 
     // let's do this first cause socket.handshake.query comes as sting ... will fix later
     socket.handshake.query.corper = JSON.parse(socket.handshake.query.corper)
@@ -372,7 +298,7 @@ const ioChat = io.of('/chat').on('connection', function (socket) {
          * and when they see the message, it should mark that it has been read... how ?
          */
 
-        socket.on('hi', function (msg) {
+        socket.on(IOEventNames.HI, function (msg) {
             console.log('\nwhat we got:', msg);
         });
 
@@ -590,7 +516,7 @@ const ioChat = io.of('/chat').on('connection', function (socket) {
 
 });
 
-const iomap = io.of('/map').on('connection', function (socket) { // when a new user connects to the map
+const iomap = io.of(IOEventRoutes.MAP).on(IOEventNames.CONNECTION, function (socket) { // when a new user connects to the map
 
     socket.on('addplace', function (data) {
         console.log('got some info', data)
@@ -607,33 +533,6 @@ const iomap = io.of('/map').on('connection', function (socket) { // when a new u
     });
 });
 
-const iocount = io.of('/count').on('connection', function (countsocket) {
-    // once you connect, send the number
-    countsocket.emit('count', {
-        number: io.sockets.clients.length
-    });
-
-    // while, you're connected, if someone else logs in or comes 'online', sent the number
-    io.on('connection', function (socket) {
-        console.log(io.sockets.clients.length, typeof io.sockets.clients.length); // clients counts the different ipaddresses connected
-        console.log('+1')
-        countsocket.emit('count', {
-            number: io.sockets.clients.length
-        });
-
-        // if someone goes offline or dissconnects, send the number
-        socket.on('disconnect', function () {
-            console.log(io.sockets.clients.length, typeof io.sockets.clients.length);
-            console.log('-1')
-            countsocket.emit('count', {
-                number: io.sockets.clients.length
-            });
-        });
-
-    })
-
-});
-
-module.exports = io;
+module.exports = { io, IOEventNames, IOEventRoutes };
 
 // https://openclassrooms.com/en/courses/2504541-ultra-fast-applications-using-node-js/2505653-socket-io-let-s-go-to-real-time#/id/r-2505616

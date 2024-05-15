@@ -945,11 +945,12 @@ exports.getPosts = (req, res) => {
       item_name: {
         [Op.substring]: req.query.q.substring(1), // hmmm...  // remove first letter
       },
-      ... (req.query.s && {
-        state_code: {
-          [Op.substring]: req.query.s.substring(0, 2),
-        }
-      })
+      // TODO: Uncomment later, needs refactoring... state_code not in Sale anymore
+      // ... (req.query.s && {
+      //   state_code: {
+      //     [Op.substring]: req.query.s.substring(0, 2),
+      //   }
+      // })
     },
     order: [
       ['created_at', 'ASC']
@@ -961,8 +962,7 @@ exports.getPosts = (req, res) => {
       },
       {
         model: db.CorpMember,
-        // as: 'saleByCorper',
-        attributes: db.CorpMember.getSafeAttributes()
+        attributes: db.CorpMember.getPublicAttributes()
       }
     ]
   })
@@ -1040,7 +1040,7 @@ exports.getPosts = (req, res) => {
 
         res
           .status(200)
-          .send(thisisit)
+          .json(thisisit)
 
       }, (reject) => {
         res.status(500).json(null)
@@ -1179,7 +1179,7 @@ exports.joinWaitList = (req, res) => {
 
     }).catch(reason => {
       console.error(`Caught ERR in ${_FILENAME} ${_FUNCTIONNAME}:`, error)
-      res.status(500).send({
+      res.status(500).json({
         message: "We had an error, so sorry about that."
       })
     });
@@ -1191,16 +1191,16 @@ exports.getAllUsers = (req, res) => {
   const _FUNCTIONNAME = 'getAllUsers'
   console.log('hitting', _FILENAME, _FUNCTIONNAME);
   return db.CorpMember.findAll().then(results => {
-    res.status(200).send({
+    res.status(200).json({
       data: results
     })
   }, error => {
-    res.status(400).send({
+    res.status(400).json({
       message: "We had an error, that can be fixed."
     })
   }).catch(reason => {
     console.error('catching this err because:', reason);
-    res.status(500).send({
+    res.status(500).json({
       message: "We had an error, so sorry about that."
     })
   });

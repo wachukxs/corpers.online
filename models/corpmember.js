@@ -28,10 +28,16 @@ module.exports = (sequelize, DataTypes) => {
      * @returns array of attributes without password
      */
     static getSafeAttributes() {
-      let safeCorpMemberAttributes = Object.keys(CorpMember.rawAttributes)
-      safeCorpMemberAttributes.splice(safeCorpMemberAttributes.indexOf('password'), 1);
-      safeCorpMemberAttributes.splice(safeCorpMemberAttributes.indexOf('push_subscription_stringified'), 1)
-      return safeCorpMemberAttributes
+      const safeCorpMemberAttributes = Object.keys(CorpMember.getAttributes())
+      // remove get these values
+      return safeCorpMemberAttributes.filter((x) => !['push_subscription_stringified', 'password'].includes(x))
+    }
+
+    static getPublicAttributes() {
+      const safeCorpMemberAttributes = Object.keys(CorpMember.getAttributes())
+      return safeCorpMemberAttributes.filter((x) => [
+        'state_code', 'nickname', 'first_name', // only get these values
+      ].includes(x))
     }
     /**
      * Helper method for defining associations.
@@ -207,26 +213,16 @@ module.exports = (sequelize, DataTypes) => {
       afterCreate(corpMember, {}) {
         corpMember.dataValues.service_state = ngstates.states_long[ngstates.states_short.indexOf(corpMember.state_code.trim().slice(0, 2).toUpperCase())]
         corpMember.dataValues._location = corpMember.getServiceState(); // or corpMember.dataValues.service_state; // only using service_state because city_or_town won't be existing
-
-        // corpMember.service_state = ngstates.states_long[ngstates.states_short.indexOf(corpMember.state_code.trim().slice(0, 2).toUpperCase())]
-        // corpMember._location = corpMember.getServiceState(); // or corpMember.service_state;
       },
       afterFind(corpMember, {}) {
         if (corpMember) { // for when we do a find during login, and corp member doesn't exist
           corpMember.dataValues.service_state = ngstates.states_long[ngstates.states_short.indexOf(corpMember.state_code.trim().slice(0, 2).toUpperCase())]
           corpMember.dataValues._location = corpMember.getServiceState() + (corpMember.city_or_town ? ', ' + corpMember.city_or_town : '')
-
-          // commnet if virtual fields are in use ...or remove error thrown in virtual fields
-          // corpMember.service_state = ngstates.states_long[ngstates.states_short.indexOf(corpMember.state_code.trim().slice(0, 2).toUpperCase())]
-          // corpMember._location = corpMember.getServiceState() + (corpMember.city_or_town ? ', ' + corpMember.city_or_town : '')
         }
       },
       afterUpdate(corpMember, {}) {
         corpMember.dataValues.service_state = ngstates.states_long[ngstates.states_short.indexOf(corpMember.state_code.trim().slice(0, 2).toUpperCase())]
         corpMember.dataValues._location = corpMember.getServiceState() + (corpMember.city_or_town ? ', ' + corpMember.city_or_town : '')
-
-        // corpMember.service_state = ngstates.states_long[ngstates.states_short.indexOf(corpMember.state_code.trim().slice(0, 2).toUpperCase())]
-        // corpMember._location = corpMember.getServiceState() + (corpMember.city_or_town ? ', ' + corpMember.city_or_town : '')
       },
     }
   });

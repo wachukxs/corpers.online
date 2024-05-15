@@ -14,10 +14,10 @@ app.locals.version = 1;
 const server = http.createServer(app);
 
 // https://openclassrooms.com/en/courses/2504541-ultra-fast-applications-using-node-js/2505653-socket-io-let-s-go-to-real-time#/id/r-2505512
-const io = require('./sockets/routes');
+const { io } = require('./sockets/routes');
 io.attach(server, {
     cors: {
-        origin: 'http://localhost:4006',
+        origin: app.get('env') == 'production' ? 'https://corpers.ng' : 'http://localhost:4006',
         methods: ['GET', 'POST'],
         credentials: true,
     }
