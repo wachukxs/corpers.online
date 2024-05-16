@@ -63,11 +63,31 @@ exports.create = async (req, res, next) => {
           crypto.randomBytes(20).toString("hex") + `.${fileExtension}`;
 
         const saveTo = path.join(process.env.TEMP_UPLOAD_PATH, new_file_name);
-        console.log('using saveTo', saveTo);
-        fileStream.pipe(fs.createWriteStream(saveTo)).on("close", (err) => {
-          console.log("done writing file!!!");
+        console.log("using saveTo", saveTo);
 
-          // TODO: upload here??
+        // there's also 'limit' and 'error' events https://www.codota.com/code/javascript/functions/busboy/busboy/on
+        fileStream.on("limit", function () {
+          console.error("the file was too large... nope");
+          get = false;
+          // TODO: don't listen to the data event anymore
+
+          // TODO: how should we send a response if one of the files/file is invalid [too big or not an accepted file type]?
+        });
+
+        // https://stackoverflow.com/a/20891472
+        fileStream.on("error", function (err) {
+          console.log("ERROR:" + err);
+          file.resume();
+        });
+
+        fileStream.pipe(fs.createWriteStream(saveTo)).on("close", (err) => {
+          if (err) {
+            console.log("ERRR creating file stream", err);
+          } else {
+            console.log("done writing file!!!");
+
+            // TODO: upload here??
+          }
         });
         console.log("got a file", filename);
 
@@ -77,18 +97,6 @@ exports.create = async (req, res, next) => {
         // const _url = await uploadFile(fileStream, filename)
 
         _media.push(new_file_name);
-
-        // there's also 'limit' and 'error' events https://www.codota.com/code/javascript/functions/busboy/busboy/on
-        fileStream.on("limit", function () {
-          console.error("the file was too large... nope");
-          get = false;
-          // don't listen to the data event anymore
-          /* fileStream.off('data', (data) => { // doesn't work
-          console.log('should do nothing. what\'s data?', data)
-        }) */
-
-          // how should we send a response if one of the files/file is invalid [too big or not an accepted file type]?
-        });
 
         if (filename && !helpers.acceptedfiles.includes(mimeType)) {
           // if mimetype is '' or undefined, it passes
@@ -104,7 +112,7 @@ exports.create = async (req, res, next) => {
         fileStream.on("end", function (err) {
           // if we listened for 'file', even if there's no file, we still come here
           // so we're checking if it's empty before doing anything.
-          /* console.log('readabe?///// ?', fileStream.read()) // filestram.read() is always null ... */
+          /* console.log('readable?///// ?', fileStream.read()) // filestram.read() is always null ... */
 
           console.log("File [" + fieldName + "] Finished. Got " + "bytes");
           if (err) {
@@ -237,20 +245,19 @@ exports.create = async (req, res, next) => {
         console.log("\n\n then the media", _media_to_send);
       }
 
-      const __sale_to_save = _sale_to_save.toJSON()
+      const __sale_to_save = _sale_to_save.toJSON();
 
       // TODO: try to move this into a hook, populate _sale_to_save itself.
       __sale_to_save.CorpMember = await _sale_to_save.getCorpMember?.({
-        attributes: db.CorpMember.getPublicAttributes()
-      })
+        attributes: db.CorpMember.getPublicAttributes(),
+      });
 
       // TODO: No need to send the _sale_to_save data back in the response, they'll eventually get it via websockets. We can also save on response size data.
       res.status(200).json({ data: __sale_to_save }); // for test // [will revert to] res.status(200).json(null);
       // console.log("\n\n\n\nafter saving post\n\n:", _sale_to_save);
 
       // once it saves in db then emit to other users
-      io
-        .of("/")
+      io.of("/")
         .to(req.session.corper.state_code.substring(0, 2))
         .emit(IOEventNames.BROADCAST_MESSAGE, {
           to: "be received by everyone else",
