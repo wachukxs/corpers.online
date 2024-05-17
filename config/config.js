@@ -67,8 +67,8 @@ module.exports = {
           "require": true,
           "rejectUnauthorized": false
         },
-        "multipleStatements": true,
     },
+    "multipleStatements": true,
     "pool": {
       "max": 5,
       "min": 0,
