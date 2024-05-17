@@ -7,7 +7,8 @@ const _FILENAME = path.basename(__filename);
 
 /**
  * function to query corp member details used to populate session.corper object.
- * @param {string} email 
+ * now depreciated.
+ * @param {string} email
  * @returns CorpMember
  */
 const getCorpMemberDetails = (email) => {
@@ -77,27 +78,11 @@ module.exports.verifyJWT = (req, res, next) => {
         } else {
           console.log("decoded token data", decodedToken);
           // Populate the session object.
-          getCorpMemberDetails(decodedToken.email)
-            .then(
-              (result) => {
-                if (result) {
-                  req.session.corper = result;
-                  next();
-                } else {
-                  console.error("Could not find corper");
-                  res.status(401).json(null);
-                }
-              },
-              (reject) => {
-                console.log(_FUNCTIONNAME, "reject this err because:", reject);
-                res.status(502).json(null);
-              }
-            )
-            .catch((reason) => {
-              console.log(_FUNCTIONNAME, "catching this err because:", reason);
-              // TODO: maybe send response type based on request Accept header.
-              res.status(502).json(null);
-            });
+          req.session.corper = {
+            id: decodedToken?.corp_member_id,
+            email: decodedToken?.email,
+            state_code: decodedToken?.state_code
+          }
         }
       }
     );
@@ -116,8 +101,14 @@ module.exports.verifyJWT = (req, res, next) => {
         res.status(502).json(null);
       } else {
         console.log("decoded token data", decodedToken);
-        // Populate the session object.
-        getCorpMemberDetails(decodedToken.email)
+        req.session.corper = {
+          id: decodedToken?.corp_member_id,
+          email: decodedToken?.email,
+          state_code: decodedToken?.state_code
+        }
+        // Populate the session object. Not with an extra fetch to the DB. JWT is stateless.
+        
+        /* getCorpMemberDetails(decodedToken.email)
           .then(
             (result) => {
               if (result) {
@@ -125,19 +116,18 @@ module.exports.verifyJWT = (req, res, next) => {
                 next();
               } else {
                 console.error("Could not find corper");
-                res.status(401).json(null);
+                res.status(401).json();
               }
             },
             (reject) => {
               console.log(_FUNCTIONNAME, "reject this err because:", reject);
-              res.status(502).json(null);
+              res.status(502).json();
             }
           )
           .catch((reason) => {
             console.log("auth auto login catching this err because:", reason);
-            // TODO: maybe send response type based on request Accept header.
-            res.status(502).json(null);
-          });
+            res.status(502).json();
+          }); */
       }
     });
   } else {
@@ -241,7 +231,7 @@ module.exports.createJWT = (state_code) => {
 module.exports.refreshToken = () => {
   const _FUNCTIONNAME = "refreshToken";
   console.log("hitting", _FILENAME, _FUNCTIONNAME);
-  
+
   db.CorpMember.findOne({
     where: { state_code: decodedToken.state_code.toUpperCase() },
     // include: [{ all: true }],
