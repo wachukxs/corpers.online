@@ -95,7 +95,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
-      type: DataTypes.INTEGER
+      type: DataTypes.INTEGER,
+      set(value) {
+        console.error('Do not try to set the CorpMember.`id` value!');
+        // throw new Error('Do not try to set the CorpMember.`id` value!');
+      },
     },
     travel_from_city: DataTypes.STRING,
     travel_from_state: DataTypes.STRING,
