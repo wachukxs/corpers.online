@@ -66,7 +66,8 @@ module.exports = {
         "ssl": {
           "require": true,
           "rejectUnauthorized": false
-        }
+        },
+        "multipleStatements": true,
     },
     "pool": {
       "max": 5,

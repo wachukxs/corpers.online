@@ -466,6 +466,11 @@ exports.getProfile = (req, res) => {
   });
 };
 
+/**
+ * TODO: Need to include option to update their state code
+ * @param {*} req 
+ * @param {*} res 
+ */
 exports.updateProfile = async (req, res) => {
   const _FUNCTIONNAME = "updateProfile";
   console.log("hitting", _FILENAME, _FUNCTIONNAME);
@@ -488,17 +493,16 @@ exports.updateProfile = async (req, res) => {
     const corpMember = await db.CorpMember.findOne({
       where: { id: req.session.corper.id },
       /**
-       * removed 'id'
-       *
+       * removed 'id';
        * causes Error: You attempted to save an instance with no primary key, this is not allowed since it would result in a global update
        */
       attributes: { exclude: ["password", "push_subscription_stringified"] },
     });
 
     const _data = removeNullValuesFromObject(req.body);
-    // remove service state; we'll get is automatically
+    
     if (_data.service_state) {
-      delete _data.service_state
+      delete _data.service_state // remove service state; we'll get is automatically
     }
     await corpMember.update(_data);
 
