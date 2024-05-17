@@ -496,9 +496,7 @@ exports.updateProfile = async (req, res) => {
     });
 
     const _data = removeNullValuesFromObject(req.body);
-    corpMember.set(_data);
-
-    await corpMember.save();
+    await corpMember.update(_data);
 
     // const [corpMemberUpdated] = await db.CorpMember.update(
     //   _data,
