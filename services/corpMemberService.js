@@ -491,28 +491,33 @@ exports.updateProfile = async (req, res) => {
 
   try {
     const result = await db.sequelize.transaction(async (t) => {
-      const corpMember = await db.CorpMember.findOne({
-        where: { id: req.session.corper.id },
-        /**
-         * removed 'id';
-         * causes Error: You attempted to save an instance with no primary key, this is not allowed since it would result in a global update
-         */
-        attributes: { exclude: ["password", "push_subscription_stringified"] },
-      });
+      // Method 1
+      // const corpMember = await db.CorpMember.findOne({
+      //   where: { id: req.session.corper.id },
+      //   /**
+      //    * removed 'id';
+      //    * causes Error: You attempted to save an instance with no primary key, this is not allowed since it would result in a global update
+      //    */
+      //   attributes: { exclude: ["password", "push_subscription_stringified"] },
+      // });
 
-      const _data = removeNullValuesFromObject(req.body);
+      // const _data = removeNullValuesFromObject(req.body);
 
-      if (_data.service_state) {
-        delete _data.service_state; // remove service state; we'll get is automatically
-      }
-      await corpMember.update(_data, { transaction: t });
+      // if (_data.service_state) {
+      //   delete _data.service_state; // remove service state; we'll get is automatically
+      // }
+      // await corpMember.update(_data, { transaction: t });
 
-      // const [corpMemberUpdated] = await db.CorpMember.update(
-      //   _data,
-      //   { where: { state_code: req.session.corper.state_code } }
-      // )
+      // return corpMember;
 
-      return corpMember;
+
+      // Method 2
+      const [corpMemberUpdated] = await db.CorpMember.update(
+        _data,
+        { where: { id: req.session.corper.id } }
+      )
+      return corpMemberUpdated;
+      
     });
 
     res.status(200).json({
