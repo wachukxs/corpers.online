@@ -114,9 +114,10 @@ exports.create = async (req, res, next) => {
           // so we're checking if it's empty before doing anything.
           /* console.log('readable?///// ?', fileStream.read()) // filestram.read() is always null ... */
 
-          console.log("File [" + fieldName + "] Finished. Got " + "bytes");
           if (err) {
             console.log("err in busboy file end", err);
+          } else {
+            console.log("File [" + fieldName + "] Finished. Got bytes");
           }
         });
 

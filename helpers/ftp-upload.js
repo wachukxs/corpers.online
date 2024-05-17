@@ -1,4 +1,4 @@
-const dotenv = require("dotenv").config();
+const dotenv = require("dotenv").config(); // useful / necessary?
 const ftp = require("basic-ftp");
 
 const crypto = require("crypto");
@@ -28,24 +28,31 @@ async function init() {
 
 /**
  * Not sure if stream works. Don't think it does.
- * @param {*} streamOrFileData 
- * @param {*} fileNameOrExtension 
- * @returns 
+ * @param {*} streamOrFileData
+ * @param {*} fileNameOrExtension
+ * @returns
  */
 exports.uploadFile = async (streamOrFileData, fileNameOrExtension) => {
-  // check if ftp connection is still open.
-  if (client.closed) {
-    await client.access(ftpOptions);
-  }
-  const fileExtension = fileNameOrExtension.split('.').pop();
-  /**
-   * https://stackoverflow.com/a/27747377/9259701
-   * 
-   * TODO: later, change 20 to 25.
-   * For longer name - so we don't (eventually) get same name/value.
-   */
-  const file_name = crypto.randomBytes(20).toString('hex') + `.${fileExtension}`;
-  await client.uploadFrom(streamOrFileData, file_name).finally(() => client.close());
+  try {
+    // check if ftp connection is still open.
+    if (client.closed) {
+      await client.access(ftpOptions);
+    }
+    const fileExtension = fileNameOrExtension.split(".").pop();
+    /**
+     * https://stackoverflow.com/a/27747377/9259701
+     *
+     * TODO: later, change 20 to 25.
+     * For longer name - so we don't (eventually) get same name/value.
+     */
+    const file_name =
+      crypto.randomBytes(20).toString("hex") + `.${fileExtension}`;
+    await client
+      .uploadFrom(streamOrFileData, file_name)
+      .finally(() => client.close());
 
-  return `${process.env.FTP_UPLOAD_PATH}/${file_name}`;
+    return `${process.env.FTP_UPLOAD_PATH}/${file_name}`;
+  } catch (error) {
+    console.log('UPLOAD ERROR:', error);
+  }
 };
