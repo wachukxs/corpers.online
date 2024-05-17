@@ -236,9 +236,15 @@ exports.create = async (req, res, next) => {
       /**
        * NOTE: Can only include Media cause it was created along side it.
        */
-      _sale_to_save = await db.Sale.create(new_sale, {
-        include: [{ model: db.Media }],
-      });
+      try {
+        _sale_to_save = await db.Sale.create(new_sale, {
+          include: [{ model: db.Media }],
+        });
+      } catch (error) {
+        console.log('err creating sale', error);
+
+        return res.status(400).json()
+      }
 
       if (uploadPromise.length) {
         let _media_to_send = await _sale_to_save.getSaleMedia();
