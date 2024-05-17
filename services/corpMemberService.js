@@ -491,9 +491,11 @@ exports.updateProfile = async (req, res) => {
 
   try {
     const result = await db.sequelize.transaction(async (t) => {
-      
       const _data = removeNullValuesFromObject(req.body);
-      
+      if (_data.service_state) {
+        delete _data.service_state; // remove service state; we'll get is automatically
+      }
+
       // Method 1
       // const corpMember = await db.CorpMember.findOne({
       //   where: { id: req.session.corper.id },
@@ -504,22 +506,16 @@ exports.updateProfile = async (req, res) => {
       //   attributes: { exclude: ["password", "push_subscription_stringified"] },
       // });
 
-
-      // if (_data.service_state) {
-      //   delete _data.service_state; // remove service state; we'll get is automatically
-      // }
       // await corpMember.update(_data, { transaction: t });
 
       // return corpMember;
 
 
       // Method 2
-      const [corpMemberUpdated] = await db.CorpMember.update(
-        _data,
-        { where: { id: req.session.corper.id } }
-      )
+      const [corpMemberUpdated] = await db.CorpMember.update(_data, {
+        where: { id: req.session.corper.id },
+      });
       return corpMemberUpdated;
-      
     });
 
     res.status(200).json({
