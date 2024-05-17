@@ -485,32 +485,32 @@ exports.updateProfile = async (req, res) => {
   }
 
   try {
-    // const corpMember = await db.CorpMember.findOne({
-    //   where: { state_code: req.session.corper.state_code },
-    //   /**
-    //    * removed 'id'
-    //    *
-    //    * causes Error: You attempted to save an instance with no primary key, this is not allowed since it would result in a global update
-    //    */
-    //   attributes: { exclude: ["password", "push_subscription_stringified"] },
-    // });
+    const corpMember = await db.CorpMember.findOne({
+      where: { state_code: req.session.corper.state_code },
+      /**
+       * removed 'id'
+       *
+       * causes Error: You attempted to save an instance with no primary key, this is not allowed since it would result in a global update
+       */
+      attributes: { exclude: ["password", "push_subscription_stringified"] },
+    });
 
     const _data = removeNullValuesFromObject(req.body);
-    // corpMember.set(_data);
+    corpMember.set(_data);
 
-    // await corpMember.save();
+    await corpMember.save();
 
-    const [corpMemberUpdated] = await db.CorpMember.update(
-      _data,
-      { where: { state_code: req.session.corper.state_code } }
-    )
+    // const [corpMemberUpdated] = await db.CorpMember.update(
+    //   _data,
+    //   { where: { state_code: req.session.corper.state_code } }
+    // )
 
     res.status(200).json({
       message: "Profile updated",
-      data: corpMemberUpdated, // corpMember.toJSON()
+      data: corpMember.toJSON(), // corpMemberUpdated
     });
   } catch (error) {
-    console.error(`'ERR in ${_FILENAME} ${_FUNCTIONNAME}:`, error);
+    console.error(`ERR in ${_FILENAME} ${_FUNCTIONNAME}:`, error);
     res.status(501).json({
       message: "An error occurred while updating your profile.",
     });
