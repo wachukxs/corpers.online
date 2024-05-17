@@ -85,6 +85,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Alert',
+    tableName: 'Alerts',
     timestamps: true,
     underscored: true,
     createdAt: 'created_at',

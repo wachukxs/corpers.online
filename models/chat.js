@@ -81,6 +81,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Chat',
+    tableName: 'Chats',
     timestamps: true,
     underscored: true,
     createdAt: 'created_at',

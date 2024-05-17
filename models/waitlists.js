@@ -35,6 +35,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'WaitList',
+    tableName: 'WaitLists',
     timestamps: true,
     underscored: true,
     createdAt: 'created_at',
