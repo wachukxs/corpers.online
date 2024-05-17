@@ -83,6 +83,7 @@ module.exports.verifyJWT = (req, res, next) => {
             email: decodedToken?.email,
             state_code: decodedToken?.state_code
           }
+          next();
         }
       }
     );
@@ -106,6 +107,7 @@ module.exports.verifyJWT = (req, res, next) => {
           email: decodedToken?.email,
           state_code: decodedToken?.state_code
         }
+        next();
         // Populate the session object. Not with an extra fetch to the DB. JWT is stateless.
         
         /* getCorpMemberDetails(decodedToken.email)
