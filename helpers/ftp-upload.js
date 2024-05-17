@@ -10,7 +10,7 @@ const ftpOptions = {
   host: process.env.FTP_SERVER,
   user: process.env.FTP_USERNAME,
   password: process.env.FTP_PASSWORD,
-  secure: process.env.NODE_ENV === "production",
+  // secure: process.env.NODE_ENV === "production", // Not doing this because of err: ERR_TLS_CERT_ALTNAME_INVALID
 };
 async function init() {
   try {
@@ -54,5 +54,7 @@ exports.uploadFile = async (streamOrFileData, fileNameOrExtension) => {
     return `${process.env.FTP_UPLOAD_PATH}/${file_name}`;
   } catch (error) {
     console.log('UPLOAD ERROR:', error);
+
+    // TODO: return error response better...
   }
 };
