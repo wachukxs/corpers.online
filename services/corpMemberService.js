@@ -468,8 +468,8 @@ exports.getProfile = (req, res) => {
 
 /**
  * TODO: Need to include option to update their state code
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 exports.updateProfile = async (req, res) => {
   const _FUNCTIONNAME = "updateProfile";
@@ -480,7 +480,7 @@ exports.updateProfile = async (req, res) => {
   /**
    * delete null values from the body.
    * https://stackoverflow.com/a/38340730
-   * 
+   *
    * TODO: We should take this fun somewhere else.
    */
   function removeNullValuesFromObject(obj) {
@@ -490,30 +490,34 @@ exports.updateProfile = async (req, res) => {
   }
 
   try {
-    const corpMember = await db.CorpMember.findOne({
-      where: { id: req.session.corper.id },
-      /**
-       * removed 'id';
-       * causes Error: You attempted to save an instance with no primary key, this is not allowed since it would result in a global update
-       */
-      attributes: { exclude: ["password", "push_subscription_stringified"] },
+    const result = await db.sequelize.transaction(async (t) => {
+      const corpMember = await db.CorpMember.findOne({
+        where: { id: req.session.corper.id },
+        /**
+         * removed 'id';
+         * causes Error: You attempted to save an instance with no primary key, this is not allowed since it would result in a global update
+         */
+        attributes: { exclude: ["password", "push_subscription_stringified"] },
+      });
+
+      const _data = removeNullValuesFromObject(req.body);
+
+      if (_data.service_state) {
+        delete _data.service_state; // remove service state; we'll get is automatically
+      }
+      await corpMember.update(_data, { transaction: t });
+
+      // const [corpMemberUpdated] = await db.CorpMember.update(
+      //   _data,
+      //   { where: { state_code: req.session.corper.state_code } }
+      // )
+
+      return corpMember;
     });
-
-    const _data = removeNullValuesFromObject(req.body);
-    
-    if (_data.service_state) {
-      delete _data.service_state // remove service state; we'll get is automatically
-    }
-    await corpMember.update(_data);
-
-    // const [corpMemberUpdated] = await db.CorpMember.update(
-    //   _data,
-    //   { where: { state_code: req.session.corper.state_code } }
-    // )
 
     res.status(200).json({
       message: "Profile updated",
-      data: corpMember.toJSON(), // corpMemberUpdated
+      data: result.toJSON(), // corpMemberUpdated
     });
   } catch (error) {
     console.error(`ERR in ${_FILENAME} ${_FUNCTIONNAME}:`, error);
