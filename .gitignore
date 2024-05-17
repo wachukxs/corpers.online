@@ -173,3 +173,5 @@ connarts_nysc.sql
 /playgrounds
 
 randoms/busboy-uploads/*
+# keep .gitkeep
+!randoms/busboy-uploads/README.md
