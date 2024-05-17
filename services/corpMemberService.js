@@ -486,7 +486,7 @@ exports.updateProfile = async (req, res) => {
 
   try {
     const corpMember = await db.CorpMember.findOne({
-      where: { state_code: req.session.corper.state_code },
+      where: { id: req.session.corper.id },
       /**
        * removed 'id'
        *
@@ -496,6 +496,10 @@ exports.updateProfile = async (req, res) => {
     });
 
     const _data = removeNullValuesFromObject(req.body);
+    // remove service state; we'll get is automatically
+    if (_data.service_state) {
+      delete _data.service_state
+    }
     await corpMember.update(_data);
 
     // const [corpMemberUpdated] = await db.CorpMember.update(
