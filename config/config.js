@@ -68,8 +68,8 @@ module.exports = {
           "rejectUnauthorized": false
         },
     },
-    "flags": "MULTI_STATEMENTS", // TODO: remove this later.
-    "multipleStatements": true, // TODO: remove this later.
+    // "flags": "MULTI_STATEMENTS", // TODO: remove this later.
+    // "multipleStatements": true, // TODO: remove this later.
     "pool": {
       "max": 5,
       "min": 0,

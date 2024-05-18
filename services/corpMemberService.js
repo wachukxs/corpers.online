@@ -468,6 +468,8 @@ exports.getProfile = (req, res) => {
 
 /**
  * TODO: Need to include option to update their state code
+ * Possible fix for ER_NEED_REPREPARE
+ * https://stackoverflow.com/questions/4380813/how-to-get-rid-of-mysql-error-prepared-statement-needs-to-be-re-prepared
  * @param {*} req
  * @param {*} res
  */
