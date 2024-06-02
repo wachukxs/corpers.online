@@ -41,11 +41,14 @@ sequelize.authenticate().then((e) => {
 }).catch((err) => {
   console.error('oopsy error connecting to db with Sequelize', err)
   process.exitCode = 1; // Why we set exit code like this - https://stackoverflow.com/a/37592669
-  // sequelize.close() // after retrying ?
 
   /**
    * TODO: Should we use local SQLite as mini back and sync data when remote connection is restored.
+   * 
+   * ...and Remove later
    */
+  sequelize.close()
+  process.exit()
 })
 
 db.sequelize = sequelize;
