@@ -70,7 +70,8 @@ exports.create = (req, res) => {
 
               // problem here https://stackoverflow.com/questions/49476080/express-session-not-persistent-after-redirect
 
-              res.cookie("_online", token, cookieOptions).status(200).json({
+              res.cookie("_online", token, cookieOptions)
+              .status(200).json({
                 state_code: req.body.state_code.toUpperCase(),
                 message: "OK",
               });
@@ -82,30 +83,39 @@ exports.create = (req, res) => {
         console.error("CorpersSignUp() error happened", error);
         console.error("----> error happened", error.errors[0], error.fields);
 
-        // res.send(error.message) // try this & not redirect
         if (error.errors[0].validatorKey == "not_unique") {
           switch (
             error.errors[0].path // value: 'nwachukwuossai@gmail.com',
           ) {
             case "state_code":
-              res.redirect("/signup?m=ds"); // [m]essage = [d]uplicate [s]tatecode
-              break;
+              return res.status(400).json({
+                message: "Another account with the same state code already exists",
+                error: null,
+              })
 
             case "email":
-              res.redirect("/signup?m=de"); // [m]essage = [d]uplicate [e]mail
-              break;
+              return res.status(400).json({
+                message: "Another account with the same email already exists",
+                error: null,
+              })
 
             case "invalid state_code":
-              res.redirect("/signup?m=is"); // [m]essage = [i]nvalid [s]tatecode
-              break;
+              return res.status(400).json({
+                message: "State code is invalid",
+                error: null,
+              })
 
             default:
-              res.redirect("/signup?m=ue"); // [m]essage = [u]naccounted [e]rror
-              break;
+              return res.status(400).json({
+                message: "An error occurred",
+                error: null,
+              })
           }
         } else {
-          // should also switch for maybe invalid values
-          res.redirect("/signup?m=ue"); // [m]essage = [u]naccounted [e]rror
+          return res.status(400).json({
+            message: "An error occurred",
+            error: null,
+          })
         }
       }
     )
@@ -113,8 +123,6 @@ exports.create = (req, res) => {
       console.error("catching this err because:", reason);
       res.redirect("/signup?m=ue");
     });
-  // .then(_test => res.status(201).send(_test))
-  // .catch(error => res.status(400).send(error));
 };
 
 /**
@@ -492,11 +500,11 @@ exports.updateProfile = async (req, res) => {
   }
 
   try {
+    const _data = removeNullValuesFromObject(req.body);
+    if (_data.service_state) {
+      delete _data.service_state; // remove service state; we'll get is automatically
+    }
     const result = await db.sequelize.transaction(async (t) => {
-      const _data = removeNullValuesFromObject(req.body);
-      if (_data.service_state) {
-        delete _data.service_state; // remove service state; we'll get is automatically
-      }
 
       // Method 1
       // const corpMember = await db.CorpMember.findOne({
@@ -514,15 +522,18 @@ exports.updateProfile = async (req, res) => {
 
 
       // Method 2
-      const [corpMemberUpdated] = await db.CorpMember.update(_data, {
-        where: { id: req.session.corper.id },
-      });
-      return corpMemberUpdated;
+      // const [corpMemberUpdated] = await db.CorpMember.update(_data, {
+      //   where: { id: req.session.corper.id },
+      // });
+      // return corpMemberUpdated;
     });
+
+    const _update_query = "UPDATE posts SET ?";
+    const results = await db.sequelize.query(_update_query, _data)
 
     res.status(200).json({
       message: "Profile updated",
-      data: result.toJSON(), // corpMemberUpdated
+      data: results
     });
   } catch (error) {
     console.error(`ERR in ${_FILENAME} ${_FUNCTIONNAME}:`, error);
