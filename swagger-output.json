@@ -587,14 +587,6 @@
             "description": "Internal Server Error"
           }
         }
-      },
-      "get": {
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
       }
     },
     "/api/v1.0/all-users": {
@@ -1297,6 +1289,19 @@
       }
     },
     "/api/v1.0/ng-states": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1.0/ng-state-and-lgas": {
       "get": {
         "description": "",
         "responses": {
