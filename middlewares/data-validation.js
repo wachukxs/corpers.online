@@ -41,22 +41,23 @@ module.exports.corpMemberSignUp = (req, res, next) => {
     console.log('hitting', _FILENAME, _FUNCTIONNAME);
 
     const waitListSchema = Joi.object({
-        first_name: Joi.string()
-            .min(2)
-            .max(70)
-            .required(),
-        last_name: Joi.string()
-            .min(2)
-            .max(70)
-            .required(),
-        middle_name: Joi.string()
-            .min(2)
-            .max(70)
-            .optional(),
+        /// we don't need these on registration - to make for easier registration
+        // first_name: Joi.string()
+        //     .min(2)
+        //     .max(70)
+        //     .required(),
+        // last_name: Joi.string()
+        //     .min(2)
+        //     .max(70)
+        //     .required(),
+        // middle_name: Joi.string()
+        //     .min(2)
+        //     .max(70)
+        //     .optional(),
         email: Joi.string()
             .email({ minDomainSegments: 2 }).required(),
         password: Joi.string().required(),
-        remember: Joi.string().allow(''),
+        remember: Joi.string().optional().allow(''),
         state_code: Joi.string().required(),
     })
 
