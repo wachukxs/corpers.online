@@ -33,6 +33,35 @@ exports.getNigerianStates = (req, res) => {
     });
 };
 
+exports.getNigerianStatesAndLGAs = (req, res) => {
+  const _FUNCTIONNAME = "getNigerianStatesAndLGAs";
+  console.log("hitting", _FILENAME, _FUNCTIONNAME);
+
+  return db.States.findAll({
+    attributes: { exclude: ["created_at", "updated_at"] },
+    include: [{
+      model: db.StateLGA,
+      attributes: { exclude: ["created_at", "updated_at", "state_id"] },
+    }]
+  })
+    .then(
+      (states_and_lgas) => {
+        // console.log("re:", states);
+        res.send({
+          states_and_lgas,
+        });
+      },
+      (error) => {
+        console.error(_FUNCTIONNAME, "error happened", error);
+        res.status(500).json(null);
+      }
+    )
+    .catch((reason) => {
+      console.error("catching this err because:", reason);
+      res.status(500).json(null);
+    });
+};
+
 exports.getNigerianStateLGAs = (req, res) => {
   const _FUNCTIONNAME = "getNigerianStateLGAs";
   console.log("hitting", _FILENAME, _FUNCTIONNAME);

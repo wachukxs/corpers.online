@@ -27,6 +27,7 @@ router.post('/ppa/review', auth.verifyJWT, express.json(), ppaService.addReviewT
 router.post('/ppas/search', express.json(), ppaService.searchPPAs)
 router.get('/ppas', ppaService.getAllPPAs)
 router.get('/ng-states', ppaService.getNigerianStates)
+router.get('/ng-state-and-lgas', ppaService.getNigerianStatesAndLGAs)
 router.get('/ng-states/:stateId/lgas', ppaService.getNigerianStateLGAs)
 
 
