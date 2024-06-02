@@ -19,15 +19,7 @@ router.get('/unread-messages', auth.verifyJWT, corpMemberService.unreadMessages)
 
 router.post('/login', express.urlencoded({ extended: true }), express.json(), dataValidation.corpMemberLogin, corpMemberService.login)
 
-router.get('/login', function (req, res) {
-    res.set('Content-Type', 'text/html');
-    res.set("Cache-Control", "no-cache");
-    res.set("Pragma", "no-cache");
-    // res.setHeader("Expires", 0);
-    // res.set('Cache-Control', 'public, max-age=0')
-    res.render('pages/login', { current_year: new Date().getFullYear() });
-});
-
+// why do we have this route? testing? would need to remote later
 router.get('/all-users', corpMemberService.getAllUsers)
 
 router.get('/profile', auth.verifyJWT, corpMemberService.getProfile)
