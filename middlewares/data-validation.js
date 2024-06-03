@@ -100,6 +100,7 @@ module.exports.corpMemberProfileUpdate = (req, res, next) => {
     console.log('hitting', _FILENAME, _FUNCTIONNAME);
 
     const profileUpdateSchema = Joi.object({
+        state_code: Joi.string().optional(),
         service_state: Joi.string().required(),
         lga: Joi.string().optional().allow(null),
         city_or_town: Joi.string().optional().allow(null),
