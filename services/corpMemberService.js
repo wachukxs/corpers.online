@@ -537,24 +537,21 @@ exports.updateProfile = async (req, res) => {
       result,
     });
   } catch (error) {
-    console.log('error type', typeof error);
-    if (error instanceof DatabaseError) {
 
-      // Try again
-      if (error.code === "ER_NEED_REPREPARE") {
-        // https://stackoverflow.com/a/71605309/9259701
-        const sql = db.CorpMember.queryGenerator.updateQuery(
-          db.CorpMember.getTableName(),
-          _data,
-          { id: req.session.corper.id } // where
-        );
+    // Try again (error probably in prod.)
+    if (error?.code === "ER_NEED_REPREPARE") {
+      // https://stackoverflow.com/a/71605309/9259701
+      const sql = db.CorpMember.queryGenerator.updateQuery(
+        db.CorpMember.getTableName(),
+        _data,
+        { id: req.session.corper.id } // where
+      );
 
-        db.sequelize.query(sql);
+      db.sequelize.query(sql);
 
-        return res.status(200).json({
-          message: "Profile updated",
-        });
-      }
+      return res.status(200).json({
+        message: "Profile updated",
+      });
     }
 
     console.error(`ERR in ${_FILENAME} ${_FUNCTIONNAME}:`, error);
