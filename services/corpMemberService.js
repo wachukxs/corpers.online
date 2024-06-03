@@ -537,6 +537,7 @@ exports.updateProfile = async (req, res) => {
       result,
     });
   } catch (error) {
+    console.log('error type', typeof error);
     if (error instanceof DatabaseError) {
 
       // Try again
