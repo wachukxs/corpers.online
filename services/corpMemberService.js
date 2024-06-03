@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, DatabaseError } = require("sequelize");
 const helpers = require("../utilities/helpers");
 const jwt = require("jsonwebtoken");
 const db = require("../models");
@@ -70,8 +70,7 @@ exports.create = (req, res) => {
 
               // problem here https://stackoverflow.com/questions/49476080/express-session-not-persistent-after-redirect
 
-              res.cookie("_online", token, cookieOptions)
-              .status(200).json({
+              res.cookie("_online", token, cookieOptions).status(200).json({
                 state_code: req.body.state_code.toUpperCase(),
                 message: "OK",
               });
@@ -89,33 +88,34 @@ exports.create = (req, res) => {
           ) {
             case "state_code":
               return res.status(400).json({
-                message: "Another account with the same state code already exists",
+                message:
+                  "Another account with the same state code already exists",
                 error: null,
-              })
+              });
 
             case "email":
               return res.status(400).json({
                 message: "Another account with the same email already exists",
                 error: null,
-              })
+              });
 
             case "invalid state_code":
               return res.status(400).json({
                 message: "State code is invalid",
                 error: null,
-              })
+              });
 
             default:
               return res.status(400).json({
                 message: "An error occurred",
                 error: null,
-              })
+              });
           }
         } else {
           return res.status(400).json({
             message: "An error occurred",
             error: null,
-          })
+          });
         }
       }
     )
@@ -504,8 +504,15 @@ exports.updateProfile = async (req, res) => {
     if (_data.service_state) {
       delete _data.service_state; // remove service state; we'll get is automatically
     }
-    const result = await db.sequelize.transaction(async (t) => {
 
+    /**
+     * TODO: we'll need to have a whole process on how to handle state code change
+     * Like updating every known reference of it. And keeping track of state code changes??
+     */
+    if (_data.state_code) {
+      delete _data.state_code; // remove state_code
+    }
+    const result = await db.sequelize.transaction(async (t) => {
       // Method 1
       // const corpMember = await db.CorpMember.findOne({
       //   where: { id: req.session.corper.id },
@@ -515,27 +522,40 @@ exports.updateProfile = async (req, res) => {
       //    */
       //   attributes: { exclude: ["password", "push_subscription_stringified"] },
       // });
-
       // await corpMember.update(_data, { transaction: t });
-
       // return corpMember;
 
-
       // Method 2
-      // const [corpMemberUpdated] = await db.CorpMember.update(_data, {
-      //   where: { id: req.session.corper.id },
-      // });
-      // return corpMemberUpdated;
+      const [corpMemberUpdated] = await db.CorpMember.update(_data, {
+        where: { id: req.session.corper.id },
+      });
+      return corpMemberUpdated;
     });
-
-    const _update_query = "UPDATE posts SET ?";
-    const results = await db.sequelize.query(_update_query, _data)
 
     res.status(200).json({
       message: "Profile updated",
-      data: results
+      result,
     });
   } catch (error) {
+    if (error instanceof DatabaseError) {
+
+      // Try again
+      if (error.code === "ER_NEED_REPREPARE") {
+        // https://stackoverflow.com/a/71605309/9259701
+        const sql = db.CorpMember.queryGenerator.updateQuery(
+          db.CorpMember.getTableName(),
+          _data,
+          { id: req.session.corper.id } // where
+        );
+
+        db.sequelize.query(sql);
+
+        return res.status(200).json({
+          message: "Profile updated",
+        });
+      }
+    }
+
     console.error(`ERR in ${_FILENAME} ${_FUNCTIONNAME}:`, error);
     res.status(501).json({
       message: "An error occurred while updating your profile.",

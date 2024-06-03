@@ -2,13 +2,30 @@ let express = require('express');
 let router = express.Router();
 const auth = require('../helpers/auth')
 const testService = require('../services/testService')
+const db = require("../models");
 
 router.get('/test', function (req, res) {
     // add when user logged out to database
-    console.log('came here /to test');
-    res.status(200).send({
-        message: 'Welcome to the Test API!',
-    })
+    try {
+        // update first name.
+        const sql = db.CorpMember.queryGenerator.updateQuery(
+            db.CorpMember.getTableName(),
+            { first_name: "Moore" },
+            { id: 3 }, // where
+        )
+        console.log('will run', sql)
+
+        const s = db.sequelize.query(sql)
+
+        res.status(200).send({
+            message: 'Will run:',
+        })
+    } catch (error) {
+        console.error('/test ERR', error)
+        res.status(400).send({
+            error,
+        })
+    }
 });
 
 router.get('/test/all', auth.verifyJWT, testService.all);
