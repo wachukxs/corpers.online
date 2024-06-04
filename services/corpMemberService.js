@@ -555,22 +555,21 @@ exports.updateProfile = async (req, res) => {
         const sql = db.CorpMember.queryGenerator.updateQuery(
           db.CorpMember.getTableName(),
           { ..._data, updated_at: db.sequelize.fn("NOW") },
-          { id: req.session.corper.id } // where
+          { id: req.session.corper.id }, // where
+          /**
+           * this option is a hotfix
+           * without it, this'll be a PREPARED statement/query
+           */
+          { bindParam: (bind) => db.sequelize.escape(bind) },
         );
 
         // actual query
-        // const results = await db.sequelize.query(sql, {
-        //   type: db.Sequelize.QueryTypes.UPDATE,
-        //   model: db.CorpMember,
-        //   mapToModel: true,
-        // });
-
-        // hot fix query
-        const results = await db.sequelize.query(sql.query.replace(/\$\d/g, '?'), {
-          replacements: sql.bind,
+        const results = await db.sequelize.query(sql, {
+          // these are all optional - no effect on UPDATE queries.
           type: db.Sequelize.QueryTypes.UPDATE,
-          // mapToModel: true,
-        })
+          model: db.CorpMember,
+          mapToModel: true,
+        });
 
         return res.status(200).json({
           message: "Profile updated",

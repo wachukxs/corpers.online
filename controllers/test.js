@@ -12,19 +12,20 @@ router.get('/test', async function (req, res) {
             db.CorpMember.getTableName(),
             { first_name: "Onlyer", updated_at: db.sequelize.fn('NOW') },
             { id: 3 }, // where
+            { bindParam: (bind) => db.sequelize.escape(bind) }
         )
         console.log('will run', sql)
 
-        const s = await db.sequelize.query(sql.query.replace(/\$\d/g, '?'), {
-            replacements: sql.bind,
+        const s = await db.sequelize.query(sql, {
             type: db.Sequelize.QueryTypes.UPDATE,
-            // mapToModel: true, 
+            model: db.CorpMember,
         })
 
         console.log('s', s);
 
         res.status(200).send({
             message: 'Will run:',
+            s
         })
     } catch (error) {
         console.error('/test ERR', error)
