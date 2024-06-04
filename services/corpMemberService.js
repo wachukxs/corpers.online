@@ -491,7 +491,8 @@ exports.updateProfile = async (req, res) => {
    * delete null values from the body.
    * https://stackoverflow.com/a/38340730
    *
-   * TODO: We should take this fun somewhere else.
+   * TODO: We should take this function somewhere else. Or re-use some existing function somewhere.
+   * Sequelize should have this.
    */
   function removeNullValuesFromObject(obj) {
     return Object.fromEntries(
@@ -499,19 +500,21 @@ exports.updateProfile = async (req, res) => {
     );
   }
 
-  try {
-    const _data = removeNullValuesFromObject(req.body);
-    if (_data.service_state) {
-      delete _data.service_state; // remove service state; we'll get is automatically
-    }
+  const _data = removeNullValuesFromObject(req.body);
+  if (_data.service_state) {
+    delete _data.service_state; // remove service state; we'll get is automatically
+  }
 
-    /**
-     * TODO: we'll need to have a whole process on how to handle state code change
-     * Like updating every known reference of it. And keeping track of state code changes??
-     */
-    if (_data.state_code) {
-      delete _data.state_code; // remove state_code
-    }
+  /**
+   * TODO: we'll need to have a whole process on how to handle state code change
+   * Like updating every known reference of it. And keeping track of state code changes??
+   */
+  if (_data.state_code) {
+    delete _data.state_code; // remove state_code
+  }
+
+  try {
+
     const result = await db.sequelize.transaction(async (t) => {
       // Method 1
       // const corpMember = await db.CorpMember.findOne({
