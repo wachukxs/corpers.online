@@ -578,7 +578,7 @@ exports.updateProfile = async (req, res) => {
         });
       } catch (error) {
         console.error(`NESTED ERR in ${_FILENAME} ${_FUNCTIONNAME}:`, error);
-        res.status(501).json({
+        return res.status(501).json({
           message: "An error occurred while updating your profile.",
         });
       }
