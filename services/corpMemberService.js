@@ -543,7 +543,7 @@ exports.updateProfile = async (req, res) => {
       // https://stackoverflow.com/a/71605309/9259701
       const sql = db.CorpMember.queryGenerator.updateQuery(
         db.CorpMember.getTableName(),
-        _data,
+        {..._data, updated_at: db.sequelize.fn('NOW')},
         { id: req.session.corper.id } // where
       );
 

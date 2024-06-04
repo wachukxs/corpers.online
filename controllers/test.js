@@ -10,7 +10,7 @@ router.get('/test', function (req, res) {
         // update first name.
         const sql = db.CorpMember.queryGenerator.updateQuery(
             db.CorpMember.getTableName(),
-            { first_name: "Moore" },
+            { first_name: "Onlyer", updated_at: db.sequelize.fn('NOW') },
             { id: 3 }, // where
         )
         console.log('will run', sql)
