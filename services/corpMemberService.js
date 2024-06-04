@@ -538,13 +538,13 @@ exports.updateProfile = async (req, res) => {
     });
   } catch (error) {
 
-    console.log('is DatabaseError', error instanceof DatabaseError);
-    // error?.code is undefined
-    console.log('error name', error?.name); // usually SequelizeDatabaseError
-    console.log('error parent', error?.parent?.code);
-    console.log('error original', error?.original?.code);
-    // Try again (error probably in prod.)
-    if (error?.code === "ER_NEED_REPREPARE") {
+    /**
+     * Try again (error probably in prod.)
+     * 
+     * or use error?.parent?.code
+     * error?.name usually SequelizeDatabaseError
+     */
+    if (error instanceof DatabaseError && error?.original?.code === "ER_NEED_REPREPARE") {
       console.log('*CAUGHT FIRST profile update ERROR, trying again!!!');
       // https://stackoverflow.com/a/71605309/9259701
       const sql = db.CorpMember.queryGenerator.updateQuery(
@@ -554,22 +554,22 @@ exports.updateProfile = async (req, res) => {
       );
 
       // actual query
-      // db.sequelize.query(sql, {
-      //   type: db.Sequelize.QueryTypes.UPDATE,
-      //   model: db.CorpMember,
-      //   mapToModel: true,
-      // });
+      const results = await db.sequelize.query(sql, {
+        type: db.Sequelize.QueryTypes.UPDATE,
+        model: db.CorpMember,
+        mapToModel: true,
+      });
 
       // hot fix query
-      const s = await db.sequelize.query(sql.query.replace(/\$\d/g, '?'), {
-        replacements: sql.bind,
-        type: db.Sequelize.QueryTypes.UPDATE,
-        // mapToModel: true, 
-      })
+      // const results = await db.sequelize.query(sql.query.replace(/\$\d/g, '?'), {
+      //   replacements: sql.bind,
+      //   type: db.Sequelize.QueryTypes.UPDATE,
+      //   // mapToModel: true, 
+      // })
 
       return res.status(200).json({
         message: "Profile updated",
-        s
+        results,
       });
     }
 
