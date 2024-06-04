@@ -538,10 +538,11 @@ exports.updateProfile = async (req, res) => {
     });
   } catch (error) {
 
+    console.log('is DatabaseError', error instanceof DatabaseError);
     // error?.code is undefined
-    console.log('error name', error?.name);
-    console.log('error parent', error?.parent);
-    console.log('error original', error?.original);
+    console.log('error name', error?.name); // usually SequelizeDatabaseError
+    console.log('error parent', error?.parent?.code);
+    console.log('error original', error?.original?.code);
     // Try again (error probably in prod.)
     if (error?.code === "ER_NEED_REPREPARE") {
       console.log('*CAUGHT FIRST profile update ERROR, trying again!!!');
