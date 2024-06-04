@@ -538,6 +538,7 @@ exports.updateProfile = async (req, res) => {
     });
   } catch (error) {
 
+    console.log('*CAUGHT FIRST profile update ERROR, trying again!!!');
     // Try again (error probably in prod.)
     if (error?.code === "ER_NEED_REPREPARE") {
       // https://stackoverflow.com/a/71605309/9259701
