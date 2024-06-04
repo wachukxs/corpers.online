@@ -559,18 +559,18 @@ exports.updateProfile = async (req, res) => {
         );
 
         // actual query
-        const results = await db.sequelize.query(sql, {
-          type: db.Sequelize.QueryTypes.UPDATE,
-          model: db.CorpMember,
-          mapToModel: true,
-        });
+        // const results = await db.sequelize.query(sql, {
+        //   type: db.Sequelize.QueryTypes.UPDATE,
+        //   model: db.CorpMember,
+        //   mapToModel: true,
+        // });
 
         // hot fix query
-        // const results = await db.sequelize.query(sql.query.replace(/\$\d/g, '?'), {
-        //   replacements: sql.bind,
-        //   type: db.Sequelize.QueryTypes.UPDATE,
-        //   // mapToModel: true,
-        // })
+        const results = await db.sequelize.query(sql.query.replace(/\$\d/g, '?'), {
+          replacements: sql.bind,
+          type: db.Sequelize.QueryTypes.UPDATE,
+          // mapToModel: true,
+        })
 
         return res.status(200).json({
           message: "Profile updated",
