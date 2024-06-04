@@ -538,9 +538,10 @@ exports.updateProfile = async (req, res) => {
     });
   } catch (error) {
 
-    console.log('*CAUGHT FIRST profile update ERROR, trying again!!!');
+    console.log('error type', error?.code);
     // Try again (error probably in prod.)
     if (error?.code === "ER_NEED_REPREPARE") {
+      console.log('*CAUGHT FIRST profile update ERROR, trying again!!!');
       // https://stackoverflow.com/a/71605309/9259701
       const sql = db.CorpMember.queryGenerator.updateQuery(
         db.CorpMember.getTableName(),
@@ -564,6 +565,7 @@ exports.updateProfile = async (req, res) => {
 
       return res.status(200).json({
         message: "Profile updated",
+        s
       });
     }
 
