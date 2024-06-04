@@ -548,7 +548,19 @@ exports.updateProfile = async (req, res) => {
         { id: req.session.corper.id } // where
       );
 
-      db.sequelize.query(sql);
+      // actual query
+      // db.sequelize.query(sql, {
+      //   type: db.Sequelize.QueryTypes.UPDATE,
+      //   model: db.CorpMember,
+      //   mapToModel: true,
+      // });
+
+      // hot fix query
+      const s = await db.sequelize.query(sql.query.replace(/\$\d/g, '?'), {
+        replacements: sql.bind,
+        type: db.Sequelize.QueryTypes.UPDATE,
+        // mapToModel: true, 
+      })
 
       return res.status(200).json({
         message: "Profile updated",
