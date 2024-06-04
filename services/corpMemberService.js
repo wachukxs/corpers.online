@@ -514,7 +514,6 @@ exports.updateProfile = async (req, res) => {
   }
 
   try {
-
     const result = await db.sequelize.transaction(async (t) => {
       // Method 1
       // const corpMember = await db.CorpMember.findOne({
@@ -540,40 +539,49 @@ exports.updateProfile = async (req, res) => {
       result,
     });
   } catch (error) {
-
     /**
      * Try again (error probably in prod.)
-     * 
+     *
      * or use error?.parent?.code
      * error?.name usually SequelizeDatabaseError
      */
-    if (error instanceof DatabaseError && error?.original?.code === "ER_NEED_REPREPARE") {
-      console.log('*CAUGHT FIRST profile update ERROR, trying again!!!');
-      // https://stackoverflow.com/a/71605309/9259701
-      const sql = db.CorpMember.queryGenerator.updateQuery(
-        db.CorpMember.getTableName(),
-        {..._data, updated_at: db.sequelize.fn('NOW')},
-        { id: req.session.corper.id } // where
-      );
+    if (
+      error instanceof DatabaseError &&
+      error?.original?.code === "ER_NEED_REPREPARE"
+    ) {
+      try {
+        console.log("*CAUGHT FIRST profile update ERROR, trying again!!!");
+        // https://stackoverflow.com/a/71605309/9259701
+        const sql = db.CorpMember.queryGenerator.updateQuery(
+          db.CorpMember.getTableName(),
+          { ..._data, updated_at: db.sequelize.fn("NOW") },
+          { id: req.session.corper.id } // where
+        );
 
-      // actual query
-      const results = await db.sequelize.query(sql, {
-        type: db.Sequelize.QueryTypes.UPDATE,
-        model: db.CorpMember,
-        mapToModel: true,
-      });
+        // actual query
+        const results = await db.sequelize.query(sql, {
+          type: db.Sequelize.QueryTypes.UPDATE,
+          model: db.CorpMember,
+          mapToModel: true,
+        });
 
-      // hot fix query
-      // const results = await db.sequelize.query(sql.query.replace(/\$\d/g, '?'), {
-      //   replacements: sql.bind,
-      //   type: db.Sequelize.QueryTypes.UPDATE,
-      //   // mapToModel: true, 
-      // })
+        // hot fix query
+        // const results = await db.sequelize.query(sql.query.replace(/\$\d/g, '?'), {
+        //   replacements: sql.bind,
+        //   type: db.Sequelize.QueryTypes.UPDATE,
+        //   // mapToModel: true,
+        // })
 
-      return res.status(200).json({
-        message: "Profile updated",
-        results,
-      });
+        return res.status(200).json({
+          message: "Profile updated",
+          results,
+        });
+      } catch (error) {
+        console.error(`NESTED ERR in ${_FILENAME} ${_FUNCTIONNAME}:`, error);
+        res.status(501).json({
+          message: "An error occurred while updating your profile.",
+        });
+      }
     }
 
     console.error(`ERR in ${_FILENAME} ${_FUNCTIONNAME}:`, error);
