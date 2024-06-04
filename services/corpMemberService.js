@@ -538,7 +538,10 @@ exports.updateProfile = async (req, res) => {
     });
   } catch (error) {
 
-    console.log('error type', error?.code);
+    // error?.code is undefined
+    console.log('error name', error?.name);
+    console.log('error parent', error?.parent);
+    console.log('error original', error?.original);
     // Try again (error probably in prod.)
     if (error?.code === "ER_NEED_REPREPARE") {
       console.log('*CAUGHT FIRST profile update ERROR, trying again!!!');
