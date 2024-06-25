@@ -51,6 +51,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'state_code'
       }
     },
+    // TODO: no need for read_by_to, we can assume it was read if time_read is set
     read_by_to: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
@@ -59,7 +60,8 @@ module.exports = (sequelize, DataTypes) => {
     _time_read: {
       type: DataTypes.VIRTUAL,
       get() {
-        return moment(this.getDataValue('time_read')).fromNow();
+        const time_read = this.getDataValue('time_read')
+        return time_read ? moment(time_read).fromNow() : 'Not read yet.';
       },
       set(value) {
         throw new Error('Do not try to set the Chat.`_time_read` value!');

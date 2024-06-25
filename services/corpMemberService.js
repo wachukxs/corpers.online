@@ -563,9 +563,9 @@ exports.updateProfile = async (req, res) => {
           { bindParam: (bind) => db.sequelize.escape(bind) },
         );
 
-        // actual query
+        // execute query
         const results = await db.sequelize.query(sql, {
-          // these are all optional - no effect on UPDATE queries.
+          // these are all optional options - no effect on UPDATE queries.
           type: db.Sequelize.QueryTypes.UPDATE,
           model: db.CorpMember,
           mapToModel: true,
