@@ -26,7 +26,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     },
     room: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      comment: 'The room of this chat message',
+      references: {
+        model: 'ChatRooms',
+        key: 'room',
+      }
     },
     message: {
       type: DataTypes.TEXT,
@@ -38,25 +43,24 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     message_from: {
-      type: DataTypes.STRING,
-      references: { // TODO: should reference the id.
+      type: DataTypes.INTEGER,
+      references: {
         model: 'CorpMembers',
-        key: 'state_code'
+        key: 'id',
       }
     },
     message_to: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       references: {
         model: 'CorpMembers',
-        key: 'state_code'
+        key: 'id'
       }
     },
-    // TODO: no need for read_by_to, we can assume it was read if time_read is set
-    read_by_to: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false
+    time_read: {
+      type: DataTypes.DATE,
+      defaultValue: null,
+      comment: 'We can assume chat was read if time_read is set',
     },
-    time_read: DataTypes.DATE,
     _time_read: {
       type: DataTypes.VIRTUAL,
       get() {

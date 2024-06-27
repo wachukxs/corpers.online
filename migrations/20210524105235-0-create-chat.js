@@ -9,22 +9,23 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       room: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        comment: 'foreign key - The room for the 2 people chatting - that this chat belongs in'
       },
       message: {
         type: Sequelize.TEXT
       },
       message_from: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
+        comment: 'The person who sent this particular chat/message'
       },
       message_to: {
-        type: Sequelize.STRING,
-      },
-      read_by_to: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.INTEGER,
+        comment: 'The person who this particular chat/message was sent to'
       },
       time_read: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: null
       },
       message_sent: {
         type: Sequelize.BOOLEAN

@@ -51,8 +51,7 @@ exports.getChatData = async (req, res) => {
         .count({
             where: {
                 message_to: req.session.corper.state_code,
-                // message_sent: false, // should we be using this, or better still, do we need it???
-                read_by_to: false,
+                time_read: null,
                 message: {
                     [Op.not]: null
                 }
@@ -65,11 +64,8 @@ exports.getChatData = async (req, res) => {
             message_to: {
                 [Op.eq]: `${req.session.corper.state_code}`, // or use req.query.s
             },
-            // message_sent: {
-            //     [Op.is]: false,
-            // },
-            read_by_to: {
-                [Op.is]: false,
+            time_read: {
+                [Op.is]: null,
             },
             message: {
                 [Op.not]: null

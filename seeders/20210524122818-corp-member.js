@@ -4,15 +4,6 @@ const { sequelize } = require("../models");
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    /**
-     * Add seed commands here.
-     *
-     * Example:
-     * await queryInterface.bulkInsert('People', [{
-     *   name: 'John Doe',
-     *   isBetaMember: false
-     * }], {});
-     */
     try {
       await queryInterface.bulkInsert("CorpMembers", [
         {
@@ -37,32 +28,35 @@ module.exports = {
           created_at: new Date(),
           updated_at: new Date(),
         },
+        {
+          id: sequelize.literal("DEFAULT"),
+          last_name: "Agnes",
+          middle_name: "Victor",
+          first_name: "Bush",
+          email: "user@email.com",
+          password: "password",
+          state_code: "AB/23C/1007",
+          created_at: new Date(),
+          updated_at: new Date(),
+        },
       ]);
     } catch (error) {
       console.error("Did not seed(up)", __filename, error);
+      throw error;
     }
   },
 
+  // TODO: Use transactions https://sequelize.org/docs/v6/other-topics/migrations/
   down: async (queryInterface, Sequelize) => {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
-
     try {
       const corp_members_table_exists = await queryInterface.tableExists('CorpMembers')
       if (corp_members_table_exists) {
         await queryInterface.bulkDelete(
           "CorpMembers",
           {
-            // delete by email cause there's no absolute guarantee id will always be 1 & 2
-            // id: {
-            //   [Op.in]: [1, 2],
-            // },
+            // delete by email (not id) cause there's no absolute guarantee id will always be 1 & 2
             email: {
-              [Op.in]: ["name@site.com", "chuks@email.com"]
+              [Op.in]: ["name@site.com", "chuks@email.com", 'user@email.com']
             }
           },
           {}
@@ -70,6 +64,7 @@ module.exports = {
       }
     } catch (error) {
       console.error("Did not seed(down)", __filename, error);
+      throw error; // ??
     }
   },
 };

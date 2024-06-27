@@ -63,20 +63,6 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE'
       })
-
-      // CorpMember.hasMany(models.Chat, {
-      //   foreignKey: 'message_from',
-      //   sourceKey: 'state_code',
-      //   onDelete: 'SET NULL',
-      //   onUpdate: 'CASCADE'
-      // })
-
-      // CorpMember.hasMany(models.Chat, {
-      //   foreignKey: 'message_to',
-      //   sourceKey: 'state_code',
-      //   onDelete: 'SET NULL',
-      //   onUpdate: 'CASCADE'
-      // })
       
       CorpMember.hasOne(models.Media, {
         foreignKey: 'corp_member_id', // TODO: put corp_member_id in Media

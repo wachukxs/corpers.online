@@ -7,7 +7,7 @@ module.exports = {
       fields: ['message_from'],
       references: {
         table: 'CorpMembers',
-        field: 'state_code'
+        field: 'id'
       },
     })
 
@@ -17,7 +17,7 @@ module.exports = {
       fields: ['message_to'],
       references: {
         table: 'CorpMembers',
-        field: 'state_code'
+        field: 'id'
       },
     })
 

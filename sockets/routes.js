@@ -241,7 +241,10 @@ ioChat.on(IOEventNames.CONNECTION, function (socket) {
         console.log("\t\t\n\n\nno of previous rooms:", results.length);
 
         // Join all rooms you were in before.
-        results.forEach((result) => socket.join(result.room));
+        results.forEach((result) => {
+          console.log('joining room', result.room);
+          socket.join(result.room)
+        });
       },
       (reject) => {
         console.error("\t\t\n\n\ndid not get all previous rooms:\n\n", reject);
@@ -555,14 +558,14 @@ ioChat.on(IOEventNames.CONNECTION, function (socket) {
     // UPDATE chats SET message_sent = true WHERE message IS NOT NULL AND message_from = '" + chatInfo.message_from + "' AND message_to = '" + chatInfo.message_to + "'"
     db.Chat.update(
       {
-        read_by_to: true,
+        time_read: new Date(),
         time_read: chatInfo.time_read,
       },
       {
         where: {
           message_from: chatInfo.message_from,
           message_to: chatInfo.message_to,
-          read_by_to: false,
+          time_read: null,
         },
       }
     )

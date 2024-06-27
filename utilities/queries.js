@@ -721,7 +721,7 @@ exports.GetChatData = async (req) => {
                 query = "SELECT * FROM accommodations WHERE expire > NOW() AND state_code = '" + req.query.posts.who + "' AND input_time = '" + moment(new Date(parseInt(req.query.posts.when))).format('YYYY-MM-DD HH:mm:ss') + "' ; "
                     // + "SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL ;"
                     +
-                    "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.first_name AS sender_firstname, info.last_name AS sender_lastname FROM chats, info WHERE info.state_code = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;"
+                    "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.time_read, chats._time, chats.message_sent, info.first_name AS sender_firstname, info.last_name AS sender_lastname FROM chats, info WHERE info.state_code = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;"
                     // + "SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL AND message_sent = false ;";
                     +
                     "SELECT * FROM chats WHERE message_to = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
@@ -732,15 +732,15 @@ exports.GetChatData = async (req) => {
                 query = "SELECT * FROM posts WHERE state_code = '" + req.query.posts.who + "' AND post_time = '" + req.query.posts.when + "' ;"
                     // + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL ;"
                     +
-                    "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.first_name AS sender_firstname, info.last_name AS sender_lastname FROM chats, info WHERE info.state_code = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;"
+                    "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.time_read, chats._time, chats.message_sent, info.first_name AS sender_firstname, info.last_name AS sender_lastname FROM chats, info WHERE info.state_code = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;"
                     // + " SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL AND message_sent = false ;";
                     +
                     "SELECT * FROM chats WHERE message_to = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
-                    "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.first_name AS recipient_firstname, info.last_name AS recipient_lastname FROM chats, info WHERE info.state_code = chats.message_to AND message_from = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
+                    "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.time_read, chats._time, chats.message_sent, info.first_name AS recipient_firstname, info.last_name AS recipient_lastname FROM chats, info WHERE info.state_code = chats.message_to AND message_from = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
                     "SELECT first_name, last_name FROM info WHERE state_code = '" + req.query.posts.who.toUpperCase() + "' ;";
 
             }
-            /**SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.first_name AS sender_firstname, info.last_name AS sender_lastname FROM chats, info WHERE info.state_code = chats.message_from AND chats.room LIKE '%AB/17B/1234%' AND chats.message IS NOT NULL   */
+            /**SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.time_read, chats._time, chats.message_sent, info.first_name AS sender_firstname, info.last_name AS sender_lastname FROM chats, info WHERE info.state_code = chats.message_from AND chats.room LIKE '%AB/17B/1234%' AND chats.message IS NOT NULL   */
 
             db.sequelize.query(query, function (error, results, fields) {
 
@@ -782,7 +782,7 @@ exports.GetChatData = async (req) => {
             
             // console.log('wanna chat', req.session.corper.state_code, req.query.s);
             let query = // "SELECT * FROM chats WHERE room LIKE '%" + req.query.s + "%' AND message IS NOT NULL;"
-                "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.read_by_to, chats.time_read, chats._time, chats.message_sent, info.first_name AS sender_firstname, info.last_name AS sender_lastname FROM chats, info WHERE info.state_code = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;" +
+                "SELECT chats.room, chats.message, chats.message_from, chats.message_to, chats.media, chats.time, chats.time_read, chats._time, chats.message_sent, info.first_name AS sender_firstname, info.last_name AS sender_lastname FROM chats, info WHERE info.state_code = chats.message_from AND chats.room LIKE '%" + req.query.s + "%' AND chats.message IS NOT NULL ;" +
                 "SELECT * FROM chats WHERE message_to = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;" +
                 "SELECT * FROM chats WHERE message_from = '" + req.query.s + "' AND message IS NOT NULL AND message_sent = false ;";
             db.sequelize.query(query, function (error, results, fields) {

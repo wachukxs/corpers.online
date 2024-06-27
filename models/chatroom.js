@@ -2,9 +2,8 @@
 const {
   Model
 } = require('sequelize');
-const moment = require('moment');
 module.exports = (sequelize, DataTypes) => {
-  class Career extends Model {
+  class ChatRoom extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,22 +12,35 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
-  };
-  Career.init({
+  }
+  ChatRoom.init({
+    // Do we really need IDs?
     id: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
       type: DataTypes.INTEGER
     },
+    room: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false,
+    },
+    message_to: {
+      type: DataTypes.STRING
+    },
+    message_from: {
+      type: DataTypes.STRING,
+      comment: 'The first person who sent the message - and thus created the room'
+    },
   }, {
     sequelize,
-    modelName: 'Career',
-    timestamps: true,
+    modelName: 'ChatRoom',
+    tableName: 'ChatRooms',
     underscored: true,
+    timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
-    // comment: 'What are we using this for again? Posting SPA?'
   });
-  return Career;
+  return ChatRoom;
 };
