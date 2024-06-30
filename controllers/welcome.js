@@ -276,35 +276,6 @@ auth.verifyJWT, function (req, res) {
 });
  */
 
-router.get('/oldchat', /* auth.verifyJWT, */ function (req, res) {
-  // req.query.posts.who and req.query.posts.when
-
-  // to get old chats
-
-  /**
-   * WARNING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   * TIME IS AN IMPORTANT ISSUE HERE. AND TIME CONVERSION TOO...
-   * utc + 1 is our time zone [when converting], or use moment .js
-   */
-
-  console.log('logged in?', req.session.loggedin, 'req.query =>', req.query, '\n??')
-
-  query.GetChatData(req).then(result => {
-    res.set('Content-Type', 'text/html');
-    console.log('all chat kini', result);
-    res.render('pages/chat', result);
-  }, reject => {
-    res.set('Content-Type', 'text/html');
-    res.redirect('/login');
-  }).catch(reason => {
-    // we hope we never get here
-    console.log('what happened at /chat???', reason);
-    res.set('Content-Type', 'text/html');
-    res.redirect('/login');
-  })
-
-});
-
 router.get(['/map', '/maps'], function (req, res) { // try to infer their location from their IP Address then send to the front end
   res.set('Content-Type', 'text/html');
   query.GetMapData().then(result => {

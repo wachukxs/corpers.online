@@ -707,6 +707,7 @@ exports.GetMapData = async () => {
 
 /**
  * fetch chat history
+ * TODO: needs to be deleted. :(
  */
 exports.GetChatData = async (req) => {
     let re = await new Promise((resolve, reject) => {

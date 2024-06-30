@@ -47,12 +47,8 @@ io.of(IOEventRoutes.BASE).on(IOEventNames.CONNECTION, async (socket) => {
   }
 
   socket.on(IOEventNames.HI, (msg, fn) => {
-    console.log(
-      "got a socket hi msg /. total sockets",
-      io.sockets.clients.length
-    );
-
-    fn({ message: "back from the moon" });
+    const res = { message: "back from the moon" }
+    fn(res); // send res to FE
     socket.emit(IOEventNames.HI, `from server socket: ${msg}`);
   });
 
@@ -331,12 +327,12 @@ ioChat.on(IOEventNames.CONNECTION, function (socket) {
           {
             model: db.CorpMember,
             as: "FromCorpMember",
-            attributes: db.CorpMember.getPublicAttributes(),
+            attributes: [...db.CorpMember.getPublicAttributes(), 'id'],
           },
           {
             model: db.CorpMember,
             as: "ToCorpMember",
-            attributes: db.CorpMember.getPublicAttributes(),
+            attributes: [...db.CorpMember.getPublicAttributes(), 'id'],
           },
         ],
       }

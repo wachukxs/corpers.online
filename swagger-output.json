@@ -459,16 +459,6 @@
         }
       }
     },
-    "/api/v1.0/oldchat": {
-      "get": {
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
     "/api/v1.0/subscribe": {
       "post": {
         "description": "",
@@ -1346,16 +1336,17 @@
             "name": "Authorization",
             "in": "header",
             "type": "string"
-          },
-          {
-            "name": "posts",
-            "in": "query",
-            "type": "string"
           }
         ],
         "responses": {
+          "200": {
+            "description": "OK"
+          },
           "401": {
             "description": "Unauthorized"
+          },
+          "501": {
+            "description": "Not Implemented"
           },
           "502": {
             "description": "Bad Gateway"

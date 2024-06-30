@@ -19,7 +19,7 @@ const KnexSessionStore = require("connect-session-knex")(session);
 
 const Knex = require("knex");
 
-// refactor import of routes!!!!
+// TODO: refactor import of routes!!!! ... later
 const welcomeRoutes = require("../controllers/welcome");
 const actionsRoutes = require("../controllers/actions");
 const byeRoutes = require("../controllers/bye");

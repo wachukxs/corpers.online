@@ -54,6 +54,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     message_from: {
       type: DataTypes.INTEGER,
+      allowNull: false,
       references: {
         model: 'CorpMembers',
         key: 'id',
@@ -61,6 +62,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     message_to: {
       type: DataTypes.INTEGER,
+      allowNull: false,
       references: {
         model: 'CorpMembers',
         key: 'id'
