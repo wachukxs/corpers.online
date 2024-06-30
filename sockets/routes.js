@@ -4,7 +4,7 @@ const path = require("path");
 const _FILENAME = path.basename(__filename);
 const db = require("../models");
 const { Op } = require("sequelize");
-
+const crypto = require("crypto");
 const chalk = require("chalk");
 
 // https://www.npmjs.com/package/socket.io#standalone
@@ -20,6 +20,7 @@ const IOEventNames = {
   NEW_ACCOMMODATION: "new_accommodation",
   BROADCAST_MESSAGE: "broadcast_message",
   CHAT_MESSAGE: "chat_message",
+  ERROR: "error",
   CONNECT: "connect",
   CONNECTION: "connection",
   DISCONNECT: "disconnect",
@@ -89,7 +90,7 @@ io.of(IOEventRoutes.BASE).on(IOEventNames.CONNECTION, async (socket) => {
         },
         {
           model: db.CorpMember,
-          attributes: db.CorpMember.getPublicAttributes(),
+          attributes: ["state_code", "nickname", "first_name", "id"], // db.CorpMember.getPublicAttributes(),
           where: {
             state_code: {
               [Op.substring]: socket.handshake.query.state_code.substring(0, 2),
@@ -202,9 +203,7 @@ ioCorpMember.on(IOEventNames.CONNECTION, (socket) => {
 
 const ioChat = io.of(IOEventRoutes.CHAT);
 ioChat.on(IOEventNames.CONNECTION, function (socket) {
-  console.log(
-    chalk.yellow("New connection on /chat", socket.handshake?.query?.state_code)
-  );
+  console.log(chalk.yellow("New connection on /chat"), socket.handshake?.query);
 
   const everyRoomOnline = Array.from(ioChat.adapter.rooms.keys());
 
@@ -224,17 +223,15 @@ ioChat.on(IOEventNames.CONNECTION, function (socket) {
    */
 
   // https://stackoverflow.com/a/51114095 // maybe create an OS MR for this.
-  db.Chat.findAll({
+  db.ChatRoom.findAll({
     where: {
-      room: {
-        [Op.like]: `%${socket.handshake.query.state_code}%`, // is state_code
-      },
-      message: {
-        [Op.not]: null,
-      },
+      [Op.or]: [
+        { message_from: socket.handshake?.query?.id },
+        { message_to: socket.handshake?.query?.id },
+      ],
     },
     attributes: ["room"],
-    group: ["room"],
+    // group: ["room"],
   })
     .then(
       (results) => {
@@ -242,17 +239,17 @@ ioChat.on(IOEventNames.CONNECTION, function (socket) {
 
         // Join all rooms you were in before.
         results.forEach((result) => {
-          console.log('joining room', result.room);
-          socket.join(result.room)
+          console.log("joining room", result.room);
+          socket.join(result.room);
         });
       },
       (reject) => {
-        console.error("\t\t\n\n\ndid not get all previous rooms:\n\n", reject);
+        console.error(chalk.red("did not get all previous rooms:"), reject);
       }
     )
     .catch((reason) => {
       console.error(
-        "\t\t\n\n\ncatching did not get all previous rooms:\n\n",
+        chalk.red("catching did not get all previous rooms:"),
         reason
       );
     });
@@ -295,49 +292,79 @@ ioChat.on(IOEventNames.CONNECTION, function (socket) {
     console.log("\nwhat we got:", msg);
   });
 
-  socket.on(IOEventNames.CHAT_MESSAGE, function (msg) {
+  socket.on(IOEventNames.CHAT_MESSAGE, async function (msg) {
     console.log(chalk.blue("\nchat we got:"), msg);
 
+    /**
+     * check if room exist for new chat, else create it.
+     * TODO: needs to be depreciated. ~if no room in request, it's a new chat; then create a room.~
+     */
+    if (msg.room) {
+      const [roomChat, created] = await db.ChatRoom.findOrCreate({
+        where: {
+          room: msg.room,
+          // // msg.to = m.to & msg.from = m.from / or / msg.to = m.from or msg.from = m.to
+          // [Op.or]: [{
+          //   [Op.and]: {message_from: msg.message_from, message_to: msg.message_to}
+          //  }, {
+          //   [Op.and]: {message_from: msg.message_to, message_to: msg.message_from }
+          //  }]
+        },
+        defaults: {
+          room: msg.room, // room now coming from FE (crypto.randomBytes(20).toString('hex'))
+          message_from: msg.message_from,
+          message_to: msg.message_to,
+        },
+      });
+    }
+
     // save to db, if message recipient is online, we send to them.
-    db.Chat.create({
-      room: `${msg.message_from}_${msg.message_to}`, // default room logic. TODO: Do we really need a room?? If yes, why? Looks like data duplication.
-      message: msg.message,
-      message_from: msg.message_from, // or socket.handshake.query.state_code
-      message_to: msg.message_to,
-    })
+    db.Chat.create(
+      {
+        room: msg.room,
+        message: msg.message,
+        message_from: msg.message_from, // or socket.handshake.query.state_code
+        message_to: msg.message_to,
+      },
+      {
+        include: [
+          {
+            model: db.CorpMember,
+            as: "FromCorpMember",
+            attributes: db.CorpMember.getPublicAttributes(),
+          },
+          {
+            model: db.CorpMember,
+            as: "ToCorpMember",
+            attributes: db.CorpMember.getPublicAttributes(),
+          },
+        ],
+      }
+    )
+      .then((result) => result.reload()) // https://stackoverflow.com/a/68664023/9259701
       .then(
         (result) => {
-          console.log("after saving chat");
+          console.log("after saving chat", result);
 
           console.log("socket rooms", socket.rooms);
           /**
            * TODO: there's a logic flaw; the arrangement of room names...
            */
           // if this socket is not in a room with the recipient, create room n join.
-          if (
-            !socket.rooms.has(`${msg.message_from}_${msg.message_to}`) &&
-            !socket.rooms.has(`${msg.message_to}_${msg.message_from}`)
-          ) {
+          if (!socket.rooms.has(msg.room)) {
             // socket.rooms is a Set.
             // join room
             console.log(chalk.grey("sender gonna join the chat room"));
-            socket.join(`${msg.message_from}_${msg.message_to}`); // seems this doesn't matter.
+            socket.join(msg.room); // seems this doesn't matter.
           }
 
           // if recipient is online (and not in the room - join room), send the result to them.
           const recipientSocket = isCorpMemberOnline(msg.message_to, ioChat);
           if (recipientSocket) {
             console.log("Found recipient socket");
-            if (
-              !recipientSocket.rooms.has(
-                `${msg.message_from}_${msg.message_to}`
-              ) &&
-              !recipientSocket.rooms.has(
-                `${msg.message_to}_${msg.message_from}`
-              )
-            ) {
+            if (!recipientSocket.rooms.has(msg.room)) {
               console.log(chalk.grey("recipient gonna join the chat room"));
-              recipientSocket.join(`${msg.message_from}_${msg.message_to}`);
+              recipientSocket.join(msg.room);
             }
           }
 
@@ -345,17 +372,19 @@ ioChat.on(IOEventNames.CONNECTION, function (socket) {
           // Then send the message to that room. (or just send to the recipient?? - faster this way)
           // TODO: maybe delete the id of the message
           // TODO: BUG: using ioChat sends twice to sender
-          ioChat
-            .to(`${msg.message_from}_${msg.message_to}`) // in\to TODO: why sending twice to sender???
-            .emit(IOEventNames.CHAT_MESSAGE, result);
+          ioChat.to(msg.room).emit(IOEventNames.CHAT_MESSAGE, result);
         },
         (reject) => {
-          // very bad // what do we do?
+          // very bad
           console.log("what error?", reject);
+          // emit failed response.
+          socket.emit(IOEventNames.ERROR, msg);
         }
       )
       .catch((reason) => {
         console.log("why did you fail?", reason);
+        // emit failed response.
+        socket.emit(IOEventNames.ERROR, msg);
       });
   });
 
@@ -365,15 +394,19 @@ ioChat.on(IOEventNames.CONNECTION, function (socket) {
   });
 
   /**
-   * this function checks if a corper is online, it takes the corper's state_code on a socket's query parameter and the socket namespace to check
+   * this function checks if a corper is online, it takes the corper's corpMember's Id on a socket's query parameter and the socket namespace to check
    *
-   * TODO: this needs to be like a cache or sth. We update on connect and disconnect.
+   * TODO: this needs to be like a cache or sth. We update cache on connect and disconnect.
    * */
-  function isCorpMemberOnline(state_code, namespace) {
-    console.log("checking if someone is online");
+  function isCorpMemberOnline(corpMemberId, namespace) {
+    console.log("checking if someone is online", corpMemberId);
     let result = null; // initialize to null
+    if (!corpMemberId) {
+      return result;
+    }
     for (const [key, value] of namespace.sockets.entries()) {
-      if (value.handshake?.query?.state_code == state_code) {
+      console.log("checking...", value.handshake?.query?.id);
+      if (parseInt(value.handshake?.query?.id) === parseInt(corpMemberId)) {
         // if they're online
         result = value; // return the socket
         console.log("they are online...");

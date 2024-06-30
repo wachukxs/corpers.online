@@ -195,6 +195,9 @@ exports.login = (req, res) => {
   const _FUNCTIONNAME = "login";
   console.log("hitting", _FILENAME, _FUNCTIONNAME);
 
+  /**
+   * password isn't part of the query so we can tell them wrong password or account not found.
+   */
   db.CorpMember.findOne({
     where: {
       // we're gonna use email or state code soon.
@@ -244,11 +247,10 @@ exports.login = (req, res) => {
             process.env.SESSION_SECRET,
             (err, token) => {
               /**
-               * delete the password and id.
+               * delete the password.
                * (won't work without the .dataValues)
                */
               delete result.dataValues.password;
-              // delete result.dataValues.id // (maybe) not delete this, it deletes from session too
 
               if (err) {
                 // throw err // no throw of errors
@@ -1140,7 +1142,7 @@ exports.getPosts = (req, res) => {
       },
       {
         model: db.CorpMember,
-        attributes: db.CorpMember.getPublicAttributes(),
+        attributes: ['state_code', 'nickname', 'first_name', 'id'], // db.CorpMember.getPublicAttributes(),
       },
     ],
   })

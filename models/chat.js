@@ -16,6 +16,16 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'chat_id'
       })
 
+      Chat.belongsTo(models.CorpMember, {
+        foreignKey: 'message_to',
+        as: 'ToCorpMember',
+      })
+
+      Chat.belongsTo(models.CorpMember, {
+        foreignKey: 'message_from',
+        as: 'FromCorpMember',
+      })
+
     }
   };
   Chat.init({
@@ -92,6 +102,11 @@ module.exports = (sequelize, DataTypes) => {
     underscored: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
+    hooks: {
+      afterCreate: (chat, options) => {
+        // console.log('??', chat, options);
+      },
+    }
   });
   return Chat;
 };

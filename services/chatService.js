@@ -7,6 +7,7 @@ inspect = require('util').inspect;
 const auth = require('../helpers/auth')
 const { Op } = require("sequelize");
 
+// TODO: will need to change
 exports.getChatData = async (req, res) => {
     const _FUNCTIONNAME = 'getChatData'
     console.log('hitting', _FILENAME, _FUNCTIONNAME);
