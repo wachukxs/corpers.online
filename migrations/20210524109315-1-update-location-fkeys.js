@@ -17,7 +17,7 @@ module.exports = {
       name: 'loc_acc_id_with_acc_id_xyz',
       fields: ['accommodation_id'],
       references: {
-        table: 'Accommodation',
+        table: 'Accommodations',
         field: 'id'
       },
     })

@@ -8,7 +8,7 @@ module.exports = {
       name: 'media_a_id_with_loc_id',
       fields: ['accommodation_id'],
       references: {
-        table: 'Accommodation',
+        table: 'Accommodations',
         field: 'id'
       },
     })

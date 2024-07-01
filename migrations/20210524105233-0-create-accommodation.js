@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Accommodation', {
+    await queryInterface.createTable('Accommodations', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -70,7 +70,7 @@ module.exports = {
   down: async (queryInterface, Sequelize) => {
 
     // https://github.com/sequelize/sequelize/issues/2554#issuecomment-365383347
-    // await queryInterface.removeColumn('Accommodation', 'rent_interval')
+    // await queryInterface.removeColumn('Accommodations', 'rent_interval')
     //   .catch(err => {
     //     console.error('caught down 1', err)
     //   });
@@ -78,7 +78,7 @@ module.exports = {
     //   .catch(err => {
     //     console.error('caught down 1', err)
     //   });
-    await queryInterface.dropTable('Accommodation');
+    await queryInterface.dropTable('Accommodations');
     /**
      * To prevent error: (node:10501) UnhandledPromiseRejectionWarning: SequelizeDatabaseError: type "enum_Accommodation_rentInterval" already exists
      * 1. https://stackoverflow.com/questions/60898055/unhandled-rejection-sequelizedatabaseerror-type-enum-already-exists

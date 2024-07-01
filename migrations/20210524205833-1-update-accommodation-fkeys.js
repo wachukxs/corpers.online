@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addConstraint('Accommodation', {
+    await queryInterface.addConstraint('Accommodations', {
       type: 'FOREIGN KEY',
       name: 'acc_l_id_with_loc_id',
       fields: ['location_id'],
@@ -11,7 +11,7 @@ module.exports = {
       },
     })
 
-    await queryInterface.addConstraint('Accommodation', {
+    await queryInterface.addConstraint('Accommodations', {
       type: 'FOREIGN KEY',
       name: 'acc_cm_id_with_corp_id',
       fields: ['corp_member_id'],
@@ -24,7 +24,7 @@ module.exports = {
     })
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.removeConstraint('Accommodation', 'acc_l_id_with_loc_id');
-    await queryInterface.removeConstraint('Accommodation', 'acc_cm_id_with_corp_id');
+    await queryInterface.removeConstraint('Accommodations', 'acc_l_id_with_loc_id');
+    await queryInterface.removeConstraint('Accommodations', 'acc_cm_id_with_corp_id');
   }
 };
