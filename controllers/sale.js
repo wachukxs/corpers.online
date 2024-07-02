@@ -11,4 +11,10 @@ router.post('/sale', auth.verifyJWT, /* upload.array('see', 12), */ saleService.
 
 router.patch('/sale', auth.verifyJWT, saleService.update) // TODO: should add alert logic here too
 
+router.put('/sale/bookmark/:id', auth.verifyJWT, saleService.bookmarkSale)
+router.delete('/sale/bookmark/:id', auth.verifyJWT, saleService.unBookmarkSale)
+
+router.put('/sale/like/:id', auth.verifyJWT, saleService.likeSale)
+router.delete('/sale/like/:id', auth.verifyJWT, saleService.unLikeSale)
+
 module.exports = router;

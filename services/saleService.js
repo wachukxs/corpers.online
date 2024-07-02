@@ -341,3 +341,175 @@ exports.update = (req, res) => {
 
   return req.pipe(_busboy);
 };
+
+exports.bookmarkSale = (req, res) => {
+  try {
+    const _FUNCTIONNAME = "bookmarkSale";
+    console.log("hitting", _FILENAME, _FUNCTIONNAME);
+    // TODO: Do validation here.
+
+    if (!req.params?.id || isNaN(parseInt(req.params?.id))) {
+      res.status(400).json({ message: "Missing state param, id" });
+    }
+
+    console.log("corper id", req.session?.corper?.id);
+    // TODO: corp_member_id & sale_id needs to be unique together.
+    db.SaleBookmark.create({
+      corp_member_id: req.session.corper.id,
+      sale_id: parseInt(req.params?.id),
+    })
+      .then(
+        async (result) => {
+          res.json({ result });
+        },
+        (reject) => {
+          console.log("what error?", reject);
+
+          if (reject?.original?.code === 'ER_NO_REFERENCED_ROW_2') {
+            return res.status(403).json({
+              message: "Item not found"
+            });
+          }
+
+          res.status(403).json({});
+        }
+      )
+      .catch((reason) => {
+        console.log("why did you fail?", reason);
+        res.status(403).json({});
+      });
+  } catch (error) {
+    console.log("what error?", error);
+    res.status(403).json({});
+  }
+};
+
+exports.unBookmarkSale = (req, res) => {
+  try {
+    const _FUNCTIONNAME = "unBookmarkSale";
+    console.log("hitting", _FILENAME, _FUNCTIONNAME);
+    // TODO: Do validation here.
+
+    if (!req.params?.id || isNaN(parseInt(req.params?.id))) {
+      res.status(400).json({ message: "Missing state param, id" });
+    }
+
+    console.log("corper id", req.session?.corper?.id);
+    // TODO: corp_member_id & sale_id needs to be unique together.
+    db.SaleBookmark.destroy({
+      where: {
+        corp_member_id: req.session.corper.id,
+        sale_id: parseInt(req.params?.id),
+      }
+    })
+      .then(
+        async (result) => {
+          res.json({ result });
+        },
+        (reject) => {
+          console.log("what error?", reject);
+
+          if (reject?.original?.code === 'ER_NO_REFERENCED_ROW_2') {
+            return res.status(403).json({
+              message: "Item not found"
+            });
+          }
+
+          res.status(403).json({});
+        }
+      )
+      .catch((reason) => {
+        console.log("why did you fail?", reason);
+        res.status(403).json({});
+      });
+  } catch (error) {
+    console.log("what error?", error);
+    res.status(403).json({});
+  }
+};
+
+exports.likeSale = (req, res) => {
+  try {
+    const _FUNCTIONNAME = "likeSale";
+    console.log("hitting", _FILENAME, _FUNCTIONNAME);
+    // TODO: Do validation here.
+
+    if (!req.params?.id || isNaN(parseInt(req.params?.id))) {
+      res.status(400).json({ message: "Missing state param, id" });
+    }
+
+    console.log("corper id", req.session?.corper?.id);
+    // TODO: corp_member_id & sale_id needs to be unique together.
+    db.SaleLike.create({
+      corp_member_id: req.session.corper.id,
+      sale_id: parseInt(req.params?.id),
+    })
+      .then(
+        async (result) => {
+          res.json({ result });
+        },
+        (reject) => {
+          console.log("what error?", reject);
+          
+          if (reject?.original?.code === 'ER_NO_REFERENCED_ROW_2') {
+            return res.status(403).json({
+              message: "Item not found"
+            });
+          }
+          
+          res.status(403).json({});
+        }
+      )
+      .catch((reason) => {
+        console.log("why did you fail?", reason);
+        res.status(403).json({});
+      });
+  } catch (error) {
+    console.log("what error?", error);
+    res.status(403).json({});
+  }
+};
+
+exports.unLikeSale = (req, res) => {
+  try {
+    const _FUNCTIONNAME = "unLikeSale";
+    console.log("hitting", _FILENAME, _FUNCTIONNAME);
+    // TODO: Do validation here.
+
+    if (!req.params?.id || isNaN(parseInt(req.params?.id))) {
+      res.status(400).json({ message: "Missing state param, id" });
+    }
+
+    console.log("corper id", req.session?.corper?.id);
+    // TODO: corp_member_id & sale_id needs to be unique together.
+    db.SaleLike.destroy({
+      where: {
+        corp_member_id: req.session.corper.id,
+        sale_id: parseInt(req.params?.id),
+      }
+    })
+      .then(
+        async (result) => {
+          res.json({ result });
+        },
+        (reject) => {
+          console.log("what error?", reject);
+          
+          if (reject?.original?.code === 'ER_NO_REFERENCED_ROW_2') {
+            return res.status(403).json({
+              message: "Item not found"
+            });
+          }
+
+          res.status(403).json({});
+        }
+      )
+      .catch((reason) => {
+        console.log("why did you fail?", reason);
+        res.status(403).json({});
+      });
+  } catch (error) {
+    console.log("what error?", error);
+    res.status(403).json({});
+  }
+};

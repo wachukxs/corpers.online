@@ -52,14 +52,14 @@ module.exports = (sequelize, DataTypes) => {
       })
 
       CorpMember.hasMany(models.Sale, { // if you want a unique name for when you do CorpMember.findOne({}) etc, put an `as` attrribute here
-        foreignKey: 'state_code', // should we use state_code or id ? what if they update their state_code ? we'd mass update it
-        sourceKey: 'state_code',
+        foreignKey: 'corp_member_id', // should we use state_code or id ? what if they update their state_code ? we'd mass update it
+        sourceKey: 'id',
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE',
       });
       CorpMember.hasMany(models.Accommodation, {
-        foreignKey: 'state_code',
-        sourceKey: 'state_code',
+        foreignKey: 'corp_member_id',
+        sourceKey: 'id',
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE'
       })
