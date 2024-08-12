@@ -38,11 +38,11 @@ exports.delete = (req, res) => {
   return db.Accommodation.destory({
     where: {
       id: req.body.id, // accommodationId ?
-      state_code: req.session.corper.state_code.toUpperCase(),
+      corp_member_id: req.session.corper.id,
     },
   })
-    .then((_result) => res.status(200).send(_result))
-    .catch((error) => res.status(400).send(error));
+    .then((result) => res.status(200).json({result}))
+    .catch((error) => res.status(400).json({error}));
 };
 
 /**
@@ -235,7 +235,7 @@ exports.create = (req, res, next) => {
       if (!helpers.isEmpty(_text) && helpers.isEmpty(uploadPromise)) {
         console.log("what's _text?", _text);
 
-        console.log("\n\ndo we have state_code", req.session.corper.state_code);
+        console.log("\n\ndo we have state_code", req.session.corper);
 
         /***
          * Heavy fix for Sequelize ...if you're chaining (not using await), you can't create models with include ...the result doesn't have the included data.
@@ -252,7 +252,7 @@ exports.create = (req, res, next) => {
           _accommodation_to_save = await db.Accommodation.create(
             {
               ..._text,
-              state_code: req.session.corper.state_code,
+              corp_member_id: req.session.corper.id,
             },
             {
               include: [
@@ -268,18 +268,20 @@ exports.create = (req, res, next) => {
             }
           );
 
+          await _accommodation_to_save.reload()
+
           /***
            * Seems if we don't call this, the included nested models won't be included in the result
            */
-          let _from_corper =
-            await _accommodation_to_save.getAccommodationByCorper();
-          _accommodation_to_save.accommodationByCorper =
-            await _accommodation_to_save.getAccommodationByCorper();
-          _accommodation_to_save.dataValues.accommodationByCorper =
-            await _accommodation_to_save.getAccommodationByCorper(); // (await _accommodation_to_save.getAccommodationByCorper()).toJSON() works too
+          // let _from_corper =
+          //   await _accommodation_to_save.getAccommodationByCorper();
+          // _accommodation_to_save.accommodationByCorper =
+          //   await _accommodation_to_save.getAccommodationByCorper();
+          // _accommodation_to_save.dataValues.accommodationByCorper =
+          //   await _accommodation_to_save.getAccommodationByCorper(); // (await _accommodation_to_save.getAccommodationByCorper()).toJSON() works too
 
           // then status code is good
-          res.status(200).json(null);
+          res.status(200).json({result: _accommodation_to_save});
 
           console.log(
             "what acc we are now sedning to front end",
@@ -287,13 +289,14 @@ exports.create = (req, res, next) => {
           );
 
           // once it saves in db them emit to other users
-          socket.of("/user").emit("boardcast message", {
-            // or 'accommodation'
-            to: "be received by everyoneELSE",
-            post: [_accommodation_to_save.toJSON()],
-          });
+          // TODO: fix this emit
+          // socket.of("/user").emit("boardcast message", {
+          //   // or 'accommodation'
+          //   to: "be received by everyoneELSE",
+          //   post: [_accommodation_to_save.toJSON()],
+          // });
         } catch (error) {
-          console.error("errr5", error.errors);
+          console.error("errr5", error);
           /**
            * Custom error message: https://sequelize.org/docs/v6/core-concepts/validations-and-constraints/#allownull-interaction-with-other-validators
            * Using (error?.errors?.[0]?.message) if it's sequelize validation error
@@ -315,14 +318,14 @@ exports.create = (req, res, next) => {
 
           console.log(
             "\n\ndo we have state_code",
-            req.session.corper.state_code
+            req.session.corper
           );
 
           // TODO: split the inputs, to fix something like (parent: Error: Incorrect datetime value: '42241-12-31 23:00:00' for column 'rentExpireDate' at row 1)
           _accommodation_to_save = await db.Accommodation.create(
             // causes error for virtual fields when returning values : SequelizeDatabaseError: column "type" does not exist
             {
-              state_code: req.session.corper.state_code,
+              corp_member_id: req.session.corper.id,
               ..._text,
               // TODO: Refactor this code.
               ...(_media.length > 0 && {
@@ -369,24 +372,26 @@ exports.create = (req, res, next) => {
             accommodationId: _accommodation_to_save.id,
           });
 
-          let k = (
-            await _accommodation_to_save.getAccommodationMedia()
-          ).toJSON();
+          await _accommodation_to_save.reload()
 
-          /// FUCKKK
-          _accommodation_to_save.accommodationByCorper =
-            await _accommodation_to_save.getAccommodationByCorper({
-              // attributes: db.CorpMember.getSafeAttributes() // shouldn't have to comment out
-            });
-          _accommodation_to_save.dataValues.accommodationByCorper =
-            await _accommodation_to_save.getAccommodationByCorper();
+          // let k = (
+          //   await _accommodation_to_save.getAccommodationMedia()
+          // ).toJSON();
 
-          _accommodation_to_save.Location =
-            await _accommodation_to_save.getLocation();
-          _accommodation_to_save.dataValues.Location =
-            await _accommodation_to_save.getLocation();
+          // /// FUCKKK
+          // _accommodation_to_save.accommodationByCorper =
+          //   await _accommodation_to_save.getAccommodationByCorper({
+          //     // attributes: db.CorpMember.getSafeAttributes() // shouldn't have to comment out
+          //   });
+          // _accommodation_to_save.dataValues.accommodationByCorper =
+          //   await _accommodation_to_save.getAccommodationByCorper();
 
-          res.status(200).json(null);
+          // _accommodation_to_save.Location =
+          //   await _accommodation_to_save.getLocation();
+          // _accommodation_to_save.dataValues.Location =
+          //   await _accommodation_to_save.getLocation();
+
+          res.status(200).json({result: _accommodation_to_save});
 
           console.log(
             "what acc we are sedning",
@@ -396,11 +401,12 @@ exports.create = (req, res, next) => {
           );
 
           // once it saves in db them emit to other users
-          socket.of("/corp-member").emit("boardcast message", {
-            // or 'accommodation'
-            to: "be received by everyoneELSE",
-            post: [_accommodation_to_save.toJSON()],
-          });
+          // TODO: fix this emit
+          // socket.of("/corp-member").emit("boardcast message", {
+          //   // or 'accommodation'
+          //   to: "be received by everyoneELSE",
+          //   post: [_accommodation_to_save.toJSON()],
+          // });
         } catch (error) {
           console.error("errr777", error);
           res.status(504).json(null);

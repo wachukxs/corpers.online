@@ -288,7 +288,7 @@ ioChat.on(IOEventNames.CONNECTION, function (socket) {
     console.log("\nwhat we got:", msg);
   });
 
-  socket.on(IOEventNames.CHAT_MESSAGE, async function (msg) {
+  socket.on(IOEventNames.CHAT_MESSAGE, async function (msg, fn) {
     console.log(chalk.blue("\nchat we got:"), msg);
 
     /**
@@ -368,6 +368,8 @@ ioChat.on(IOEventNames.CONNECTION, function (socket) {
           // Then send the message to that room. (or just send to the recipient?? - faster this way)
           // TODO: maybe delete the id of the message
           // TODO: BUG: using ioChat sends twice to sender
+
+          fn('DELIVERED') // send to FE (TODO: should include the message id?)
           ioChat.to(msg.room).emit(IOEventNames.CHAT_MESSAGE, result);
         },
         (reject) => {
@@ -425,11 +427,6 @@ ioChat.on(IOEventNames.CONNECTION, function (socket) {
       msg.to != ("" && socket.handshake.query.state_code && null)
     ) {
       // send message only to a particular room
-      /* var m = {
-                  'from': { 'state_code': socket.handshake.query.state_code },
-                  'to': { 'state_code': msg.to },
-                  'it': msg
-                }; */
 
       // should make m.to the corper object
       /**
