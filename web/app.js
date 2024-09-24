@@ -137,9 +137,11 @@ if (app.get("env") !== "production") { // or process.env.NODE_ENV
   ];
 }
 
+const _cors = cors(corsOptions)
+
 // https://stackoverflow.com/a/50664555/9259701
-app.options('*', cors()) // include before other routes
-app.use(cors(corsOptions));
+app.options('*', _cors) // include before other routes
+app.use(_cors);
 
 // app.use(session(mySQLSessionOptions));
 // app.use(session(sequelizeSessionOptions));
