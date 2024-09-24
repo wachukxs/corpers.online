@@ -26,6 +26,12 @@ module.exports = (sequelize, DataTypes) => {
         as: 'FromCorpMember',
       })
 
+      Chat.belongsTo(models.ChatRoom, {
+        foreignKey: 'room',
+        targetKey: 'room',
+        as: 'Room',
+      })
+
     }
   };
   Chat.init({

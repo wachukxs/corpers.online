@@ -11,6 +11,29 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      ChatRoom.hasMany(models.Chat, {
+        foreignKey: 'room',
+        sourceKey: 'room',
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE'
+      })
+
+      ChatRoom.belongsTo(models.CorpMember, {
+        foreignKey: 'message_to',
+        as: 'ToCorpMember',
+      })
+
+      ChatRoom.belongsTo(models.CorpMember, {
+        foreignKey: 'message_from',
+        as: 'FromCorpMember',
+      })
+    }
+
+    static getPublicAttributes() {
+      const safeCorpMemberAttributes = Object.keys(ChatRoom.getAttributes())
+      return safeCorpMemberAttributes.filter((x) => ![
+        'id', // remove these values
+      ].includes(x))
     }
   }
   ChatRoom.init({
