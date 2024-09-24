@@ -137,6 +137,8 @@ if (app.get("env") !== "production") { // or process.env.NODE_ENV
   ];
 }
 
+// https://stackoverflow.com/a/50664555/9259701
+app.options('*', cors()) // include before other routes
 app.use(cors(corsOptions));
 
 // app.use(session(mySQLSessionOptions));
