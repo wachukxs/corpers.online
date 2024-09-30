@@ -354,33 +354,45 @@ exports.bookmarkSale = (req, res) => {
 
     console.log("corper id", req.session?.corper?.id);
     // TODO: corp_member_id & sale_id needs to be unique together.
-    db.SaleBookmark.create({
+    // or create if not exist?? actually, findOrCreate
+
+    const body = {
       corp_member_id: req.session.corper.id,
       sale_id: parseInt(req.params?.id),
+    }
+    db.SaleBookmark.findOrCreate({
+      where: body,
+      defaults: body
     })
       .then(
-        async (result) => {
-          res.json({ result });
+        async ([result, created]) => {
+          console.log('createed???', created);
+
+          if (!created) {
+            return res.status(202).json({message: "Already bookmarked."})
+          }
+          
+          res.json({ data: result });
         },
         (reject) => {
           console.log("what error?", reject);
 
           if (reject?.original?.code === 'ER_NO_REFERENCED_ROW_2') {
-            return res.status(403).json({
+            return res.status(500).json({
               message: "Item not found"
             });
           }
 
-          res.status(403).json({});
+          res.status(500).json({});
         }
       )
       .catch((reason) => {
         console.log("why did you fail?", reason);
-        res.status(403).json({});
+        res.status(500).json({});
       });
   } catch (error) {
     console.log("what error?", error);
-    res.status(403).json({});
+    res.status(500).json({});
   }
 };
 
@@ -410,21 +422,21 @@ exports.unBookmarkSale = (req, res) => {
           console.log("what error?", reject);
 
           if (reject?.original?.code === 'ER_NO_REFERENCED_ROW_2') {
-            return res.status(403).json({
+            return res.status(500).json({
               message: "Item not found"
             });
           }
 
-          res.status(403).json({});
+          res.status(500).json({});
         }
       )
       .catch((reason) => {
         console.log("why did you fail?", reason);
-        res.status(403).json({});
+        res.status(500).json({});
       });
   } catch (error) {
     console.log("what error?", error);
-    res.status(403).json({});
+    res.status(500).json({});
   }
 };
 
@@ -440,33 +452,42 @@ exports.likeSale = (req, res) => {
 
     console.log("corper id", req.session?.corper?.id);
     // TODO: corp_member_id & sale_id needs to be unique together.
-    db.SaleLike.create({
+
+    const body = {
       corp_member_id: req.session.corper.id,
       sale_id: parseInt(req.params?.id),
+    }
+    db.SaleLike.findOrCreate({
+      where: body,
+      defaults: body
     })
       .then(
-        async (result) => {
-          res.json({ result });
+        async ([result, created]) => {
+
+          if (!created) {
+            return res.status(202).json({message: "Already bookmarked."})
+          }
+          res.json({ data: result });
         },
         (reject) => {
           console.log("what error?", reject);
           
           if (reject?.original?.code === 'ER_NO_REFERENCED_ROW_2') {
-            return res.status(403).json({
+            return res.status(500).json({
               message: "Item not found"
             });
           }
           
-          res.status(403).json({});
+          res.status(500).json({});
         }
       )
       .catch((reason) => {
         console.log("why did you fail?", reason);
-        res.status(403).json({});
+        res.status(500).json({});
       });
   } catch (error) {
     console.log("what error?", error);
-    res.status(403).json({});
+    res.status(500).json({});
   }
 };
 
@@ -496,20 +517,20 @@ exports.unLikeSale = (req, res) => {
           console.log("what error?", reject);
           
           if (reject?.original?.code === 'ER_NO_REFERENCED_ROW_2') {
-            return res.status(403).json({
+            return res.status(500).json({
               message: "Item not found"
             });
           }
 
-          res.status(403).json({});
+          res.status(500).json({});
         }
       )
       .catch((reason) => {
         console.log("why did you fail?", reason);
-        res.status(403).json({});
+        res.status(500).json({});
       });
   } catch (error) {
     console.log("what error?", error);
-    res.status(403).json({});
+    res.status(500).json({});
   }
 };

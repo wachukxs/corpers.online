@@ -51,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'ppa_id',
       })
 
-      CorpMember.hasMany(models.Sale, { // if you want a unique name for when you do CorpMember.findOne({}) etc, put an `as` attrribute here
+      CorpMember.hasMany(models.Sale, { // if you want a unique name for when you do CorpMember.findOne({}) etc, put an `as` attribute here
         foreignKey: 'corp_member_id', // should we use state_code or id ? what if they update their state_code ? we'd mass update it
         sourceKey: 'id',
         onDelete: 'SET NULL',

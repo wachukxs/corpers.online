@@ -1441,3 +1441,186 @@ exports.getAllUsers = (req, res) => {
       });
     });
 };
+
+
+/**
+ * Might not need to be here
+ */
+exports.getAllItems = async (req, res) => {
+  const _FUNCTIONNAME = "getAllItems";
+  console.log("hitting", _FILENAME, _FUNCTIONNAME);
+
+  try {
+    // Get all accommodation, and join with sale items.
+    const [sales = [], accommodations = []] = await Promise.all([
+      db.Sale.findAll(),
+      db.Accommodation.findAll()
+    ])
+
+    res.status(200).json({
+      data: [...sales, ...accommodations],
+    });
+  } catch (error) {
+    console.error("catching this err because:", error);
+    res.status(500).json({
+      message: "We had an error, so sorry about that.",
+    });
+  }
+};
+
+exports.getAllBookmarkedItems = async (req, res) => {
+  const _FUNCTIONNAME = "getAllBookmarkedItems";
+  console.log("hitting", _FILENAME, _FUNCTIONNAME);
+
+  try {
+    // Get all accommodation, and join with sale bookmarks.
+    const [accommodationBookmarks = [], saleBookmarks = []] = await Promise.all([
+      db.Accommodation.findAll({
+        where: {
+          "$AccommodationBookmarks.corp_member_id$": req.session.corper.id
+        },
+        include: [
+          {
+            model: db.AccommodationBookmark,
+          },
+          {
+            model: db.AccommodationLike,
+          },
+          {
+            model: db.Media,
+          },
+        ],
+      }),
+      db.Sale.findAll({
+        where: {
+          "$SaleBookmarks.corp_member_id$": req.session.corper.id
+        },
+        include: [
+          {
+            model: db.SaleBookmark,
+          },
+          {
+            model: db.SaleLike,
+          },
+          {
+            model: db.Media,
+          },
+        ],
+      })
+    ])
+
+    res.status(200).json({
+      data: [...saleBookmarks, ...accommodationBookmarks],
+    });
+  } catch (error) {
+    console.error("catching this err because:", error);
+    res.status(500).json({
+      message: "We had an error, so sorry about that.",
+    });
+  }
+};
+
+
+exports.getAllLikedItems = async (req, res) => {
+  const _FUNCTIONNAME = "getAllLikedItems";
+  console.log("hitting", _FILENAME, _FUNCTIONNAME);
+
+  try {
+    // Get all accommodation, and join with sale likes.
+    const [accommodationLikes = [], saleLikes = []] = await Promise.all([
+      db.Accommodation.findAll({
+        where: {
+          "$AccommodationLikes.corp_member_id$": req.session.corper.id
+        },
+        include: [
+          {
+            model: db.AccommodationLike,
+          },
+          {
+            model: db.AccommodationBookmark,
+          },
+          {
+            model: db.Media,
+          },
+        ],
+      }),
+      db.Sale.findAll({
+        where: {
+          "$SaleLikes.corp_member_id$": req.session.corper.id
+        },
+        include: [
+          {
+            model: db.SaleLike,
+          },
+          {
+            model: db.SaleBookmark,
+          },
+          {
+            model: db.Media,
+          },
+        ],
+      })
+    ])
+
+    res.status(200).json({
+      data: [...saleLikes, ...accommodationLikes],
+    });
+  } catch (error) {
+    console.error("catching this err because:", error);
+    res.status(500).json({
+      message: "We had an error, so sorry about that.",
+    });
+  }
+};
+
+exports.getAllPostedItems = async (req, res) => {
+  const _FUNCTIONNAME = "getAllPostedItems";
+  console.log("hitting", _FILENAME, _FUNCTIONNAME);
+
+  try {
+    // Get all accommodation, and join with sale likes.
+    const [accommodations = [], sales = []] = await Promise.all([
+      db.Accommodation.findAll({
+        where: {
+          corp_member_id: req.session.corper.id
+        },
+        include: [
+          {
+            model: db.AccommodationLike,
+          },
+          {
+            model: db.AccommodationBookmark,
+          },
+          {
+            model: db.Media,
+          },
+        ],
+      }),
+      db.Sale.findAll({
+        where: {
+          corp_member_id: req.session.corper.id
+        },
+        include: [
+          {
+            model: db.SaleLike,
+          },
+          {
+            model: db.SaleBookmark,
+          },
+          {
+            model: db.Media,
+          },
+        ],
+      })
+    ])
+
+    res.status(200).json({
+      data: [...sales, ...accommodations],
+    });
+  } catch (error) {
+    console.error("catching this err because:", error);
+    res.status(500).json({
+      message: "We had an error, so sorry about that.",
+    });
+  }
+};

@@ -116,7 +116,7 @@ router.get('/oldsearch', auth.checkJWT, function (req, res) {
 });
 
 // obselete ... (for now?)
-router.get('/items', function (req, res) {
+router.get('/old-items', function (req, res) {
   // maybe make use of [req.originalUrl .baseUrl .path] later. req.params too
 
   // "/search?type=" + item.group + "&nop=" + item.name_of_ppa + "&pa=" + item.ppa_address + "&top=" + item.type_of_ppa; // nop type pa

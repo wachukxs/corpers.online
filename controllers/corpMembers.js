@@ -22,6 +22,8 @@ router.post('/login', express.urlencoded({ extended: true }), express.json(), da
 // why do we have this route? testing? would need to remote later
 router.get('/all-users', corpMemberService.getAllUsers)
 
+router.get('/all-items', corpMemberService.getAllItems)
+
 router.get('/profile', auth.verifyJWT, corpMemberService.getProfile)
 
 router.post(`/${PROFILE}`, auth.verifyJWT, express.json(), dataValidation.corpMemberProfileUpdate, corpMemberService.updateProfile)
@@ -34,6 +36,10 @@ router.post(`/${PROFILE}/profile-photo`, auth.verifyJWT, corpMemberService.updat
 router.post('/save-push-subscription', auth.verifyJWT, express.json(), corpMemberService.savePushSubscription)
 
 router.post('/create-alert', auth.verifyJWT, corpMemberService.createAlert)
+
+router.get(`/${PROFILE}/bookmarks`, auth.verifyJWT, corpMemberService.getAllBookmarkedItems)
+router.get(`/${PROFILE}/likes`, auth.verifyJWT, corpMemberService.getAllLikedItems)
+router.get(`/${PROFILE}/posts`, auth.verifyJWT, corpMemberService.getAllPostedItems)
 
 router.get('/posts', auth.verifyJWT, corpMemberService.getPosts);
 

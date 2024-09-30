@@ -14,6 +14,7 @@ exports.getChatData = async (req, res) => {
     const _FUNCTIONNAME = 'getChatData'
     console.log('hitting', _FILENAME, _FUNCTIONNAME);
     
+    // TODO: Optimize this, only load the last 500?? messages
     db.Chat.findAll(
         {
           where: {
@@ -33,22 +34,51 @@ exports.getChatData = async (req, res) => {
               as: "ToCorpMember",
               attributes: [...db.CorpMember.getPublicAttributes(), 'id'],
             },
+            {
+              model: db.ChatRoom,
+              as: "Room",
+              include: [
+                {
+                  model: db.CorpMember,
+                  as: "FromCorpMember",
+                  attributes: [...db.CorpMember.getPublicAttributes(), 'id'],
+                },
+                {
+                  model: db.CorpMember,
+                  as: "ToCorpMember",
+                  attributes: [...db.CorpMember.getPublicAttributes(), 'id'],
+                },
+              ],
+              attributes: db.ChatRoom.getPublicAttributes(),
+            },
           ],
           order: [["created_at", "ASC"]],
         }
       )
         .then(
           (chats) => {
-            // reformat the chats. (can't use Map, it's send as empty obj - not really JSON)
+            /**
+             * reformat the chats. (can't use Map, it's send as empty obj - not really JSON)
+             * 
+             * Can we avoid doing all this processing, and fetch thing directly like this straight from the db?
+             */
             const results = {};
 
             for (const index in chats) {
                 const chat = chats[index]
+
+                // todo: add: (we'll calculate it while we're adding chats.)
+                // unread_messages?: number
                 if (results[chat.room]) {
                     results[chat.room].texts.push(chat)
                 } else {
                     results[chat.room] = {
-                        texts: [chat]
+                        texts: [chat],
+                        recipient_id: chat?.Room?.message_to,
+                        initiator_id: chat?.Room?.message_from,
+                        room: chat?.room,
+                        recipient_name: chat?.Room?.["ToCorpMember"]?.first_name,
+                        initiator_name: chat?.Room?.["FromCorpMember"]?.first_name,
                     }
                 }
             }
@@ -75,9 +105,5 @@ exports.getChatData = async (req, res) => {
             message: "An error occurred while fetching your chats.",
           });
         });
-
-
-
-    
 
 }

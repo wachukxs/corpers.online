@@ -37,6 +37,14 @@ module.exports = (sequelize, DataTypes) => {
       Accommodation.hasOne(models.Location, {
         foreignKey: 'accommodation_id', // TODO: add accommodation_id to Location
       })
+
+      Accommodation.hasMany(models.AccommodationBookmark, {
+        foreignKey: 'accommodation_id', // means AccommodationBookmark has sale_id, which targets Accommodation.id
+      })
+
+      Accommodation.hasMany(models.AccommodationLike, {
+        foreignKey: 'accommodation_id', // means AccommodationLike has sale_id, which targets Accommodation.id
+      })
     }
   };
   Accommodation.init({
@@ -122,10 +130,10 @@ module.exports = (sequelize, DataTypes) => {
     location_id: {
       type:DataTypes.INTEGER
     },
-    type: {
+    _type: {
       type: DataTypes.VIRTUAL,
       get() {
-        return 'accommodation'; // ??
+        return 'accommodation';
       },
       set(value) {
         throw new Error('Do not try to set the Accommodation.`type` value!');

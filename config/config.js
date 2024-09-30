@@ -1,5 +1,5 @@
 const fs = require('fs');
-
+const chalk = require("chalk");
 const dotenv = require('dotenv'); // better to call first, before using process.env.*
 dotenv.config();
 
@@ -11,7 +11,7 @@ module.exports = {
     "database": process.env.LOCAL_MYSQL_DEV_DB_NAME,
     "host": "localhost",
     "dialect": "mysql",
-    logging: console.log, // https://sequelize.org/docs/v6/getting-started/#logging
+    logging: (...msg) => console.log(chalk.cyan(msg)), // https://sequelize.org/docs/v6/getting-started/#logging
     "port": process.env.LOCAL_MYSQL_PORT,
     "ssl": false,
     "seederStorage": "sequelize",
@@ -36,7 +36,6 @@ module.exports = {
     "database": process.env.SHARED_HOST_POSTGRESQL_TEST_DB_NAME,
     "host": process.env.SHARED_HOST,
     "dialect": "postgres",
-
     "port": process.env.PG_PORT,
     "ssl": true,
     "dialectOptions": {
@@ -59,6 +58,7 @@ module.exports = {
     "database": process.env.SHARED_HOST_MYSQL_PROD_DB_NAME,
     "host": process.env.SHARED_HOST,
     "dialect": "mysql",
+    // TODO: we need to log in prod
     "seederStorage": "sequelize",
     "port": 3306,
     "ssl": true,

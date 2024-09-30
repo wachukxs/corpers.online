@@ -249,12 +249,12 @@ exports.addPPA = (req, res) => {
           },
           (reject) => {
             console.log("what error?", reject);
-            res.status(403).json({});
+            res.status(500).json({});
           }
         )
         .catch((reason) => {
           console.log("why did you fail?", reason);
-          res.status(403).json({});
+          res.status(500).json({});
         });
     });
 
@@ -262,7 +262,7 @@ exports.addPPA = (req, res) => {
     return req.pipe(busboy);
   } catch (error) {
     console.log("what error?", error);
-    res.status(403).json({});
+    res.status(500).json({});
   }
 };
 
@@ -327,16 +327,16 @@ exports.addReviewToPPA = (req, res) => {
         },
         (reject) => {
           console.log("what error?", reject);
-          res.status(403).json({});
+          res.status(500).json({});
         }
       )
       .catch((reason) => {
         console.log("why did you fail?", reason);
-        res.status(403).json({});
+        res.status(500).json({});
       });
   } catch (error) {
     console.log("what error?", error);
-    res.status(403).json({});
+    res.status(500).json({});
   }
 };
 

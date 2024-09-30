@@ -2088,7 +2088,7 @@ app.post('/login', bodyParser.urlencoded({ extended: true }), function (req, res
     if (isEmpty(results1)) {
       // res.sendStatus(406);
 
-      // res.status(403);
+      // res.status(500);
       res.status(502).redirect('/login?l=n');
       // res.status(406).send('Not Acceptable');
     } else if (results1.length === 1) {

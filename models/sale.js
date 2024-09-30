@@ -18,6 +18,14 @@ module.exports = (sequelize, DataTypes) => {
       Sale.hasMany(models.Media, {
         foreignKey: 'sale_id',
       })
+
+      Sale.hasMany(models.SaleBookmark, {
+        foreignKey: 'sale_id', // means SaleBookmark has sale_id, which targets Sale.id
+      })
+
+      Sale.hasMany(models.SaleLike, {
+        foreignKey: 'sale_id', // means SaleLike has sale_id, which targets Sale.id
+      })
     }
   };
   Sale.init({
