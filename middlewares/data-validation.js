@@ -77,6 +77,7 @@ module.exports.corpMemberLogin = (req, res, next) => {
     console.log('hitting', _FILENAME, _FUNCTIONNAME);
 
     const waitListSchema = Joi.object({
+        // TODO: should be regex for email or state code
         username: Joi.string()
             .min(2)
             .max(70)
@@ -123,6 +124,26 @@ module.exports.corpMemberProfileUpdate = (req, res, next) => {
     })
 
     const { error, value } = profileUpdateSchema.validate(req.body);
+    if (error) {
+        res.status(400).json({
+            message: 'There is an issue with the data you provided',
+            error
+        })
+    } else {
+        next()
+    }
+}
+
+module.exports.deleteUserPostItem = (req, res, next) => {
+    const _FUNCTIONNAME = 'deleteUserPostItem'
+    console.log('hitting', _FILENAME, _FUNCTIONNAME);
+
+    const deletePostSchema = Joi.object({
+        id: Joi.number().required(),
+        type: Joi.string().valid('sale', 'accommodation').label('Type').required(),
+    })
+
+    const { error, value } = deletePostSchema.validate(req.body);
     if (error) {
         res.status(400).json({
             message: 'There is an issue with the data you provided',

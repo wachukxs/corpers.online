@@ -213,14 +213,15 @@ exports.login = (req, res) => {
       (result) => {
         // result is null if not state_code or email exists ... also tell when it's state_code or email that doesn't exist
 
-        console.log("found corper", result.id);
         if (!result) {
           // TODO: kill what ever cookie was there
+          console.log('no acct!')
           return res.status(401).json({
-            message: "Account not found. Please sign up.",
+            message: "Account not found. Please check again.",
             error: null,
           });
         }
+        console.log("found corper", result?.id);
 
         if (result.dataValues.password !== req.body.password) {
           console.log(chalk.bgRed("login was bad"));
@@ -275,12 +276,12 @@ exports.login = (req, res) => {
       },
       (reject) => {
         console.error("login err", reject);
-        res.status(500).json(null);
+        res.status(500).json();
       }
     )
     .catch((reason) => {
       console.error("login err", reason);
-      res.status(500).json(null);
+      res.status(500).json();
     });
 };
 
@@ -1617,6 +1618,57 @@ exports.getAllPostedItems = async (req, res) => {
     res.status(200).json({
       data: [...sales, ...accommodations],
     });
+  } catch (error) {
+    console.error("catching this err because:", error);
+    res.status(500).json({
+      message: "We had an error, so sorry about that.",
+    });
+  }
+};
+
+
+/***
+ * We need the type and id of what we're deleting.
+ *  */
+exports.deletePostedItem = async (req, res) => {
+  const _FUNCTIONNAME = "deletePostedItem";
+  console.log("hitting", _FILENAME, _FUNCTIONNAME);
+
+  try {
+    // Make sure they posted this item, then delete it. And delete it's likes, and bookmarks, and everything??
+
+    if (req.body.type === 'sale') {
+
+      const _sale = await db.Sale.destroy({ where: { 
+        id: req.body.id,
+        corp_member_id: req.session?.corper?.id, // to make sure they're the owner of the post
+      } })
+      
+      console.log('what is _sale', _sale)
+
+      if (!_sale) {
+        return res.status(404).json({message: "Sale not found"})
+      }
+  
+      // await _sale.destroy();
+  
+      res.status(200).json({})
+  
+    } else if (req.body.type === 'accommodation') {
+      // TODO: needs to be tested
+      const _accommodation = await db.Accommodation.findOne({ where: { 
+        id: req.body.id,
+        corp_member_id: req.session?.corper?.id, // to make sure they're the owner of the post
+      } })
+  
+      if (!_accommodation) {
+        return res.status(404).json({message: "Sale not found"})
+      }
+  
+      await _accommodation.destroy();
+  
+      res.status(200).json({})
+    }
   } catch (error) {
     console.error("catching this err because:", error);
     res.status(500).json({
