@@ -175,3 +175,6 @@ connarts_nysc.sql
 randoms/busboy-uploads/*
 # keep .gitkeep
 !randoms/busboy-uploads/README.md
+
+##### custom additions #####
+online.corpers.db.sqlite

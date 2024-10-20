@@ -6,6 +6,7 @@ const db = require("../models");
 const { Op } = require("sequelize");
 const crypto = require("crypto");
 const chalk = require("chalk");
+const { UserOnline } = require("./data");
 
 // https://www.npmjs.com/package/socket.io#standalone
 const io = require("socket.io")();
@@ -38,7 +39,8 @@ const IOEventRoutes = {
 /**
  * can do without the `.of('/')`
  */
-io.of(IOEventRoutes.BASE).on(IOEventNames.CONNECTION, async (socket) => {
+io.of(IOEventRoutes.BASE)
+.on(IOEventNames.CONNECTION, async (socket) => {
   console.log("got a socket connection /", socket.id);
 
   // Join their state room.
@@ -67,6 +69,7 @@ io.of(IOEventRoutes.BASE).on(IOEventNames.CONNECTION, async (socket) => {
   io.emit(IOEventNames.HI, `hiyaaaa from server io:`);
 
   if (socket.handshake.query.state_code) {
+    // TODO: Include accommodation!
     db.Sale.findAll({
       /**
        * TODO:OSS This next line is a hot fix. Sales doesn't have state_code column, but it's included in the query.
@@ -83,6 +86,12 @@ io.of(IOEventRoutes.BASE).on(IOEventNames.CONNECTION, async (socket) => {
       include: [
         {
           model: db.Media,
+        },
+        {
+          model: db.SaleBookmark,
+        },
+        {
+          model: db.SaleLike,
         },
         {
           model: db.CorpMember,
@@ -105,7 +114,7 @@ io.of(IOEventRoutes.BASE).on(IOEventNames.CONNECTION, async (socket) => {
         console.log("ERRRR", err);
       }
     );
-  }
+  } // TODO: we need an else block
 
   socket.on("ferret", (asf, name, fn) => {
     // this funtion will run in the client to show/acknowledge the server has gotten the message.
@@ -117,7 +126,7 @@ io.of(IOEventRoutes.BASE).on(IOEventNames.CONNECTION, async (socket) => {
     this: "is the call back",
   });
 
-  socket.on("disconnect", () => {
+  socket.on(IOEventNames.DISCONNECT, () => {
     // TODO: maybe also emit total count of corp members online
     console.log("lost a socket connection /");
   });
@@ -199,26 +208,30 @@ ioCorpMember.on(IOEventNames.CONNECTION, (socket) => {
 
 const ioChat = io.of(IOEventRoutes.CHAT);
 ioChat.on(IOEventNames.CONNECTION, function (socket) {
-  console.log(chalk.yellow("New connection on /chat"), socket.handshake?.query);
+  console.log(chalk.yellow("New connection on /chat"), socket.handshake?.query?.state_code);
 
-  const everyRoomOnline = Array.from(ioChat.adapter.rooms.keys());
-
-  // immediately join all the rooms presently online they are involved in, someone wants to chat with you
-  console.log("everyRoomOnline:", everyRoomOnline);
-
-  // Join every online Room they should be in.
-  for (index = 0; index < everyRoomOnline.length; index++) {
-    const onlineRoom = everyRoomOnline[index];
-
-    if (onlineRoom.includes(socket.handshake.query.state_code)) {
-      socket.join(onlineRoom);
-    }
-  }
+  // const everyRoomOnline = Array.from(ioChat.adapter.rooms.keys());
   /**
-   * this block of code gets offline rooms, that the corper was in, and join.
+   * this block of code gets offline rooms (previous chats), that the corper was in, and join.
    */
 
-  // https://stackoverflow.com/a/51114095 // maybe create an OS MR for this.
+  UserOnline.create({
+    state_code: socket.handshake.query.state_code,
+    corp_member_id: socket.handshake.query.id,
+  })
+  .then(
+    (r) => {
+      console.log("saved online user:", r.id);
+    },
+    (e) => {
+      console.error("error happened", e);
+    }
+  )
+  .catch((reason) => {
+    console.error("catching err because:", reason);
+  });
+
+  // https://stackoverflow.com/a/51114095 // maybe create an OpenSource PR for this.
   db.ChatRoom.findAll({
     where: {
       [Op.or]: [
@@ -231,7 +244,7 @@ ioChat.on(IOEventNames.CONNECTION, function (socket) {
   })
     .then(
       (results) => {
-        console.log("\t\t\n\n\nno of previous rooms:", results.length);
+        console.log("\t\nno of previous rooms:", results.length);
 
         // Join all rooms you were in before.
         results.forEach((result) => {
@@ -297,14 +310,22 @@ ioChat.on(IOEventNames.CONNECTION, function (socket) {
      */
     if (msg.room) {
       const [roomChat, created] = await db.ChatRoom.findOrCreate({
+          /**
+           * We're checking if they've messaged each other before;
+           * with the same room
+           * or maybe a different room
+           * (Is this even Possible?)
+           * 
+           * */
         where: {
-          room: msg.room,
-          // // msg.to = m.to & msg.from = m.from / or / msg.to = m.from or msg.from = m.to
-          // [Op.or]: [{
-          //   [Op.and]: {message_from: msg.message_from, message_to: msg.message_to}
-          //  }, {
-          //   [Op.and]: {message_from: msg.message_to, message_to: msg.message_from }
-          //  }]
+          [Op.or]: [
+            {room: msg.room},
+            {[Op.or]: [{
+              [Op.and]: {message_from: msg.message_from, message_to: msg.message_to}
+             }, {
+              [Op.and]: {message_from: msg.message_to, message_to: msg.message_from }
+             }]}
+          ],
         },
         defaults: {
           room: msg.room, // room now coming from FE (crypto.randomBytes(20).toString('hex'))
@@ -312,6 +333,29 @@ ioChat.on(IOEventNames.CONNECTION, function (socket) {
           message_to: msg.message_to,
         },
       });
+
+      // if this socket is not in a room with the recipient, create room n join.
+      if (created) { // or !socket.rooms.has(msg.room)
+        // it's the first message, should it emit or board cast? And the sender doesn't receive it right now.
+        console.log(chalk.grey("sender gonna join the chat room"));
+        socket.join(msg.room);
+
+        // recipient
+
+        // only do this check if it's a new room, cause they all join old rooms once they come online.
+        // if recipient is online (and not in the room - join room), send the result to them.
+
+        const recipientSocket = await isCorpMemberOnline(msg.message_to, IOEventRoutes.CHAT);
+        if (recipientSocket) {
+          console.log("Found recipient socket");
+          if (!recipientSocket.rooms.has(msg.room)) {
+            console.log(chalk.grey("recipient gonna join the chat room"));
+            recipientSocket.join(msg.room);
+          }
+        }
+      }
+
+
     }
 
     // save to db, if message recipient is online, we send to them.
@@ -340,37 +384,23 @@ ioChat.on(IOEventNames.CONNECTION, function (socket) {
       .then((result) => result.reload()) // https://stackoverflow.com/a/68664023/9259701
       .then(
         (result) => {
-          console.log("after saving chat", result);
+          console.log("after saving chat", result.message, result.room);
 
           console.log("socket rooms", socket.rooms);
-          /**
-           * TODO: there's a logic flaw; the arrangement of room names...
-           */
-          // if this socket is not in a room with the recipient, create room n join.
-          if (!socket.rooms.has(msg.room)) {
-            // socket.rooms is a Set.
-            // join room
-            console.log(chalk.grey("sender gonna join the chat room"));
-            socket.join(msg.room); // seems this doesn't matter.
-          }
+          
 
-          // if recipient is online (and not in the room - join room), send the result to them.
-          const recipientSocket = isCorpMemberOnline(msg.message_to, ioChat);
-          if (recipientSocket) {
-            console.log("Found recipient socket");
-            if (!recipientSocket.rooms.has(msg.room)) {
-              console.log(chalk.grey("recipient gonna join the chat room"));
-              recipientSocket.join(msg.room);
-            }
-          }
+          
+          
 
           console.log("sending message to room"); // not just recipient
           // Then send the message to that room. (or just send to the recipient?? - faster this way)
           // TODO: maybe delete the id of the message
-          // TODO: BUG: using ioChat sends twice to sender
 
           fn('DELIVERED') // send to FE (TODO: should include the message id?)
+
           ioChat.to(msg.room).emit(IOEventNames.CHAT_MESSAGE, result);
+          // or
+          // socket.nsp.to(msg.room).emit(IOEventNames.CHAT_MESSAGE, result) // also works, got it from - https://github.com/socketio/socket.io/issues/1183#issuecomment-48348848
         },
         (reject) => {
           // very bad
@@ -394,24 +424,14 @@ ioChat.on(IOEventNames.CONNECTION, function (socket) {
   /**
    * this function checks if a corper is online, it takes the corper's corpMember's Id on a socket's query parameter and the socket namespace to check
    *
-   * TODO: this needs to be like a cache or sth. We update cache on connect and disconnect.
+   * a cache. We update cache on connect and disconnect.
    * */
-  function isCorpMemberOnline(corpMemberId, namespace) {
-    console.log("checking if someone is online", corpMemberId);
-    let result = null; // initialize to null
-    if (!corpMemberId) {
-      return result;
-    }
-    for (const [key, value] of namespace.sockets.entries()) {
-      console.log("checking...", value.handshake?.query?.id);
-      if (parseInt(value.handshake?.query?.id) === parseInt(corpMemberId)) {
-        // if they're online
-        result = value; // return the socket
-        console.log("they are online...");
-        break;
-      }
-    }
-    return result;
+  async function isCorpMemberOnline(corp_member_id, namespace = null) {
+    const project = await UserOnline.findOne({ 
+      where: { corp_member_id, namespace }
+    });
+
+    return project !== null
   }
 
   socket.on("message", async (msg, fn) => {
@@ -424,7 +444,7 @@ ioChat.on(IOEventNames.CONNECTION, function (socket) {
 
     if (
       socket.handshake.query.state_code != ("" || null) &&
-      msg.to != ("" && socket.handshake.query.state_code && null)
+      msg.to != ("" || socket.handshake.query.state_code || null)
     ) {
       // send message only to a particular room
 
@@ -439,14 +459,14 @@ ioChat.on(IOEventNames.CONNECTION, function (socket) {
       });
       console.log("did we get to /?", m.to);
       console.log("did we get to /0000?", m.to.id);
-      var everyRoomOnline = Object.keys(ioChat.adapter.rooms);
+      // const everyRoomOnline = Object.keys(ioChat.adapter.rooms);
       // ON EVERY MESSAGE, WE CAN ITERATE THROUGH ALL THE CONNECTED ROOMS AND IF A ROOM CONTAINS BOTH THE .TO AND .FROM, WE SEND TO THAT ROOM BUT THIS METHOD IS INEFFICIENT, IF THE ROOM ISN'T ALREADY EXISTING, CREATE IT AND JOIN, ELSE JUST ONLY JOIN
       // console.log('\n\n\n\nevery online room', everyRoomOnline)
 
       //// in the IFs statements, check if the receipient sockets are online too before sending!!!
 
-      const c_online = isCorpMemberOnline(msg.to, ioChat);
-      //[TODO]// check if they are both in the room before sending to the room. [DONE]
+      const c_online = await isCorpMemberOnline(msg.to, IOEventRoutes.CHAT);
+      // [TODO] // check if they are both in the room before sending to the room. [DONE]
 
       // THE TWO IF STATEMENTS HAVE THE SAME LOGIC BUT DIFFERENT IMPLMENTATION
 
@@ -526,10 +546,12 @@ ioChat.on(IOEventNames.CONNECTION, function (socket) {
           // they must be offline
           console.log("\n\ndid not deliver", !m.sent);
           // emit an incremented number of unread message to other necessary pages, after inserting to database
-          const socket_id = isCorpMemberOnline(msg.to, ioCorpMember);
+          const socket_id = await isCorpMemberOnline(msg.to, IOEventRoutes.BASE);
           // console.log('akkkhhhh', ioCorpMember)
           if (socket_id) {
             console.log("\n\nfound socket", socket_id);
+
+            // do we need this?
             ioCorpMember.to(socket_id).emit("totalunreadmsg", 1);
           }
           m.sent = false;
@@ -620,22 +642,36 @@ ioChat.on(IOEventNames.CONNECTION, function (socket) {
     test: "from chat",
     "/chat": "will get, it ?",
   });
+
+  socket.on(IOEventNames.DISCONNECT, (reason) => {
+    // TODO: maybe also emit total count of corp members online
+    console.log("lost a socket connection /");
+
+    UserOnline.destroy({
+      where: {
+        state_code: socket.handshake.query.state_code
+      }
+    })
+
+  });
 });
 
 /**
  * We can use this to have a list of all the rooms online. (and probably sockets too)
+ * 
+ * We should use a local sqlite db for having a record of all online sockets.
  */
-ioChat.adapter.on("create-room", (room, id) => {
-  console.log(`socket ${id} has created room ${room}`);
+ioChat.adapter.on("create-room", (room) => {
+  // console.log(`room ${room} was created`);
 });
 ioChat.adapter.on("join-room", (room, id) => {
-  console.log(`socket ${id} has joined room ${room}`);
+  // console.log(`socket ${id} has joined room ${room}`);
 });
 ioChat.adapter.on("leave-room", (room, id) => {
-  console.log(`socket ${id} has left room ${room}`);
+  // console.log(`socket ${id} has left room ${room}`);
 });
-ioChat.adapter.on("delete-room", (room, id) => {
-  console.log(`socket ${id} has deleted room ${room}`);
+ioChat.adapter.on("delete-room", (room) => {
+  // console.log(`room ${room} was deleted`);
 });
 
 const ioMap = io
