@@ -61,6 +61,12 @@ const config = require(__dirname + "/../config/config.js")[env];
     console.error(`caught this error while syncing tables:\n\n`, _reason);
   }); */
 
+  // for when we use a search engine.
+  db.sequelize.addHook('afterCreate', (model, options) => {
+    // only save sale models.
+    if (model instanceof db.sequelize.models.Sale) {}
+  })
+
 const knex = Knex({
   client: "mysql",
   connection: config,
@@ -90,7 +96,7 @@ const knexSessionStore = new KnexSessionStore({
   tablename: "_Sessions", // Defaults to 'sessions' // Note: don't use 'Session' ...it's for connect-sequelize-store
 });
 
-let expressSessionOptions = {
+const expressSessionOptions = {
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,

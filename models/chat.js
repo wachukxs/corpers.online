@@ -114,7 +114,7 @@ module.exports = (sequelize, DataTypes) => {
       afterCreate: (chat, options) => {
         // console.log('??', chat, options);
       },
-    }
+    },
   });
   return Chat;
 };

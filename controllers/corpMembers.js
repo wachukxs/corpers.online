@@ -114,7 +114,7 @@ router.delete(
 
 router.get("/posts", auth.verifyJWT, corpMemberService.getPosts);
 
-router.get("/search", auth.checkJWT, corpMemberService.searchPosts);
+router.post("/search", auth.checkJWT, express.json(), corpMemberService.searchPosts);
 
 router.post(
   "/join-waitlist",

@@ -1282,92 +1282,65 @@ exports.getPosts = (req, res) => {
 };
 
 exports.searchPosts = async (req, res) => {
-  const _FUNCTIONNAME = "updateProfilePhoto";
+  const _FUNCTIONNAME = "searchPosts";
   console.log("hitting", _FILENAME, _FUNCTIONNAME);
 
-  let _accommodations = await db.Accommodation.findAll({
-    include: [
-      {
-        model: db.Location,
-      },
-      {
-        model: db.Media,
-      },
-    ],
-    attributes: db.Accommodation.getAllActualAttributes(), // this is a hot fix
-  });
-  let _sales = await db.Sale.findAll();
-  let _location_ppas = await db.Location.findAll({
+  console.log("searching", req.body);
+
+  const { searchText } = req.body;
+
+  // TODO: Convert both to lowercase.
+  db.Sale.findAll({
     where: {
-      ppa_id: {
-        [Op.not]: null,
-      },
+      [Op.or]: [
+
+        // don't really need this next 2 search
+        // {
+        //   item_name: {
+        //     [Op.like]: `%${searchText}%`,
+        //   },
+        // },
+        // {
+        //   text: {
+        //     [Op.like]: `%${searchText}%`,
+        //   },
+        // },
+
+        // https://stackoverflow.com/a/69161877/9259701
+        // https://sequelize.org/docs/v6/core-concepts/model-querying-basics/#advanced-queries-with-functions-not-just-columns
+        {
+          item_name: db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('item_name')), 'LIKE', '%' + searchText.toLowerCase() + '%'),
+        },
+        {
+          text: db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('text')), 'LIKE', '%' + searchText.toLowerCase() + '%'),
+        },
+
+        // TODO: search by location too later.
+        // docs: https://sequelize.org/docs/v6/advanced-association-concepts/eager-loading/#complex-where-clauses-at-the-top-level
+      ],
     },
-  }); // filter only PPAs
-  let result = {
-    _accommodations,
-    _sales,
-    _location_ppas,
-    _sale: null,
-    _accommodation: null,
-    _location_ppa: null,
-  };
+  })
+    .then(
+      (sales) => {
+        console.log(
+          '"%s" search term yielded %d results!',
+          searchText,
+          sales?.length
+        );
 
-  // TODO, locations (and PPAs) // how do we filter PPAs
-  if (req.query.type == "accommodation") {
-    result._accommodation = await db.Accommodation.findOne({
-      where: {
-        id: req.query.id,
+        res.json({ data: sales });
       },
-      include: [
-        {
-          model: db.Location,
-        },
-        {
-          model: db.Media,
-        },
-      ],
-      attributes: db.Accommodation.getAllActualAttributes(), // why is `accommodationId` be looked for in the query
+      (reject) => {
+        res.status(500).json({});
+        console.error("uhmmmm not good", reject);
+      }
+    )
+    .catch((reject) => {
+      console.error("is this the error ?", reject);
+      res.status(500).json({});
     });
-  } else if (req.query.type == "sale") {
-    result._sale = await db.Sale.findOne({
-      where: {
-        id: req.query.id,
-      },
-      include: [
-        {
-          model: db.Media,
-          // as: 'saleMedia'
-        },
-      ],
-    });
-  } else if (req.query.type == "location") {
-    // a location that is a ppa
-    result._location_ppa = await db.Location.findOne({
-      where: {
-        id: req.query.id,
-        ppa_id: {
-          [Op.not]: null,
-        },
-      },
-      include: [
-        {
-          model: db.PPA,
-        },
-        {
-          model: db.Location,
-        },
-      ],
-    });
-  }
 
-  result.current_year = new Date().getFullYear();
-  result.corper = null;
-  if (req.session.corper) {
-    result.corper = req.session.corper;
-  }
-  res.set("Content-Type", "text/html");
-  res.render("pages/search", result);
+  
 };
 
 exports.hi = (req, res) => {

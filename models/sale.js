@@ -117,6 +117,12 @@ module.exports = (sequelize, DataTypes) => {
     underscored: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
+    hooks: {
+      // afterCreate: (sale, options) => {
+      //   // console.log('?what saved?', sale, options);
+      //   // save sale.dataValues
+      // },
+    },
   });
   // Sale.sync({ alter: true })
   return Sale;

@@ -1087,21 +1087,29 @@
       }
     },
     "/api/v1.0/search": {
-      "get": {
+      "post": {
         "description": "",
         "parameters": [
           {
-            "name": "type",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "id",
-            "in": "query",
-            "type": "string"
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "searchText": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
         "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
           "502": {
             "description": "Bad Gateway"
           }
