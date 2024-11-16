@@ -39,6 +39,13 @@ module.exports = (sequelize, DataTypes) => {
         'state_code', 'nickname', 'first_name', // only get these values
       ].includes(x))
     }
+
+    static getSearchableAttributes() {
+      const safeCorpMemberAttributes = Object.keys(CorpMember.getAttributes())
+      return safeCorpMemberAttributes.filter((x) => [
+        'state_code', 'nickname', 'first_name', 'bio', 'created_at', '_age', // only get these values
+      ].includes(x))
+    }
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -74,6 +81,10 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE'
       }) // Location should have an array of all the corp member who have edited or confirmed it's location
+
+      CorpMember.hasMany(models.Review, {
+        foreignKey: 'corp_member_id',
+      })
     }
   };
   CorpMember.init({
@@ -142,12 +153,12 @@ module.exports = (sequelize, DataTypes) => {
         // throw new Error('Do not try to set the CorpMember.`service_state` value!');
       }
     },
-    _location: { // this will be depreciated soon
+    _location: { // this will be depreciated soon, why??
       type: DataTypes.VIRTUAL,
       get() {
         return this.getServiceState() + (this.getDataValue('city_or_town') ? ', ' + this.getDataValue('city_or_town') : ''); // + (this.getDataValue('region_street') ? ', ' + this.getDataValue('region_street') : '' )
       },
-      set(value) { // virtual fields show up when model is included in queries ... but it doesn't if you set the variable via hooks. why? cause it's not enumurable when the model is included in queries ?
+      set(value) { // virtual fields show up when model is included in queries ... but it doesn't if you set the variable via hooks. why? cause it's not enumerable when the model is included in queries ?
         console.error('Do not try to set the CorpMember.`location` value!');
         // throw new Error('Do not try to set the CorpMember.`location` value!');
       }
@@ -186,9 +197,18 @@ module.exports = (sequelize, DataTypes) => {
     last_name: DataTypes.STRING,
     want_spa_or_not: DataTypes.BOOLEAN,
     looking_for_accommodation_or_not: DataTypes.BOOLEAN,
-    public_profile: DataTypes.STRING,
+    public_profile: DataTypes.BOOLEAN,
     nickname: DataTypes.STRING,
     bio: DataTypes.TEXT,
+    _age: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return moment(this.getDataValue('created_at')).fromNow();
+      },
+      set(value) {
+        throw new Error('Do not try to set the Sale.`age` value!');
+      }
+    },
     // maybe have a session insight field of all the corp members's search history, liked items, (find how to figure out items they're intrested in)
   }, {
     comment: "Corp Member Table - For everything we can store about corp members",
@@ -199,20 +219,23 @@ module.exports = (sequelize, DataTypes) => {
     underscored: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
-    hooks: { // used to add virtual fields to dataValues object
+    hooks: { // used to add virtual fields to dataValues object, why???
       afterCreate(corpMember, {}) {
-        corpMember.dataValues.service_state = ngstates.states_long[ngstates.states_short.indexOf(corpMember.state_code.trim().slice(0, 2).toUpperCase())]
-        corpMember.dataValues._location = corpMember.getServiceState(); // or corpMember.dataValues.service_state; // only using service_state because city_or_town won't be existing
+        // corpMember.dataValues.service_state = ngstates.states_long[ngstates.states_short.indexOf(corpMember.dataValues?.state_code?.trim()?.slice(0, 2).toUpperCase())]
+        // corpMember.dataValues._location = corpMember.getServiceState(); // or corpMember.dataValues.service_state; // only using service_state because city_or_town won't be existing
       },
       afterFind(corpMember, {}) {
-        if (corpMember) { // for when we do a find during login, and corp member doesn't exist
-          corpMember.dataValues.service_state = ngstates.states_long[ngstates.states_short.indexOf(corpMember.state_code.trim().slice(0, 2).toUpperCase())]
-          corpMember.dataValues._location = corpMember.getServiceState() + (corpMember.city_or_town ? ', ' + corpMember.city_or_town : '')
-        }
+        // corpMember can (sometimes?) be an array?
+        // if (corpMember) { // for when we do a find during login, and corp member doesn't exist (???)
+        //   corpMember.dataValues.service_state = ngstates.states_long[
+        //     ngstates.states_short.indexOf(corpMember.dataValues.state_code?.trim()?.slice(0, 2)?.toUpperCase())
+        //   ]
+        //   corpMember.dataValues._location = corpMember.getServiceState() + (corpMember.dataValues?.city_or_town ? ', ' + corpMember.dataValues?.city_or_town : '')
+        // }
       },
       afterUpdate(corpMember, {}) {
-        corpMember.dataValues.service_state = ngstates.states_long[ngstates.states_short.indexOf(corpMember.state_code.trim().slice(0, 2).toUpperCase())]
-        corpMember.dataValues._location = corpMember.getServiceState() + (corpMember.city_or_town ? ', ' + corpMember.city_or_town : '')
+        // corpMember.dataValues.service_state = ngstates.states_long[ngstates.states_short.indexOf(corpMember.dataValues.state_code.trim().slice(0, 2).toUpperCase())]
+        // corpMember.dataValues._location = corpMember.getServiceState() + (corpMember.city_or_town ? ', ' + corpMember.city_or_town : '')
       },
     }
   });

@@ -11,7 +11,7 @@ module.exports = {
     "database": process.env.LOCAL_MYSQL_DEV_DB_NAME,
     "host": "localhost",
     "dialect": "mysql",
-    logging: (...msg) => console.log(chalk.cyan(msg)), // https://sequelize.org/docs/v6/getting-started/#logging
+    logging: (msg) => console.log(chalk.cyan(msg)), // https://sequelize.org/docs/v6/getting-started/#logging
     "port": process.env.LOCAL_MYSQL_PORT,
     "ssl": false,
     "seederStorage": "sequelize",

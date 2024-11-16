@@ -34,6 +34,10 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE'
       })
+
+      PPA.hasMany(models.Review, {
+        foreignKey: 'ppa_id',
+      })
     }
   };
   PPA.init({
@@ -52,6 +56,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
     },
+    // TODO: should ideally be 'type'
     type_of_ppa: {
       type: DataTypes.STRING,
       allowNull: false,

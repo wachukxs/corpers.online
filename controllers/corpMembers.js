@@ -38,6 +38,7 @@ router.post(
 // why do we have this route? testing? would need to remote later
 router.get("/all-users", corpMemberService.getAllUsers);
 
+/* This route returns all the initial/default items we need to show in search. */
 router.get("/all-items", corpMemberService.getAllItems);
 
 router.get("/profile", auth.verifyJWT, corpMemberService.getProfile);
@@ -114,6 +115,7 @@ router.delete(
 
 router.get("/posts", auth.verifyJWT, corpMemberService.getPosts);
 
+/* For searching all items */
 router.post("/search", auth.checkJWT, express.json(), corpMemberService.searchPosts);
 
 router.post(

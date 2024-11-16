@@ -1281,6 +1281,12 @@ exports.getPosts = (req, res) => {
   // res.status(200).send({ data: ["ghfc ty", "rewfhb iwre", "hblg er ieur\n\nthat apostrophe", "The happening place in Abia is NCCF!", "Well and NACC too. But NCCF would Never die!!!", "dsaf df asd", "5u96y j94938\nfdsig eor\n\ndfsnhgu es9rgre\n\ndsigj90e9re", "gfh r", "gejge rniog eoigrioerge ", "gf er rg erg", "fdg erei sug serugeis gr  \n\n\n\n\nThis", "test df gf byyyyyyyyy mee", "Okay. ", "This is it. And yep.", "I could sing. ... Oh"] });
 };
 
+
+/**
+ * TODO: only return corp member information if the user is logged in.
+ * @param {*} req 
+ * @param {*} res 
+ */
 exports.searchPosts = async (req, res) => {
   const _FUNCTIONNAME = "searchPosts";
   console.log("hitting", _FILENAME, _FUNCTIONNAME);
@@ -1289,11 +1295,9 @@ exports.searchPosts = async (req, res) => {
 
   const { searchText } = req.body;
 
-  // TODO: Convert both to lowercase.
-  db.Sale.findAll({
+  const sales = db.Sale.findAll({
     where: {
       [Op.or]: [
-
         // don't really need this next 2 search
         // {
         //   item_name: {
@@ -1306,6 +1310,7 @@ exports.searchPosts = async (req, res) => {
         //   },
         // },
 
+        // Convert both to lowercase.
         // https://stackoverflow.com/a/69161877/9259701
         // https://sequelize.org/docs/v6/core-concepts/model-querying-basics/#advanced-queries-with-functions-not-just-columns
         {
@@ -1320,15 +1325,34 @@ exports.searchPosts = async (req, res) => {
       ],
     },
   })
+
+  const corp_members = db.CorpMember.findAll({
+    where: {
+      public_profile: true,
+      [Op.or]: [
+        {
+          nickname: db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('nickname')), 'LIKE', '%' + searchText.toLowerCase() + '%'),
+        },
+        {
+          bio: db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('bio')), 'LIKE', '%' + searchText.toLowerCase() + '%'),
+        },
+
+        // TODO: search by location too later.
+        // docs: https://sequelize.org/docs/v6/advanced-association-concepts/eager-loading/#complex-where-clauses-at-the-top-level
+      ],
+    },
+  })
+
+  Promise.all([sales, corp_members])
     .then(
-      (sales) => {
+      ([sales, corp_members]) => {
         console.log(
           '"%s" search term yielded %d results!',
           searchText,
           sales?.length
         );
 
-        res.json({ data: sales });
+        res.json({ sales, corp_members, ppas: [], accommodations: [] });
       },
       (reject) => {
         res.status(500).json({});
@@ -1425,15 +1449,33 @@ exports.getAllItems = async (req, res) => {
   console.log("hitting", _FILENAME, _FUNCTIONNAME);
 
   try {
-    // Get all accommodation, and join with sale items.
-    const [sales = [], accommodations = []] = await Promise.all([
-      db.Sale.findAll(),
-      db.Accommodation.findAll()
+    /**
+     * Get all accommodations, sale items.
+     * TODO: should be 20 most recent or most searched items?? in the last week? or 24 hrs?
+     */
+    const [sales = [], accommodations = [], corp_members = [], ppas = []] = await Promise.all([
+      db.Sale.findAll({include: [
+        {
+          model: db.Media,
+        },
+      ],}),
+      // TODO: should accommodations have reviews?
+      db.Accommodation.findAll(),
+      db.CorpMember.findAll({ where: { public_profile: true }, attributes: db.CorpMember.getSearchableAttributes(), }),
+      
+      /**
+       * Show the number of reviews a PPA has.
+       * And a way to show the reviews.
+       * 
+       * TODO: limit the number of reviews fetched. Order reviews by recent...
+       * */
+      db.PPA.findAll({include: [
+        { model: db.Review },
+        { model: db.Location },
+      ]})
     ])
 
-    res.status(200).json({
-      data: [...sales, ...accommodations],
-    });
+    res.status(200).json({ accommodations, sales, ppas, corp_members });
   } catch (error) {
     console.error("catching this err because:", error);
     res.status(500).json({
