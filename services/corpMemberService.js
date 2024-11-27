@@ -1293,24 +1293,15 @@ exports.searchPosts = async (req, res) => {
 
   console.log("searching", req.body);
 
-  const { searchText } = req.body;
+  const { searchText, state } = req.body;
+  /**
+   * TODO: do we break up the words and search each of them???
+   */
 
   const sales = db.Sale.findAll({
     where: {
       [Op.or]: [
-        // don't really need this next 2 search
-        // {
-        //   item_name: {
-        //     [Op.like]: `%${searchText}%`,
-        //   },
-        // },
-        // {
-        //   text: {
-        //     [Op.like]: `%${searchText}%`,
-        //   },
-        // },
-
-        // Convert both to lowercase.
+        // Convert to lowercase.
         // https://stackoverflow.com/a/69161877/9259701
         // https://sequelize.org/docs/v6/core-concepts/model-querying-basics/#advanced-queries-with-functions-not-just-columns
         {
@@ -1319,11 +1310,31 @@ exports.searchPosts = async (req, res) => {
         {
           text: db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('text')), 'LIKE', '%' + searchText.toLowerCase() + '%'),
         },
-
-        // TODO: search by location too later.
-        // docs: https://sequelize.org/docs/v6/advanced-association-concepts/eager-loading/#complex-where-clauses-at-the-top-level
       ],
     },
+    
+
+    include: [{
+      model: db.CorpMember,
+      required: true,
+
+      // TODO: link service states to states table.
+
+      include: [{
+        model: db.Location,
+        required: true,
+
+        include: [{
+          model: db.States,
+          required: true,
+          ...(state && {
+            where: {
+              name: state,
+            },
+          }),
+        }],
+      }],
+    }],
   })
 
   const corp_members = db.CorpMember.findAll({
@@ -1341,6 +1352,26 @@ exports.searchPosts = async (req, res) => {
         // docs: https://sequelize.org/docs/v6/advanced-association-concepts/eager-loading/#complex-where-clauses-at-the-top-level
       ],
     },
+
+    // TODO: this query needs to be much much simplier!
+
+    include: [{
+      model: db.PPA,
+      required: true,
+
+      include: [{
+        model: db.Location,
+        include: { 
+          model: db.States,
+          ...(state && {
+            where: {
+              name: state,
+            },
+          }),
+         },
+
+      }],
+    }],
   })
 
   Promise.all([sales, corp_members])
@@ -1356,7 +1387,7 @@ exports.searchPosts = async (req, res) => {
       },
       (reject) => {
         res.status(500).json({});
-        console.error("uhmmmm not good", reject);
+        console.error("searching not good", reject);
       }
     )
     .catch((reject) => {

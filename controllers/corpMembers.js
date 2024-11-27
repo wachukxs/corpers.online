@@ -115,7 +115,10 @@ router.delete(
 
 router.get("/posts", auth.verifyJWT, corpMemberService.getPosts);
 
-/* For searching all items */
+/* 
+  For searching all items,
+  TODO: we don't need to check auth.
+*/
 router.post("/search", auth.checkJWT, express.json(), corpMemberService.searchPosts);
 
 router.post(

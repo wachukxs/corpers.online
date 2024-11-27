@@ -1098,6 +1098,9 @@
               "properties": {
                 "searchText": {
                   "example": "any"
+                },
+                "state": {
+                  "example": "any"
                 }
               }
             }

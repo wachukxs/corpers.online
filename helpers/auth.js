@@ -153,7 +153,7 @@ module.exports.verifyJWT = (req, res, next) => {
  * In pages like /search, helping to pre-populate corper object
  */
 module.exports.checkJWT = (req, res, next) => {
-  const _FUNCTIONNAME = "updateProfilePhoto";
+  const _FUNCTIONNAME = "checkJWT";
   console.log("hitting", _FILENAME, _FUNCTIONNAME);
 
   // Cookies that have not been signed

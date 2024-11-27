@@ -72,15 +72,18 @@ module.exports = (sequelize, DataTypes) => {
       })
       
       CorpMember.hasOne(models.Media, {
-        foreignKey: 'corp_member_id', // TODO: put corp_member_id in Media
+        foreignKey: 'corp_member_id',
         as: 'Media'
       })
 
-      // Still need to work exactly how this will work.
+      /**
+       * Still need to work exactly how this will work.
+       * Location should have an array of all the corp member who have edited or confirmed it's location
+       */
       CorpMember.hasMany(models.Location, {
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE'
-      }) // Location should have an array of all the corp member who have edited or confirmed it's location
+      })
 
       CorpMember.hasMany(models.Review, {
         foreignKey: 'corp_member_id',
