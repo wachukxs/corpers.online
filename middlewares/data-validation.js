@@ -2,6 +2,7 @@ const path = require('path');
 const _FILENAME = path.basename(__filename);
 
 const Joi = require('joi');
+const { states_code_regex_stringed } = require('../utilities/ngstates');
 
 
 module.exports.joinWaitListDataValidation = (req, res, next) => {
@@ -55,10 +56,11 @@ module.exports.corpMemberSignUp = (req, res, next) => {
         //     .max(70)
         //     .optional(),
         email: Joi.string()
-            .email({ minDomainSegments: 2 }).required(),
-        password: Joi.string().required(),
-        remember: Joi.string().optional().allow(''),
-        state_code: Joi.string().required(),
+            .email({ minDomainSegments: 2 }).required().label('Email'),
+        password: Joi.string().required().label('Password'),
+        remember: Joi.boolean().optional(),
+        state_code: Joi.string().pattern(new RegExp(states_code_regex_stringed))
+        .rule({message: 'Provide a valid state code'}).required().label('State code'),
     })
 
     const { error, value } = waitListSchema.validate(req.body);
