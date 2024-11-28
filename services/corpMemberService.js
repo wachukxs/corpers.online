@@ -79,35 +79,43 @@ exports.create = (req, res) => {
         );
       },
       (error) => {
-        console.error("CorpersSignUp() error happened", error);
-        console.error("----> error happened", error.errors[0], error.fields);
+        console.log('err.name', error.name);
+        
+        if (error?.name === 'SequelizeForeignKeyConstraintError') {
+          return res.status(400).json({
+            message: "An error occurred.",
+            error: null,
+          });
+        }
 
-        if (error.errors[0].validatorKey == "not_unique") {
+        if (error?.name === 'SequelizeValidationError') {
+          return res.status(400).json({
+            message: "An error occurred.",
+            error: error?.errors?.[0]?.message,
+          });
+        }
+        console.error("CorpersSignUp() error happened", error);
+
+        if (error.errors?.[0]?.validatorKey == "not_unique") { // or error?.name === 'SequelizeUniqueConstraintError'
           switch (
-            error.errors[0].path // value: 'nwachukwuossai@gmail.com',
+            error.errors?.[0].path
           ) {
             case "state_code":
               return res.status(400).json({
                 message:
                   "Another account with the same state code already exists",
-                error: null,
+                error: 'Duplicate state code',
               });
 
             case "email":
               return res.status(400).json({
                 message: "Another account with the same email already exists",
-                error: null,
-              });
-
-            case "invalid state_code":
-              return res.status(400).json({
-                message: "State code is invalid",
-                error: null,
+                error: 'Duplicate email',
               });
 
             default:
               return res.status(400).json({
-                message: "An error occurred",
+                message: "Another corp member registered with the details you provided.",
                 error: null,
               });
           }
@@ -121,7 +129,10 @@ exports.create = (req, res) => {
     )
     .catch((reason) => {
       console.error("catching this err because:", reason);
-      res.redirect("/signup?m=ue");
+      res.status(400).json({
+        message: "An error occurred",
+        error: null,
+      });
     });
 };
 
