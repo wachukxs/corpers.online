@@ -92,26 +92,6 @@ router.get(ngstates.states_short_paths, auth.checkJWT, function (req, res) {
   }).catch(err => res.render('pages/state', { corpers: null, state: state }))
 });
 
-router.get(ngstates.states_short_paths_batch, function (req, res) {
-  console.log('29039\n\n', req.path, req.params)
-  // has req.params.state & req.params.year
-  res.set('Content-Type', 'text/html');
-  res.render('pages/state');
-});
-
-router.get(ngstates.states_short_paths_batch_regex_stringed, function (req, res) { // work with the batch
-  console.log('775654\n\n', req.path, req.params)
-  // has req.params.state & req.params.year_batch
-  // req.params['3'] is the batch
-  res.set('Content-Type', 'text/html');
-    res.render('pages/state');
-});
-
-router.get('/careers', function (req, res) { // work with us
-  res.set('Content-Type', 'text/html');
-    res.render('pages/careers', { current_year: new Date().getFullYear() });
-});
-
 router.post('/careers', function (req, res) { // work with us
   console.log('work with us');
   const busboy = Busboy({
@@ -340,15 +320,6 @@ router.post('/subscribe', function (req, res) {
   
 
   return req.pipe(busboy)
-});
-
-router.get('/signup', function (req, res) {
-  res.set('Content-Type', 'text/html');
-  res.set("Cache-Control", "no-cache");
-  res.set("Pragma", "no-cache");
-  // res.setHeader("Expires", 0);
-  // res.set('Cache-Control', 'public, max-age=0')
-  res.render('pages/signup', { current_year: new Date().getFullYear() });
 });
 
 /* 
