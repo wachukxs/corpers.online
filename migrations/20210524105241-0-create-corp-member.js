@@ -8,6 +8,16 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      state_code: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      email: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true,
+      },
       ppa_id: {
         type: Sequelize.INTEGER,
       },
@@ -26,22 +36,18 @@ module.exports = {
       city_or_town: {
         type: Sequelize.STRING
       },
-      email: {
-        type: Sequelize.STRING
+      state_short_name: {
+        type: Sequelize.STRING,
       },
       lga: {
         type: Sequelize.STRING
       },
+      // enum?
       stream: {
         type: Sequelize.STRING
       },
       batch: {
         type: Sequelize.STRING
-      },
-      state_code: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
       },
       password: {
         type: Sequelize.STRING

@@ -20,7 +20,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     getServiceState() { // during an update, this.state_code turn up null ... why ??? ...not anymore (because this.state_code is always set for every db operation)
       // console.log("\n\n\n\nwhy is this.state_code null??", this.state_code);
-      return this.state_code ? ngstates.states_long[ngstates.states_short.indexOf(this.state_code.slice(0, 2))] : '';
+      if (this.state_code) {
+        return ngstates.states_long[ngstates.states_short.indexOf(this.state_code.slice(0, 2).toUpperCase())]
+      }
+      return '';
     }
     /**
      * CorpMember attributes without password, and push_subscription_stringified
@@ -53,6 +56,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      CorpMember.belongsTo(models.States, {
+        foreignKey: 'state_short_name',
+      })
+
       // CorpMember is source, PPA is target (foreignKey is in CORPMEMBER)
       CorpMember.belongsTo(models.PPA, {
         foreignKey: 'ppa_id',
@@ -64,6 +71,7 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE',
       });
+
       CorpMember.hasMany(models.Accommodation, {
         foreignKey: 'corp_member_id',
         sourceKey: 'id',
@@ -96,10 +104,6 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       primaryKey: true,
       type: DataTypes.INTEGER,
-      set(value) {
-        console.error('Do not try to set the CorpMember.`id` value!');
-        // throw new Error('Do not try to set the CorpMember.`id` value!');
-      },
     },
     travel_from_city: DataTypes.STRING,
     travel_from_state: DataTypes.STRING,
@@ -108,24 +112,23 @@ module.exports = (sequelize, DataTypes) => {
     city_or_town: DataTypes.STRING,
     email: {
       type:DataTypes.STRING,
-      unique: 'email',
+      unique: true,
+      allowNull: false,
       validate: {
-        isEmail: true
+        isEmail: true,
       },
       set(value) {
-        this.setDataValue('email', value.toLowerCase());
+        this.setDataValue('email', value?.toLowerCase()); // transform to lowercase
       }
     },
-    lga: DataTypes.STRING, // shouldn't this be nested
-    stream: DataTypes.STRING,
+
     time_with_us: { // must be after 'created_at' ... should we make a PR to fix this ?
       type: DataTypes.VIRTUAL,
       get() {
         return moment(this.getDataValue('created_at')).fromNow();
       },
       set(value) {
-        console.error('Do not try to set the CorpMember.`time_with_us` value!');
-        // throw new Error('Do not try to set the CorpMember.`time_with_us` value!');
+        throw new Error('Do not try to set the CorpMember.`time_with_us` value!');
       },
       comment: 'What should we do with this? Make them invite others after a while? Or ask them how it has been so far?'
     },
@@ -134,27 +137,39 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
-      set(value) { // not needed here??
-        this.setDataValue('state_code', value.toUpperCase());
+      set(value) {
+        this.setDataValue('state_code', value?.toUpperCase());
       },
       validate: {
         notNull: {
           msg: 'State code cannot be empty',
         },
+        is: { args: ngstates.state_code_regex, msg: 'Provide a valid state code' },
       },
     },
+    lga: DataTypes.STRING, // shouldn't this be nested
+    stream: {
+      type: DataTypes.ENUM,
+      values: ['1', '2', '3', '4'],
+    },
     /**
-     * virtual fields aren't ideal because they are not enumerable fields
+     * must be after state_code ... (should we do an Open Source PR to fix this ? Can it be fixed?)
      */
-    service_state: { // must be after state_code ... should we do an Open Source PR to fix this ?
+    service_state: {
       type: DataTypes.VIRTUAL,
       get() {
-        return this.getServiceState() // ngstates.states_long[ngstates.states_short.indexOf(this.getDataValue('state_code').trim().slice(0, 2).toUpperCase())];
+        return this.getServiceState()
       },
       set(value) {
-        console.error('Do not try to set the CorpMember.`service_state` value!');
-        // throw new Error('Do not try to set the CorpMember.`service_state` value!');
+        throw new Error('Do not try to set the CorpMember.`service_state` value!');
       }
+    },
+    state_short_name: {
+      type: DataTypes.STRING,
+      references: {
+        model: 'States',
+        key: 'short_name'
+      },
     },
     _location: { // this will be depreciated soon, why??
       type: DataTypes.VIRTUAL,
@@ -162,8 +177,7 @@ module.exports = (sequelize, DataTypes) => {
         return this.getServiceState() + (this.getDataValue('city_or_town') ? ', ' + this.getDataValue('city_or_town') : ''); // + (this.getDataValue('region_street') ? ', ' + this.getDataValue('region_street') : '' )
       },
       set(value) { // virtual fields show up when model is included in queries ... but it doesn't if you set the variable via hooks. why? cause it's not enumerable when the model is included in queries ?
-        console.error('Do not try to set the CorpMember.`location` value!');
-        // throw new Error('Do not try to set the CorpMember.`location` value!');
+        throw new Error('Do not try to set the CorpMember.`location` value!');
       }
     },
     push_subscription_stringified: {
@@ -223,6 +237,12 @@ module.exports = (sequelize, DataTypes) => {
     createdAt: 'created_at',
     updatedAt: 'updated_at',
     hooks: { // used to add virtual fields to dataValues object, why???
+      beforeCreate(corpMember, options) {
+        /**
+         * populate the state_short_name from the state_code value.
+         */
+        corpMember.state_short_name = corpMember.state_code?.substring?.(0, 2)
+      },
       afterCreate(corpMember, {}) {
         // corpMember.dataValues.service_state = ngstates.states_long[ngstates.states_short.indexOf(corpMember.dataValues?.state_code?.trim()?.slice(0, 2).toUpperCase())]
         // corpMember.dataValues._location = corpMember.getServiceState(); // or corpMember.dataValues.service_state; // only using service_state because city_or_town won't be existing
