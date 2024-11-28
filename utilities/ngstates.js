@@ -1,4 +1,4 @@
-// TODO: join states_short_paths_batch_uc and states_short_paths_batch_lc to be like states_short_paths_batch_regex_stringed
+// TODO: join states_short_paths_batch_uc and states_short_paths_batch_lc to be like states_code_regex_stringed
 
 /**DEPRECIATED an array of paths for NG states short codes with batch extention uppercase */
 exports.states_short_paths_batch_uc = ['/AB/:year([0-9]{2})', '/AD/:year([0-9]{2})', '/AK/:year([0-9]{2})', '/AN/:year([0-9]{2})', '/BA/:year([0-9]{2})', '/BY/:year([0-9]{2})', '/BN/:year([0-9]{2})', '/BO/:year([0-9]{2})', '/CR/:year([0-9]{2})', '/DT/:year([0-9]{2})', '/EB/:year([0-9]{2})', '/ED/:year([0-9]{2})', '/EK/:year([0-9]{2})', '/EN/:year([0-9]{2})', '/FC/:year([0-9]{2})', '/GM/:year([0-9]{2})', '/IM/:year([0-9]{2})', '/JG/:year([0-9]{2})', '/KD/:year([0-9]{2})', '/KN/:year([0-9]{2})', '/KT/:year([0-9]{2})', '/KB/:year([0-9]{2})', '/KG/:year([0-9]{2})', '/KW/:year([0-9]{2})', '/LA/:year([0-9]{2})', '/NS/:year([0-9]{2})', '/NG/:year([0-9]{2})', '/OG/:year([0-9]{2})', '/OD/:year([0-9]{2})', '/OS/:year([0-9]{2})', '/OY/:year([0-9]{2})', '/PL/:year([0-9]{2})', '/RV/:year([0-9]{2})', '/SO/:year([0-9]{2})', '/TR/:year([0-9]{2})', '/YB/:year([0-9]{2})', '/ZM/:year([0-9]{2})'];
@@ -8,11 +8,19 @@ exports.states_short_paths_batch_lc = ['/ab/:year([0-9]{2})' , '/ad/:year([0-9]{
 
 exports.states_short_paths_batch = '/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm))/:year([0-9]{2})'
 
-let years = parseInt(new Date(Date.now()).getFullYear().toFixed().slice(2, 4));
-let yearrange = '(' + (years - 1).toString() + '|' + years.toString() + ')';
-/**regex in string of paths for NG states short codes with batch */
-exports.states_short_paths_batch_regex_stringed = '/:state((AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm))/:year_batch((' + yearrange /*(18|19)*/ + '([abcACB])))'
+const years = parseInt(new Date(Date.now()).getFullYear().toFixed().slice(2, 4));
 
+/**
+ * format: `23|24`
+ */
+const accepted_service_years = `${years - 1}|${years}`
+/**
+ * regex in string of paths for NG states short codes with batch
+ * */
+exports.states_code_regex_stringed = '^(?<short_state>(AB|AD|AK|AN|BA|BY|BN|BO|CR|DT|EB|ED|EK|EN|FC|GM|IM|JG|KD|KN|KT|KB|KG|KW|LA|NS|NG|OG|OD|OS|OY|PL|RV|SO|TR|YB|ZM|ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm))/(?<year>' + accepted_service_years + ')(?<stream>[abcACB])/[0-9]{4}$'
+
+/**state_code validation regex */
+exports.state_code_regex = /^(ab|ad|ak|an|ba|by|bn|bo|cr|dt|eb|ed|ek|en|fc|gm|im|jg|kd|kn|kt|kb|kg|kw|la|ns|ng|og|od|os|oy|pl|rv|so|tr|yb|zm)\/\d\d[abcACB]\/[0-9]{4}$/gi;
 /**an array of paths for NG states short codes UPPERCASE */
 exports.states_short_paths_uc = ['/AB', '/AD', '/AK', '/AN', '/BA', '/BY', '/BN', '/BO', '/CR', '/DT', '/EB', '/ED', '/EK', '/EN', '/FC', '/GM', '/IM', '/JG', '/KD', '/KN', '/KT', '/KB', '/KG', '/KW', '/LA', '/NS', '/NG', '/OG', '/OD', '/OS', '/OY', '/PL', '/RV', '/SO', '/TR', '/YB', '/ZM'];
 /**an array of paths for NG states short codes LOWERCASE */
