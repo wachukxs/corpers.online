@@ -28,8 +28,14 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.INTEGER
     },
-    name: DataTypes.STRING,
-    short_name: DataTypes.STRING
+    name: {
+      type: DataTypes.STRING,
+      unique: true,
+    },
+    short_name: {
+      type: DataTypes.STRING,
+      unique: true,
+    },
   }, {
     sequelize,
     modelName: 'States',
