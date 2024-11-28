@@ -1,10 +1,18 @@
 # A tool
 Firstly for the people in khaki, then for the green and white people, then for all others.
 
+## How TO
+#### How to drop all data in DB, and restart the project.
+- Drop all tables in DB (Disable foreign key checks)
+- run `yarn run soft-restart`?
+
 ## On Security
 * https://owasp.org/www-project-top-ten/
 * 12 factor.net
 
+### Gotcha / Bugs?
+- Sequelize; setting only `unique: true` doesn't make a column unique. You have to combine it with `allowNull: false`. Although the [docs](https://sequelize.org/docs/v6/core-concepts/validations-and-constraints/#unique-constraint) shows to use both of them. It's not clear... does this need to be clearly specified.
+- Sequelize, seems you can't create more than one unique key in a model migration. The second (or one of the column) doesn't get the unique constraint added to it. This might be related to the previous issue.
 
 ## Roadmap and TODOs
 * Remove config/config.json and config.js from git history and repo

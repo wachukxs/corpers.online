@@ -428,35 +428,7 @@
         }
       }
     },
-    "/api/v1.0ngstates.states_short_paths_batch": {
-      "get": {
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1.0ngstates.states_short_paths_batch_regex_stringed": {
-      "get": {
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
     "/api/v1.0/careers": {
-      "get": {
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      },
       "post": {
         "description": "",
         "responses": {
@@ -485,7 +457,7 @@
         }
       }
     },
-    "/api/v1.0/signup": {
+    "/api/v1.0/count": {
       "get": {
         "description": "",
         "responses": {
@@ -493,7 +465,9 @@
             "description": ""
           }
         }
-      },
+      }
+    },
+    "/api/v1.0/signup": {
       "post": {
         "description": "",
         "parameters": [
@@ -519,16 +493,6 @@
         "responses": {
           "400": {
             "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/api/v1.0/count": {
-      "get": {
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
           }
         }
       }

@@ -94,7 +94,7 @@
       "/sw.js",
       "/serviceWorkerNotification.js",
       "*.json",
-      "node_modules/**/node_modules"
+      "node_modules/*"
     ],
     "ext": ".js"
   },
