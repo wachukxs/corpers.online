@@ -40,20 +40,26 @@ exports.create = (req, res) => {
   return db.CorpMember.create(req.body)
     .then(
       (result) => {
-        console.log("re:", result);
-        req.session.corper = result.dataValues; // set inside successful jwt signing
+        result = result.toJSON?.()
+
+        // TODO: can we put this in a hook??
+        delete result.password
+        delete result.push_subscription_stringified
+
+        req.session.corper = result; // set inside successful jwt signing
+        
         // send welcome email
         helpers.sendSignupWelcomeEmail(
-          req.body.email,
-          req.body.first_name,
-          result.dataValues.service_state
+          result.email,
+          result.first_name, // TODO: we don't have first name on signup
+          result.service_state
         );
 
         // TODO: should expire and we should have a refresh token
         jwt.sign(
           {
-            state_code: req.body.state_code.toUpperCase(),
-            email: req.body.email.toLowerCase(),
+            state_code: result.state_code,
+            email: result.email,
             corp_member_id: result.id,
           },
           process.env.SESSION_SECRET,
@@ -70,10 +76,12 @@ exports.create = (req, res) => {
 
               // problem here https://stackoverflow.com/questions/49476080/express-session-not-persistent-after-redirect
 
-              res.cookie("_online", token, cookieOptions).status(200).json({
-                state_code: req.body.state_code.toUpperCase(),
-                message: "OK",
-              });
+              res.cookie("_online", token, cookieOptions)
+                .status(200)
+                .json({
+                  corp: result,
+                  message: "OK",
+                });
             }
           }
         );
@@ -1331,20 +1339,15 @@ exports.searchPosts = async (req, res) => {
 
       // TODO: link service states to states table.
 
-      include: [{
-        model: db.Location,
-        required: true,
-
+      ...(state && {
         include: [{
           model: db.States,
-          required: true,
-          ...(state && {
-            where: {
-              name: state,
-            },
-          }),
-        }],
-      }],
+          where: {
+            name: state,
+          },
+         }],
+      })
+
     }],
   })
 
@@ -1356,6 +1359,9 @@ exports.searchPosts = async (req, res) => {
           nickname: db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('nickname')), 'LIKE', '%' + searchText.toLowerCase() + '%'),
         },
         {
+          first_name: db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('first_name')), 'LIKE', '%' + searchText.toLowerCase() + '%'),
+        },
+        {
           bio: db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('bio')), 'LIKE', '%' + searchText.toLowerCase() + '%'),
         },
 
@@ -1363,35 +1369,28 @@ exports.searchPosts = async (req, res) => {
         // docs: https://sequelize.org/docs/v6/advanced-association-concepts/eager-loading/#complex-where-clauses-at-the-top-level
       ],
     },
+    attributes: db.CorpMember.getSearchableAttributes(),
 
     // TODO: this query needs to be much much simplier!
 
-    include: [{
-      model: db.PPA,
-      required: true,
-
+    ...(state && {
       include: [{
-        model: db.Location,
-        include: { 
-          model: db.States,
-          ...(state && {
-            where: {
-              name: state,
-            },
-          }),
-         },
-
-      }],
-    }],
+        model: db.States,
+        where: {
+          name: state,
+        },
+       }],
+    })
   })
 
   Promise.all([sales, corp_members])
     .then(
       ([sales, corp_members]) => {
         console.log(
-          '"%s" search term yielded %d results!',
+          '"%s" search term yielded %d sales, %d corp_member results!',
           searchText,
-          sales?.length
+          sales?.length,
+          corp_members?.length,
         );
 
         res.json({ sales, corp_members, ppas: [], accommodations: [] });
@@ -1503,7 +1502,10 @@ exports.getAllItems = async (req, res) => {
       ],}),
       // TODO: should accommodations have reviews?
       db.Accommodation.findAll(),
-      db.CorpMember.findAll({ where: { public_profile: true }, attributes: db.CorpMember.getSearchableAttributes(), }),
+      db.CorpMember.findAll({ 
+        where: { public_profile: true }, 
+        attributes: db.CorpMember.getSearchableAttributes(),
+      }),
       
       /**
        * Show the number of reviews a PPA has.
