@@ -470,26 +470,6 @@
     "/api/v1.0/signup": {
       "post": {
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "example": "any"
-                },
-                "first_name": {
-                  "example": "any"
-                },
-                "state_code": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
         "responses": {
           "400": {
             "description": "Bad Request"
