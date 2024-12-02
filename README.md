@@ -15,6 +15,7 @@ Firstly for the people in khaki, then for the green and white people, then for a
 - Sequelize, seems you can't create more than one unique key in a model migration. The second (or one of the column) doesn't get the unique constraint added to it. This might be related to the previous issue.
 
 ## Roadmap and TODOs
+* Link PPA to Location
 * Remove config/config.json and config.js from git history and repo
 * Have color coded logs/log messages.
 * Get a list of API best practices we need to follow.

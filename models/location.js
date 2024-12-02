@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
       })
 
       Location.belongsTo(models.States, {
-        foreignKey: 'state_id'
+        foreignKey: 'state_id',
       })
     }
   };

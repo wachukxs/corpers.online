@@ -1383,9 +1383,37 @@ exports.searchPosts = async (req, res) => {
     })
   })
 
-  Promise.all([sales, corp_members])
+
+  /**
+   * BUG: corp_member_id missing when we add PPA
+   */
+  const ppas = db.PPA.findAll({
+    // this issue is with the 'name' in this where clause. https://stackoverflow.com/a/73766237/9259701
+  where: {
+    [Op.or]: [{
+      name: db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('PPA.name')), 'LIKE', '%' + searchText.toLowerCase() + '%'),
+    }, {
+      type_of_ppa: db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('type_of_ppa')), 'LIKE', '%' + searchText.toLowerCase() + '%'),
+    },]
+  },
+    include: [
+    { model: db.Review },
+    {
+      model: db.Location,
+
+      // maybe don't use `{ all: true }` - could it do a recursive include? (of ppa?)
+      include: [{ 
+        model: db.States,
+        ...({where: {
+          name: state,
+        },})
+       }],
+    },
+  ]})
+
+  Promise.all([sales, corp_members, ppas])
     .then(
-      ([sales, corp_members]) => {
+      ([sales, corp_members, ppas]) => {
         console.log(
           '"%s" search term yielded %d sales, %d corp_member results!',
           searchText,
@@ -1393,7 +1421,7 @@ exports.searchPosts = async (req, res) => {
           corp_members?.length,
         );
 
-        res.json({ sales, corp_members, ppas: [], accommodations: [] });
+        res.json({ sales, corp_members, ppas, accommodations: [] });
       },
       (reject) => {
         res.status(500).json({});
@@ -1508,8 +1536,7 @@ exports.getAllItems = async (req, res) => {
       }),
       
       /**
-       * Show the number of reviews a PPA has.
-       * And a way to show the reviews.
+       * Show the (total) number of reviews a PPA has.
        * 
        * TODO: limit the number of reviews fetched. Order reviews by recent...
        * */
