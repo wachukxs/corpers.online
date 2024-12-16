@@ -1332,9 +1332,9 @@ exports.searchPosts = async (req, res) => {
       ],
     },
     
-
     include: [{
       model: db.CorpMember,
+      attributes: db.CorpMember.getSearchableAttributes(),
       required: true,
 
       // TODO: link service states to states table.
@@ -1348,7 +1348,10 @@ exports.searchPosts = async (req, res) => {
          }],
       })
 
-    }],
+    },
+    {
+      model: db.Media,
+    },],
   })
 
   const corp_members = db.CorpMember.findAll({
@@ -1541,7 +1544,7 @@ exports.getAllItems = async (req, res) => {
        * TODO: limit the number of reviews fetched. Order reviews by recent...
        * */
       db.PPA.findAll({include: [
-        { model: db.Review },
+        { model: db.Review, include: [{ model: db.CorpMember, attributes: db.CorpMember.getSearchableAttributes(), }] },
         { model: db.Location },
       ]})
     ])

@@ -16,6 +16,7 @@ Firstly for the people in khaki, then for the green and white people, then for a
 
 ## Roadmap and TODOs
 * Link PPA to Location
+- Replace moment.js with https://date-fns.org/v4.1.0/docs/formatDistanceStrict
 * Remove config/config.json and config.js from git history and repo
 * Have color coded logs/log messages.
 * Get a list of API best practices we need to follow.

@@ -87,14 +87,16 @@
     "verbose": true,
     "ignore": [
       "migrations/*",
-      "old models/*",
+      "seeders/*",
       "test/*",
       "js/*",
       "index2.js",
       "/sw.js",
       "/serviceWorkerNotification.js",
       "*.json",
-      "node_modules/*"
+      "node_modules/*",
+      "playgrounds/*",
+      "randoms/*"
     ],
     "ext": ".js"
   },

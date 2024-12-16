@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const moment = require('moment');
 module.exports = (sequelize, DataTypes) => {
   class Review extends Model {
     /**
@@ -47,7 +48,16 @@ module.exports = (sequelize, DataTypes) => {
           msg: 'PPA review is for cannot be empty',
         },
       },
-    }
+    },
+    _age: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return moment(this.getDataValue('created_at')).fromNow();
+      },
+      set(value) {
+        throw new Error('Do not try to set the Review.`_age` value!');
+      }
+    },
   }, {
     sequelize,
     modelName: 'Review',
